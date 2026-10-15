@@ -7,7 +7,7 @@ App de entreno gamificada: React + Supabase (cuentas, base de datos y vídeos) +
 1. Entra en [supabase.com](https://supabase.com) y crea un proyecto. Elige la región **Europe (Frankfurt o Paris)**: tus usuarias son de España y así cumples mejor el RGPD.
 2. Ve a **SQL Editor**, pega entero el archivo `supabase/migrations/0001_arc.sql` y dale a **Run**. Esto crea las tablas, los permisos y la carpeta de vídeos.
    Después haz lo mismo con `supabase/migrations/0002_contenido.sql`: crea las tablas de frases, ejercicios, alimentos y recetas y las rellena con lo que ya tiene la app.
-   Y por último `supabase/migrations/0003_ranking.sql`: el ranking semanal y las denuncias.
+   Y por último `0003_ranking.sql` (ranking y denuncias) y `0004_modo_gymrat.sql` (modo gymrat en el ranking).
 3. En **Authentication > URL Configuration** pon como *Site URL* la dirección de tu web (o `http://localhost:5173` mientras pruebas).
 4. En **Project Settings > API** copia la *Project URL* y la *anon public key*.
 

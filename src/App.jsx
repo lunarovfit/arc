@@ -66,6 +66,25 @@ const LEVELS = {
 };
 for (const b of ["female", "male"]) LEVELS[b] = LEVELS[b].map(([name, series, line], i) => lv(b, i, name, series, line));
 
+// Modo gymrat: la misma rata para todas, con 9 fases. Requisitos según la rama.
+const RAT_STAGES = [
+  ["Chuminá", "La rata con ojeras que acaba de descubrir el gimnasio."],
+  ["Pardillo", "Mancuernas de juguete y sudor de verdad."],
+  ["Enclenque", "Ya enseña bíceps, hay que creérselo."],
+  ["Papafrita", "Blandita por fuera, pero se agarra al banco."],
+  ["Mantecado", "Se deshace en las series, pero ya se nota la masa."],
+  ["Mazao", "La camiseta le pide perdón."],
+  ["Tanque", "No se mueve del banco y nadie se atreve a pedírselo."],
+  ["Bestia", "El banco está preocupado."],
+  ["Leyenda", "El gimnasio se mide en antes y después de ella."],
+];
+const RAT_STEPS = [0, 1, 2, 3, 5, 6, 8, 10, 11]; // equivalencia con los 12 niveles de anime
+const RAT_LEVELS = Object.fromEntries(["female", "male"].map((b) => [b,
+  RAT_STAGES.map(([name, line], i) => ({ ...LEVELS[b][RAT_STEPS[i]], name, series: "Modo gymrat", line })),
+]));
+const levelsOf = (branch, mode) => (mode === "gymrat" ? RAT_LEVELS : LEVELS)[branch] || LEVELS.female;
+const levelKey = (branch, mode, i) => (mode === "gymrat" ? `rat:${i}` : `lvl:${branch}:${i}`);
+
 // [frase, quién, de dónde, explicación, tipo]
 let QUOTES = [
   // ---- Anime ----
@@ -610,8 +629,8 @@ const FACTORS = [
   { key: "adherence", label: "Adherencia 30 días", fmt: (v) => `${v}%` },
 ];
 
-function evaluate(branch, stats) {
-  const L = LEVELS[branch];
+function evaluate(branch, stats, mode) {
+  const L = levelsOf(branch, mode);
   const val = (k) => (k === "adherence" && stats.provisional ? Infinity : stats[k] ?? 0);
   const reach = (k) => { let idx = 0; L.forEach((lv, i) => { if (val(k) >= lv[k]) idx = i; }); return idx; };
   const perFactor = Object.fromEntries(FACTORS.map((f) => [f.key, reach(f.key)]));
@@ -877,7 +896,7 @@ function LineChart({ points, empty }) {
 /* ============================ CUESTIONARIO ============================ */
 
 const DEFAULT_PROFILE = {
-  branch: "female", age: 21, height: 165, weight: 60, activity: 1.45, goal: "mant", veg: false, trainTime: "mid",
+  mode: "otaku", branch: "female", age: 21, height: 165, weight: 60, activity: 1.45, goal: "mant", veg: false, trainTime: "mid",
   days: 3, meals: 4, cook: "sencilla", eatOut: false, exclude: [],
   months: 4, pullups: 0, squat: { kg: 60, reps: 5 }, bench: { kg: 35, reps: 6 }, deadlift: { kg: 80, reps: 4 },
 };
@@ -896,6 +915,10 @@ function Questionnaire({ initial, editing, onSave, onCancel }) {
       <h1>{editing ? "Tus datos" : "Empecemos por ti"}</h1>
       <p className="sub">{editing ? "Si cambias algo, tu plan de comidas se recalcula." : "Con esto calculamos tu nivel de partida y tu plan de comidas. Solo te lo preguntamos una vez."}</p>
 
+      <div className="field"><label>¿Cómo quieres subir de nivel?</label>
+        <div className="chips">{[["otaku", "Modo otaku"], ["gymrat", "Modo gymrat"]].map(([v, l]) => <button key={v} className={`chip ${(q.mode || "otaku") === v ? "on" : ""}`} onClick={() => set("mode", v)}>{l}</button>)}</div>
+        <div className="hint">{(q.mode || "otaku") === "gymrat" ? "Una rata que empieza con ojeras y acaba siendo leyenda del gimnasio." : "Desbloqueas personajes de anime según tu fuerza real."}</div>
+      </div>
       <div className="field"><label>Rama del arco</label>
         <div className="chips">{[["female", "Femenina"], ["male", "Masculina"]].map(([v, l]) => <button key={v} className={`chip ${q.branch === v ? "on" : ""}`} onClick={() => set("branch", v)}>{l}</button>)}</div>
       </div>
@@ -1050,10 +1073,11 @@ function TechniqueModal({ exId, media, coach, setMedia, uploadMedia, onClose }) 
 
 function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) {
   const branch = state.profile.branch;
-  const L = LEVELS[branch];
+  const mode = state.profile.mode || "otaku";
+  const L = levelsOf(branch, mode);
   const lv = L[ev.current];
   const [err, setErr] = useState("");
-  const [vb, setVb] = useState(branch); // rama que se ve en "El arco completo" (la coach puede cambiarla)
+  const [vb, setVb] = useState(mode === "gymrat" ? "rat" : branch); // rama que se ve en "El arco completo" (la coach puede cambiarla)
   const ratioPoints = useMemo(() => {
     const pts = [{ x: new Date(state.profile.startDate).getTime(), y: ratioOf(branch, bestLifts({ ...state, sessions: [] }).best, Number(state.profile.weight)) }];
     [...state.sessions].sort((a, b) => a.date.localeCompare(b.date)).forEach((s) => {
@@ -1063,7 +1087,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
   }, [state, branch]);
   const weightPoints = Object.keys(state.habits).filter((k) => state.habits[k].weight).sort().map((k) => ({ x: new Date(k).getTime(), y: Number(state.habits[k].weight) }));
   const [qq, who, from, why, kind] = quote;
-  const heroImg = media[`lvl:${branch}:${ev.current}`] || AVATAR[branch];
+  const heroImg = media[levelKey(branch, mode, ev.current)] || AVATAR[branch];
   return (
     <>
       <div className="quote">
@@ -1124,16 +1148,17 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
       <h2>El arco completo</h2>
       {coach && <>
         <div className="seg">
-          <button className={vb === "female" ? "on" : ""} onClick={() => setVb("female")}>Rama femenina</button>
-          <button className={vb === "male" ? "on" : ""} onClick={() => setVb("male")}>Rama masculina</button>
+          <button className={vb === "female" ? "on" : ""} onClick={() => setVb("female")}>Femenina</button>
+          <button className={vb === "male" ? "on" : ""} onClick={() => setVb("male")}>Masculina</button>
+          <button className={vb === "rat" ? "on" : ""} onClick={() => setVb("rat")}>Gymrat</button>
         </div>
         <p className="hint" style={{ marginTop: -4 }}>Modo coach: sube una imagen para cada personaje. Mejor en vertical y con fondo oscuro.</p>
       </>}
       {err && <div className="err">{err}</div>}
-      {LEVELS[vb].map((l, i) => {
-        const key = `lvl:${vb}:${i}`;
+      {(vb === "rat" ? RAT_LEVELS[branch] : LEVELS[vb]).map((l, i) => {
+        const key = vb === "rat" ? `rat:${i}` : `lvl:${vb}:${i}`;
         const img = media[key];
-        const mine = vb === branch;
+        const mine = vb === "rat" ? mode === "gymrat" : mode !== "gymrat" && vb === branch;
         return (
           <div key={l.name} className="lvrow" style={{ opacity: mine && i > ev.current && !coach ? 0.4 : 1 }}>
             <div className="thumb">{img ? <img src={img} alt="" /> : <span>{i + 1}</span>}</div>
@@ -1718,7 +1743,7 @@ function checkNickname(n) {
   if (BAD_WORDS.some((w) => plain.includes(norm(w)))) return "Ese nombre no está permitido. Prueba con otro.";
   return "";
 }
-const levelLabel = (branch, level) => (branch && LEVELS[branch]?.[level] ? LEVELS[branch][level].name : "");
+const levelLabel = (branch, level, mode) => (branch ? levelsOf(branch, mode)[level]?.name || "" : "");
 const fmtDay = (d) => d.toLocaleDateString("es-ES", { day: "numeric", month: "short" });
 
 function Ranking({ me, state, api }) {
@@ -1785,7 +1810,7 @@ function Ranking({ me, state, api }) {
           {board.map((r) => (
             <div key={r.nickname} className={`rkrow ${r.is_me ? "me" : ""}`}>
               <span className={`pos ${r.rank <= 3 ? "top" : ""}`}>{r.rank}</span>
-              <span className="who">{r.nickname}{r.is_me && " (tú)"}<small>{levelLabel(r.branch, r.level)}</small></span>
+              <span className="who">{r.nickname}{r.is_me && " (tú)"}<small>{levelLabel(r.branch, r.level, r.mode)}</small></span>
               <b>{r.points}</b>
               {!r.is_me && <button className="dots" aria-label="Opciones" onClick={() => { setReport(r.nickname); setSent(""); }}>⋮</button>}
             </div>
@@ -2068,7 +2093,7 @@ function ArcApp({ user }) {
       adherence: adh.pct, provisional: adh.provisional, streak: adh.streak,
     };
   }, [state, adh]);
-  const ev = useMemo(() => (stats ? evaluate(state.profile.branch, stats) : null), [stats, state.profile]);
+  const ev = useMemo(() => (stats ? evaluate(state.profile.branch, stats, state.profile.mode) : null), [stats, state.profile]);
 
   useEffect(() => {
     if (ev && state.rankOptIn && ev.current !== state.savedLevel) {
@@ -2144,8 +2169,8 @@ function ArcApp({ user }) {
       const next = { ...state, active: null, sessions: [...state.sessions, session], xp: state.xp + RULES.XP_PER_SESSION, gems: state.gems + RULES.GEMS_PER_SESSION };
       setState(next);
       const { best, pullups } = bestLifts(next);
-      const lv = evaluate(next.profile.branch, { ...stats, ratio: ratioOf(next.profile.branch, best, currentWeight(next)), pullups }).current;
-      setToast(lv > prevLevel ? `Has subido a ${LEVELS[next.profile.branch][lv].name}` : `Entreno guardado · +${RULES.XP_PER_SESSION} XP · +${RULES.GEMS_PER_SESSION} gemas`);
+      const lv = evaluate(next.profile.branch, { ...stats, ratio: ratioOf(next.profile.branch, best, currentWeight(next)), pullups }, next.profile.mode).current;
+      setToast(lv > prevLevel ? `Has subido a ${levelsOf(next.profile.branch, next.profile.mode)[lv].name}` : `Entreno guardado · +${RULES.XP_PER_SESSION} XP · +${RULES.GEMS_PER_SESSION} gemas`);
       setTab("inicio");
     } catch (e) { setToast("No se ha podido guardar el entreno. Tu sesión sigue abierta: vuelve a darle a Terminar."); }
   };
