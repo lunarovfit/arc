@@ -1,0 +1,54 @@
+# Codemagic: compila ARC para iPhone en un Mac en la nube y la sube a TestFlight.
+# Variables que hay que crear en Codemagic (grupo "arc"):
+#   VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY          → de tu archivo .env
+#   CERTIFICATE_PRIVATE_KEY                              → la clave que generas una vez (ver README)
+# Integración "ARC App Store Connect" → tu clave API de App Store Connect (.p8)
+
+workflows:
+  ios-testflight:
+    name: iOS → TestFlight
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: ARC App Store Connect
+    environment:
+      groups:
+        - arc
+      vars:
+        BUNDLE_ID: com.lunarovx.arc
+        APP_STORE_APPLE_ID: 6823134477
+      node: 22
+      xcode: latest
+    scripts:
+      - name: Instalar dependencias
+        script: npm ci
+      - name: Compilar la app
+        script: npm run build
+      - name: Pasar la app a iOS
+        script: |
+          npx cap sync ios
+          node scripts/setup-native.cjs
+      - name: Firma de Apple (certificado y perfil)
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --certificate-key=@env:CERTIFICATE_PRIVATE_KEY \
+            --create
+          keychain add-certificates
+          xcode-project use-profiles
+      - name: Número de versión
+        script: |
+          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" || echo 0)
+          cd ios/App && agvtool new-version -all $((LATEST + 1))
+      - name: Crear la app de iPhone
+        script: xcode-project build-ipa --project "ios/App/App.xcodeproj" --scheme "App"
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      email:
+        recipients:
+          - lunaticarvcollabs@gmail.com
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true

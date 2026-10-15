@@ -1,0 +1,11 @@
+{
+  "appId": "com.lunarovx.arc",
+  "appName": "ARC",
+  "webDir": "dist",
+  "backgroundColor": "#000000",
+  "plugins": {
+    "LocalNotifications": {
+      "iconColor": "#D48B92"
+    }
+  }
+}
