@@ -846,12 +846,7 @@ select.in{appearance:none}
 `;
 
 function Logo() {
-  return (
-    <svg width="34" height="22" viewBox="0 0 120 76" aria-hidden="true">
-      <path d="M4 38 C26 36 34 30 40 20 C52 -2 86 -4 102 22 C88 8 70 8 58 18 C44 30 44 48 58 58 C72 68 90 66 104 54 C88 80 52 80 40 56 C34 46 26 40 4 38 Z" fill="#fff" />
-      <path d="M70 18 C72 32 76 36 116 38 C76 40 72 44 70 60 C68 44 64 40 52 38 C64 36 68 32 70 18 Z" fill="#fff" />
-    </svg>
-  );
+  return <img src="/logo-mark.png" alt="" aria-hidden="true" style={{ height: 22, width: "auto", display: "block" }} />;
 }
 
 function ArcGauge({ total, current, progress }) {
