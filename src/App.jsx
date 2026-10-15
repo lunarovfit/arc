@@ -917,7 +917,7 @@ function Questionnaire({ initial, editing, onSave, onCancel }) {
 
       <div className="field"><label>¿Cómo quieres subir de nivel?</label>
         <div className="chips">{[["otaku", "Modo otaku"], ["gymrat", "Modo gymrat"]].map(([v, l]) => <button key={v} className={`chip ${(q.mode || "otaku") === v ? "on" : ""}`} onClick={() => set("mode", v)}>{l}</button>)}</div>
-        <div className="hint">{(q.mode || "otaku") === "gymrat" ? "Una rata que empieza con ojeras y acaba siendo leyenda del gimnasio." : "Desbloqueas personajes de anime según tu fuerza real."}</div>
+        <div className="hint">{(q.mode || "otaku") === "gymrat" ? "Tu rata va de enclenque a mazada contigo." : "Desbloqueas personajes de anime según tu fuerza real."}</div>
       </div>
       <div className="field"><label>Rama del arco</label>
         <div className="chips">{[["female", "Femenina"], ["male", "Masculina"]].map(([v, l]) => <button key={v} className={`chip ${q.branch === v ? "on" : ""}`} onClick={() => set("branch", v)}>{l}</button>)}</div>
