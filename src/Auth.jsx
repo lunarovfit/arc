@@ -88,5 +88,8 @@ function translate(m = "") {
   if (/already registered/i.test(m)) return "Ya hay una cuenta con ese correo. Prueba a entrar.";
   if (/password should be/i.test(m)) return "La contraseña tiene que tener al menos 8 caracteres.";
   if (/rate limit/i.test(m)) return "Demasiados intentos seguidos. Espera un minuto y vuelve a probar.";
-  return "No se ha podido completar. Revisa tu conexión y vuelve a intentarlo.";
+  if (/failed to fetch|load failed|network/i.test(m)) return "No hay conexión con el servidor. Revisa tu internet y vuelve a intentarlo.";
+  if (/invalid api key|no api key/i.test(m)) return "La app no tiene bien puesta la clave de Supabase (VITE_SUPABASE_ANON_KEY).";
+  if (/signups not allowed|signup is disabled/i.test(m)) return "El registro está desactivado en Supabase (Authentication > Sign In / Providers > Email).";
+  return `No se ha podido completar. Detalle técnico: ${m || "sin mensaje"}`;
 }
