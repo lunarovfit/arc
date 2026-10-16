@@ -854,7 +854,50 @@ textarea.in{resize:vertical;line-height:1.5}
 select.in{appearance:none}
 .tags{display:flex;gap:6px;margin-top:10px}
 .tags span{font-size:11px;border:1px solid var(--ln);border-radius:999px;padding:3px 8px;color:var(--dm)}
-@media (prefers-reduced-motion:no-preference){.fill{transition:stroke-dashoffset .9s ease}}
+.splash{position:fixed;inset:0;background:#000;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;pointer-events:none}
+.splash-glow{position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(212,139,146,.35),transparent 65%)}
+.splash-mark{transform:scale(4);position:relative}
+.splash-word{font-weight:800;letter-spacing:.5em;font-size:13px;margin-top:48px;padding-left:.5em;position:relative}
+.lvup{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.96);display:flex;flex-direction:column;align-items:center;padding:calc(36px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom));text-align:center;overflow:hidden}
+.lvup-glow{position:absolute;top:22%;left:50%;width:420px;height:420px;margin-left:-210px;border-radius:50%;background:radial-gradient(circle,rgba(212,139,146,.32),transparent 62%)}
+.lvup-tag{position:relative;font-size:13px;color:var(--dm);letter-spacing:.04em}
+.lvup-from{position:relative;font-size:15px;color:var(--dm);margin-top:8px;text-decoration:line-through;text-decoration-color:rgba(212,139,146,.8)}
+.lvup-stage{position:relative;width:220px;height:260px;margin:22px 0 8px;display:flex;align-items:center;justify-content:center}
+.lvup-img{width:200px;height:250px;border-radius:24px;overflow:hidden;border:1px solid rgba(212,139,146,.6);box-shadow:0 0 60px rgba(212,139,146,.35)}
+.lvup-img img{width:100%;height:100%;object-fit:cover;object-position:top}
+.lvup-spark{position:absolute;left:50%;top:50%;opacity:0}
+.lvup-title{position:relative;font-size:15px;font-weight:600;color:var(--ac);margin:10px 0 2px}
+.lvup-name{position:relative;font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.lvup-line{position:relative;font-size:15px;line-height:1.5;color:var(--dm);max-width:320px;margin:10px 0 0}
+.lvup-btn{position:relative;margin-top:auto;max-width:380px}
+@media (prefers-reduced-motion:no-preference){
+.fill{transition:stroke-dashoffset .9s ease;animation:fillIn 1.2s cubic-bezier(.2,.8,.2,1) both}
+@keyframes fillIn{from{stroke-dashoffset:var(--len)}}
+.chk.on{animation:pop .28s ease-out}
+@keyframes pop{0%{transform:scale(.7)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+.splash{animation:splashOut .45s ease-in 1.05s both}
+.splash-glow{animation:glow 1.2s ease-out both}
+.splash-mark{animation:markIn .8s cubic-bezier(.2,.9,.2,1.2) both}
+.splash-word{animation:rise .6s ease-out .35s both}
+@keyframes splashOut{to{opacity:0}}
+@keyframes glow{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes markIn{from{transform:scale(2.6) rotate(-20deg);opacity:0;filter:blur(6px)}to{transform:scale(4) rotate(0);opacity:1;filter:blur(0)}}
+@keyframes rise{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+.lvup{animation:fadeIn .3s ease-out both}
+.lvup-glow{animation:pulse 2.4s ease-in-out .5s infinite}
+.lvup-from{animation:rise .5s ease-out .15s both}
+.lvup-img{animation:reveal .9s cubic-bezier(.2,.9,.2,1.1) .35s both}
+.lvup-spark{animation:burst 1.1s ease-out both}
+.lvup-title{animation:rise .5s ease-out .9s both}
+.lvup-name{animation:rise .5s ease-out 1s both}
+.lvup-line{animation:rise .5s ease-out 1.15s both}
+.lvup-btn{animation:rise .5s ease-out 1.3s both}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.12);opacity:1}}
+@keyframes reveal{from{transform:scale(.5);opacity:0;filter:blur(12px) brightness(3)}to{transform:none;opacity:1;filter:none}}
+@keyframes burst{0%{transform:translate(-50%,-50%) scale(.2);opacity:0}25%{opacity:1}100%{transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1) rotate(90deg);opacity:0}}
+}
+@media (prefers-reduced-motion:reduce){.splash{display:none}.lvup-spark{display:none}}
 `;
 
 function Logo() {
@@ -873,7 +916,7 @@ function ArcGauge({ total, current, progress }) {
           <g key={i}>
             <path d={path(s, e)} stroke={i <= current ? "#fff" : "#26262B"} strokeWidth={i <= current ? 10 : 8} fill="none" strokeLinecap="round" />
             {i === current + 1 && progress > 0 && (
-              <path className="fill" d={path(s, e)} stroke="#D48B92" strokeWidth="8" fill="none" strokeLinecap="round" strokeDasharray={len} strokeDashoffset={len * (1 - progress)} />
+              <path className="fill" d={path(s, e)} stroke="#D48B92" strokeWidth="8" fill="none" strokeLinecap="round" strokeDasharray={len} strokeDashoffset={len * (1 - progress)} style={{ "--len": len }} />
             )}
           </g>
         );
@@ -1857,6 +1900,73 @@ function Ranking({ me, state, api }) {
   );
 }
 
+/* ============================ ANIMACIONES ============================ */
+
+const Star = ({ size = 12, color = "#fff" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C13 8 16 11 24 12C16 13 13 16 12 24C11 16 8 13 0 12C8 11 11 8 12 0Z" fill={color} /></svg>
+);
+
+// Al abrir la app: el logo aparece con un destello y se desvanece
+function Splash({ onDone }) {
+  useEffect(() => { const t = setTimeout(onDone, 1500); return () => clearTimeout(t); }, []);
+  return (
+    <div className="splash" aria-hidden="true">
+      <div className="splash-glow" />
+      <div className="splash-mark"><Logo /></div>
+      <div className="splash-word">ARC</div>
+    </div>
+  );
+}
+
+// Al subir de nivel: pantalla completa con el personaje nuevo
+const SPARKS = Array.from({ length: 14 }, (_, i) => {
+  const a = (i / 14) * Math.PI * 2;
+  const r = 120 + (i % 3) * 30;
+  return { x: Math.cos(a) * r, y: Math.sin(a) * r, d: 0.55 + (i % 4) * 0.08, s: 8 + (i % 3) * 5 };
+});
+
+function LevelUp({ data, onClose }) {
+  const { from, to, line, img, idx, total, gymrat } = data;
+  return (
+    <div className="lvup" role="dialog" aria-label={`Has subido a ${to}`}>
+      <div className="lvup-glow" />
+      <div className="lvup-tag">Nivel {idx + 1} de {total}</div>
+      <div className="lvup-from">{from}</div>
+      <div className="lvup-stage">
+        {SPARKS.map((s, i) => (
+          <span key={i} className="lvup-spark" style={{ "--x": `${s.x}px`, "--y": `${s.y}px`, animationDelay: `${s.d}s` }}><Star size={s.s} color={i % 2 ? "#fff" : "#D48B92"} /></span>
+        ))}
+        <div className="lvup-img"><img src={img} alt="" /></div>
+      </div>
+      <h1 className="lvup-title">{gymrat ? "Tu rata ha evolucionado" : "Personaje desbloqueado"}</h1>
+      <div className="lvup-name">{to}</div>
+      <p className="lvup-line">{line}</p>
+      <button className="btn ac lvup-btn" onClick={onClose}>Seguir entrenando</button>
+    </div>
+  );
+}
+
+// Detecta cuándo sube el nivel (por un entreno, por hábitos o por lo que sea) y lo enseña una sola vez
+function useLevelUp(profile, ev, media, setProfile) {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    if (!profile || !ev) return;
+    const seen = profile.seenLevel;
+    const key = `${profile.mode || "otaku"}:${profile.branch}`;
+    if (seen === undefined || profile.seenKey !== key) { setProfile({ seenLevel: ev.current, seenKey: key }); return; }
+    if (ev.current > seen) {
+      const L = levelsOf(profile.branch, profile.mode);
+      setData({
+        from: L[seen]?.name, to: L[ev.current].name, line: L[ev.current].line, idx: ev.current, total: L.length,
+        gymrat: profile.mode === "gymrat",
+        img: media[levelKey(profile.branch, profile.mode, ev.current)] || AVATAR[profile.branch],
+      });
+      setProfile({ seenLevel: ev.current });
+    } else if (ev.current < seen) setProfile({ seenLevel: ev.current });
+  }, [ev?.current, profile?.mode, profile?.branch]);
+  return [data, () => setData(null)];
+}
+
 /* ============================ BIENVENIDA (solo la primera vez) ============================ */
 
 function Tour({ profile, ev, heroImg, perms, onFinish }) {
@@ -2120,6 +2230,7 @@ function ArcApp({ user }) {
   const [notifBusy, setNotifBusy] = useState(false);
   const [notifErr, setNotifErr] = useState("");
   const [quote, setQuote] = useState(null);
+  const [splash, setSplash] = useState(true);
   const [content, setContent] = useState(DEFAULT_CONTENT);
   const timers = useRef({});
 
@@ -2217,7 +2328,14 @@ function ArcApp({ user }) {
   };
   useEffect(() => { if (tab === "habitos" && state.profile?.stepsLinked && stepsAvail) syncSteps(); }, [tab, stepsAvail]);
 
-  if (!loaded) return <Shell>{loadErr ? <><div className="err">{loadErr}</div><button className="btn" onClick={load}>Reintentar</button></> : <p className="sub">Cargando tu arco…</p>}</Shell>;
+  const [levelUp, closeLevelUp] = useLevelUp(loaded && state.onboarded ? state.profile : null, ev, media, (patch) => setState((s) => {
+    const profile = { ...s.profile, ...patch };
+    const { startDate, ...data } = profile;
+    later("profile", () => db.updateProfile(user.id, { data }), 300);
+    return { ...s, profile };
+  }));
+
+  if (!loaded) return <Shell>{loadErr ? <><div className="err">{loadErr}</div><button className="btn" onClick={load}>Reintentar</button></> : <p className="sub">Cargando tu arco…</p>}{splash && <Splash onDone={() => setSplash(false)} />}</Shell>;
 
   const profileData = (p) => { const { startDate, ...rest } = p; return rest; };
   const setProfile = (patch) => setState((s) => {
@@ -2258,7 +2376,7 @@ function ArcApp({ user }) {
       setState(next);
       const { best, pullups } = bestLifts(next);
       const lv = evaluate(next.profile.branch, { ...stats, ratio: ratioOf(next.profile.branch, best, currentWeight(next)), pullups }, next.profile.mode).current;
-      setToast(lv > prevLevel ? `Has subido a ${levelsOf(next.profile.branch, next.profile.mode)[lv].name}` : `Entreno guardado · +${RULES.XP_PER_SESSION} XP · +${RULES.GEMS_PER_SESSION} gemas`);
+      if (lv <= prevLevel) setToast(`Entreno guardado · +${RULES.XP_PER_SESSION} XP · +${RULES.GEMS_PER_SESSION} gemas`);
       setTab("inicio");
     } catch (e) { setToast("No se ha podido guardar el entreno. Tu sesión sigue abierta: vuelve a darle a Terminar."); }
   };
@@ -2332,6 +2450,8 @@ function ArcApp({ user }) {
     <div className="arc">
       <style>{CSS + EXTRA_CSS}</style>
       {toast && <div className="toast" role="status">{toast}</div>}
+      {levelUp && <LevelUp data={levelUp} onClose={closeLevelUp} />}
+      {splash && <Splash onDone={() => setSplash(false)} />}
       <div className="phone">
         {!inTracker && (
           <div className="top">
