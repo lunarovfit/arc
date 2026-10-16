@@ -246,16 +246,6 @@ let QUOTES = [
   ["Nadie puede hacerte sentir inferior sin tu consentimiento.", "Eleanor Roosevelt", "Política y activismo", "Tu sitio en la zona de pesas es tuyo.", "cita"],
   ["Atribuyo mi éxito a esto: nunca di ni acepté una excusa.", "Florence Nightingale", "Enfermería", "La fundadora de la enfermería moderna, también en el gym.", "cita"],
   ["Quiérete a ti misma. Habla por ti misma.", "BTS", "Discurso en la ONU", "Entrenar por amor a tu cuerpo, no por castigo.", "cita"],
-  // Gym y deporte
-  ["¡Peso ligero, baby!", "Ronnie Coleman", "Culturismo", "Lo gritaba moviendo más de 300 kilos. Dilo antes de tu serie más pesada.", "cita"],
-  ["Todo el mundo quiere ser culturista, pero nadie quiere levantar los pesos pesados.", "Ronnie Coleman", "Culturismo", "Querer el resultado es fácil. Hoy toca la parte que nadie ve.", "cita"],
-  ["Las últimas tres o cuatro repeticiones son las que hacen crecer el músculo.", "Arnold Schwarzenegger", "Culturismo", "Las que arden son las que cuentan. No las regales.", "cita"],
-  ["No cuento mis abdominales. Solo empiezo a contar cuando empieza a doler.", "Muhammad Ali", "Boxeo", "Las repeticiones fáciles son el calentamiento.", "cita"],
-  ["No hay límites. Solo hay mesetas, y no debes quedarte en ellas: tienes que ir más allá.", "Bruce Lee", "Artes marciales", "Si llevas semanas sin subir peso, estás en una meseta. Tu techo está más arriba.", "cita"],
-  ["Cien flexiones, cien abdominales, cien sentadillas y diez kilómetros corriendo. Todos los días.", "Saitama", "One Punch Man", "El héroe más fuerte del anime tenía una rutina y la cumplía. Cumple hoy la tuya.", "cita"],
-  ["Mantente duro.", "David Goggins", "Ultrafondo", "Para cuando quieras cortar la serie antes de tiempo.", "cita"],
-  ["Si te topas con un muro, no te des la vuelta. Descubre cómo escalarlo, atravesarlo o rodearlo.", "Michael Jordan", "Baloncesto", "Una máquina ocupada o una molestia no son el final del entreno.", "cita"],
-  ["Prefiero arrepentirme de los riesgos que no salieron bien que de las oportunidades que no aproveché.", "Simone Biles", "Gimnasia", "Ese peso nuevo da respeto. Pruébalo con buena técnica.", "cita"],
 ];
 
 /* ============================ ENTRENO ============================ */
