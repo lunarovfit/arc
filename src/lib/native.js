@@ -17,7 +17,10 @@ export async function stepsAvailable() {
 // Pide permiso para leer los pasos (Apple Salud o Health Connect)
 export async function connectSteps() {
   const res = await Health.requestHealthPermissions({ permissions: ["READ_STEPS"] });
-  const granted = (res.permissions || []).some((p) => p.READ_STEPS === true);
+  // iOS devuelve { READ_STEPS: true } y Android [{ READ_STEPS: true }]
+  const list = Array.isArray(res?.permissions) ? res.permissions : [res?.permissions || {}];
+  const granted = list.some((p) => p && p.READ_STEPS === true);
+  // En iPhone Apple nunca dice si se ha denegado: se comprueba leyendo los pasos
   if (platform === "android" && !granted) throw new Error("no-permission");
   return true;
 }

@@ -7,5 +7,10 @@
     "LocalNotifications": {
       "iconColor": "#D48B92"
     }
+  },
+  "ios": {
+    "contentInset": "never",
+    "scrollEnabled": true,
+    "allowsLinkPreview": false
   }
 }

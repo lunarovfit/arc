@@ -686,7 +686,7 @@ function solveRecipe(recipe, target, veg) {
 
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-.arc{--bg:#000;--sf:#0E0E11;--sf2:#16161A;--ln:#26262B;--tx:#fff;--dm:rgba(255,255,255,.6);--ac:#D48B92;--ok:rgba(110,231,183,.14);--okl:#6EE7B7;--wu:#F5B454;
+.arc{overflow-x:hidden;width:100%;--bg:#000;--sf:#0E0E11;--sf2:#16161A;--ln:#26262B;--tx:#fff;--dm:rgba(255,255,255,.6);--ac:#D48B92;--ok:rgba(110,231,183,.14);--okl:#6EE7B7;--wu:#F5B454;
 font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;display:flex;justify-content:center}
 .arc *{box-sizing:border-box}
 .phone{width:100%;max-width:430px;padding:calc(18px + env(safe-area-inset-top)) 18px calc(100px + env(safe-area-inset-bottom))}
@@ -700,7 +700,7 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:13px;color:var(--dm);margin-bottom:6px}
 .row{display:flex;gap:8px}
-.in{width:100%;background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:12px;padding:12px;font:inherit;font-size:15px}
+.in{width:100%;background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:12px;padding:12px;font:inherit;font-size:16px}
 .arc button:focus-visible,.in:focus{outline:2px solid var(--ac);outline-offset:2px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:999px;padding:9px 14px;font:inherit;font-size:14px;cursor:pointer}
@@ -766,7 +766,7 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .ex .hd{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .ex .hd b{font-size:16px;color:var(--ac)}
 .ex .tgt{font-size:13px;color:var(--dm);margin:2px 0 10px}
-.ex .note-in{background:none;border:0;color:var(--tx);font:inherit;font-size:14px;width:100%;padding:4px 0 8px}
+.ex .note-in{background:none;border:0;color:var(--tx);font:inherit;font-size:16px;width:100%;padding:4px 0 8px}
 .ex .note-in::placeholder{color:var(--dm)}
 .rest{background:none;border:0;color:var(--ac);font:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:0 0 10px}
 .dots{background:none;border:0;color:var(--tx);font-size:20px;cursor:pointer;padding:0 4px;line-height:1}
@@ -780,7 +780,7 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .sets .lbl{background:none;border:0;color:var(--tx);font:inherit;font-weight:700;cursor:pointer;width:28px}
 .sets .lbl.w{color:var(--wu)}
 .sets .prev{color:var(--dm);font-size:13px}
-.sets input{width:58px;background:var(--sf2);border:1px solid var(--ln);color:var(--tx);border-radius:8px;padding:7px 4px;text-align:center;font:inherit;font-weight:700;font-size:14px}
+.sets input{width:100%;max-width:62px;background:var(--sf2);border:1px solid var(--ln);color:var(--tx);border-radius:8px;padding:7px 4px;text-align:center;font:inherit;font-weight:700;font-size:16px}
 .chk{width:30px;height:30px;border-radius:8px;border:1px solid var(--ln);background:var(--sf2);color:transparent;cursor:pointer;font-size:16px;font-weight:800}
 .chk.on{background:var(--okl);border-color:var(--okl);color:#000}
 .add{width:100%;background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:10px;padding:10px;font:inherit;font-size:14px;cursor:pointer;margin-top:6px}
@@ -839,6 +839,18 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .edrow small{display:block;color:var(--dm);font-size:12px;margin-top:3px}
 .ingr{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:10px;margin-bottom:8px}
 textarea.in{resize:vertical;line-height:1.5}
+.tour{min-height:calc(100vh - 120px);display:flex;flex-direction:column}
+.tour-dots{display:flex;gap:6px;margin-top:4px}
+.tour-dots i{height:4px;flex:1;border-radius:4px;background:var(--ln)}
+.tour-dots i.on{background:var(--ac)}
+.tour-h{font-size:30px;margin:28px 0 14px}
+.tour-p{font-size:17px;line-height:1.5;margin:0 0 12px}
+.tour-p.dim{color:var(--dm);font-size:15px}
+.tour-list>div{padding:14px 0;border-bottom:1px solid var(--ln)}
+.tour-list b{display:block;font-size:16px;margin-bottom:4px}
+.tour-list span{display:block;font-size:14px;line-height:1.5;color:var(--dm)}
+.tour-ok{display:block;font-style:normal;color:var(--okl);font-size:14px;margin-top:8px}
+.tour-actions{margin-top:auto;padding-top:24px;display:flex;flex-direction:column;align-items:center;gap:14px}
 select.in{appearance:none}
 .tags{display:flex;gap:6px;margin-top:10px}
 .tags span{font-size:11px;border:1px solid var(--ln);border-radius:999px;padding:3px 8px;color:var(--dm)}
@@ -1845,6 +1857,84 @@ function Ranking({ me, state, api }) {
   );
 }
 
+/* ============================ BIENVENIDA (solo la primera vez) ============================ */
+
+function Tour({ profile, ev, heroImg, perms, onFinish }) {
+  const [i, setI] = useState(0);
+  const male = profile.branch === "male";
+  const gymrat = profile.mode === "gymrat";
+  const L = levelsOf(profile.branch, profile.mode);
+  const lv = L[ev.current];
+  const next = L[ev.current + 1];
+  const slides = [
+    {
+      title: `${male ? "Bienvenido" : "Bienvenida"} a tu arco`,
+      body: <>
+        <p className="tour-p">Aquí no subes de nivel por abrir la app.</p>
+        <p className="tour-p">Subes por lo que levantas, por las dominadas que consigues y por no fallarte día tras día.</p>
+      </>,
+    },
+    {
+      title: `Empiezas como ${lv.name}`,
+      img: heroImg,
+      body: <>
+        <p className="tour-p">{lv.line}</p>
+        {next && <p className="tour-p dim">{gymrat ? "Tu siguiente fase" : "Tu siguiente personaje"}: <b>{next.name}</b>. En Inicio verás exactamente qué te falta.</p>}
+      </>,
+    },
+    {
+      title: "Cómo se sube",
+      body: (
+        <div className="tour-list">
+          <div><b>Fuerza</b><span>Apunta tus series de sentadilla y peso muerto{male ? " y press banca" : ""}. La app calcula tu fuerza con tu peso.</span></div>
+          <div><b>Dominadas</b><span>Las estrictas, sin ayuda. Cada una cuenta.</span></div>
+          <div><b>Meses sin parar</b><span>Si paras más de 3 semanas, la cuenta vuelve a empezar.</span></div>
+          <div><b>Hábitos</b><span>Pasos, agua y sueño. Con 2 de 3 el día cuenta como cumplido.</span></div>
+        </div>
+      ),
+    },
+    {
+      title: "Hoy empieza tu arco",
+      body: <>
+        <p className="tour-p">Tienes tu rutina en Entrenos, tus comidas ajustadas en Nutrición y un ranking semanal donde gana la constancia, no los kilos.</p>
+        <p className="tour-p dim">El primer paso es el que más cuesta. Los demás ya vienen solos.</p>
+      </>,
+    },
+  ];
+  if (perms?.length) slides.push({
+    title: "Dos permisos y listo",
+    body: (
+      <div className="tour-list">
+        {perms.map((p) => (
+          <div key={p.key}>
+            <b>{p.title}</b>
+            <span>{p.text}</span>
+            {p.done
+              ? <em className="tour-ok">{p.doneText}</em>
+              : <button className="btn ghost" style={{ marginTop: 10 }} disabled={p.busy} onClick={p.onAsk}>{p.busy ? "Un momento…" : p.button}</button>}
+            {p.error && <span className="err">{p.error}</span>}
+          </div>
+        ))}
+        <p className="hint">Puedes cambiarlo cuando quieras en Ajustes.</p>
+      </div>
+    ),
+  });
+  const s = slides[i];
+  const last = i === slides.length - 1;
+  return (
+    <div className="tour">
+      <div className="tour-dots" aria-hidden="true">{slides.map((_, k) => <i key={k} className={k === i ? "on" : ""} />)}</div>
+      {s.img && <div className="hero" style={{ marginTop: 18, aspectRatio: "1/1" }}><img src={s.img} alt={lv.name} /></div>}
+      <h1 className="tour-h">{s.title}</h1>
+      {s.body}
+      <div className="tour-actions">
+        <button className="btn ac" onClick={() => (last ? onFinish() : setI(i + 1))}>{last ? "Empezar" : "Siguiente"}</button>
+        {!last && <button className="link" onClick={() => setI(slides.length - 1)}>Saltar</button>}
+      </div>
+    </div>
+  );
+}
+
 /* ============================ AJUSTES ============================ */
 
 const WEEK = [[2, "L"], [3, "M"], [4, "X"], [5, "J"], [6, "V"], [7, "S"], [1, "D"]];
@@ -2027,6 +2117,8 @@ function ArcApp({ user }) {
   const [stepsAvail, setStepsAvail] = useState(false);
   const [stepsBusy, setStepsBusy] = useState(false);
   const [stepsErr, setStepsErr] = useState("");
+  const [notifBusy, setNotifBusy] = useState(false);
+  const [notifErr, setNotifErr] = useState("");
   const [quote, setQuote] = useState(null);
   const [content, setContent] = useState(DEFAULT_CONTENT);
   const timers = useRef({});
@@ -2135,9 +2227,10 @@ function ArcApp({ user }) {
   });
   const saveProfile = async (q) => {
     const startDate = state.profile?.startDate || dkey();
-    setState((s) => ({ ...s, onboarded: true, profile: { ...q, startDate } }));
+    const profile = { ...state.profile, ...q, startDate };
+    setState((s) => ({ ...s, onboarded: true, profile }));
     setScreen(null); setTab("inicio");
-    try { await db.updateProfile(user.id, { onboarded: true, data: profileData(q), start_date: startDate }); } catch (e) { fail(); }
+    try { await db.updateProfile(user.id, { onboarded: true, data: profileData(profile), start_date: startDate }); } catch (e) { fail(); }
   };
   const setHabit = (k, v) => setState((s) => {
     const day = dkey();
@@ -2171,10 +2264,35 @@ function ArcApp({ user }) {
   };
 
   const showQuestionnaire = !state.onboarded || screen === "editar";
-  const inTracker = tab === "entrenos" && state.active && !showQuestionnaire && !screen;
+  const showTour = state.onboarded && !state.profile?.toured && !showQuestionnaire;
+  const inTracker = tab === "entrenos" && state.active && !showQuestionnaire && !screen && !showTour;
+
+  // Permisos que se piden en la bienvenida (solo en el móvil)
+  const askReminders = async () => {
+    setNotifBusy(true); setNotifErr("");
+    try {
+      if (!(await native.notificationsAllowed(true))) { setNotifErr("Sin permiso. Puedes activarlo en Ajustes del iPhone > ARC > Notificaciones."); return; }
+      const r = { ...native.DEFAULT_REMINDERS, train: { ...native.DEFAULT_REMINDERS.train, on: true }, sunday: { ...native.DEFAULT_REMINDERS.sunday, on: true } };
+      setProfile({ reminders: r });
+      await native.applyReminders(r);
+    } catch { setNotifErr("No se han podido activar los avisos."); }
+    finally { setNotifBusy(false); }
+  };
+  const tourPerms = native.isNative ? [
+    { key: "steps", title: native.platform === "ios" ? "Pasos de Apple Salud" : "Pasos de Health Connect",
+      text: "Así tus pasos se apuntan solos en Hábitos, sin escribir nada.",
+      button: native.platform === "android" && !stepsAvail ? "Instalar Health Connect" : "Conectar pasos",
+      done: !!state.profile?.stepsLinked, doneText: "Conectado", busy: stepsBusy, error: stepsErr, onAsk: connectSteps },
+    { key: "notif", title: "Recordatorios",
+      text: "Un aviso los días de entreno y el cierre del domingo. Nada de spam.",
+      button: "Activar avisos",
+      done: !!state.profile?.reminders?.train?.on, doneText: "Activados", busy: notifBusy, error: notifErr, onAsk: askReminders },
+  ] : null;
 
   let body;
-  if (showQuestionnaire) {
+  if (showTour) {
+    body = <Tour profile={state.profile} ev={ev} heroImg={media[levelKey(state.profile.branch, state.profile.mode, ev.current)] || AVATAR[state.profile.branch]} perms={tourPerms} onFinish={() => { setProfile({ toured: true }); setTab("inicio"); }} />;
+  } else if (showQuestionnaire) {
     body = <Questionnaire initial={state.profile || DEFAULT_PROFILE} editing={state.onboarded} onSave={saveProfile} onCancel={() => setScreen("ajustes")} />;
   } else if (screen === "contenido" && isCoach) {
     body = <ContentEditor content={content} onSave={onSaveItem} onDelete={onDeleteItem} onClose={() => setScreen("ajustes")} media={media} setMedia={setMedia} uploadMedia={uploadMedia} />;
@@ -2218,12 +2336,12 @@ function ArcApp({ user }) {
         {!inTracker && (
           <div className="top">
             <Logo /><b>ARC</b><span className="by">by Lunarovx</span>
-            {state.onboarded && !screen && <><span className="xp">{state.xp} XP</span><button className="link" style={{ marginLeft: 12 }} onClick={() => setScreen("ajustes")}>Ajustes</button></>}
+            {state.onboarded && !screen && !showTour && <><span className="xp">{state.xp} XP</span><button className="link" style={{ marginLeft: 12 }} onClick={() => setScreen("ajustes")}>Ajustes</button></>}
           </div>
         )}
         {body}
       </div>
-      {!showQuestionnaire && !inTracker && !screen && (
+      {!showQuestionnaire && !showTour && !inTracker && !screen && (
         <nav className="nav"><div>
           {[["inicio", "Inicio"], ["entrenos", "Entrenos"], ["nutricion", "Nutrición"], ["habitos", "Hábitos"], ["ranking", "Ranking"]].map(([id, l]) => (
             <button key={id} className={`tab ${tab === id ? "on" : ""}`} onClick={() => setTab(id)}>{l}{id === "entrenos" && state.active ? " ·" : ""}</button>
