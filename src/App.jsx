@@ -66,51 +66,103 @@ const LEVELS = {
 };
 for (const b of ["female", "male"]) LEVELS[b] = LEVELS[b].map(([name, series, line], i) => lv(b, i, name, series, line));
 
-// Skills de cada personaje: fuerza, resistencia, técnica, velocidad, mentalidad (1-10) y sus habilidades
-const STAT_NAMES = ["Fuerza", "Resistencia", "Técnica", "Velocidad", "Mentalidad"];
-const SKILLS = {
-  "Kobeni Higashiyama": [[2, 3, 3, 8, 3], ["Reflejos al límite", "Sobrevivir"]],
-  "Ochaco Uraraka": [[3, 4, 4, 4, 7], ["Gravedad cero", "Cuerpo a cuerpo"]],
-  "Nami": [[2, 5, 6, 5, 8], ["Clima-Tact", "Estrategia"]],
-  "Asuka Langley": [[5, 5, 7, 6, 6], ["Piloto de Eva", "Orgullo"]],
-  "Nobara Kugisaki": [[5, 6, 6, 5, 8], ["Resonancia", "Martillo y clavos"]],
-  "Lucy": [[4, 5, 8, 7, 7], ["Netrunner", "Monofilamento"]],
-  "Annie Leonhart": [[7, 7, 9, 6, 7], ["Patada baja", "Titán hembra"]],
-  "Cha Hae-in": [[7, 8, 8, 8, 7], ["Rango S", "Esgrima"]],
-  "Mirko": [[9, 8, 7, 9, 9], ["Patada lunar", "Salto de conejo"]],
-  "Mikasa Ackerman": [[9, 8, 9, 9, 8], ["Fuerza Ackerman", "Equipo 3D"]],
-  "Yuki Tsukumo": [[10, 8, 7, 7, 9], ["Masa estelar", "Grado especial"]],
-  "Maki Zenin": [[10, 10, 10, 10, 10], ["Restricción celestial", "Armas malditas"]],
-  "Reigen Arataka": [[2, 3, 4, 3, 9], ["Labia infinita", "Golpe de sal"]],
-  "Denji": [[5, 9, 3, 6, 6], ["Motosierra", "Hambre"]],
-  "Eijiro Kirishima": [[6, 9, 5, 4, 8], ["Endurecimiento", "Roca inquebrantable"]],
-  "David Martinez": [[6, 6, 6, 10, 8], ["Sandevistan", "Cromo militar"]],
-  "Ippo Makunouchi": [[8, 9, 7, 6, 9], ["Dempsey Roll", "Gazelle Punch"]],
-  "Thorfinn": [[7, 9, 9, 8, 9], ["Dagas", "Sin enemigos"]],
-  "Mamoru Takamura": [[10, 9, 9, 8, 8], ["Campeón del mundo", "Mata osos"]],
-  "Yuji Itadori": [[9, 9, 7, 9, 9], ["Black Flash", "Puño divergente"]],
-  "Levi Ackerman": [[9, 8, 10, 10, 9], ["Fuerza Ackerman", "Corte giratorio"]],
-  "Roronoa Zoro": [[10, 10, 9, 8, 10], ["Santoryu", "Haki del rey"]],
-  "Sung Jinwoo": [[10, 9, 9, 10, 10], ["Monarca de las sombras", "Arise"]],
-  "Toji Fushiguro": [[10, 10, 10, 10, 10], ["Restricción celestial", "Asesino de hechiceros"]],
+// Movimientos de cada personaje (se desbloquean al llegar a su nivel)
+const MOVES = {
+  "Kobeni Higashiyama": ["Reflejos al límite", "Sobrevivir"],
+  "Ochaco Uraraka": ["Gravedad cero", "Cuerpo a cuerpo"],
+  "Nami": ["Clima-Tact", "Estrategia"],
+  "Asuka Langley": ["Piloto de Eva", "Orgullo"],
+  "Nobara Kugisaki": ["Resonancia", "Martillo y clavos"],
+  "Lucy": ["Netrunner", "Monofilamento"],
+  "Annie Leonhart": ["Patada baja", "Titán hembra"],
+  "Cha Hae-in": ["Rango S", "Esgrima"],
+  "Mirko": ["Patada lunar", "Salto de conejo"],
+  "Mikasa Ackerman": ["Fuerza Ackerman", "Equipo 3D"],
+  "Yuki Tsukumo": ["Masa estelar", "Grado especial"],
+  "Maki Zenin": ["Restricción celestial", "Armas malditas"],
+  "Reigen Arataka": ["Labia infinita", "Golpe de sal"],
+  "Denji": ["Motosierra", "Hambre"],
+  "Eijiro Kirishima": ["Endurecimiento", "Roca inquebrantable"],
+  "David Martinez": ["Sandevistan", "Cromo militar"],
+  "Ippo Makunouchi": ["Dempsey Roll", "Gazelle Punch"],
+  "Thorfinn": ["Dagas", "Sin enemigos"],
+  "Mamoru Takamura": ["Campeón del mundo", "Mata osos"],
+  "Yuji Itadori": ["Black Flash", "Puño divergente"],
+  "Levi Ackerman": ["Fuerza Ackerman", "Corte giratorio"],
+  "Roronoa Zoro": ["Santoryu", "Haki del rey"],
+  "Sung Jinwoo": ["Monarca de las sombras", "Arise"],
+  "Toji Fushiguro": ["Restricción celestial", "Asesino de hechiceros"],
 };
-// La rata sube de stats con cada fase
-const ratSkills = (i) => [[0, 1, 0, 1, 2].map((d) => Math.min(10, Math.max(1, Math.round(1 + i * 1.1) + (i < 8 ? d - 1 : 0)))), []];
 
-function Skills({ lv, idx }) {
-  const sk = SKILLS[lv.name] || (lv.series === "Modo gymrat" ? ratSkills(idx) : null);
-  if (!sk) return null;
-  const [stats, tags] = sk;
+// Tus skills: lo que has hecho tú para llegar hasta aquí, medido contra el arco completo
+const SKILL_DEFS = [
+  { key: "ratio", name: "Fuerza", fmt: (v) => `${v.toFixed(2)}x tu peso` },
+  { key: "pullups", name: "Tirón", fmt: (v) => `${v} ${v === 1 ? "dominada" : "dominadas"}` },
+  { key: "months", name: "Constancia", fmt: (v) => `${v} ${v === 1 ? "mes" : "meses"} sin parar` },
+  { key: "adherence", name: "Disciplina", fmt: (v) => `${v}% de hábitos` },
+];
+
+function useCountUp(target, ms = 900) {
+  const [v, setV] = useState(0);
+  useEffect(() => {
+    const reduce = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) { setV(target); return; }
+    let raf, t0;
+    const step = (t) => { if (!t0) t0 = t; const k = Math.min(1, (t - t0) / ms); setV(target * (1 - Math.pow(1 - k, 3))); if (k < 1) raf = requestAnimationFrame(step); };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [target]);
+  return v;
+}
+
+function SkillRow({ def, have, rank, max, pct, nextPct, tag, delay, provisional }) {
+  const n = useCountUp(rank);
+  return (
+    <div className={`sk-row ${tag ? "sk-" + tag : ""}`} style={{ animationDelay: `${delay}ms` }}>
+      <div className="sk-hd">
+        <span className="sk-name">{def.name}{tag === "top" && <em>Tu fuerte</em>}{tag === "low" && <em>Te frena</em>}</span>
+        <span className="sk-lv">Nv <b>{Math.round(n)}</b><small>/{max}</small></span>
+      </div>
+      <div className="sk-bar">
+        <div className="sk-fill" style={{ width: `${pct}%`, animationDelay: `${delay + 150}ms` }} />
+        {nextPct != null && <i className="sk-next" style={{ left: `${nextPct}%` }} />}
+      </div>
+      <div className="sk-val">{provisional ? "Empieza a contar en tu día " + RULES.ADHERENCE_MIN_DAYS : def.fmt(have)}</div>
+    </div>
+  );
+}
+
+function Skills({ lv, L, stats, ev }) {
+  if (!stats) return null;
+  const max = L.length, next = ev.next;
+  const nextPct = next ? ((ev.current + 1) / (max - 1)) * 100 : null; // la raya blanca: lo que pide el siguiente personaje
+  const rows = SKILL_DEFS.map((d) => {
+    const have = Number(stats[d.key]) || 0;
+    const T = L.map((x) => x[d.key]);
+    const prov = d.key === "adherence" && stats.provisional;
+    const r = prov ? 1 : Math.max(1, T.filter((t) => have >= t).length); // cuántos niveles cumples en esta skill
+    const part = r < max ? Math.max(0, Math.min(1, (have - T[r - 1]) / (T[r] - T[r - 1]))) : 0;
+    const pct = Math.min(100, ((r - 1 + part) / (max - 1)) * 100);
+    const short = !!next && !prov && have < next[d.key];
+    return { def: d, have, rank: r, pct, short, provisional: prov };
+  });
+  const hi = Math.max(...rows.map((r) => r.rank));
+  const anyShort = rows.some((r) => r.short);
+  const moves = MOVES[lv.name];
   return (
     <div className="skills">
-      {tags.length > 0 && <div className="sk-tags">{tags.map((t) => <span key={t} className="sk-tag">{t}</span>)}</div>}
-      {STAT_NAMES.map((n, i) => (
-        <div key={n} className="sk-row">
-          <span>{n}</span>
-          <div className="sk-bar"><div style={{ width: `${stats[i] * 10}%`, animationDelay: `${i * 70}ms` }} /></div>
-          <b>{stats[i]}</b>
-        </div>
+      <div className="sk-title"><span>Tus skills</span><small>lo que te ha traído hasta aquí</small></div>
+      {rows.map((r, i) => (
+        <SkillRow key={r.def.key} {...r} max={max} nextPct={nextPct} delay={i * 90}
+          tag={r.short ? "low" : anyShort && r.rank === hi ? "top" : null} />
       ))}
+      {next && <div className="sk-legend"><i className="sk-next-dot" />{anyShort ? `La raya es lo que te pide ${next.name}` : `Ya cumples todo para ${next.name}`}</div>}
+      {moves && (
+        <div className="sk-moves">
+          <small>Movimientos desbloqueados</small>
+          <div>{moves.map((t, i) => <span key={t} className="sk-tag" style={{ animationDelay: `${500 + i * 120}ms` }}>{t}</span>)}</div>
+        </div>
+      )}
     </div>
   );
 }
@@ -773,15 +825,62 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:999px;padding:9px 14px;font:inherit;font-size:14px;cursor:pointer}
 .chip.on{background:#fff;color:#000;border-color:#fff;font-weight:600}
-.skills{background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:14px 16px;margin-top:10px}
-.sk-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.skills{background:var(--sf);border:1px solid var(--ln);border-radius:20px;padding:16px;margin-top:10px}
+.sk-title{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px}
+.sk-title span{font-weight:800;font-size:15px}
+.sk-title small{font-size:12px;color:var(--dm)}
+.sk-row{padding:9px 0}
+.sk-hd{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;margin-bottom:7px}
+.sk-name{font-weight:700;display:flex;align-items:center;gap:8px}
+.sk-name em{font-style:normal;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px}
+.sk-top .sk-name em{background:rgba(110,231,183,.14);color:var(--okl)}
+.sk-low .sk-name em{background:rgba(212,139,146,.14);color:var(--ac)}
+.sk-lv{font-size:12px;color:var(--dm)}
+.sk-lv b{color:#fff;font-size:16px;font-variant-numeric:tabular-nums;margin-left:3px}
+.sk-lv small{font-size:11px}
+.sk-bar{position:relative;height:8px;border-radius:99px;background:var(--ln)}
+.sk-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#fff,var(--ac));transform-origin:left;position:relative;overflow:hidden}
+.sk-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);transform:translateX(-100%)}
+.sk-next{position:absolute;top:-3px;width:2px;height:14px;border-radius:2px;background:#fff;opacity:.85;transform:translateX(-1px)}
+.sk-val{font-size:12px;color:var(--dm);margin-top:6px}
+.sk-legend{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--dm);margin-top:4px}
+.sk-next-dot{width:2px;height:12px;border-radius:2px;background:#fff;display:inline-block}
+.sk-moves{border-top:1px solid var(--ln);margin-top:12px;padding-top:12px}
+.sk-moves small{display:block;font-size:12px;color:var(--dm);margin-bottom:8px}
+.sk-moves div{display:flex;flex-wrap:wrap;gap:6px}
 .sk-tag{font-size:12px;font-weight:700;color:var(--ac);border:1px solid rgba(212,139,146,.45);background:rgba(212,139,146,.08);border-radius:999px;padding:4px 10px}
-.sk-row{display:grid;grid-template-columns:86px 1fr 18px;align-items:center;gap:10px;font-size:12px;color:var(--dm);padding:3px 0}
-.sk-row b{color:#fff;text-align:right;font-size:12px}
-.sk-bar{height:6px;border-radius:99px;background:var(--ln);overflow:hidden}
-.sk-bar div{height:100%;border-radius:99px;background:linear-gradient(90deg,#fff,var(--ac));transform-origin:left;animation:skGrow .7s cubic-bezier(.2,.8,.2,1) both}
+@media (prefers-reduced-motion:no-preference){
+.sk-row{animation:rise .5s ease-out both}
+.sk-fill{animation:skGrow .9s cubic-bezier(.2,.8,.2,1) both}
+.sk-fill::after{animation:shine 1.1s ease-in-out 1.1s both}
+.sk-low .sk-name em{animation:blink 2.4s ease-in-out 1.5s infinite}
+.sk-tag{animation:popIn .45s cubic-bezier(.2,.9,.3,1.4) both}
 @keyframes skGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-@media (prefers-reduced-motion:reduce){.sk-bar div{animation:none}}
+@keyframes shine{to{transform:translateX(100%)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes popIn{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+/* Más movimiento en toda la app */
+.page>*{animation:rise .45s ease-out both}
+.page>*:nth-child(2){animation-delay:.06s}.page>*:nth-child(3){animation-delay:.12s}.page>*:nth-child(4){animation-delay:.18s}.page>*:nth-child(5){animation-delay:.24s}.page>*:nth-child(n+6){animation-delay:.3s}
+.hero img{animation:heroIn 1.4s cubic-bezier(.2,.8,.2,1) both}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.18) 50%,transparent 65%);transform:translateX(-120%);animation:sweep 1.4s ease-in-out .5s both;pointer-events:none}
+@keyframes heroIn{from{transform:scale(1.12);filter:brightness(.4)}to{transform:none;filter:none}}
+@keyframes sweep{to{transform:translateX(120%)}}
+.btn,.chip,.cook-opt,.glass,.tab{transition:transform .12s ease}
+.btn:active,.chip:active,.glass:active{transform:scale(.96)}
+.chip.on,.cook-opt.on{animation:pop .28s ease-out}
+.glass.on::after{animation:fillUp .45s ease-out both}
+@keyframes fillUp{from{height:0}}
+.bar i{animation:skGrow .9s cubic-bezier(.2,.8,.2,1) both;transform-origin:left}
+.tab.on{animation:tabOn .3s ease-out}
+@keyframes tabOn{0%{transform:translateY(0)}40%{transform:translateY(-3px)}100%{transform:none}}
+.xp{display:inline-block;animation:xpBump .5s cubic-bezier(.2,.9,.3,1.5)}
+@keyframes xpBump{0%{transform:scale(1)}40%{transform:scale(1.25);color:var(--ac)}100%{transform:scale(1)}}
+.toast{animation:toastIn .35s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes toastIn{from{transform:translate(-50%,-20px);opacity:0}}
+}
+.tab{position:relative}
+.tab.on::before{content:"";position:absolute;top:0;left:50%;width:22px;height:2px;margin-left:-11px;border-radius:2px;background:var(--ac)}
 .cook-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .cook-opt{background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:16px;padding:14px 8px 12px;font:inherit;font-size:13px;line-height:1.25;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;transition:transform .15s}
 .cook-opt:active{transform:scale(.97)}
@@ -1240,7 +1339,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
           <div className="series">{lv.series}</div>
         </div>
       </div>
-      <Skills lv={lv} idx={ev.current} />
+      <Skills lv={lv} L={L} stats={stats} ev={ev} />
       <div className="gauge">
         <ArcGauge total={L.length} current={ev.current} progress={ev.progress} />
         <p className="line">{lv.line}</p>
@@ -2543,10 +2642,10 @@ function ArcApp({ user }) {
         {!inTracker && (
           <div className="top">
             <Logo /><b>ARC</b><span className="by">by Lunarovx</span>
-            {state.onboarded && !screen && !showTour && <><span className="xp">{state.xp} XP</span><button className="link" style={{ marginLeft: 12 }} onClick={() => setScreen("ajustes")}>Ajustes</button></>}
+            {state.onboarded && !screen && !showTour && <><span className="xp" key={state.xp}>{state.xp} XP</span><button className="link" style={{ marginLeft: 12 }} onClick={() => setScreen("ajustes")}>Ajustes</button></>}
           </div>
         )}
-        {body}
+        <div className="page" key={`${tab}-${screen || ""}`}>{body}</div>
       </div>
       {!showQuestionnaire && !showTour && !inTracker && !screen && (
         <nav className="nav"><div>
