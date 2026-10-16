@@ -97,28 +97,19 @@ let QUOTES = [
   ["Este mundo es cruel, y aun así es tan hermoso.", "Mikasa Ackerman", "Attack on Titan", "Entrenar cuesta, y verte más fuerte merece cada gota de sudor.", "cita"],
   ["Elige aquello de lo que menos te vayas a arrepentir.", "Levi Ackerman", "Attack on Titan", "¿Te arrepentirás más de ir al gym cansada o de no haber ido? Ya lo sabes.", "cita"],
   ["Tranquilo, soy el más fuerte.", "Satoru Gojo", "Jujutsu Kaisen", "Dilo antes de ponerte bajo la barra. La confianza también se entrena.", "cita"],
-  ["Eres fuerte, así que ayuda a los demás.", "El abuelo de Itadori", "Jujutsu Kaisen", "Tu fuerza también sirve para animar a la amiga que no se atreve a empezar.", "cita"],
-  ["Huir de lo que te hace daño no tiene nada de malo.", "Reigen Arataka", "Mob Psycho 100", "Si un gym o una rutina te hacen sentir mal, cámbialos. Seguir entrenando es lo que importa.", "cita"],
   ["¿Cuándo muere una persona? Cuando es olvidada.", "Hiriluk", "One Piece", "Lo que no apuntas ni repites, se olvida. Registra tu serie.", "cita"],
   ["¡Los sueños de las personas nunca terminan!", "Barbanegra", "One Piece", "Di en voz alta qué quieres conseguir, aunque alguien se ría.", "cita"],
   ["¡Voy a ser el Rey de los Piratas!", "Monkey D. Luffy", "One Piece", "Luffy lo grita desde el capítulo uno sin vergüenza. Ponle nombre a tu meta.", "cita"],
   ["Cuando decidí perseguir mi sueño, ya había dejado atrás mi vida.", "Roronoa Zoro", "One Piece", "Comprometerte de verdad quita muchas dudas de golpe.", "cita"],
-  ["Nada… No ha pasado nada.", "Roronoa Zoro", "One Piece", "Cuando acabas destrozada la pierna y aun así sonríes al salir del gym.", "cita"],
   ["No todo el que se esfuerza triunfa, pero todo el que ha triunfado se ha esforzado.", "Kamogawa", "Hajime no Ippo", "El esfuerzo no te asegura el resultado. Es lo único que te da opciones.", "cita"],
   ["Quiero saber qué significa ser fuerte.", "Ippo Makunouchi", "Hajime no Ippo", "Ippo empezó por esa pregunta y lleva más de mil capítulos respondiéndola.", "cita"],
   ["No tienes enemigos. Nadie tiene enemigos.", "Thors", "Vinland Saga", "Ni la chica de al lado ni tu cuerpo son tus enemigos. Entrena desde ahí.", "cita"],
-  ["Un verdadero guerrero no necesita espada.", "Thors", "Vinland Saga", "La fuerza de verdad se nota en cómo tratas a los demás.", "cita"],
   ["No debo huir. No debo huir. No debo huir.", "Shinji Ikari", "Neon Genesis Evangelion", "Shinji lo repite temblando y se sube igual. Puedes ir al gym con miedo.", "cita"],
-  ["Soy infantil y odio perder.", "L", "Death Note", "Tu mejor rival es tu marca de la semana pasada. Gánale.", "cita"],
-  ["Si vas a golpear algo, golpéalo hasta romperlo.", "Tooru Oikawa", "Haikyuu!!", "Cuando algo te cueste, insiste hasta que deje de costarte.", "cita"],
   ["¡Arde, corazón!", "Kyojuro Rengoku", "Demon Slayer", "Para cuando la motivación se apaga a mitad de entreno.", "cita"],
   ["Levántate y camina. Sigue adelante. Tienes un buen par de piernas.", "Edward Elric", "Fullmetal Alchemist", "Tienes piernas. Hoy toca usarlas.", "cita"],
-  ["Levántate.", "Sung Jinwoo", "Solo Leveling", "El cazador más débil del mundo subió de nivel con su misión diaria. Tu misión hoy: levantarte e ir.", "cita"],
-  ["El esfuerzo no vale nada si no crees en ti misma.", "Naruto Uzumaki", "Naruto", "Entrena a tu cabeza para creer en lo que estás construyendo.", "cita"],
 
   // ---- Películas ----
   ["No importa lo fuerte que golpees. Importa lo fuerte que te pueden golpear y seguir avanzando.", "Rocky Balboa", "Rocky Balboa", "Una mala semana, un catarro, exámenes. Lo importante es volver el lunes.", "cita"],
-  ["Vas a comer rayos y vas a cagar truenos.", "Mickey", "Rocky III", "Mood de día de pierna.", "cita"],
   ["Un paso a la vez, un golpe a la vez, un asalto a la vez.", "Rocky Balboa", "Creed", "No pienses en el año entero. Piensa en esta serie.", "cita"],
   ["Protégete siempre.", "Frankie Dunn", "Million Dollar Baby", "Cuida tu técnica, tu descanso y tu cabeza. Sin eso no hay progreso que dure.", "cita"],
   ["Si hay magia en el boxeo, es la de pelear más allá de lo que aguantas.", "Scrap", "Million Dollar Baby", "Maggie empezó a los 31 sin que nadie quisiera entrenarla. Nunca es tarde.", "cita"],
@@ -131,7 +122,6 @@ let QUOTES = [
   ["Hay una diferencia entre conocer el camino y recorrerlo.", "Morfeo", "Matrix", "Saber la teoría está bien. Ir al gym está mejor.", "cita"],
   ["El miedo es el asesino de la mente.", "Paul Atreides", "Dune", "El miedo a hacerlo mal no te puede quitar el entreno.", "cita"],
   ["Lo único que debemos decidir es qué hacer con el tiempo que se nos ha dado.", "Gandalf", "El Señor de los Anillos", "Una hora al día te cambia el año.", "cita"],
-  ["Cualquiera puede cocinar.", "Auguste Gusteau", "Ratatouille", "Hoy prueba una receta del Modo Sanji. Remy te mira.", "cita"],
 
   // ---- Deporte ----
   ["Odiaba cada minuto de entrenamiento, pero me decía: no abandones. Sufre ahora y vive el resto de tu vida como un campeón.", "Muhammad Ali", "Boxeo", "Ni a Ali le apetecía siempre. Lo hacía igual.", "cita"],
@@ -145,7 +135,6 @@ let QUOTES = [
 
   // ---- Pensamiento ----
   ["Lo que se interpone en el camino se convierte en el camino.", "Marco Aurelio", "Meditaciones", "Si una lesión te frena un ejercicio, trabaja lo que sí puedes.", "cita"],
-  ["Ningún ser humano es libre si no es dueño de sí mismo.", "Epicteto", "Filosofía estoica", "Ganarle a la pereza también es libertad.", "cita"],
   ["No es que tengamos poco tiempo, es que perdemos mucho.", "Séneca", "Sobre la brevedad de la vida", "Una hora de entreno es menos de lo que se va en scroll.", "cita"],
   ["Somos lo que hacemos repetidamente.", "Will Durant, sobre Aristóteles", "Filosofía", "Un día de gym no cambia nada. Cien seguidos, sí.", "cita"],
   ["Quien tiene un porqué para vivir puede soportar casi cualquier cómo.", "Friedrich Nietzsche", "Filosofía", "Ten claro para qué entrenas. El cómo se aguanta mejor.", "cita"],
@@ -154,10 +143,18 @@ let QUOTES = [
   ["Cada acción que haces es un voto por la persona que quieres ser.", "James Clear", "Hábitos atómicos", "Cada vaso de agua y cada serie cuentan como voto.", "cita"],
   ["No subes al nivel de tus metas. Caes al nivel de tus sistemas.", "James Clear", "Hábitos atómicos", "Por eso aquí subes de nivel con hábitos, no con propósitos de año nuevo.", "cita"],
   ["Nadie puede hacerte sentir inferior sin tu consentimiento.", "Eleanor Roosevelt", "Política y activismo", "Tu sitio en la zona de pesas es tuyo.", "cita"],
-  ["Pies, ¿para qué os quiero si tengo alas para volar?", "Frida Kahlo", "Diario", "Frida pintó con dolor toda su vida. Tu cuerpo puede más de lo que crees.", "cita"],
-  ["Nada en la vida debe ser temido, solo comprendido.", "Marie Curie", "Ciencia", "Entender la técnica quita el miedo a la barra.", "cita"],
   ["Atribuyo mi éxito a esto: nunca di ni acepté una excusa.", "Florence Nightingale", "Enfermería", "La fundadora de la enfermería moderna, también en el gym.", "cita"],
   ["Quiérete a ti misma. Habla por ti misma.", "BTS", "Discurso en la ONU", "Entrenar por amor a tu cuerpo, no por castigo.", "cita"],
+  // Gym y deporte
+  ["¡Peso ligero, baby!", "Ronnie Coleman", "Culturismo", "Lo gritaba moviendo más de 300 kilos. Dilo antes de tu serie más pesada.", "cita"],
+  ["Todo el mundo quiere ser culturista, pero nadie quiere levantar los pesos pesados.", "Ronnie Coleman", "Culturismo", "Querer el resultado es fácil. Hoy toca la parte que nadie ve.", "cita"],
+  ["Las últimas tres o cuatro repeticiones son las que hacen crecer el músculo.", "Arnold Schwarzenegger", "Culturismo", "Las que arden son las que cuentan. No las regales.", "cita"],
+  ["No cuento mis abdominales. Solo empiezo a contar cuando empieza a doler.", "Muhammad Ali", "Boxeo", "Las repeticiones fáciles son el calentamiento.", "cita"],
+  ["No hay límites. Solo hay mesetas, y no debes quedarte en ellas: tienes que ir más allá.", "Bruce Lee", "Artes marciales", "Si llevas semanas sin subir peso, estás en una meseta. Tu techo está más arriba.", "cita"],
+  ["Cien flexiones, cien abdominales, cien sentadillas y diez kilómetros corriendo. Todos los días.", "Saitama", "One Punch Man", "El héroe más fuerte del anime tenía una rutina y la cumplía. Cumple hoy la tuya.", "cita"],
+  ["Mantente duro.", "David Goggins", "Ultrafondo", "Para cuando quieras cortar la serie antes de tiempo.", "cita"],
+  ["Si te topas con un muro, no te des la vuelta. Descubre cómo escalarlo, atravesarlo o rodearlo.", "Michael Jordan", "Baloncesto", "Una máquina ocupada o una molestia no son el final del entreno.", "cita"],
+  ["Prefiero arrepentirme de los riesgos que no salieron bien que de las oportunidades que no aproveché.", "Simone Biles", "Gimnasia", "Ese peso nuevo da respeto. Pruébalo con buena técnica.", "cita"],
 ];
 
 /* ============================ ENTRENO ============================ */
