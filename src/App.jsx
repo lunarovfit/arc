@@ -246,6 +246,15 @@ let QUOTES = [
   ["Nadie puede hacerte sentir inferior sin tu consentimiento.", "Eleanor Roosevelt", "Política y activismo", "Tu sitio en la zona de pesas es tuyo.", "cita"],
   ["Atribuyo mi éxito a esto: nunca di ni acepté una excusa.", "Florence Nightingale", "Enfermería", "La fundadora de la enfermería moderna, también en el gym.", "cita"],
   ["Quiérete a ti misma. Habla por ti misma.", "BTS", "Discurso en la ONU", "Entrenar por amor a tu cuerpo, no por castigo.", "cita"],
+  // Motivación
+  ["Cree en ti. No en el yo que cree en ti, ni en el tú que cree en mí. Cree en el tú que cree en ti.", "Kamina", "Gurren Lagann", "Para los días en que no te ves capaz. Simon tampoco se lo creía.", "cita"],
+  ["¡Manda la lógica a paseo y haz lo imposible!", "Kamina", "Gurren Lagann", "Para esa serie que te da miedo intentar.", "cita"],
+  ["El talento es algo que haces florecer. El instinto es algo que pules.", "Toru Oikawa", "Haikyuu!!", "Oikawa no era un genio y llegó arriba puliendo lo suyo cada día.", "cita"],
+  ["Una lección sin dolor no tiene sentido. Nadie gana nada sin sacrificar algo a cambio.", "Edward Elric", "Fullmetal Alchemist: Brotherhood", "Las agujetas, el madrugón, el táper. Eso es lo que pagas a cambio.", "cita"],
+  ["La fuerza no viene de ganar. Viene de tus luchas: cuando pasas por algo duro y decides no rendirte, eso es fuerza.", "Arnold Schwarzenegger", "Culturismo", "Los días malos también te están haciendo fuerte.", "cita"],
+  ["Los campeones no se hacen en los gimnasios. Se hacen de algo que llevan dentro: un deseo, un sueño, una visión.", "Muhammad Ali", "Boxeo", "El gym es donde se nota. Lo de dentro lo traes tú.", "cita"],
+  ["Cuando tu mente te dice que has terminado, solo vas por el 40%.", "David Goggins", "Ultrafondo", "Cuando creas que no puedes más, prueba una repetición más.", "cita"],
+  ["Pelea un asalto más. Cuando tus brazos estén tan cansados que apenas puedas levantar la guardia, pelea un asalto más.", "James J. Corbett", "Boxeo", "La serie que haces cansada es la que te cambia.", "cita"],
 ];
 
 /* ============================ ENTRENO ============================ */
