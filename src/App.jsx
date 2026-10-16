@@ -36,32 +36,32 @@ const lv = (branch, i, name, series, line) => ({
 });
 const LEVELS = {
   female: [
-    ["Kobeni Higashiyama", "Chainsaw Man", "Muerta de miedo y aun así sigue aquí. Empezar con miedo también cuenta."],
-    ["Ochaco Uraraka", "My Hero Academia", "Aprendiendo a controlar su propio peso. Postura, respiración y técnica."],
-    ["Nami", "One Piece", "Lista y organizada: dos meses cuadrando comidas y entrenos."],
-    ["Asuka Langley", "Neon Genesis Evangelion", "Orgullo de piloto: entrena para no depender de nadie."],
-    ["Nobara Kugisaki", "Jujutsu Kaisen", "Fuerte y sin pedir perdón por ello. Kilos a la barra con técnica limpia."],
-    ["Lucy", "Cyberpunk: Edgerunners", "Medio año de foco, sin distraerse con el ruido. Primera dominada."],
-    ["Annie Leonhart", "Attack on Titan", "Técnica de combate pulida a base de repetir. Fuerza seca y precisa."],
-    ["Cha Hae-in", "Solo Leveling", "Cazadora de rango S. Un año entero sin parar."],
-    ["Mirko", "My Hero Academia", "Piernas y potencia forjadas entrenando, sin trucos."],
-    ["Mikasa Ackerman", "Attack on Titan", "Control total del cuerpo y una espalda de soldado de élite."],
-    ["Yuki Tsukumo", "Jujutsu Kaisen", "Hechicera de grado especial. Dos años de fuerza atlética de élite."],
-    ["Maki Zenin", "Jujutsu Kaisen", "Boss final. Sin don, sin energía maldita: construida a mano."],
+    ["Kobeni Higashiyama", "Chainsaw Man", "Llora, tiembla y aun así esquiva un cuchillo en el último segundo. Tiene unos reflejos que ya quisieran muchos. Empezar con miedo también es empezar."],
+    ["Ochaco Uraraka", "My Hero Academia", "Su poder era hacer flotar cosas, pero se puso a aprender cuerpo a cuerpo para no depender de él. Aquí aprendes a mover tu propio peso."],
+    ["Nami", "One Piece", "Pasó años ahorrando ella sola para liberar a su pueblo, sin que nadie lo supiera. Constancia de la que no se ve, un día detrás de otro."],
+    ["Asuka Langley", "Neon Genesis Evangelion", "Piloto desde niña y orgullosa hasta la médula. Cuando todos la daban por acabada, volvió a subirse al Eva y peleó sola contra nueve."],
+    ["Nobara Kugisaki", "Jujutsu Kaisen", "Se fue de su pueblo porque se le quedaba pequeño. Martillo, clavos y cero ganas de pedir permiso a nadie."],
+    ["Lucy", "Cyberpunk: Edgerunners", "Netrunner de élite con un único sueño: llegar a la luna. Fría por fuera y con un foco que nada consigue romper."],
+    ["Annie Leonhart", "Attack on Titan", "Su padre la entrenó desde pequeña y acabó siendo la mejor de su promoción en cuerpo a cuerpo. Tumbaba a Reiner, que le sacaba dos cabezas."],
+    ["Cha Hae-in", "Solo Leveling", "Cazadora de rango S que aguanta en primera línea contra lo que sea. Espada, elegancia y una resistencia que no se agota."],
+    ["Mirko", "My Hero Academia", "Heroína número 5, pelea sola y a patadas. Perdió un brazo y una pierna en la guerra y siguió luchando con una sonrisa."],
+    ["Mikasa Ackerman", "Attack on Titan", "La mejor de su promoción, capaz de tumbar titanes ella sola. Fuerza Ackerman, cabeza fría y una espalda que ya quisieras."],
+    ["Yuki Tsukumo", "Jujutsu Kaisen", "Hechicera de grado especial: su técnica le suma masa a cada golpe. Se plantó sola ante Kenjaku. Libre, fuerte y sin dar explicaciones."],
+    ["Maki Zenin", "Jujutsu Kaisen", "Su clan la trataba como si no valiera nada por no tener energía maldita. Entrenó hasta tener el cuerpo de Toji y le dio la vuelta a todo. Boss final."],
   ],
   male: [
-    ["Reigen Arataka", "Mob Psycho 100", "Sin poderes. Solo decidirse y empezar."],
-    ["Denji", "Chainsaw Man", "Comer bien, dormir en una cama y primeros entrenos regulares."],
-    ["Eijiro Kirishima", "My Hero Academia", "Dureza construida resistiendo cada día. Primera dominada."],
-    ["David Martinez", "Cyberpunk: Edgerunners", "Mucha intensidad. Toca aprender a regularla para no quemarse."],
-    ["Ippo Makunouchi", "Hajime no Ippo", "De recibir golpes a darlos. Básicos repetidos hasta dominarlos."],
-    ["Thorfinn", "Vinland Saga", "Años de esfuerzo físico. Ahora sabe para qué entrena."],
-    ["Mamoru Takamura", "Hajime no Ippo", "Un cuerpo de campeón mundial hecho a base de disciplina."],
-    ["Yuji Itadori", "Jujutsu Kaisen", "Un año sin parar. Fuerza explosiva y corazón honesto."],
-    ["Levi Ackerman", "Attack on Titan", "Control milimétrico de la fuerza relativa. Dominadas perfectas."],
-    ["Roronoa Zoro", "One Piece", "Entrena con cargas colosales entre combate y combate. Cero excusas."],
-    ["Sung Jinwoo", "Solo Leveling", "El cazador más débil que subió de nivel con su misión diaria."],
-    ["Toji Fushiguro", "Jujutsu Kaisen", "Boss final. Físico puro sin energía maldita: el techo del cuerpo humano."],
+    ["Reigen Arataka", "Mob Psycho 100", "Cero poderes, mucha labia y el mejor maestro de la serie. Para empezar no necesitas nada más que decidirte."],
+    ["Denji", "Chainsaw Man", "Empezó comiendo pan duro y vendiendo órganos para pagar deudas. Sueños pequeños, hambre enorme."],
+    ["Eijiro Kirishima", "My Hero Academia", "Su quirk no era vistoso y él lo sabía. Lo convirtió en el más duro de la clase a base de aguantar golpes."],
+    ["David Martinez", "Cyberpunk: Edgerunners", "Un chaval de Santo Domingo que se puso un Sandevistan militar para cumplir el sueño de su madre. Lleva el cuerpo al límite, sin romperlo."],
+    ["Ippo Makunouchi", "Hajime no Ippo", "Le pegaban en el instituto y acabó siendo campeón de Japón. Lo hizo dando miles de golpes al mismo saco."],
+    ["Thorfinn", "Vinland Saga", "De guerrero lleno de rabia a hombre que ya no necesita pelear. Años de trabajo físico y por fin sabe para qué entrena."],
+    ["Mamoru Takamura", "Hajime no Ippo", "Campeón del mundo y el boxeador más bestia de la serie: se peleó con un oso en la montaña y ganó. Debajo del payaso hay una disciplina brutal."],
+    ["Yuji Itadori", "Jujutsu Kaisen", "Lanza una bola de acero como si nada y encadena Black Flashes. Fuerza explosiva y un corazón que no se rinde."],
+    ["Levi Ackerman", "Attack on Titan", "El soldado más fuerte de la humanidad. Precisión milimétrica, ni un movimiento de más y una mirada que lo dice todo."],
+    ["Roronoa Zoro", "One Piece", "Entrena con pesas de toneladas mientras los demás duermen. Quiere ser el mejor espadachín del mundo y no se le olvida ni un día."],
+    ["Sung Jinwoo", "Solo Leveling", "Era el cazador más débil del mundo. Cumplió su misión diaria sin fallar ni una y acabó siendo el más fuerte."],
+    ["Toji Fushiguro", "Jujutsu Kaisen", "Cero energía maldita y el cuerpo humano al cien por cien. Fue capaz de tumbar a Gojo en su juventud. Boss final."],
   ],
 };
 for (const b of ["female", "male"]) LEVELS[b] = LEVELS[b].map(([name, series, line], i) => lv(b, i, name, series, line));
@@ -474,6 +474,28 @@ let FOOD_TAGS = {
 };
 const EXCLUDE_OPTS = [["pescado", "Pescado"], ["lacteos", "Lácteos"], ["huevo", "Huevo"], ["cerdo", "Cerdo"], ["gluten", "Gluten"]];
 let TUPPER = new Set(["Pollo con arroz y verduras", "Pasta boloñesa ligera", "Poke de salmón", "Ñoquis con atún y tomate", "Bol de yogur con muesli y kiwi", "Ensalada de legumbres con atún", "Wrap de pollo para llevar", "Arroz con ternera al curry", "Emperador con batata asada", "Batido de proteína y plátano", "Yogur proteico con plátano y frutos secos", "Tortitas de arroz con jamón", "Tortilla de patata fit", "Porridge proteico de cacao", "Tortitas con pavo y aguacate", "Overnight oats de tarta de queso", "Onigiris de atún", "Lasaña boloñesa fit", "Cheesecake en vaso", "Tacos de pollo con guacamole"]);
+// Iconos de los modos de cocina (línea fina, mismo estilo que el resto de la app)
+function CookIcon({ mode, size = 26 }) {
+  const P = { fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round" };
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" style={{ display: "block" }}>
+      {mode === "sencilla" && <>
+        <path {...P} d="M3 12h18a9 8 0 0 1-18 0Z" /><path {...P} d="M8 20.5h8" />
+        <path {...P} stroke="#D48B92" d="M13 2.5 10.5 6.5h3L11 10.5" />
+      </>}
+      {mode === "todas" && <>
+        <path {...P} d="M6 3v5a2 2 0 0 0 4 0V3M8 3v18" />
+        <path {...P} d="M17 21V3c-2.2 1.6-3 4.6-3 7.5 0 1.4 1.3 2.5 3 2.5" />
+      </>}
+      {mode === "sanji" && <>
+        <path {...P} d="M7 14.5a3.8 3.8 0 0 1-.6-7.5A5.2 5.2 0 0 1 12 3.5a5.2 5.2 0 0 1 5.6 3.5 3.8 3.8 0 0 1-.6 7.5Z" />
+        <path {...P} d="M7 14.5V20h10v-5.5M7 17.2h10" />
+        <path {...P} stroke="#D48B92" d="M19.5 1.8l.5 1.2 1.2.5-1.2.5-.5 1.2-.5-1.2-1.2-.5 1.2-.5Z" fill="#D48B92" />
+      </>}
+    </svg>
+  );
+}
+
 const COOK_OPTS = [["sencilla", "Modo fácil"], ["todas", "Un poco de todo"], ["sanji", "Modo Sanji (cocinitas)"]];
 
 /* ============================ CONTENIDO EDITABLE ============================
@@ -702,6 +724,10 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:999px;padding:9px 14px;font:inherit;font-size:14px;cursor:pointer}
 .chip.on{background:#fff;color:#000;border-color:#fff;font-weight:600}
+.cook-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cook-opt{background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:16px;padding:14px 8px 12px;font:inherit;font-size:13px;line-height:1.25;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;transition:transform .15s}
+.cook-opt:active{transform:scale(.97)}
+.cook-opt.on{background:#fff;color:#000;border-color:#fff;font-weight:600}
 .hint{font-size:12px;color:var(--dm);margin-top:6px;line-height:1.45}
 .err{font-size:12px;color:#FCA5A5;margin-top:6px}
 .btn{width:100%;background:#fff;color:#000;border:0;border-radius:14px;padding:15px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;margin-top:10px}
@@ -853,8 +879,8 @@ select.in{appearance:none}
 .tags span{font-size:11px;border:1px solid var(--ln);border-radius:999px;padding:3px 8px;color:var(--dm)}
 .splash{position:fixed;inset:0;background:#000;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;pointer-events:none}
 .splash-glow{position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(212,139,146,.35),transparent 65%)}
-.splash-mark{transform:scale(4);position:relative}
-.splash-word{font-weight:800;letter-spacing:.5em;font-size:13px;margin-top:48px;padding-left:.5em;position:relative}
+.splash-mark{position:relative;filter:drop-shadow(0 0 24px rgba(212,139,146,.45))}
+.splash-word{font-weight:800;letter-spacing:.5em;font-size:13px;margin-top:6px;padding-left:.5em;position:relative}
 .lvup{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.96);display:flex;flex-direction:column;align-items:center;padding:calc(36px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom));text-align:center;overflow:hidden}
 .lvup-glow{position:absolute;top:22%;left:50%;width:420px;height:420px;margin-left:-210px;border-radius:50%;background:radial-gradient(circle,rgba(212,139,146,.32),transparent 62%)}
 .lvup-tag{position:relative;font-size:13px;color:var(--dm);letter-spacing:.04em}
@@ -878,7 +904,7 @@ select.in{appearance:none}
 .splash-word{animation:rise .6s ease-out .35s both}
 @keyframes splashOut{to{opacity:0}}
 @keyframes glow{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes markIn{from{transform:scale(2.6) rotate(-20deg);opacity:0;filter:blur(6px)}to{transform:scale(4) rotate(0);opacity:1;filter:blur(0)}}
+@keyframes markIn{from{transform:scale(.6) rotate(-20deg);opacity:0}to{transform:none;opacity:1}}
 @keyframes rise{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
 .lvup{animation:fadeIn .3s ease-out both}
 .lvup-glow{animation:pulse 2.4s ease-in-out .5s infinite}
@@ -897,8 +923,13 @@ select.in{appearance:none}
 @media (prefers-reduced-motion:reduce){.splash{display:none}.lvup-spark{display:none}}
 `;
 
-function Logo() {
-  return <img src="/logo-mark.png" alt="" aria-hidden="true" style={{ height: 22, width: "auto", display: "block" }} />;
+const LOGO_D = "M1292.5 1869.4C1169.3 1859.0 1054.2 1814.9 953.7 1739.6C905.0 1703.1 856.6 1654.0 818.8 1602.7C809.6 1590.2 787.9 1558.3 783.0 1550.1C781.5 1547.6 777.9 1541.7 775.0 1537.0C772.1 1532.3 768.4 1526.0 766.7 1523.0C765.1 1520.0 762.9 1516.4 762.0 1515.0C761.1 1513.6 757.5 1507.3 754.0 1501.0C750.5 1494.7 746.9 1488.2 746.0 1486.5C745.1 1484.8 742.4 1479.9 740.0 1475.5C737.7 1471.1 735.4 1467.0 735.0 1466.5C734.6 1466.0 732.7 1462.6 730.8 1459.0C721.7 1442.2 719.3 1438.0 714.7 1430.5C698.0 1403.7 685.1 1387.1 667.0 1368.9C650.0 1351.8 628.7 1335.3 608.5 1323.5C598.2 1317.5 574.9 1306.4 564.0 1302.3C561.0 1301.1 555.4 1299.0 551.5 1297.5C524.5 1287.1 477.9 1275.7 439.0 1270.0C435.4 1269.4 429.8 1268.6 426.5 1268.0C423.2 1267.5 415.1 1266.4 408.5 1265.5C401.9 1264.7 393.1 1263.5 389.0 1263.0C375.5 1261.3 350.3 1258.6 332.5 1257.0C325.9 1256.4 316.4 1255.5 311.5 1255.0C306.6 1254.5 296.2 1253.6 288.5 1253.0C265.3 1251.1 262.5 1250.7 262.5 1249.0C262.5 1247.3 265.0 1247.0 288.0 1245.0C295.4 1244.4 304.9 1243.5 309.0 1243.0C313.1 1242.5 321.7 1241.6 328.0 1241.0C334.3 1240.4 343.1 1239.5 347.5 1239.0C351.9 1238.5 360.0 1237.6 365.5 1237.0C394.5 1233.9 422.2 1229.3 457.5 1221.9C461.4 1221.1 463.3 1220.6 480.5 1216.0C496.7 1211.7 527.6 1200.8 541.0 1194.8C543.5 1193.7 547.5 1191.9 550.0 1190.8C552.5 1189.7 558.1 1187.0 562.5 1184.8C569.9 1181.1 573.5 1179.1 586.0 1172.2C593.5 1168.1 621.1 1149.6 627.5 1144.4C663.9 1114.9 697.7 1078.2 719.2 1045.0C727.9 1031.5 736.5 1017.8 739.0 1013.5C745.3 1002.6 774.1 958.7 788.2 938.5C802.4 918.1 833.8 877.9 846.0 864.5C908.6 795.7 955.1 757.1 1027.0 714.2C1060.2 694.4 1106.7 673.3 1147.5 659.3C1191.1 644.5 1240.0 633.7 1287.5 628.6C1390.4 617.4 1499.9 633.3 1596.0 673.4C1615.3 681.5 1640.2 693.3 1650.5 699.2C1653.8 701.1 1660.1 704.6 1664.5 707.0C1677.9 714.2 1705.6 732.3 1723.9 745.9C1753.9 768.1 1789.2 801.0 1813.8 829.5C1839.1 858.9 1864.0 894.8 1885.5 932.8C1890.0 940.8 1891.0 943.4 1890.1 944.3C1888.8 945.6 1887.4 944.2 1871.5 926.7C1862.3 916.4 1832.2 888.2 1820.5 878.8C1800.4 862.7 1776.4 846.1 1754.5 833.1C1742.7 826.0 1704.7 806.6 1694.0 802.1C1638.5 778.7 1600.9 768.8 1548.0 763.6C1513.1 760.1 1476.4 760.9 1441.5 765.9C1429.3 767.6 1409.4 771.4 1399.2 773.9C1396.9 774.5 1393.3 775.4 1391.2 775.9C1380.3 778.5 1356.6 785.7 1349.0 788.7C1348.2 789.0 1344.1 790.5 1340.0 792.0C1320.5 798.9 1277.6 819.4 1260.5 829.9C1256.7 832.3 1252.2 835.0 1250.5 836.0C1217.8 854.9 1178.9 885.8 1146.1 919.0C1105.5 960.0 1075.2 1001.9 1050.6 1051.0C1029.3 1093.6 1015.9 1132.3 1007.1 1176.5C997.8 1223.6 997.8 1276.7 1007.1 1325.0C1015.1 1366.6 1028.5 1406.1 1047.5 1444.2C1059.9 1469.0 1084.4 1507.2 1102.2 1529.6C1134.0 1569.7 1175.5 1608.2 1219.9 1639.0C1225.3 1642.8 1243.4 1654.1 1252.0 1659.1C1256.1 1661.5 1260.8 1664.2 1262.5 1665.2C1267.9 1668.3 1301.3 1684.5 1307.5 1687.0C1308.6 1687.4 1311.2 1688.6 1313.3 1689.5C1316.8 1691.0 1323.3 1693.5 1339.0 1699.2C1344.3 1701.1 1353.8 1704.1 1360.8 1706.1C1362.5 1706.6 1365.5 1707.4 1367.2 1707.9C1388.1 1713.9 1419.2 1720.0 1444.0 1722.9C1469.0 1725.9 1476.9 1726.3 1505.5 1726.3C1533.9 1726.3 1543.9 1725.7 1566.5 1722.9C1579.8 1721.2 1597.1 1718.5 1603.5 1717.0C1614.8 1714.5 1616.9 1714.0 1622.0 1712.9C1626.9 1711.8 1634.8 1709.8 1645.0 1707.0C1653.8 1704.5 1672.3 1698.7 1676.5 1697.0C1677.6 1696.6 1683.5 1694.3 1689.5 1691.9C1695.5 1689.6 1703.3 1686.4 1706.8 1684.8C1710.2 1683.3 1713.2 1682.0 1713.5 1682.0C1713.9 1682.0 1734.2 1672.4 1743.0 1668.1C1757.3 1660.9 1786.1 1644.0 1802.9 1632.7C1815.0 1624.7 1842.4 1604.3 1852.0 1596.1C1867.3 1583.2 1882.3 1569.7 1894.1 1558.3C1901.0 1551.5 1907.2 1546.0 1907.9 1546.0C1908.5 1546.0 1909.0 1546.8 1909.0 1547.8C1909.0 1552.1 1859.5 1622.3 1845.2 1638.2C1842.6 1641.1 1836.8 1647.8 1832.5 1653.0C1816.3 1672.3 1783.1 1704.4 1758.5 1724.6C1710.8 1763.6 1650.2 1798.3 1586.6 1822.9C1521.7 1848.0 1463.5 1862.3 1400.5 1868.6C1376.9 1870.9 1315.6 1871.4 1292.5 1869.4ZM1482.2 1560.8C1481.6 1560.1 1480.2 1552.5 1479.0 1544.0C1476.1 1522.4 1469.7 1490.9 1463.8 1469.1C1452.6 1427.3 1437.3 1394.1 1416.1 1365.0C1390.9 1330.5 1350.1 1301.1 1305.0 1285.2C1300.3 1283.5 1294.9 1281.7 1293.0 1281.1C1291.1 1280.5 1287.5 1279.4 1285.0 1278.6C1282.5 1277.8 1275.5 1276.0 1269.5 1274.6C1250.7 1270.1 1251.5 1270.2 1233.5 1267.0C1215.3 1263.7 1210.9 1263.1 1177.0 1259.0C1156.3 1256.5 1144.8 1255.2 1121.0 1253.0C1114.7 1252.4 1105.7 1251.5 1101.0 1251.0C1093.0 1250.1 1070.6 1248.2 1063.0 1247.7C1060.7 1247.6 1059.4 1247.0 1059.2 1245.9C1058.9 1244.1 1062.7 1243.4 1086.0 1241.0C1091.8 1240.4 1099.9 1239.5 1104.0 1239.0C1108.1 1238.5 1115.8 1237.6 1121.0 1237.0C1150.9 1233.5 1184.8 1228.7 1206.5 1224.9C1209.8 1224.3 1214.8 1223.4 1217.5 1223.0C1231.6 1220.5 1235.8 1219.7 1238.5 1218.9C1240.2 1218.4 1245.5 1217.1 1250.5 1216.0C1267.0 1212.2 1293.1 1203.8 1304.8 1198.4C1307.7 1197.1 1310.2 1196.0 1310.4 1196.0C1311.6 1196.0 1331.3 1186.3 1338.3 1182.3C1378.2 1159.5 1407.8 1130.9 1430.8 1093.0C1454.6 1053.7 1468.7 1011.0 1478.9 947.0C1481.2 932.3 1481.7 930.5 1483.5 930.5C1485.2 930.5 1485.7 932.1 1487.6 943.5C1499.8 1016.1 1522.0 1072.0 1556.1 1116.0C1573.9 1139.0 1603.2 1164.3 1627.0 1177.2C1646.6 1187.9 1657.0 1192.4 1675.5 1198.4C1691.7 1203.7 1700.8 1206.3 1713.5 1209.0C1715.7 1209.5 1719.5 1210.3 1722.0 1210.9C1737.9 1214.4 1767.3 1218.7 1789.5 1220.9C1819.2 1223.8 1840.0 1225.2 1881.5 1227.0C1894.7 1227.6 1915.4 1228.5 1927.5 1229.0C1939.6 1229.5 1960.8 1230.4 1974.5 1231.0C1988.2 1231.6 2009.0 1232.5 2020.5 1233.0C2032.0 1233.5 2052.8 1234.4 2066.5 1235.0C2153.1 1238.6 2244.7 1243.4 2245.7 1244.3C2247.5 1246.2 2242.4 1246.8 2221.8 1247.4C2209.0 1247.7 2185.7 1248.5 2170.0 1249.0C2154.3 1249.5 2122.2 1250.4 2098.5 1251.0C2074.8 1251.5 2037.0 1252.4 2014.5 1253.0C1992.0 1253.5 1953.5 1254.5 1929.0 1255.1C1820.0 1257.7 1783.2 1260.3 1734.5 1269.0C1694.7 1276.2 1669.3 1284.0 1640.1 1298.2C1585.9 1324.6 1549.7 1362.5 1522.8 1421.2C1508.2 1453.3 1498.5 1487.4 1489.5 1538.5C1485.9 1559.3 1484.5 1563.5 1482.2 1560.8Z";
+function Logo({ height = 22 }) {
+  return (
+    <svg height={height} width={height * 1.5890} viewBox="258 621 1991 1253" aria-hidden="true" style={{ display: "block" }}>
+      <path fill="#fff" fillRule="evenodd" d={LOGO_D} />
+    </svg>
+  );
 }
 
 function ArcGauge({ total, current, progress }) {
@@ -999,7 +1030,7 @@ function Questionnaire({ initial, editing, onSave, onCancel }) {
         <div className="chips">{[3, 4, 5].map((m) => <button key={m} className={`chip ${q.meals === m ? "on" : ""}`} onClick={() => set("meals", m)}>{m}</button>)}</div>
       </div>
       <div className="field"><label>¿Qué ganas tienes de cocinar?</label>
-        <div className="chips">{COOK_OPTS.map(([v, l]) => <button key={v} className={`chip ${q.cook === v ? "on" : ""}`} onClick={() => set("cook", v)}>{l}</button>)}</div>
+        <div className="cook-opts">{COOK_OPTS.map(([v, l]) => <button key={v} className={`cook-opt ${q.cook === v ? "on" : ""}`} onClick={() => set("cook", v)}><CookIcon mode={v} /><span>{l}</span></button>)}</div>
         <div className="hint">{q.cook === "sanji" ? "Recetas más elaboradas, con sus pasos." : q.cook === "todas" ? "Mezcla de platos rápidos y elaborados." : "Platos de 5 minutos para el día a día."}</div>
       </div>
       <div className="field"><label>¿Comes a menudo fuera de casa?</label>
@@ -1495,7 +1526,7 @@ function Nutrition({ profile, setCook }) {
             ? <div className="chips">{m.opts.map((r, i) => <button key={r.name} className={`chip ${r === m.recipe ? "on" : ""}`} onClick={() => setPick({ ...pick, [m.k]: i })}>{r.name}</button>)}</div>
             : <div className="rname">{m.recipe.name}</div>}
           <div className="tags">
-            <span>{m.recipe.mode === "sanji" ? "Modo Sanji (cocinitas)" : "Fácil"}</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><CookIcon mode={m.recipe.mode === "sanji" ? "sanji" : "sencilla"} size={15} />{m.recipe.mode === "sanji" ? "Modo Sanji (cocinitas)" : "Fácil"}</span>
             {TUPPER.has(m.recipe.name) && <span>Apta para táper</span>}
           </div>
           <div style={{ marginTop: 8 }}>{m.items.map((it) => <div className="food" key={it.food}><span>{FOODS[it.food].n}</span><em>{Math.round(it.g)} g</em></div>)}</div>
@@ -1909,7 +1940,7 @@ function Splash({ onDone }) {
   return (
     <div className="splash" aria-hidden="true">
       <div className="splash-glow" />
-      <div className="splash-mark"><Logo /></div>
+      <div className="splash-mark"><Logo height={88} /></div>
       <div className="splash-word">ARC</div>
     </div>
   );
