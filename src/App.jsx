@@ -66,6 +66,55 @@ const LEVELS = {
 };
 for (const b of ["female", "male"]) LEVELS[b] = LEVELS[b].map(([name, series, line], i) => lv(b, i, name, series, line));
 
+// Skills de cada personaje: fuerza, resistencia, técnica, velocidad, mentalidad (1-10) y sus habilidades
+const STAT_NAMES = ["Fuerza", "Resistencia", "Técnica", "Velocidad", "Mentalidad"];
+const SKILLS = {
+  "Kobeni Higashiyama": [[2, 3, 3, 8, 3], ["Reflejos al límite", "Sobrevivir"]],
+  "Ochaco Uraraka": [[3, 4, 4, 4, 7], ["Gravedad cero", "Cuerpo a cuerpo"]],
+  "Nami": [[2, 5, 6, 5, 8], ["Clima-Tact", "Estrategia"]],
+  "Asuka Langley": [[5, 5, 7, 6, 6], ["Piloto de Eva", "Orgullo"]],
+  "Nobara Kugisaki": [[5, 6, 6, 5, 8], ["Resonancia", "Martillo y clavos"]],
+  "Lucy": [[4, 5, 8, 7, 7], ["Netrunner", "Monofilamento"]],
+  "Annie Leonhart": [[7, 7, 9, 6, 7], ["Patada baja", "Titán hembra"]],
+  "Cha Hae-in": [[7, 8, 8, 8, 7], ["Rango S", "Esgrima"]],
+  "Mirko": [[9, 8, 7, 9, 9], ["Patada lunar", "Salto de conejo"]],
+  "Mikasa Ackerman": [[9, 8, 9, 9, 8], ["Fuerza Ackerman", "Equipo 3D"]],
+  "Yuki Tsukumo": [[10, 8, 7, 7, 9], ["Masa estelar", "Grado especial"]],
+  "Maki Zenin": [[10, 10, 10, 10, 10], ["Restricción celestial", "Armas malditas"]],
+  "Reigen Arataka": [[2, 3, 4, 3, 9], ["Labia infinita", "Golpe de sal"]],
+  "Denji": [[5, 9, 3, 6, 6], ["Motosierra", "Hambre"]],
+  "Eijiro Kirishima": [[6, 9, 5, 4, 8], ["Endurecimiento", "Roca inquebrantable"]],
+  "David Martinez": [[6, 6, 6, 10, 8], ["Sandevistan", "Cromo militar"]],
+  "Ippo Makunouchi": [[8, 9, 7, 6, 9], ["Dempsey Roll", "Gazelle Punch"]],
+  "Thorfinn": [[7, 9, 9, 8, 9], ["Dagas", "Sin enemigos"]],
+  "Mamoru Takamura": [[10, 9, 9, 8, 8], ["Campeón del mundo", "Mata osos"]],
+  "Yuji Itadori": [[9, 9, 7, 9, 9], ["Black Flash", "Puño divergente"]],
+  "Levi Ackerman": [[9, 8, 10, 10, 9], ["Fuerza Ackerman", "Corte giratorio"]],
+  "Roronoa Zoro": [[10, 10, 9, 8, 10], ["Santoryu", "Haki del rey"]],
+  "Sung Jinwoo": [[10, 9, 9, 10, 10], ["Monarca de las sombras", "Arise"]],
+  "Toji Fushiguro": [[10, 10, 10, 10, 10], ["Restricción celestial", "Asesino de hechiceros"]],
+};
+// La rata sube de stats con cada fase
+const ratSkills = (i) => [[0, 1, 0, 1, 2].map((d) => Math.min(10, Math.max(1, Math.round(1 + i * 1.1) + (i < 8 ? d - 1 : 0)))), []];
+
+function Skills({ lv, idx }) {
+  const sk = SKILLS[lv.name] || (lv.series === "Modo gymrat" ? ratSkills(idx) : null);
+  if (!sk) return null;
+  const [stats, tags] = sk;
+  return (
+    <div className="skills">
+      {tags.length > 0 && <div className="sk-tags">{tags.map((t) => <span key={t} className="sk-tag">{t}</span>)}</div>}
+      {STAT_NAMES.map((n, i) => (
+        <div key={n} className="sk-row">
+          <span>{n}</span>
+          <div className="sk-bar"><div style={{ width: `${stats[i] * 10}%`, animationDelay: `${i * 70}ms` }} /></div>
+          <b>{stats[i]}</b>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // Modo gymrat: la misma rata para todas, con 9 fases. Requisitos según la rama.
 const RAT_STAGES = [
   ["Chuminá", "La rata con ojeras que acaba de descubrir el gimnasio."],
@@ -724,6 +773,15 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:999px;padding:9px 14px;font:inherit;font-size:14px;cursor:pointer}
 .chip.on{background:#fff;color:#000;border-color:#fff;font-weight:600}
+.skills{background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:14px 16px;margin-top:10px}
+.sk-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.sk-tag{font-size:12px;font-weight:700;color:var(--ac);border:1px solid rgba(212,139,146,.45);background:rgba(212,139,146,.08);border-radius:999px;padding:4px 10px}
+.sk-row{display:grid;grid-template-columns:86px 1fr 18px;align-items:center;gap:10px;font-size:12px;color:var(--dm);padding:3px 0}
+.sk-row b{color:#fff;text-align:right;font-size:12px}
+.sk-bar{height:6px;border-radius:99px;background:var(--ln);overflow:hidden}
+.sk-bar div{height:100%;border-radius:99px;background:linear-gradient(90deg,#fff,var(--ac));transform-origin:left;animation:skGrow .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes skGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){.sk-bar div{animation:none}}
 .cook-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .cook-opt{background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:16px;padding:14px 8px 12px;font:inherit;font-size:13px;line-height:1.25;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;transition:transform .15s}
 .cook-opt:active{transform:scale(.97)}
@@ -1182,6 +1240,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
           <div className="series">{lv.series}</div>
         </div>
       </div>
+      <Skills lv={lv} idx={ev.current} />
       <div className="gauge">
         <ArcGauge total={L.length} current={ev.current} progress={ev.progress} />
         <p className="line">{lv.line}</p>
