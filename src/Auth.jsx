@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { supabase } from "./lib/supabase";
-
-const PRIVACY_URL = import.meta.env.VITE_PRIVACY_URL || "#";
+import { LegalSheet, LEGAL_CSS } from "./Legal.jsx";
 
 export function Auth() {
   const [mode, setMode] = useState("login"); // login | signup | forgot
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [consent, setConsent] = useState(false);
+  const [legal, setLegal] = useState(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState(null);
 
@@ -46,7 +46,7 @@ export function Auth() {
       {mode === "signup" && (
         <label className="consent">
           <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-          <span>Acepto la <a href={PRIVACY_URL} target="_blank" rel="noreferrer">política de privacidad</a> y que ARC guarde mis datos de salud (peso, sueño, entrenos y hábitos) para calcular mi plan.</span>
+          <span>Tengo 16 años o más, acepto los <button type="button" className="inlink" onClick={(e) => { e.preventDefault(); setLegal("terminos"); }}>términos</button> y la <button type="button" className="inlink" onClick={(e) => { e.preventDefault(); setLegal("privacidad"); }}>política de privacidad</button>, y que ARC guarde mis datos de salud (peso, sueño, pasos, entrenos y hábitos) para calcular mi plan.</span>
         </label>
       )}
       {msg && <div className={msg.err ? "err" : "note"} style={{ marginTop: 10 }}>{msg.text}</div>}
@@ -60,6 +60,8 @@ export function Auth() {
         {mode === "login" && <button className="link" onClick={() => setMode("forgot")}>He olvidado mi contraseña</button>}
         {mode !== "login" && <button className="link" onClick={() => setMode("login")}>Ya tengo cuenta: entrar</button>}
       </div>
+      <style>{LEGAL_CSS}</style>
+      <LegalSheet doc={legal} onClose={() => setLegal(null)} />
     </>
   );
 }

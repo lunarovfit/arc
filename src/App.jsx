@@ -3,6 +3,7 @@ import { supabase } from "./lib/supabase";
 import * as db from "./lib/db";
 import * as native from "./lib/native";
 import { Auth, NewPassword } from "./Auth.jsx";
+import { LegalSheet, LEGAL_CSS } from "./Legal.jsx";
 
 /* =====================================================================
    ARC by Lunarovx — vista previa v2
@@ -2278,6 +2279,7 @@ function Reminders({ value, onChange }) {
 
 function Settings({ email, isCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
   const [confirm, setConfirm] = useState(null); // "data" | "account"
+  const [legal, setLegal] = useState(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const go = async (fn) => { setBusy(true); setErr(""); try { await fn(); } catch (e) { setErr("No se ha podido completar. Vuelve a intentarlo."); } finally { setBusy(false); } };
@@ -2299,6 +2301,14 @@ function Settings({ email, isCoach, coachView, setCoachView, onEdit, onContent, 
         </>
       )}
       <Reminders value={reminders} onChange={setReminders} />
+      <h2>Salud y privacidad</h2>
+      <p className="hint">ARC da orientación general de entreno y alimentación. No es consejo médico ni sustituye a un profesional sanitario. Si tienes una lesión, una enfermedad o estás embarazada, consulta antes de empezar.</p>
+      <div className="legal-links">
+        <button className="inlink" onClick={() => setLegal("privacidad")}>Política de privacidad</button>
+        <button className="inlink" onClick={() => setLegal("terminos")}>Términos de uso</button>
+      </div>
+      <style>{LEGAL_CSS}</style>
+      <LegalSheet doc={legal} onClose={() => setLegal(null)} />
       <h2>Cuenta</h2>
       <button className="btn ghost" onClick={onSignOut}>Cerrar sesión</button>
       {confirm === null && <button className="btn ghost" onClick={() => setConfirm("data")}>Borrar mis datos</button>}
