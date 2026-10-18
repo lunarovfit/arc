@@ -969,6 +969,7 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .redit-btns{display:flex;gap:2px}
 .redit-btns button{background:var(--sf2);border:1px solid var(--ln);color:var(--tx);border-radius:8px;width:28px;height:30px;font:inherit;font-size:12px;cursor:pointer}
 .fac.extra{opacity:.85}.fac.extra em{font-style:normal;font-size:11px;font-weight:700;color:var(--dm);border:1px solid var(--ln);border-radius:999px;padding:1px 7px;margin-left:6px}
+.exvid{display:block;width:100%;height:320px;object-fit:contain;border-radius:14px;border:1px solid var(--ln);background:#000;margin:4px 0 10px;cursor:pointer}
 .cook-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .cook-opt{background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:16px;padding:14px 8px 12px;font:inherit;font-size:13px;line-height:1.25;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;transition:transform .15s}
 .cook-opt:active{transform:scale(.97)}
@@ -1814,7 +1815,7 @@ function ExerciseMuscles({ exId }) {
   );
 }
 
-function Tracker({ active, sessions, setActive, onFinish, onCancel, media, coach, setMedia, uploadMedia, onRest, onRestCancel }) {
+function Tracker({ active, sessions, setActive, onFinish, onCancel, media, coach, setMedia, uploadMedia, onRest, onRestCancel, hideVideos }) {
   const [now, setNow] = useState(Date.now());
   const [restEnd, setRestEndRaw] = useState(null);
   const restName = useRef("");
@@ -1865,6 +1866,9 @@ function Tracker({ active, sessions, setActive, onFinish, onCancel, media, coach
               <button className="exname" onClick={() => setTech(e.exId)}>{hasVideo && <span className="play">▶</span>}{ex.n}</button>
               <button className="dots" aria-label="Opciones" onClick={() => setMenu(menu === ei ? null : ei)}>⋮</button>
             </div>
+            {hasVideo && !hideVideos && !ytEmbed(media[`ex:${e.exId}`]) && (isImage(media[`ex:${e.exId}`])
+              ? <img className="exvid" src={media[`ex:${e.exId}`]} alt="" onClick={() => setTech(e.exId)} />
+              : <video className="exvid" src={media[`ex:${e.exId}`]} autoPlay loop muted playsInline preload="auto" onClick={() => setTech(e.exId)} />)}
             <div className="tgt">{e.target}</div>
             {(() => {
               const sug = suggestFor(sessions, e.exId, e.range || (e.target.match(/× ([^·]+)/) || [])[1]);
@@ -2804,7 +2808,7 @@ function Reminders({ value, onChange }) {
   );
 }
 
-function Settings({ onFinishPreview, sub, email, isCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
+function Settings({ videos, onFinishPreview, sub, email, isCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
   const [confirm, setConfirm] = useState(null); // "data" | "account"
   const [legal, setLegal] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -2829,6 +2833,15 @@ function Settings({ onFinishPreview, sub, email, isCoach, coachView, setCoachVie
         </>
       )}
       <Reminders value={reminders} onChange={setReminders} />
+      {videos && (
+        <>
+          <h2>Entreno</h2>
+          <div className="remrow">
+            <span>Vídeos de técnica<small>Se ven solos en cada ejercicio mientras entrenas</small></span>
+            <button className={`switch ${videos.on ? "on" : ""}`} role="switch" aria-checked={videos.on} aria-label="Vídeos de técnica" onClick={() => videos.set(!videos.on)}><i /></button>
+          </div>
+        </>
+      )}
       {sub && (
         <>
           <h2>Suscripción</h2>
@@ -3307,7 +3320,7 @@ function ArcApp({ user }) {
   } else if (screen === "denuncias" && isCoach) {
     body = <Reports onClose={() => setScreen("ajustes")} />;
   } else if (screen === "ajustes") {
-    body = <Settings onFinishPreview={() => setDone({ dur: 3120, sets: 18, volume: 8450, xp: RULES.XP_PER_SESSION, prs: 2 })} sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
+    body = <Settings videos={{ on: !state.profile?.hideVideos, set: (on) => setProfile({ hideVideos: !on }) }} onFinishPreview={() => setDone({ dur: 3120, sets: 18, volume: 8450, xp: RULES.XP_PER_SESSION, prs: 2 })} sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
       reminders={state.profile?.reminders} setReminders={(r) => setProfile({ reminders: r })}
       onEdit={() => setScreen("editar")}
       onContent={() => setScreen("contenido")}
@@ -3317,7 +3330,7 @@ function ArcApp({ user }) {
       onDeleteAccount={() => db.deleteAccount()}
       onClose={() => setScreen(null)} />;
   } else if (inTracker) {
-    body = <Tracker active={state.active} sessions={state.sessions} setActive={setActive} onFinish={finish} onCancel={() => setActive(null)} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} onRest={native.scheduleRest} onRestCancel={native.cancelRest} />;
+    body = <Tracker active={state.active} sessions={state.sessions} setActive={setActive} onFinish={finish} onCancel={() => setActive(null)} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} onRest={native.scheduleRest} onRestCancel={native.cancelRest} hideVideos={!!state.profile?.hideVideos} />;
   } else if (["entrenos", "nutricion", "ranking"].includes(tab) && !hasPremium) {
     body = <Locked tab={tab} onOpen={() => setPaywall(true)} />;
   } else if (tab === "inicio") {
