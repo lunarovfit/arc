@@ -2440,7 +2440,6 @@ const FINISH_SHOUTS = [
   ["¡ENTRENO HECHO!", "Esto es lo que te separa de quien solo lo piensa."],
   ["¡ASÍ SE HACE!", "Un día más sumando en tu arco."],
   ["¡IMPARABLE!", "Mañana tu cuerpo te lo agradece. Hoy, descansa y come bien."],
-  ["¡MÁS FUERTE QUE AYER!", "Las series de hoy son el nivel de mañana."],
 ];
 
 function useCount(target, ms = 1000, delay = 600) {
