@@ -930,6 +930,36 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .exmus{margin:4px 0 8px}
 @media (prefers-reduced-motion:no-preference){.bm-m{animation:popIn .4s ease-out both}.mw-bar div{animation:skGrow .8s cubic-bezier(.2,.8,.2,1) both}.sug{animation:rise .4s ease-out both}}
 .rphoto{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:14px;display:block;margin-bottom:12px;border:1px solid var(--ln)}
+.fin{position:fixed;inset:0;z-index:38;background:#000;display:flex;flex-direction:column;align-items:center;text-align:center;overflow-y:auto;overflow-x:hidden;padding:calc(30px + env(safe-area-inset-top)) 22px calc(24px + env(safe-area-inset-bottom))}
+.fin-rays{position:absolute;left:50%;top:22%;width:720px;height:720px;margin:-360px 0 0 -360px;background:repeating-conic-gradient(from 0deg,rgba(212,139,146,.13) 0deg 7deg,transparent 7deg 20deg);border-radius:50%;-webkit-mask:radial-gradient(circle,#000 18%,transparent 62%);mask:radial-gradient(circle,#000 18%,transparent 62%);pointer-events:none}
+.fin-stage{position:relative;width:230px;height:250px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fin-img{width:210px;height:240px;border-radius:26px;overflow:hidden;border:2px solid rgba(212,139,146,.7);box-shadow:0 0 70px rgba(212,139,146,.4)}
+.fin-img img{width:100%;height:100%;object-fit:cover;object-position:top}
+.fin-mark{filter:drop-shadow(0 0 30px rgba(212,139,146,.6))}
+.fin-shout{position:relative;font-size:40px;line-height:1.02;font-weight:900;letter-spacing:-.02em;margin:18px 0 6px;font-style:italic;background:linear-gradient(180deg,#fff 30%,#D48B92);-webkit-background-clip:text;background-clip:text;color:transparent}
+.fin-sub{position:relative;color:var(--dm);font-size:15px;margin:0 0 18px;max-width:320px}
+.fin-stats{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%;max-width:380px}
+.fin-stats div{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:10px 4px}
+.fin-stats b{display:block;font-size:17px;font-variant-numeric:tabular-nums}
+.fin-stats span{font-size:11px;color:var(--dm)}
+.fin-pr{position:relative;margin-top:12px;font-weight:700;color:var(--okl);background:rgba(110,231,183,.1);border-radius:999px;padding:7px 14px;font-size:13px}
+.fin-coach{position:relative;margin-top:14px;width:100%;max-width:380px;text-align:left}
+.fin-coach small{display:block;color:var(--dm);font-size:12px;margin-bottom:6px}
+.fin-btn{position:relative;margin-top:auto;max-width:380px}
+@media (prefers-reduced-motion:no-preference){
+.fin{animation:fadeIn .25s ease-out both}
+.fin-rays{animation:spin 18s linear infinite,fadeIn 1s ease-out both}
+.fin-img,.fin-mark{animation:slam .7s cubic-bezier(.2,.9,.25,1.25) .1s both}
+.fin-shout{animation:shout .6s cubic-bezier(.2,.9,.3,1.5) .55s both}
+.fin-sub{animation:rise .5s ease-out .85s both}
+.fin-stats div{animation:rise .45s ease-out both}
+.fin-stats div:nth-child(1){animation-delay:.9s}.fin-stats div:nth-child(2){animation-delay:.97s}.fin-stats div:nth-child(3){animation-delay:1.04s}.fin-stats div:nth-child(4){animation-delay:1.11s}
+.fin-pr{animation:popIn .5s cubic-bezier(.2,.9,.3,1.4) 1.5s both}
+.fin-btn{animation:rise .5s ease-out 1.3s both}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slam{0%{transform:scale(1.8) rotate(-6deg);opacity:0;filter:blur(8px)}60%{opacity:1;filter:none}100%{transform:none}}
+@keyframes shout{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.12) rotate(-2deg);opacity:1}85%{transform:scale(.97) rotate(1deg)}100%{transform:none}}
+}
 .cook-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .cook-opt{background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:16px;padding:14px 8px 12px;font:inherit;font-size:13px;line-height:1.25;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;transition:transform .15s}
 .cook-opt:active{transform:scale(.97)}
@@ -2403,6 +2433,83 @@ const SPARKS = Array.from({ length: 14 }, (_, i) => {
   return { x: Math.cos(a) * r, y: Math.sin(a) * r, d: 0.55 + (i % 4) * 0.08, s: 8 + (i % 3) * 5 };
 });
 
+// Al terminar un entreno: grito de ánimo con la foto que suba la coach (si sube varias, sale una al azar)
+const FINISH_KEYS = ["finish:1", "finish:2", "finish:3", "finish:4", "finish:5"];
+const FINISH_SHOUTS = [
+  ["¡PLUS ULTRA!", "Hoy has ido más allá."],
+  ["¡ENTRENO HECHO!", "Esto es lo que te separa de quien solo lo piensa."],
+  ["¡ASÍ SE HACE!", "Un día más sumando en tu arco."],
+  ["¡IMPARABLE!", "Mañana tu cuerpo te lo agradece. Hoy, descansa y come bien."],
+  ["¡MÁS FUERTE QUE AYER!", "Las series de hoy son el nivel de mañana."],
+];
+
+function useCount(target, ms = 1000, delay = 600) {
+  const [v, setV] = useState(0);
+  useEffect(() => {
+    let raf, t0;
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) { setV(target); return; }
+    const t = setTimeout(() => {
+      const step = (now) => { if (!t0) t0 = now; const k = Math.min(1, (now - t0) / ms); setV(target * (1 - Math.pow(1 - k, 3))); if (k < 1) raf = requestAnimationFrame(step); };
+      raf = requestAnimationFrame(step);
+    }, delay);
+    return () => { clearTimeout(t); cancelAnimationFrame(raf); };
+  }, [target]);
+  return v;
+}
+
+function FinishScreen({ data, media, coach, uploadMedia, setMedia, onClose }) {
+  const [pick] = useState(() => {
+    const imgs = FINISH_KEYS.map((k) => media[k]).filter(Boolean);
+    return { img: imgs[Math.floor(Math.random() * imgs.length)] || null, shout: FINISH_SHOUTS[Math.floor(Math.random() * FINISH_SHOUTS.length)] };
+  });
+  const [err, setErr] = useState("");
+  const vol = useCount(data.volume || 0), sets = useCount(data.sets || 0, 700), xp = useCount(data.xp || 0, 700);
+  return (
+    <div className="fin" role="dialog" aria-label="Entreno terminado">
+      <div className="fin-rays" />
+      <div className="fin-stage">
+        {SPARKS.map((s, i) => <span key={i} className="lvup-spark" style={{ "--x": `${s.x}px`, "--y": `${s.y}px`, animationDelay: `${0.25 + s.d}s` }}><Star size={s.s} color={i % 2 ? "#fff" : "#D48B92"} /></span>)}
+        {pick.img ? <div className="fin-img"><img src={pick.img} alt="" /></div> : <div className="fin-mark"><Logo height={70} /></div>}
+      </div>
+      <h1 className="fin-shout">{pick.shout[0]}</h1>
+      <p className="fin-sub">{pick.shout[1]}</p>
+      <div className="fin-stats">
+        <div><b>{mmss(data.dur || 0)}</b><span>Tiempo</span></div>
+        <div><b>{Math.round(sets)}</b><span>Series</span></div>
+        <div><b>{Math.round(vol).toLocaleString("es-ES")}</b><span>Kg movidos</span></div>
+        <div><b>+{Math.round(xp)}</b><span>XP</span></div>
+      </div>
+      {data.prs > 0 && <div className="fin-pr">{data.prs === 1 ? "¡Nuevo récord en 1 ejercicio!" : `¡Nuevos récords en ${data.prs} ejercicios!`}</div>}
+      {coach && (
+        <div className="fin-coach">
+          <small>Modo coach: fotos de esta pantalla (sale una al azar)</small>
+          <div className="chips">{FINISH_KEYS.map((k, i) => (
+            <span key={k} style={{ display: "inline-flex", gap: 6 }}>
+              <MediaPicker label={media[k] ? `Cambiar ${i + 1}` : `Subir ${i + 1}`} accept="image/*" onPick={(f) => uploadMedia(k, f)} onError={setErr} />
+              {media[k] && <button className="chip" onClick={() => setMedia(k, null)}>Quitar {i + 1}</button>}
+            </span>
+          ))}</div>
+          {err && <div className="err">{err}</div>}
+        </div>
+      )}
+      <button className="btn ac fin-btn" onClick={onClose}>Seguir</button>
+    </div>
+  );
+}
+
+// Cuántos ejercicios superan su mejor 1RM estimado anterior
+function countPRs(prevSessions, exercises) {
+  const best = (sets) => Math.max(0, ...sets.filter((x) => x.done && x.type !== "W").map((x) => epley(x.kg, x.reps) || 0));
+  return exercises.filter((e) => {
+    if (EXERCISES[e.exId].unit) return false;
+    const now = best(e.sets);
+    if (!now) return false;
+    const before = Math.max(0, ...prevSessions.map((s) => s.exercises.find((x) => x.exId === e.exId)).filter(Boolean).map((x) => best(x.sets)));
+    return before > 0 && now > before;
+  }).length;
+}
+
 function LevelUp({ data, onClose }) {
   const { from, to, line, img, idx, total, gymrat } = data;
   return (
@@ -2569,7 +2676,7 @@ function Reminders({ value, onChange }) {
   );
 }
 
-function Settings({ sub, email, isCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
+function Settings({ onFinishPreview, sub, email, isCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
   const [confirm, setConfirm] = useState(null); // "data" | "account"
   const [legal, setLegal] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -2590,6 +2697,7 @@ function Settings({ sub, email, isCoach, coachView, setCoachView, onEdit, onCont
           </div>
           <button className="btn" onClick={onContent}>Editar frases, recetas, ejercicios y alimentos</button>
           <button className="btn ghost" onClick={onReports}>Denuncias del ranking</button>
+          <button className="btn ghost" onClick={onFinishPreview}>Pantalla de fin de entreno (fotos)</button>
         </>
       )}
       <Reminders value={reminders} onChange={setReminders} />
@@ -2875,6 +2983,7 @@ function ArcApp({ user }) {
   const [content, setContent] = useState(DEFAULT_CONTENT);
   const [premium, setPremium] = useState(null); // null = aún no se sabe
   const [paywall, setPaywall] = useState(false);
+  const [done, setDone] = useState(null); // pantalla de fin de entreno
   const [restoring, setRestoring] = useState(false);
   const [restoreMsg, setRestoreMsg] = useState("");
   const timers = useRef({});
@@ -3022,13 +3131,14 @@ function ArcApp({ user }) {
     };
     clearTimeout(timers.current.active);
     try {
+      const prs = countPRs(state.sessions, row.exercises);
       const saved = await db.addSession(row);
       const session = { id: saved.id, date: saved.performed_at, dayId: a.dayId, dayName: a.dayName, dur: row.duration_s, volume, sets, exercises: row.exercises };
       const next = { ...state, active: null, sessions: [...state.sessions, session], xp: state.xp + RULES.XP_PER_SESSION, gems: state.gems + RULES.GEMS_PER_SESSION };
       setState(next);
       const { best, pullups } = bestLifts(next);
       const lv = evaluate(next.profile.branch, { ...stats, ratio: ratioOf(next.profile.branch, best, currentWeight(next)), pullups }, next.profile.mode).current;
-      if (lv <= prevLevel) setToast(`Entreno guardado · +${RULES.XP_PER_SESSION} XP · +${RULES.GEMS_PER_SESSION} gemas`);
+      setDone({ dur: row.duration_s, sets, volume, xp: RULES.XP_PER_SESSION, prs });
       setTab("inicio");
     } catch (e) { setToast("No se ha podido guardar el entreno. Tu sesión sigue abierta: vuelve a darle a Terminar."); }
   };
@@ -3069,7 +3179,7 @@ function ArcApp({ user }) {
   } else if (screen === "denuncias" && isCoach) {
     body = <Reports onClose={() => setScreen("ajustes")} />;
   } else if (screen === "ajustes") {
-    body = <Settings sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
+    body = <Settings onFinishPreview={() => setDone({ dur: 3120, sets: 18, volume: 8450, xp: RULES.XP_PER_SESSION, prs: 2 })} sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
       reminders={state.profile?.reminders} setReminders={(r) => setProfile({ reminders: r })}
       onEdit={() => setScreen("editar")}
       onContent={() => setScreen("contenido")}
@@ -3105,6 +3215,7 @@ function ArcApp({ user }) {
       <style>{CSS + EXTRA_CSS + LEGAL_CSS + PAYWALL_CSS}</style>
       {paywall && <Paywall media={media} coach={coach} uploadMedia={uploadMedia} setMedia={setMedia} onClose={() => setPaywall(false)} onPremium={() => { setPremium(true); setPaywall(false); setToast("¡Bienvenida a ARC completo!"); }} />}
       {toast && <div className="toast" role="status">{toast}</div>}
+      {done && <FinishScreen data={done} media={media} coach={coach} uploadMedia={uploadMedia} setMedia={setMedia} onClose={() => setDone(null)} />}
       {levelUp && <LevelUp data={levelUp} onClose={closeLevelUp} />}
       {splash && <Splash onDone={() => setSplash(false)} />}
       <div className="phone">
