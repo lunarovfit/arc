@@ -4,6 +4,7 @@ import * as db from "./lib/db";
 import * as native from "./lib/native";
 import { Auth, NewPassword } from "./Auth.jsx";
 import { LegalSheet, LEGAL_CSS } from "./Legal.jsx";
+import * as purchases from "./lib/purchases";
 
 /* =====================================================================
    ARC by Lunarovx — vista previa v2
@@ -360,14 +361,22 @@ const LEGACY_EX = { sentadilla: "ARC-X05", pesoMuerto: "ARC-021", pressBanca: "A
 
 // Días al estilo ARC: [ejercicio, series, reps, RIR, descanso en s]
 const DAY_TEMPLATES = {
-  piernaGluteo: { name: "Pierna y glúteo", ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-X01", 3, "8–10 por pierna", 2, 120], ["ARC-X02", 3, "8–10", 2, 120], ["ARC-049", 3, "10–12", 1, 90], ["ARC-060", 3, "12–15", 1, 60], ["ARC-X03", 3, "12–15 por pierna", 1, 60]] },
+  piernaGluteo: { name: "Pierna y glúteo", ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-X01", 3, "8–10 por pierna", 2, 120], ["ARC-X02", 3, "8–10", 2, 120], ["ARC-049", 3, "10–12", 1, 90], ["ARC-060", 3, "12–15", 1, 60], ["ARC-065", 3, "12–15", 1, 60]] },
   espaldaBiceps: { name: "Espalda y bíceps", ex: [["ARC-007", 4, "máx.", 1, 150], ["ARC-009", 3, "8–10", 2, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-011", 3, "10–12 por brazo", 1, 90], ["ARC-031", 3, "10–12", 1, 60], ["ARC-025", 3, "12–15", 1, 60], ["ARC-030", 3, "10–12", 1, 60]] },
-  gluteoFemoral: { name: "Glúteo y femoral", ex: [["ARC-054", 4, "8–10", 1, 120], ["ARC-021", 3, "4–6", 2, 180], ["ARC-050", 3, "10–12", 1, 90], ["ARC-059", 3, "12–15", 1, 60], ["ARC-061", 3, "12–15", 1, 60], ["ARC-060", 3, "15", 1, 60]] },
+  gluteoFemoral: { name: "Glúteo y femoral", ex: [["ARC-054", 4, "8–10", 1, 120], ["ARC-021", 3, "4–6", 2, 180], ["ARC-050", 3, "10–12", 1, 90], ["ARC-059", 3, "12–15", 1, 60], ["ARC-061", 3, "12–15", 1, 60], ["ARC-067", 3, "10–15", 1, 60]] },
   empuje: { name: "Pecho, hombro y tríceps", ex: [["ARC-003", 3, "8–10", 2, 120], ["ARC-004", 3, "10–12", 1, 90], ["ARC-023", 3, "8–10", 2, 90], ["ARC-027", 3, "12–15", 1, 60], ["ARC-034", 3, "10–12", 1, 60], ["ARC-035", 3, "10–12", 1, 60]] },
   cuadriceps: { name: "Cuádriceps y gemelo", ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-039", 3, "10–12", 1, 120], ["ARC-041", 3, "12–15", 1, 60], ["ARC-045", 3, "10 por pierna", 2, 90], ["ARC-062", 3, "12–15", 1, 60]] },
   calistenia: { name: "Calistenia y core", ex: [["ARC-007", 4, "máx.", 1, 120], ["ARC-001", 3, "máx.", 1, 90], ["ARC-006", 3, "máx.", 1, 90], ["ARC-067", 3, "10–15", 1, 60], ["ARC-066", 3, "30–45", 0, 60], ["ARC-068", 3, "20", 1, 45]] },
   cardioAbs: { name: "Cardio y abdominales", ex: [["CARDIO", 1, "30", 0, 60], ["ARC-064", 3, "12–15", 1, 60], ["ARC-065", 3, "12–15", 1, 60], ["ARC-067", 3, "10–15", 1, 60], ["ARC-066", 3, "45", 0, 60]] },
   fullA: { name: "Full body A", ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-054", 3, "8–10", 1, 120], ["ARC-009", 3, "8–10", 2, 90], ["ARC-004", 3, "10–12", 1, 90], ["ARC-025", 3, "12–15", 1, 60], ["ARC-066", 3, "30–45", 0, 60]] },
+  torsoA: { name: "Torso A", ex: [["ARC-X04", 4, "6–8", 2, 150], ["ARC-009", 3, "8–10", 2, 120], ["ARC-022", 3, "8–10", 2, 90], ["ARC-013", 3, "10–12", 1, 90], ["ARC-025", 3, "12–15", 1, 60], ["ARC-034", 3, "10–12", 1, 60], ["ARC-031", 3, "10–12", 1, 60]] },
+  piernaA: { name: "Pierna A", ex: [["ARC-X05", 4, "6–8", 2, 180], ["ARC-051", 3, "8–10", 2, 120], ["ARC-039", 3, "10–12", 1, 120], ["ARC-049", 3, "10–12", 1, 90], ["ARC-062", 3, "12–15", 1, 60], ["ARC-065", 3, "12–15", 1, 60]] },
+  torsoB: { name: "Torso B", ex: [["ARC-007", 4, "máx.", 1, 150], ["ARC-003", 3, "8–10", 2, 120], ["ARC-016", 3, "8–10", 2, 120], ["ARC-004", 3, "10–12", 1, 90], ["ARC-020", 3, "12–15", 1, 60], ["ARC-035", 3, "10–12", 1, 60], ["ARC-030", 3, "10–12", 1, 60]] },
+  piernaB: { name: "Pierna B", ex: [["ARC-021", 3, "4–6", 2, 180], ["ARC-X01", 3, "8–10 por pierna", 2, 120], ["ARC-054", 3, "8–10", 1, 120], ["ARC-041", 3, "12–15", 1, 60], ["ARC-050", 3, "10–12", 1, 60], ["ARC-067", 3, "10–15", 1, 60]] },
+  hombroBrazo: { name: "Hombro y brazos", ex: [["ARC-024", 3, "8–10", 2, 90], ["ARC-026", 3, "12–15", 1, 60], ["ARC-018", 3, "12–15", 1, 60], ["ARC-030", 3, "10–12", 1, 60], ["ARC-036", 3, "10–12", 1, 60], ["ARC-032", 3, "10–12", 1, 60], ["ARC-037", 3, "máx.", 1, 60]] },
+  fullMA: { name: "Full body A", ex: [["ARC-X05", 4, "6–8", 2, 180], ["ARC-X04", 4, "6–8", 2, 150], ["ARC-009", 3, "8–10", 2, 90], ["ARC-022", 3, "8–10", 2, 90], ["ARC-049", 3, "10–12", 1, 60], ["ARC-066", 3, "30–45", 0, 60]] },
+  fullMB: { name: "Full body B", ex: [["ARC-021", 3, "4–6", 2, 180], ["ARC-007", 4, "máx.", 1, 150], ["ARC-003", 3, "8–10", 2, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-025", 3, "12–15", 1, 60], ["ARC-065", 3, "12–15", 1, 60]] },
+  fullMC: { name: "Full body C", ex: [["ARC-039", 3, "10–12", 1, 120], ["ARC-X04", 3, "8–10", 2, 120], ["ARC-016", 3, "8–10", 2, 120], ["ARC-041", 3, "12–15", 1, 60], ["ARC-027", 3, "12–15", 1, 60], ["ARC-034", 3, "10–12", 1, 60], ["ARC-031", 3, "10–12", 1, 60]] },
   fullB: { name: "Full body B", ex: [["ARC-021", 3, "4–6", 2, 180], ["ARC-007", 4, "máx.", 1, 150], ["ARC-039", 3, "10–12", 1, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-023", 3, "8–10", 2, 90], ["ARC-065", 3, "12–15", 1, 60]] },
 };
 const SPLITS = {
@@ -378,6 +387,14 @@ const SPLITS = {
   6: ["piernaGluteo", "espaldaBiceps", "gluteoFemoral", "empuje", "cuadriceps", "calistenia"],
   7: ["piernaGluteo", "espaldaBiceps", "gluteoFemoral", "empuje", "cuadriceps", "calistenia", "cardioAbs"],
 };
+const SPLITS_MALE = {
+  2: ["fullMA", "fullMB"],
+  3: ["fullMA", "fullMB", "fullMC"],
+  4: ["torsoA", "piernaA", "torsoB", "piernaB"],
+  5: ["torsoA", "piernaA", "torsoB", "piernaB", "hombroBrazo"],
+  6: ["torsoA", "piernaA", "torsoB", "piernaB", "hombroBrazo", "calistenia"],
+  7: ["torsoA", "piernaA", "torsoB", "piernaB", "hombroBrazo", "calistenia", "cardioAbs"],
+};
 // cada básico que cuenta para el nivel tiene que aparecer en la semana
 const LIFT_HOME = {
   squat: { ex: "ARC-042", prefer: ["piernaGluteo", "cuadriceps", "fullA"] },
@@ -385,7 +402,8 @@ const LIFT_HOME = {
   bench: { ex: "ARC-X04", prefer: ["empuje", "fullA", "espaldaBiceps"] },
 };
 function buildRoutine(days, branch) {
-  const keys = SPLITS[days] || SPLITS[3];
+  const S = branch === "male" ? SPLITS_MALE : SPLITS;
+  const keys = S[days] || S[3];
   const plan = keys.map((k) => ({ key: k, ex: [...DAY_TEMPLATES[k].ex] }));
   const lifts = branch === "male" ? ["squat", "deadlift", "bench"] : ["squat", "deadlift"];
   for (const l of lifts) {
@@ -627,6 +645,7 @@ function buildDefaultContent() {
   };
 }
 const DEFAULT_CONTENT = buildDefaultContent();
+applyContent(DEFAULT_CONTENT); // así las recetas por defecto también tienen id (para sus fotos)
 
 function applyContent(c) {
   const quotes = c.quotes?.length ? c.quotes : DEFAULT_CONTENT.quotes;
@@ -910,6 +929,7 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .lv-none{color:var(--dm)}.lv-low{color:rgba(212,139,146,.75)}.lv-mid,.lv-acc{color:var(--ac)}.lv-ok{color:var(--okl)}.lv-over{color:#F87171}
 .exmus{margin:4px 0 8px}
 @media (prefers-reduced-motion:no-preference){.bm-m{animation:popIn .4s ease-out both}.mw-bar div{animation:skGrow .8s cubic-bezier(.2,.8,.2,1) both}.sug{animation:rise .4s ease-out both}}
+.rphoto{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:14px;display:block;margin-bottom:12px;border:1px solid var(--ln)}
 .cook-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .cook-opt{background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:16px;padding:14px 8px 12px;font:inherit;font-size:13px;line-height:1.25;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;transition:transform .15s}
 .cook-opt:active{transform:scale(.97)}
@@ -1900,7 +1920,7 @@ function recipeAllowed(r, profile) {
   });
 }
 
-function Nutrition({ profile, setCook }) {
+function Nutrition({ profile, setCook, media = {} }) {
   const [rest, setRest] = useState(false);
   const [pick, setPick] = useState({});
   const mode = profile.cook;
@@ -1942,6 +1962,7 @@ function Nutrition({ profile, setCook }) {
         <div className="meal" key={m.id}><div className="hd"><b>{SLOT_NAMES[m.id]}</b></div><p className="hint">Con lo que has quitado no hay recetas para esta comida todavía.</p></div>
       ) : (
         <div className="meal" key={m.id}>
+          {media[`rec:${m.recipe.id}`] && <img className="rphoto" src={media[`rec:${m.recipe.id}`]} alt={m.recipe.name} loading="lazy" />}
           <div className="hd"><b>{SLOT_NAMES[m.id]}</b><span>{Math.round(m.tot.kcal)} kcal · P {Math.round(m.tot.p)} · H {Math.round(m.tot.c)} · G {Math.round(m.tot.f)}</span></div>
           {m.opts.length > 1
             ? <div className="chips">{m.opts.map((r, i) => <button key={r.name} className={`chip ${r === m.recipe ? "on" : ""}`} onClick={() => setPick({ ...pick, [m.k]: i })}>{r.name}</button>)}</div>
@@ -2156,6 +2177,14 @@ function EditForm({ table, row, isNew, content, onSave, onDelete, onCancel, medi
         </Field>}
       </>}
 
+      {table === "recipes" && !isNew && <Field label="Foto del plato" hint="Sale arriba de la receta en Nutrición. Mejor en horizontal.">
+        {media[`rec:${r.id}`] ? <img className="rphoto" src={media[`rec:${r.id}`]} alt="" /> : <div className="hint">Aún no tiene foto.</div>}
+        <div className="chips" style={{ marginTop: 8 }}>
+          <MediaPicker label={media[`rec:${r.id}`] ? "Cambiar foto" : "Subir foto"} accept="image/*" onPick={(f) => uploadMedia(`rec:${r.id}`, f)} onError={setErr} />
+          {media[`rec:${r.id}`] && <button className="chip" onClick={() => setMedia(`rec:${r.id}`, null)}>Quitar</button>}
+        </div>
+      </Field>}
+      {table === "recipes" && isNew && <p className="hint">Guarda la receta y vuelve a abrirla para subir la foto.</p>}
       {table === "foods" && <>
         <Field label="Nombre">{txt("name", "Yogur griego natural")}</Field>
         <p className="hint" style={{ marginTop: -6 }}>Valores por 100 g</p>
@@ -2540,7 +2569,7 @@ function Reminders({ value, onChange }) {
   );
 }
 
-function Settings({ email, isCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
+function Settings({ sub, email, isCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
   const [confirm, setConfirm] = useState(null); // "data" | "account"
   const [legal, setLegal] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -2564,6 +2593,16 @@ function Settings({ email, isCoach, coachView, setCoachView, onEdit, onContent, 
         </>
       )}
       <Reminders value={reminders} onChange={setReminders} />
+      {sub && (
+        <>
+          <h2>Suscripción</h2>
+          <p className="sub">{sub.premium ? "Tienes ARC completo." : "Estás en la versión gratis."}</p>
+          {!sub.premium && <button className="btn ac" onClick={sub.open}>Ver planes</button>}
+          {sub.premium && <a className="btn ghost" style={{ display: "block", textAlign: "center", textDecoration: "none" }} href={purchases.MANAGE_URL} target="_blank" rel="noreferrer">Gestionar suscripción</a>}
+          <button className="btn ghost" disabled={sub.busy} onClick={sub.restore}>{sub.busy ? "Un momento…" : "Restaurar compras"}</button>
+          {sub.msg && <div className="note">{sub.msg}</div>}
+        </>
+      )}
       <h2>Salud y privacidad</h2>
       <p className="hint">ARC da orientación general de entreno y alimentación. No es consejo médico ni sustituye a un profesional sanitario. Si tienes una lesión, una enfermedad o estás embarazada, consulta antes de empezar.</p>
       <div className="legal-links">
@@ -2673,6 +2712,150 @@ function fromDb({ profile, sessions, habits }) {
   };
 }
 
+/* ============================ SUSCRIPCIÓN ============================ */
+
+const PAYWALL_KEYS = ["paywall:1", "paywall:2", "paywall:3"];
+const PERKS = [
+  "Tu rutina completa con registro de series y avisos de cuándo subir peso",
+  "Comidas ajustadas a tus macros, en modo fácil o modo Sanji",
+  "Tus músculos de la semana y el mapa del cuerpo",
+  "El ranking semanal con tu apodo",
+];
+
+function Paywall({ media, coach, uploadMedia, setMedia, onClose, onPremium }) {
+  const [plans, setPlans] = useState(null);
+  const [sel, setSel] = useState("annual");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const [slide, setSlide] = useState(0);
+  const [legal, setLegal] = useState(null);
+  const memes = PAYWALL_KEYS.map((k) => media[k]).filter(Boolean);
+
+  useEffect(() => {
+    purchases.getPlans().then((p) => { setPlans(p || false); if (p && !p.annual) setSel(p.monthly ? "monthly" : "lifetime"); }).catch(() => setPlans(false));
+  }, []);
+  useEffect(() => { if (memes.length < 2) return; const t = setInterval(() => setSlide((s) => (s + 1) % memes.length), 3500); return () => clearInterval(t); }, [memes.length]);
+
+  const pkg = plans ? plans[sel] : null;
+  const trial = purchases.freeTrialDays(pkg);
+  const founder = plans?.id === "fundadora" || /fundadora/.test(plans?.annual?.product?.identifier || "");
+  const perMonth = (p) => p?.product?.price ? (p.product.price / 12).toLocaleString("es-ES", { style: "currency", currency: p.product.currencyCode || "EUR" }) : "";
+  const go = async (fn) => {
+    setBusy(true); setErr("");
+    try { const ok = await fn(); if (ok) onPremium(); else if (ok === false) setErr("No hemos encontrado ninguna compra activa en tu cuenta de Apple."); }
+    catch (e) { setErr("No se ha podido completar la compra. Inténtalo otra vez en un momento."); }
+    finally { setBusy(false); }
+  };
+  const Plan = ({ k, title, p, sub, tag }) => p ? (
+    <button className={`pw-plan ${sel === k ? "on" : ""}`} onClick={() => setSel(k)}>
+      {tag && <em>{tag}</em>}
+      <span><b>{title}</b><small>{sub}</small></span>
+      <strong>{p.product.priceString}</strong>
+    </button>
+  ) : null;
+
+  return (
+    <div className="pw" role="dialog" aria-label="Planes de ARC">
+      <button className="pw-x" aria-label="Cerrar" onClick={onClose}>✕</button>
+      <div className="pw-hero">
+        {memes.length ? memes.map((src, i) => <img key={src} src={src} alt="" className={i === slide ? "on" : ""} />) : <div className="pw-mark"><Logo height={64} /></div>}
+      </div>
+      {coach && (
+        <div className="pw-coach">
+          <small>Modo coach: memes de la cabecera (hasta 3)</small>
+          <div className="chips">{PAYWALL_KEYS.map((k, i) => (
+            <span key={k} style={{ display: "inline-flex", gap: 6 }}>
+              <MediaPicker label={media[k] ? `Cambiar ${i + 1}` : `Subir ${i + 1}`} accept="image/*" onPick={(f) => uploadMedia(k, f)} onError={setErr} />
+              {media[k] && <button className="chip" onClick={() => setMedia(k, null)}>Quitar {i + 1}</button>}
+            </span>
+          ))}</div>
+        </div>
+      )}
+      <h1 className="pw-title">Desbloquea todo tu arco</h1>
+      <ul className="pw-perks">{PERKS.map((t) => <li key={t}>{t}</li>)}</ul>
+
+      {plans === null && <p className="hint">Cargando planes…</p>}
+      {plans === false && <div className="err">No se han podido cargar los planes. Revisa tu conexión y vuelve a abrir esta pantalla.</div>}
+      {plans && (
+        <div className="pw-plans">
+          <Plan k="annual" title="Anual" p={plans.annual} sub={`${perMonth(plans.annual)} al mes${purchases.freeTrialDays(plans.annual) ? ` · ${purchases.freeTrialDays(plans.annual)} días gratis` : ""}`} tag={founder ? "Precio fundadora" : "El más elegido"} />
+          <Plan k="monthly" title="Mensual" p={plans.monthly} sub={purchases.freeTrialDays(plans.monthly) ? `${purchases.freeTrialDays(plans.monthly)} días gratis` : "Cancela cuando quieras"} />
+          <Plan k="lifetime" title="De por vida" p={plans.lifetime} sub="Un solo pago, para siempre" />
+        </div>
+      )}
+      {err && <div className="err">{err}</div>}
+      <button className="btn ac pw-cta" disabled={!pkg || busy} onClick={() => go(() => purchases.buy(pkg))}>
+        {busy ? "Un momento…" : trial ? `Empieza tus ${trial} días gratis` : sel === "lifetime" ? "Comprar de por vida" : "Suscribirme"}
+      </button>
+      {pkg && (
+        <p className="pw-fine">
+          {sel === "lifetime"
+            ? `Pago único de ${pkg.product.priceString}. Sin renovaciones.`
+            : `${trial ? `Gratis ${trial} días y después ` : ""}${pkg.product.priceString} ${sel === "annual" ? "al año" : "al mes"}. Se renueva solo hasta que lo canceles en Ajustes del iPhone, al menos 24 horas antes de que acabe el periodo.`}
+        </p>
+      )}
+      <div className="pw-links">
+        <button className="inlink" disabled={busy} onClick={() => go(purchases.restore)}>Restaurar compras</button>
+        <button className="inlink" onClick={() => setLegal("terminos")}>Términos</button>
+        <button className="inlink" onClick={() => setLegal("privacidad")}>Privacidad</button>
+      </div>
+      <button className="link pw-free" onClick={onClose}>Seguir con la versión gratis</button>
+      <LegalSheet doc={legal} onClose={() => setLegal(null)} />
+    </div>
+  );
+}
+
+const LOCKED = {
+  entrenos: ["Tu rutina te está esperando", "Rutina por días, registro de series, avisos de cuándo subir peso y el mapa de tus músculos."],
+  nutricion: ["Tus comidas, a tu medida", "Recetas fáciles o modo Sanji ajustadas a tus macros, con la lista de cantidades."],
+  ranking: ["Compite cada semana", "Entra en el ranking semanal con tu apodo y suma puntos entrenando y cumpliendo hábitos."],
+};
+function Locked({ tab, onOpen }) {
+  const [t, d] = LOCKED[tab];
+  return (
+    <div className="locked">
+      <div className="locked-ic" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" strokeWidth="1.7" /><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="#D48B92" strokeWidth="1.7" strokeLinecap="round" /></svg>
+      </div>
+      <h1>{t}</h1>
+      <p className="sub">{d}</p>
+      <button className="btn ac" onClick={onOpen}>Ver planes</button>
+      <p className="hint" style={{ textAlign: "center" }}>En la versión gratis tienes tu nivel, tu personaje, la frase del día y tus hábitos.</p>
+    </div>
+  );
+}
+
+const PAYWALL_CSS = `
+.pw{position:fixed;inset:0;z-index:35;background:#000;overflow-y:auto;padding:calc(env(safe-area-inset-top) + 14px) 20px calc(env(safe-area-inset-bottom) + 24px);display:flex;flex-direction:column;max-width:430px;margin:0 auto}
+.pw-x{position:absolute;top:calc(env(safe-area-inset-top) + 10px);right:16px;z-index:2;background:rgba(0,0,0,.55);border:1px solid var(--ln);color:#fff;width:34px;height:34px;border-radius:50%;font-size:14px;cursor:pointer}
+.pw-hero{position:relative;width:100%;aspect-ratio:4/3;border-radius:22px;overflow:hidden;background:var(--sf);border:1px solid var(--ln);flex-shrink:0}
+.pw-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s}
+.pw-hero img.on{opacity:1}
+.pw-mark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 55%,rgba(212,139,146,.28),transparent 65%)}
+.pw-coach{margin-top:10px}.pw-coach small{display:block;color:var(--dm);font-size:12px;margin-bottom:6px}
+.pw-title{font-size:26px;margin:18px 0 8px}
+.pw-perks{list-style:none;padding:0;margin:0 0 16px}
+.pw-perks li{position:relative;padding:6px 0 6px 24px;font-size:14px;color:var(--dm);line-height:1.4}
+.pw-perks li::before{content:"";position:absolute;left:2px;top:10px;width:12px;height:12px;border-radius:50%;background:var(--ac);box-shadow:0 0 0 3px rgba(212,139,146,.18)}
+.pw-plans{display:flex;flex-direction:column;gap:8px}
+.pw-plan{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--sf);border:1.5px solid var(--ln);border-radius:16px;padding:14px 16px;color:var(--tx);font:inherit;text-align:left;cursor:pointer;transition:border-color .2s,transform .12s}
+.pw-plan.on{border-color:var(--ac);background:rgba(212,139,146,.07)}
+.pw-plan:active{transform:scale(.98)}
+.pw-plan span{display:flex;flex-direction:column}
+.pw-plan b{font-size:15px}.pw-plan small{font-size:12px;color:var(--dm);margin-top:2px}
+.pw-plan strong{font-size:16px;white-space:nowrap}
+.pw-plan em{position:absolute;top:-9px;left:14px;font-style:normal;font-size:11px;font-weight:800;background:var(--ac);color:#000;border-radius:999px;padding:2px 9px}
+.pw-cta{margin-top:16px}
+.pw-fine{font-size:11.5px;line-height:1.5;color:var(--dm);text-align:center;margin:10px 4px 0}
+.pw-links{display:flex;justify-content:center;gap:18px;margin-top:12px;font-size:13px}
+.pw-free{margin-top:14px;align-self:center}
+.locked{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:40px}
+.locked-ic{width:64px;height:64px;border-radius:20px;background:var(--sf);border:1px solid var(--ln);display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.locked .btn{max-width:320px}
+@media (prefers-reduced-motion:no-preference){.pw{animation:pwIn .35s cubic-bezier(.2,.8,.2,1) both}.pw-plan{animation:rise .4s ease-out both}.pw-plan:nth-child(2){animation-delay:.06s}.pw-plan:nth-child(3){animation-delay:.12s}}
+@keyframes pwIn{from{transform:translateY(24px);opacity:0}}
+`;
+
 function ArcApp({ user }) {
   const [state, setState] = useState(EMPTY);
   const [media, setMediaState] = useState({});
@@ -2690,6 +2873,10 @@ function ArcApp({ user }) {
   const [quote, setQuote] = useState(null);
   const [splash, setSplash] = useState(true);
   const [content, setContent] = useState(DEFAULT_CONTENT);
+  const [premium, setPremium] = useState(null); // null = aún no se sabe
+  const [paywall, setPaywall] = useState(false);
+  const [restoring, setRestoring] = useState(false);
+  const [restoreMsg, setRestoreMsg] = useState("");
   const timers = useRef({});
 
   const load = async () => {
@@ -2710,6 +2897,13 @@ function ArcApp({ user }) {
   const later = (key, fn, ms = 800) => { clearTimeout(timers.current[key]); timers.current[key] = setTimeout(() => fn().catch(fail), ms); };
 
   const isCoach = state.role === "coach" || state.role === "admin";
+  // Sin clave de RevenueCat o fuera del iPhone no se bloquea nada
+  const hasPremium = isCoach || !purchases.enabled || premium === true;
+  useEffect(() => {
+    if (!loaded || !purchases.enabled) return;
+    purchases.init(user.id).then(setPremium).catch(() => setPremium(false));
+    purchases.onChange(setPremium).catch(() => {});
+  }, [loaded]);
   const coach = isCoach && coachView;
 
   const setMedia = async (key, value) => {
@@ -2867,7 +3061,7 @@ function ArcApp({ user }) {
 
   let body;
   if (showTour) {
-    body = <Tour profile={state.profile} ev={ev} heroImg={media[levelKey(state.profile.branch, state.profile.mode, ev.current)] || AVATAR[state.profile.branch]} perms={tourPerms} onFinish={() => { setProfile({ toured: true }); setTab("inicio"); }} />;
+    body = <Tour profile={state.profile} ev={ev} heroImg={media[levelKey(state.profile.branch, state.profile.mode, ev.current)] || AVATAR[state.profile.branch]} perms={tourPerms} onFinish={() => { setProfile({ toured: true }); setTab("inicio"); if (!hasPremium) setPaywall(true); }} />;
   } else if (showQuestionnaire) {
     body = <Questionnaire initial={state.profile || DEFAULT_PROFILE} editing={state.onboarded} onSave={saveProfile} onCancel={() => setScreen("ajustes")} />;
   } else if (screen === "contenido" && isCoach) {
@@ -2875,7 +3069,7 @@ function ArcApp({ user }) {
   } else if (screen === "denuncias" && isCoach) {
     body = <Reports onClose={() => setScreen("ajustes")} />;
   } else if (screen === "ajustes") {
-    body = <Settings email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
+    body = <Settings sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
       reminders={state.profile?.reminders} setReminders={(r) => setProfile({ reminders: r })}
       onEdit={() => setScreen("editar")}
       onContent={() => setScreen("contenido")}
@@ -2886,6 +3080,8 @@ function ArcApp({ user }) {
       onClose={() => setScreen(null)} />;
   } else if (inTracker) {
     body = <Tracker active={state.active} sessions={state.sessions} setActive={setActive} onFinish={finish} onCancel={() => setActive(null)} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} onRest={native.scheduleRest} onRestCancel={native.cancelRest} />;
+  } else if (["entrenos", "nutricion", "ranking"].includes(tab) && !hasPremium) {
+    body = <Locked tab={tab} onOpen={() => setPaywall(true)} />;
   } else if (tab === "inicio") {
     body = <Home state={state} stats={stats} ev={ev} quote={quote} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
   } else if (tab === "entrenos") {
@@ -2893,7 +3089,7 @@ function ArcApp({ user }) {
   } else if (tab === "ranking") {
     body = <Ranking me={{ optIn: !!state.rankOptIn, nickname: state.nickname }} state={state} api={rankApi} />;
   } else if (tab === "nutricion") {
-    body = <Nutrition profile={state.profile} setCook={(c) => setProfile({ cook: c })} />;
+    body = <Nutrition profile={state.profile} setCook={(c) => setProfile({ cook: c })} media={media} />;
   } else {
     body = <Habits state={state} setHabit={setHabit} adh={adh} steps={native.isNative ? {
       available: native.platform === "android" || stepsAvail,
@@ -2906,7 +3102,8 @@ function ArcApp({ user }) {
 
   return (
     <div className="arc">
-      <style>{CSS + EXTRA_CSS}</style>
+      <style>{CSS + EXTRA_CSS + LEGAL_CSS + PAYWALL_CSS}</style>
+      {paywall && <Paywall media={media} coach={coach} uploadMedia={uploadMedia} setMedia={setMedia} onClose={() => setPaywall(false)} onPremium={() => { setPremium(true); setPaywall(false); setToast("¡Bienvenida a ARC completo!"); }} />}
       {toast && <div className="toast" role="status">{toast}</div>}
       {levelUp && <LevelUp data={levelUp} onClose={closeLevelUp} />}
       {splash && <Splash onDone={() => setSplash(false)} />}
