@@ -881,6 +881,35 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 }
 .tab{position:relative}
 .tab.on::before{content:"";position:absolute;top:0;left:50%;width:22px;height:2px;margin-left:-11px;border-radius:2px;background:var(--ac)}
+.sug{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;background:var(--sf2);border:1px solid var(--ln);border-radius:14px;padding:10px 12px;margin:-2px 0 10px;font-size:13px;line-height:1.45;color:var(--dm)}
+.sug i{font-style:normal;font-weight:800;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;background:var(--ln);color:#fff}
+.sug span{flex:1;min-width:170px}
+.sug button{background:#fff;color:#000;border:0;border-radius:999px;font:inherit;font-size:12px;font-weight:700;padding:6px 12px;cursor:pointer;margin-left:32px}
+.sug-up{border-color:rgba(110,231,183,.35)}.sug-up i{background:var(--okl);color:#000}
+.sug-down{border-color:rgba(245,180,84,.4)}.sug-down i{background:var(--wu);color:#000}
+.sug-new i{background:var(--ac);color:#000}
+.bodymap{display:flex;justify-content:center;gap:18px;margin:14px 0 6px}
+.bodymap>div{display:flex;flex-direction:column;align-items:center;gap:4px}
+.bodymap small{font-size:11px;color:var(--dm)}
+.bm-m{cursor:pointer;transition:fill .3s}
+.mw-legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--dm);margin:4px 0 10px}
+.mw-legend span{display:flex;align-items:center;gap:6px}
+.mw-legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.mw-alert{font-size:13px;line-height:1.45;border-radius:12px;padding:10px 12px;margin:8px 0}
+.mw-alert.over{background:rgba(248,113,113,.1);color:#FCA5A5}
+.mw-alert.rec{background:rgba(245,180,84,.1);color:var(--wu)}
+.mw-list{margin-top:6px}
+.mw-row{display:grid;grid-template-columns:82px 1fr 66px 74px;align-items:center;gap:8px;width:100%;background:none;border:0;border-bottom:1px solid var(--ln);color:var(--tx);font:inherit;font-size:13px;padding:9px 0;cursor:pointer;text-align:left}
+.mw-row.on .mw-n{color:var(--ac);font-weight:700}
+.mw-bar{position:relative;height:6px;border-radius:99px;background:var(--ln)}
+.mw-bar div{height:100%;border-radius:99px;transform-origin:left}
+.mw-bar i{position:absolute;top:-3px;width:1px;height:12px;background:rgba(255,255,255,.35)}
+.mw-v{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.mw-v small{font-weight:400;color:var(--dm);font-size:11px}
+.mw-row em{font-style:normal;font-size:11px;font-weight:700;text-align:right}
+.lv-none{color:var(--dm)}.lv-low{color:rgba(212,139,146,.75)}.lv-mid,.lv-acc{color:var(--ac)}.lv-ok{color:var(--okl)}.lv-over{color:#F87171}
+.exmus{margin:4px 0 8px}
+@media (prefers-reduced-motion:no-preference){.bm-m{animation:popIn .4s ease-out both}.mw-bar div{animation:skGrow .8s cubic-bezier(.2,.8,.2,1) both}.sug{animation:rise .4s ease-out both}}
 .cook-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .cook-opt{background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:16px;padding:14px 8px 12px;font:inherit;font-size:13px;line-height:1.25;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;transition:transform .15s}
 .cook-opt:active{transform:scale(.97)}
@@ -1278,6 +1307,7 @@ function TechniqueModal({ exId, media, coach, setMedia, uploadMedia, onClose }) 
       <div className="box" onClick={(e) => e.stopPropagation()}>
         <h1 style={{ fontSize: 20 }}>{EXERCISES[exId].n}</h1>
         <p className="hint" style={{ marginTop: 0 }}>{EXERCISES[exId].muscle} · {EXERCISES[exId].equip}</p>
+        <ExerciseMuscles exId={exId} />
         {src ? <MediaView src={src} /> : <div className="empty">{coach ? "Este ejercicio aún no tiene vídeo. Sube uno o pega un enlace." : "Pronto tendrás aquí el vídeo de la técnica."}</div>}
         {EXERCISES[exId].note && <div className="note">{EXERCISES[exId].note}</div>}
         <h2 style={{ marginTop: 18 }}>Cómo se hace</h2>
@@ -1431,7 +1461,7 @@ function newSession(day, sessions) {
       const sets = prev
         ? prev.map((s) => ({ type: s.type, kg: s.kg, reps: s.reps, done: false }))
         : [...(timed ? [] : [{ type: "W", kg: "", reps: "", done: false }]), ...Array.from({ length: e.sets }, () => ({ type: "N", kg: "", reps: timed ? e.reps.split("–")[0] : "", done: false }))];
-      return { exId: e.id, rest: e.rest, note: "", sets, target: timed ? `${e.sets} × ${e.reps} ${timed}` : `${e.sets} × ${e.reps} · RIR ${e.rir}` };
+      return { exId: e.id, rest: e.rest, note: "", range: e.reps, sets, target: timed ? `${e.sets} × ${e.reps} ${timed}` : `${e.sets} × ${e.reps} · RIR ${e.rir}` };
     }),
   };
 }
@@ -1475,6 +1505,233 @@ function SwapModal({ exId, onPick, onClose }) {
           </button>
         ))}
         <button className="btn" onClick={onClose}>Cerrar</button>
+      </div>
+    </div>
+  );
+}
+
+/* ===================== PROGRESIÓN Y MÚSCULOS ===================== */
+
+// "6–8", "8–10 por pierna", "15", "máx." → [mín, máx] de repeticiones
+function parseRange(str) {
+  const m = String(str || "").match(/(\d+)\s*[–-]\s*(\d+)/);
+  if (m) return [Number(m[1]), Number(m[2])];
+  const one = String(str || "").match(/^(\d+)/);
+  return one ? [Number(one[1]), Number(one[1])] : null;
+}
+
+function sessionsWith(sessions, exId, n) {
+  const out = [];
+  for (let i = sessions.length - 1; i >= 0 && out.length < n; i--) {
+    const e = sessions[i].exercises.find((x) => x.exId === exId);
+    const sets = e?.sets.filter((s) => s.done && s.type !== "W" && s.reps !== "");
+    if (sets?.length) out.push(sets);
+  }
+  return out;
+}
+
+const roundKg = (kg) => Math.round(kg * 2) / 2; // de 0,5 en 0,5 kg
+
+// Doble progresión: primero repeticiones, luego peso. Si dos sesiones seguidas no llegas al mínimo, baja.
+function suggestFor(sessions, exId, rangeStr) {
+  const ex = EXERCISES[exId];
+  if (ex.unit) return null;
+  const [last, before] = sessionsWith(sessions, exId, 2);
+  const range = parseRange(rangeStr);
+  if (!last) return { dir: "new", text: "Primera vez: elige un peso con el que acabes cada serie sabiendo que podrías hacer 1 o 2 repeticiones más." };
+  const reps = last.map((s) => Number(s.reps) || 0);
+  const kg = Math.max(...last.map((s) => Number(s.kg) || 0));
+  if (!range) { // "máx." (dominadas, flexiones…): batir el total de repeticiones
+    const total = reps.reduce((a, b) => a + b, 0);
+    return { dir: "hold", text: `La última vez sumaste ${total} repeticiones. Hoy intenta llegar a ${total + 1} o más.` };
+  }
+  const [lo, hi] = range;
+  if (!kg) return reps.every((r) => r >= hi)
+    ? { dir: "up", text: `Hiciste todas las series a ${hi} o más. Hoy añade algo de peso o pasa a una versión más difícil.` }
+    : { dir: "hold", text: `Intenta sumar una repetición por serie hasta llegar a ${hi}.` };
+  if (reps.every((r) => r >= hi)) {
+    const inc = kg >= 40 ? 2.5 : kg >= 10 ? 2 : 1;
+    const next = roundKg(kg + inc);
+    return { dir: "up", kg: next, text: `Hiciste todas las series a ${hi} o más con ${kg} kg. Toca subir: prueba con ${next} kg.` };
+  }
+  const fail = (sets) => sets.some((s) => (Number(s.reps) || 0) < lo);
+  if (fail(last) && before && fail(before)) {
+    const next = roundKg(kg * 0.9);
+    return { dir: "down", kg: next, text: `Dos sesiones sin llegar a ${lo} repeticiones. Baja a ${next} kg, haz todas las series bien y vuelve a subir.` };
+  }
+  return { dir: "hold", kg, text: `Mantén ${kg} kg e intenta sumar una repetición. Cuando hagas ${hi} en todas las series, subes.` };
+}
+
+function Suggest({ s, onApply }) {
+  if (!s) return null;
+  const icon = { up: "↑", down: "↓", hold: "=", new: "★" }[s.dir];
+  return (
+    <div className={`sug sug-${s.dir}`}>
+      <i>{icon}</i>
+      <span>{s.text}</span>
+      {s.kg != null && s.dir !== "hold" && onApply && <button onClick={onApply}>Usar {s.kg} kg</button>}
+    </div>
+  );
+}
+
+// Músculos del mapa. "acc" = no hace falta llegar a 10 series, solo avisamos si te pasas.
+const MUSCLES = [
+  ["pecho", "Pecho", /pectoral/],
+  ["hombro", "Hombro", /deltoide|hombro|manguito/],
+  ["espalda", "Espalda", /dorsal|romboide|trapecio|espalda alta/],
+  ["biceps", "Bíceps", /b[ií]ceps/],
+  ["triceps", "Tríceps", /tr[ií]ceps/],
+  ["abdomen", "Abdomen", /abdom|core|oblicuo|recto/],
+  ["lumbar", "Lumbar", /lumbar|espalda baja/, true],
+  ["gluteo", "Glúteo", /gl[uú]teo/],
+  ["cuadriceps", "Cuádriceps", /cu[aá]driceps/],
+  ["femoral", "Femoral", /isquio/],
+  ["aductores", "Aductores", /aductor/, true],
+  ["gemelo", "Gemelo", /gemelo|s[oó]leo/],
+];
+const MUSCLE_NAME = Object.fromEntries(MUSCLES.map(([k, n]) => [k, n]));
+
+// Lo que nombras primero cuenta como serie entera; lo demás, como media serie
+// Correcciones donde el orden del texto no refleja el músculo que más trabaja
+const MUSCLE_FIX = { "ARC-021": { gluteo: 1, femoral: 1, lumbar: 0.5, espalda: 0.5 } };
+function musclesOf(exId) {
+  if (MUSCLE_FIX[exId]) return MUSCLE_FIX[exId];
+  const parts = String(EXERCISES[exId]?.muscle || "").toLowerCase().split(",");
+  const out = {};
+  parts.forEach((p, i) => MUSCLES.forEach(([k, , re]) => { if (re.test(p)) out[k] = Math.max(out[k] || 0, i === 0 ? 1 : 0.5); }));
+  return out;
+}
+
+function weeklyDone(sessions, days = 7) {
+  const from = Date.now() - days * 864e5;
+  const sets = {}, last = {};
+  sessions.filter((s) => new Date(s.date).getTime() >= from).forEach((s) => {
+    const per = {};
+    s.exercises.forEach((e) => {
+      const n = e.sets.filter((x) => x.done && x.type !== "W").length;
+      Object.entries(musclesOf(e.exId)).forEach(([k, w]) => { per[k] = (per[k] || 0) + n * w; });
+    });
+    Object.entries(per).forEach(([k, v]) => {
+      sets[k] = (sets[k] || 0) + v;
+      if (v >= 3) last[k] = Math.max(last[k] || 0, new Date(s.date).getTime());
+    });
+  });
+  return { sets, last };
+}
+
+function weeklyPlanned(routine) {
+  const sets = {};
+  routine.forEach((d) => d.ex.forEach((e) => Object.entries(musclesOf(e.id)).forEach(([k, w]) => { sets[k] = (sets[k] || 0) + e.sets * w; })));
+  return sets;
+}
+
+const muscleLevel = (v, acc) => (v > 20 ? "over" : v >= 10 ? "ok" : acc ? (v > 0 ? "acc" : "none") : v >= 6 ? "mid" : v > 0 ? "low" : "none");
+const LEVEL_TXT = { over: "Te pasas", ok: "Ideal", mid: "Casi", low: "Poco", acc: "Bien", none: "Sin trabajar" };
+
+// Cuerpo de frente y de espaldas. Cada forma es un músculo; lo que no se mide va en gris.
+const BODY = {
+  front: [
+    ["base", "circle", { cx: 50, cy: 16, r: 10 }], ["base", "rect", { x: 45, y: 25, width: 10, height: 9, rx: 3 }],
+    ["hombro", "ellipse", { cx: 28, cy: 43, rx: 9, ry: 8 }], ["hombro", "ellipse", { cx: 72, cy: 43, rx: 9, ry: 8 }],
+    ["pecho", "rect", { x: 32, y: 39, width: 17.5, height: 17, rx: 7 }], ["pecho", "rect", { x: 50.5, y: 39, width: 17.5, height: 17, rx: 7 }],
+    ["biceps", "ellipse", { cx: 22, cy: 64, rx: 5.5, ry: 11 }], ["biceps", "ellipse", { cx: 78, cy: 64, rx: 5.5, ry: 11 }],
+    ["base", "ellipse", { cx: 19, cy: 89, rx: 4.5, ry: 12 }], ["base", "ellipse", { cx: 81, cy: 89, rx: 4.5, ry: 12 }],
+    ["base", "circle", { cx: 18, cy: 106, r: 4 }], ["base", "circle", { cx: 82, cy: 106, r: 4 }],
+    ["abdomen", "rect", { x: 38, y: 58, width: 24, height: 36, rx: 7 }],
+    ["abdomen", "rect", { x: 31.5, y: 60, width: 5.5, height: 30, rx: 3 }], ["abdomen", "rect", { x: 63, y: 60, width: 5.5, height: 30, rx: 3 }],
+    ["base", "rect", { x: 34, y: 95, width: 32, height: 12, rx: 6 }],
+    ["cuadriceps", "ellipse", { cx: 40.5, cy: 130, rx: 8.5, ry: 23 }], ["cuadriceps", "ellipse", { cx: 59.5, cy: 130, rx: 8.5, ry: 23 }],
+    ["aductores", "ellipse", { cx: 47.3, cy: 118, rx: 2.6, ry: 11 }], ["aductores", "ellipse", { cx: 52.7, cy: 118, rx: 2.6, ry: 11 }],
+    ["base", "circle", { cx: 41, cy: 157, r: 4.5 }], ["base", "circle", { cx: 59, cy: 157, r: 4.5 }],
+    ["gemelo", "ellipse", { cx: 41, cy: 180, rx: 5.5, ry: 16 }], ["gemelo", "ellipse", { cx: 59, cy: 180, rx: 5.5, ry: 16 }],
+    ["base", "ellipse", { cx: 41, cy: 202, rx: 5, ry: 3.5 }], ["base", "ellipse", { cx: 59, cy: 202, rx: 5, ry: 3.5 }],
+  ],
+  back: [
+    ["base", "circle", { cx: 50, cy: 16, r: 10 }],
+    ["espalda", "path", { d: "M50 26 L63 36 L58 50 L50 54 L42 50 L37 36 Z" }],
+    ["hombro", "ellipse", { cx: 28, cy: 43, rx: 9, ry: 8 }], ["hombro", "ellipse", { cx: 72, cy: 43, rx: 9, ry: 8 }],
+    ["espalda", "path", { d: "M36 46 Q32 64 40 84 L48 86 L48 57 Z" }], ["espalda", "path", { d: "M64 46 Q68 64 60 84 L52 86 L52 57 Z" }],
+    ["triceps", "ellipse", { cx: 22, cy: 64, rx: 5.5, ry: 11 }], ["triceps", "ellipse", { cx: 78, cy: 64, rx: 5.5, ry: 11 }],
+    ["base", "ellipse", { cx: 19, cy: 89, rx: 4.5, ry: 12 }], ["base", "ellipse", { cx: 81, cy: 89, rx: 4.5, ry: 12 }],
+    ["base", "circle", { cx: 18, cy: 106, r: 4 }], ["base", "circle", { cx: 82, cy: 106, r: 4 }],
+    ["lumbar", "rect", { x: 41, y: 86, width: 18, height: 11, rx: 4 }],
+    ["gluteo", "ellipse", { cx: 41.5, cy: 108, rx: 9.5, ry: 10 }], ["gluteo", "ellipse", { cx: 58.5, cy: 108, rx: 9.5, ry: 10 }],
+    ["femoral", "ellipse", { cx: 41, cy: 137, rx: 8, ry: 18 }], ["femoral", "ellipse", { cx: 59, cy: 137, rx: 8, ry: 18 }],
+    ["base", "circle", { cx: 41, cy: 158, r: 4.5 }], ["base", "circle", { cx: 59, cy: 158, r: 4.5 }],
+    ["gemelo", "ellipse", { cx: 41, cy: 179, rx: 7, ry: 15 }], ["gemelo", "ellipse", { cx: 59, cy: 179, rx: 7, ry: 15 }],
+    ["base", "ellipse", { cx: 41, cy: 202, rx: 5, ry: 3.5 }], ["base", "ellipse", { cx: 59, cy: 202, rx: 5, ry: 3.5 }],
+  ],
+};
+
+function BodyMap({ fill, size = 220, onPick }) {
+  const Tag = { circle: "circle", rect: "rect", ellipse: "ellipse", path: "path" };
+  const fig = (side) => (
+    <svg viewBox="0 0 100 210" width={size * 0.48} height={size} aria-hidden="true">
+      {BODY[side].map(([k, t, p], i) => {
+        const El = Tag[t];
+        return <El key={i} {...p} fill={k === "base" ? "#1B1B20" : fill(k)} stroke="#000" strokeWidth="1.2" className={k !== "base" ? "bm-m" : ""} style={k !== "base" ? { animationDelay: `${i * 18}ms` } : undefined} onClick={k !== "base" && onPick ? () => onPick(k) : undefined} />;
+      })}
+    </svg>
+  );
+  return (
+    <div className="bodymap">
+      <div>{fig("front")}<small>Delante</small></div>
+      <div>{fig("back")}<small>Detrás</small></div>
+    </div>
+  );
+}
+
+const LEVEL_FILL = { none: "#26262B", low: "rgba(212,139,146,.3)", mid: "rgba(212,139,146,.6)", acc: "rgba(212,139,146,.6)", ok: "#D48B92", over: "#F87171" };
+
+function MuscleWeek({ sessions, routine }) {
+  const [view, setView] = useState(sessions.length ? "hecho" : "plan");
+  const [pick, setPick] = useState(null);
+  const done = useMemo(() => weeklyDone(sessions), [sessions]);
+  const plan = useMemo(() => weeklyPlanned(routine), [routine]);
+  const data = view === "hecho" ? done.sets : plan;
+  const lvl = (k) => muscleLevel(data[k] || 0, MUSCLES.find((m) => m[0] === k)[3]);
+  const recovering = view === "hecho" ? MUSCLES.filter(([k]) => done.last[k] && Date.now() - done.last[k] < 48 * 36e5) : [];
+  const over = MUSCLES.filter(([k]) => lvl(k) === "over");
+  const rows = MUSCLES.map(([k, n, , acc]) => ({ k, n, v: Math.round((data[k] || 0) * 10) / 10, l: muscleLevel(data[k] || 0, acc) }))
+    .sort((a, b) => (a.k === pick ? -1 : b.k === pick ? 1 : b.v - a.v));
+  const ago = (t) => { const h = (Date.now() - t) / 36e5; return h < 20 ? "hoy" : h < 44 ? "ayer" : "hace 2 días"; };
+  return (
+    <div className="mw">
+      <div className="seg">
+        <button className={view === "hecho" ? "on" : ""} onClick={() => setView("hecho")}>Lo que has hecho (7 días)</button>
+        <button className={view === "plan" ? "on" : ""} onClick={() => setView("plan")}>Lo que pide tu rutina</button>
+      </div>
+      <BodyMap fill={(k) => (pick && pick !== k ? "#1F1F24" : LEVEL_FILL[lvl(k)])} onPick={(k) => setPick(pick === k ? null : k)} />
+      <div className="mw-legend">
+        {[["low", "Poco"], ["ok", "Ideal (10–20)"], ["over", "Te pasas (+20)"]].map(([l, t]) => <span key={l}><i style={{ background: LEVEL_FILL[l] }} />{t}</span>)}
+      </div>
+      {over.length > 0 && <div className="mw-alert over">{view === "plan" ? "Tu rutina" : "Esta semana"} carga mucho {over.map(([, n]) => n.toLowerCase()).join(", ")}. Más de 20 series a la semana cuesta recuperarlas y no suele dar más resultado.</div>}
+      {recovering.length > 0 && <div className="mw-alert rec">Recuperándose: {recovering.map(([k, n]) => `${n.toLowerCase()} (${ago(done.last[k])})`).join(", ")}. Deja unas 48 horas antes de volver a darles fuerte.</div>}
+      {view === "hecho" && sessions.length === 0 && <div className="empty">Cuando termines entrenos verás aquí tus series de la semana.</div>}
+      <div className="mw-list">
+        {rows.map((r) => (
+          <button key={r.k} className={`mw-row ${pick === r.k ? "on" : ""}`} onClick={() => setPick(pick === r.k ? null : r.k)}>
+            <span className="mw-n">{r.n}</span>
+            <div className="mw-bar"><div style={{ width: `${Math.min(100, (r.v / 24) * 100)}%`, background: LEVEL_FILL[r.l] }} /><i style={{ left: `${(10 / 24) * 100}%` }} /><i style={{ left: `${(20 / 24) * 100}%` }} /></div>
+            <span className="mw-v">{r.v} <small>series</small></span>
+            <em className={`lv-${r.l}`}>{LEVEL_TXT[r.l]}</em>
+          </button>
+        ))}
+      </div>
+      <p className="hint">Cuenta como serie entera el músculo principal de cada ejercicio y como media serie los que ayudan. Entre 10 y 20 series por músculo a la semana es donde más se progresa según los estudios.</p>
+    </div>
+  );
+}
+
+function ExerciseMuscles({ exId }) {
+  const m = musclesOf(exId);
+  if (!Object.keys(m).length) return null;
+  return (
+    <div className="exmus">
+      <BodyMap size={170} fill={(k) => (m[k] === 1 ? "#D48B92" : m[k] ? "rgba(212,139,146,.38)" : "#26262B")} />
+      <div className="mw-legend" style={{ justifyContent: "center" }}>
+        <span><i style={{ background: "#D48B92" }} />Principal: {Object.keys(m).filter((k) => m[k] === 1).map((k) => MUSCLE_NAME[k]).join(", ")}</span>
+        {Object.values(m).some((v) => v < 1) && <span><i style={{ background: "rgba(212,139,146,.38)" }} />Ayuda: {Object.keys(m).filter((k) => m[k] < 1).map((k) => MUSCLE_NAME[k]).join(", ")}</span>}
       </div>
     </div>
   );
@@ -1532,6 +1789,10 @@ function Tracker({ active, sessions, setActive, onFinish, onCancel, media, coach
               <button className="dots" aria-label="Opciones" onClick={() => setMenu(menu === ei ? null : ei)}>⋮</button>
             </div>
             <div className="tgt">{e.target}</div>
+            {(() => {
+              const sug = suggestFor(sessions, e.exId, e.range || (e.target.match(/× ([^·]+)/) || [])[1]);
+              return <Suggest s={sug} onApply={sug?.kg != null ? () => upd(ei, (x) => ({ ...x, sets: x.sets.map((st) => (st.type === "W" || st.done ? st : { ...st, kg: String(sug.kg) })) })) : null} />;
+            })()}
             {ex.note && <p className="hint" style={{ marginTop: -6, marginBottom: 10 }}>{ex.note}</p>}
             {menu === ei && (
               <div className="menu chips">
@@ -1607,6 +1868,8 @@ function Workouts({ state, routine, onStart, setDays, media, coach, setMedia, up
         </div>
       ))}
       <p className="hint">{coach ? "Modo coach: toca cualquier ejercicio para subir su vídeo o pegar el enlace." : "Toca un ejercicio para ver cómo se hace y su truquito."}</p>
+      <h2>Tus músculos</h2>
+      <MuscleWeek sessions={state.sessions} routine={routine} />
       <h2>Biblioteca de ejercicios</h2>
       <input className="in" placeholder="Buscar: hip thrust, polea, glúteo…" value={q} onChange={(e) => setQ(e.target.value)} />
       <div className="chips" style={{ margin: "10px 0" }}>{GROUPS.map((g) => <button key={g} className={`chip ${grp === g ? "on" : ""}`} onClick={() => setGrp(grp === g ? null : g)}>{g}</button>)}</div>
