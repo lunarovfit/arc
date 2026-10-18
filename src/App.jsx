@@ -910,7 +910,7 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .bodymap{display:flex;justify-content:center;gap:18px;margin:14px 0 6px}
 .bodymap>div{display:flex;flex-direction:column;align-items:center;gap:4px}
 .bodymap small{font-size:11px;color:var(--dm)}
-.bm-m{cursor:pointer;transition:fill .3s}
+.bm-m{cursor:pointer;transition:fill .3s;transform-box:fill-box;transform-origin:center}
 .mw-legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--dm);margin:4px 0 10px}
 .mw-legend span{display:flex;align-items:center;gap:6px}
 .mw-legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
@@ -960,6 +960,13 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 @keyframes slam{0%{transform:scale(1.8) rotate(-6deg);opacity:0;filter:blur(8px)}60%{opacity:1;filter:none}100%{transform:none}}
 @keyframes shout{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.12) rotate(-2deg);opacity:1}85%{transform:scale(.97) rotate(1deg)}100%{transform:none}}
 }
+.redit-name{flex:1;font-weight:700;margin-right:10px;padding:8px 12px}
+.redit-ex{display:grid;grid-template-columns:1fr 46px 10px 70px auto;align-items:center;gap:6px;padding:8px 0;border-bottom:1px solid var(--ln)}
+.redit-ex .in{padding:8px 6px;text-align:center}
+.redit-n span{display:block;font-size:14px}.redit-n small{display:block;font-size:11px;color:var(--dm);margin-top:2px}
+.redit-x{color:var(--dm);text-align:center}
+.redit-btns{display:flex;gap:2px}
+.redit-btns button{background:var(--sf2);border:1px solid var(--ln);color:var(--tx);border-radius:8px;width:28px;height:30px;font:inherit;font-size:12px;cursor:pointer}
 .cook-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .cook-opt{background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:16px;padding:14px 8px 12px;font:inherit;font-size:13px;line-height:1.25;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;transition:transform .15s}
 .cook-opt:active{transform:scale(.97)}
@@ -1678,48 +1685,60 @@ function weeklyPlanned(routine) {
 const muscleLevel = (v, acc) => (v > 20 ? "over" : v >= 10 ? "ok" : acc ? (v > 0 ? "acc" : "none") : v >= 6 ? "mid" : v > 0 ? "low" : "none");
 const LEVEL_TXT = { over: "Te pasas", ok: "Ideal", mid: "Casi", low: "Poco", acc: "Bien", none: "Sin trabajar" };
 
-// Cuerpo de frente y de espaldas. Cada forma es un músculo; lo que no se mide va en gris.
+// Cuerpo de frente y de espaldas con la forma real de cada músculo. "m" = se dibuja también su espejo.
+const TORSO_F = "M33 35 Q29 50 34.5 60 Q37 75 37 90 Q39 102 50 106 Q61 102 63 90 Q63 75 65.5 60 Q71 50 67 35 Q58 30.5 50 30.5 Q42 30.5 33 35 Z";
+const TORSO_B = "M32 36 Q29 52 35 64 Q37 78 36.5 92 Q38 108 50 112 Q62 108 63.5 92 Q63 78 65 64 Q71 52 68 36 Q58 30 50 30 Q42 30 32 36 Z";
 const BODY = {
   front: [
-    ["base", "circle", { cx: 50, cy: 16, r: 10 }], ["base", "rect", { x: 45, y: 25, width: 10, height: 9, rx: 3 }],
-    ["hombro", "ellipse", { cx: 28, cy: 43, rx: 9, ry: 8 }], ["hombro", "ellipse", { cx: 72, cy: 43, rx: 9, ry: 8 }],
-    ["pecho", "rect", { x: 32, y: 39, width: 17.5, height: 17, rx: 7 }], ["pecho", "rect", { x: 50.5, y: 39, width: 17.5, height: 17, rx: 7 }],
-    ["biceps", "ellipse", { cx: 22, cy: 64, rx: 5.5, ry: 11 }], ["biceps", "ellipse", { cx: 78, cy: 64, rx: 5.5, ry: 11 }],
-    ["base", "ellipse", { cx: 19, cy: 89, rx: 4.5, ry: 12 }], ["base", "ellipse", { cx: 81, cy: 89, rx: 4.5, ry: 12 }],
-    ["base", "circle", { cx: 18, cy: 106, r: 4 }], ["base", "circle", { cx: 82, cy: 106, r: 4 }],
-    ["abdomen", "rect", { x: 38, y: 58, width: 24, height: 36, rx: 7 }],
-    ["abdomen", "rect", { x: 31.5, y: 60, width: 5.5, height: 30, rx: 3 }], ["abdomen", "rect", { x: 63, y: 60, width: 5.5, height: 30, rx: 3 }],
-    ["base", "rect", { x: 34, y: 95, width: 32, height: 12, rx: 6 }],
-    ["cuadriceps", "ellipse", { cx: 40.5, cy: 130, rx: 8.5, ry: 23 }], ["cuadriceps", "ellipse", { cx: 59.5, cy: 130, rx: 8.5, ry: 23 }],
-    ["aductores", "ellipse", { cx: 47.3, cy: 118, rx: 2.6, ry: 11 }], ["aductores", "ellipse", { cx: 52.7, cy: 118, rx: 2.6, ry: 11 }],
-    ["base", "circle", { cx: 41, cy: 157, r: 4.5 }], ["base", "circle", { cx: 59, cy: 157, r: 4.5 }],
-    ["gemelo", "ellipse", { cx: 41, cy: 180, rx: 5.5, ry: 16 }], ["gemelo", "ellipse", { cx: 59, cy: 180, rx: 5.5, ry: 16 }],
-    ["base", "ellipse", { cx: 41, cy: 202, rx: 5, ry: 3.5 }], ["base", "ellipse", { cx: 59, cy: 202, rx: 5, ry: 3.5 }],
+    ["base", "ellipse", { cx: 50, cy: 15, rx: 8.5, ry: 10 }],
+    ["base", "path", { d: "M45 23 L55 23 L56.5 32 L43.5 32 Z" }],
+    ["base", "path", { d: TORSO_F }],
+    ["base", "path", { d: "M21.5 72 Q18 82 17.5 92 Q19 96 21.5 95 Q25 84 27.5 73 Z" }, 1],
+    ["base", "ellipse", { cx: 18.8, cy: 100, rx: 3, ry: 4.6 }, 1],
+    ["base", "ellipse", { cx: 42, cy: 157, rx: 4.6, ry: 3.6 }, 1],
+    ["base", "ellipse", { cx: 41.5, cy: 201.5, rx: 4.8, ry: 3 }, 1],
+    ["hombro", "path", { d: "M33.5 34.5 Q25 34.5 22.5 43.5 Q21.8 50 23.8 54.5 Q28 47.5 34.5 44.5 Q36.5 39 33.5 34.5 Z" }, 1],
+    ["pecho", "path", { d: "M35.5 37 Q42.5 34.8 49.4 36.8 L49.4 51.5 Q42 55 36 51 Q33 46 35.5 37 Z" }, 1],
+    ["biceps", "path", { d: "M23.6 55.5 Q21 62.5 22 70 Q24.2 74 27 70.5 Q29.2 62 28.8 51.8 Q25.6 52 23.6 55.5 Z" }, 1],
+    ["abdomen", "path", { d: "M43.4 55.5 Q43.4 54.5 44.4 54.5 L49.3 54.5 L49.3 62.5 L43.4 62.5 Z" }, 1],
+    ["abdomen", "path", { d: "M43.4 64 L49.3 64 L49.3 72 L43.4 72 Z" }, 1],
+    ["abdomen", "path", { d: "M43.6 73.5 L49.3 73.5 L49.3 81.5 L43.8 81.5 Z" }, 1],
+    ["abdomen", "path", { d: "M44 83 L49.3 83 L49.3 97 Q46.5 95 44.5 90 Z" }, 1],
+    ["abdomen", "path", { d: "M36 53.5 Q37.5 60 38.3 70 Q39.3 80 42.4 89 L42.4 56.5 Q39.5 54.5 36 53.5 Z" }, 1],
+    ["cuadriceps", "path", { d: "M37.6 101 Q34 115 35 132 Q36 146 40 154 Q45 152.5 47 144 Q48.2 125 47 109 Q43 104 37.6 101 Z" }, 1],
+    ["aductores", "path", { d: "M47.6 107 Q49.6 109 49.6 113 L49.2 131 Q47.6 129 47.2 121 Z" }, 1],
+    ["gemelo", "path", { d: "M38 162 Q36 175 38 190 Q40 196.5 42 196.5 Q44 182 45.6 165 Q42 159.5 38 162 Z" }, 1],
   ],
   back: [
-    ["base", "circle", { cx: 50, cy: 16, r: 10 }],
-    ["espalda", "path", { d: "M50 26 L63 36 L58 50 L50 54 L42 50 L37 36 Z" }],
-    ["hombro", "ellipse", { cx: 28, cy: 43, rx: 9, ry: 8 }], ["hombro", "ellipse", { cx: 72, cy: 43, rx: 9, ry: 8 }],
-    ["espalda", "path", { d: "M36 46 Q32 64 40 84 L48 86 L48 57 Z" }], ["espalda", "path", { d: "M64 46 Q68 64 60 84 L52 86 L52 57 Z" }],
-    ["triceps", "ellipse", { cx: 22, cy: 64, rx: 5.5, ry: 11 }], ["triceps", "ellipse", { cx: 78, cy: 64, rx: 5.5, ry: 11 }],
-    ["base", "ellipse", { cx: 19, cy: 89, rx: 4.5, ry: 12 }], ["base", "ellipse", { cx: 81, cy: 89, rx: 4.5, ry: 12 }],
-    ["base", "circle", { cx: 18, cy: 106, r: 4 }], ["base", "circle", { cx: 82, cy: 106, r: 4 }],
-    ["lumbar", "rect", { x: 41, y: 86, width: 18, height: 11, rx: 4 }],
-    ["gluteo", "ellipse", { cx: 41.5, cy: 108, rx: 9.5, ry: 10 }], ["gluteo", "ellipse", { cx: 58.5, cy: 108, rx: 9.5, ry: 10 }],
-    ["femoral", "ellipse", { cx: 41, cy: 137, rx: 8, ry: 18 }], ["femoral", "ellipse", { cx: 59, cy: 137, rx: 8, ry: 18 }],
-    ["base", "circle", { cx: 41, cy: 158, r: 4.5 }], ["base", "circle", { cx: 59, cy: 158, r: 4.5 }],
-    ["gemelo", "ellipse", { cx: 41, cy: 179, rx: 7, ry: 15 }], ["gemelo", "ellipse", { cx: 59, cy: 179, rx: 7, ry: 15 }],
-    ["base", "ellipse", { cx: 41, cy: 202, rx: 5, ry: 3.5 }], ["base", "ellipse", { cx: 59, cy: 202, rx: 5, ry: 3.5 }],
+    ["base", "ellipse", { cx: 50, cy: 15, rx: 8.5, ry: 10 }],
+    ["base", "path", { d: "M45 23 L55 23 L56.5 31 L43.5 31 Z" }],
+    ["base", "path", { d: TORSO_B }],
+    ["base", "path", { d: "M21.5 73 Q18 83 17.5 93 Q19 97 21.5 96 Q25 85 27.5 74 Z" }, 1],
+    ["base", "ellipse", { cx: 18.8, cy: 101, rx: 3, ry: 4.6 }, 1],
+    ["base", "ellipse", { cx: 42, cy: 158, rx: 4.6, ry: 3.6 }, 1],
+    ["base", "path", { d: "M38.6 186 L45 186 L44 198 L40 198 Z" }, 1],
+    ["base", "ellipse", { cx: 41.5, cy: 201.5, rx: 4.8, ry: 3 }, 1],
+    ["espalda", "path", { d: "M50 25 L56 30 Q64 32.5 68 36 Q58.5 39.5 54.5 50 L50 59 L45.5 50 Q41.5 39.5 32 36 Q36 32.5 44 30 Z" }],
+    ["hombro", "path", { d: "M32.5 35.5 Q24.5 36 22.5 44.5 Q22 50.5 23.8 54.5 Q28.5 48 35 45 Q36 39.5 32.5 35.5 Z" }, 1],
+    ["espalda", "path", { d: "M36.2 43 Q33 56 37 70 Q41 80 46 84.5 L48.8 66 L48 55.5 Q42 46.5 36.2 43 Z" }, 1],
+    ["triceps", "path", { d: "M23.2 55 Q20.6 62.5 22.5 71.5 Q26 73.5 28 66.5 Q29.2 58.5 28.2 52.5 Q25.2 51.5 23.2 55 Z" }, 1],
+    ["lumbar", "path", { d: "M44.2 81 Q47 86.5 50 87.5 Q53 86.5 55.8 81 L55 93 Q50 95 45 93 Z" }],
+    ["gluteo", "path", { d: "M37.4 95 Q35.8 104 38.5 111.5 Q43 116.5 49.5 114.5 L49.5 97.5 Q44 93.5 37.4 95 Z" }, 1],
+    ["femoral", "path", { d: "M37.5 115.5 Q35 129 37 145 Q39 153 42 155 Q46 150 47.5 140 Q48.6 126 48.2 116.5 Q43 118.5 37.5 115.5 Z" }, 1],
+    ["gemelo", "path", { d: "M37.6 161 Q35 171 37.6 183 Q40 189 42 188 Q45 179 46.2 167 Q43 159 37.6 161 Z" }, 1],
   ],
 };
+const MIRROR = "translate(100 0) scale(-1 1)";
 
-function BodyMap({ fill, size = 220, onPick }) {
+function BodyMap({ fill, size = 300, onPick }) {
   const Tag = { circle: "circle", rect: "rect", ellipse: "ellipse", path: "path" };
   const fig = (side) => (
-    <svg viewBox="0 0 100 210" width={size * 0.48} height={size} aria-hidden="true">
-      {BODY[side].map(([k, t, p], i) => {
+    <svg viewBox="12 2 76 205" width={size * 0.37} height={size} aria-hidden="true">
+      {BODY[side].flatMap(([k, t, p, m], i) => {
         const El = Tag[t];
-        return <El key={i} {...p} fill={k === "base" ? "#1B1B20" : fill(k)} stroke="#000" strokeWidth="1.2" className={k !== "base" ? "bm-m" : ""} style={k !== "base" ? { animationDelay: `${i * 18}ms` } : undefined} onClick={k !== "base" && onPick ? () => onPick(k) : undefined} />;
+        const base = k === "base";
+        const props = { ...p, fill: base ? "#1A1A1F" : fill(k), stroke: "#000", strokeWidth: base ? 0.6 : 0.9, strokeLinejoin: "round", className: base ? "" : "bm-m", style: base ? undefined : { animationDelay: `${i * 22}ms` }, onClick: !base && onPick ? () => onPick(k) : undefined };
+        return m ? [<El key={i} {...props} />, <g key={i + "m"} transform={MIRROR}><El {...props} /></g>] : [<El key={i} {...props} />];
       })}
     </svg>
   );
@@ -1733,8 +1752,8 @@ function BodyMap({ fill, size = 220, onPick }) {
 
 const LEVEL_FILL = { none: "#26262B", low: "rgba(212,139,146,.3)", mid: "rgba(212,139,146,.6)", acc: "rgba(212,139,146,.6)", ok: "#D48B92", over: "#F87171" };
 
-function MuscleWeek({ sessions, routine }) {
-  const [view, setView] = useState(sessions.length ? "hecho" : "plan");
+function MuscleWeek({ sessions, routine, initial }) {
+  const [view, setView] = useState(initial || (sessions.length ? "hecho" : "plan"));
   const [pick, setPick] = useState(null);
   const done = useMemo(() => weeklyDone(sessions), [sessions]);
   const plan = useMemo(() => weeklyPlanned(routine), [routine]);
@@ -1778,7 +1797,7 @@ function ExerciseMuscles({ exId }) {
   if (!Object.keys(m).length) return null;
   return (
     <div className="exmus">
-      <BodyMap size={170} fill={(k) => (m[k] === 1 ? "#D48B92" : m[k] ? "rgba(212,139,146,.38)" : "#26262B")} />
+      <BodyMap size={210} fill={(k) => (m[k] === 1 ? "#D48B92" : m[k] ? "rgba(212,139,146,.38)" : "#26262B")} />
       <div className="mw-legend" style={{ justifyContent: "center" }}>
         <span><i style={{ background: "#D48B92" }} />Principal: {Object.keys(m).filter((k) => m[k] === 1).map((k) => MUSCLE_NAME[k]).join(", ")}</span>
         {Object.values(m).some((v) => v < 1) && <span><i style={{ background: "rgba(212,139,146,.38)" }} />Ayuda: {Object.keys(m).filter((k) => m[k] < 1).map((k) => MUSCLE_NAME[k]).join(", ")}</span>}
@@ -1893,7 +1912,87 @@ function Tracker({ active, sessions, setActive, onFinish, onCancel, media, coach
   );
 }
 
-function Workouts({ state, routine, onStart, setDays, media, coach, setMedia, uploadMedia }) {
+/* ===================== RUTINA PROPIA ===================== */
+
+const DAY_IDS = "ABCDEFG";
+// La rutina que usa la app: la automática o la que ha montado la usuaria
+function activeRoutine(profile) {
+  if (profile?.routineMode === "custom" && profile.customRoutine?.length) {
+    return profile.customRoutine.map((d, i) => ({ id: DAY_IDS[i], name: d.name || `Día ${DAY_IDS[i]}`, ex: (d.ex || []).filter((e) => EXERCISES[e.id]).map((e) => ({ rir: 2, rest: 90, ...e, sets: Number(e.sets) || 3, reps: e.reps || "8–12" })) }));
+  }
+  return buildRoutine(profile?.days || 3, profile?.branch);
+}
+
+function ExercisePicker({ onPick, onClose }) {
+  const [q, setQ] = useState("");
+  const [grp, setGrp] = useState(null);
+  const norm = (t) => t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  const list = Object.values(EXERCISES).filter((e) => !["CARDIO", "MOVILIDAD"].includes(e.id) && (!grp || e.group === grp) && (!q || norm(`${e.n} ${e.muscle} ${e.equip} ${e.group}`).includes(norm(q))));
+  return (
+    <div className="modal" onClick={onClose}>
+      <div className="box" onClick={(e) => e.stopPropagation()}>
+        <h1 style={{ fontSize: 20 }}>Añadir ejercicio</h1>
+        <input className="in" autoFocus placeholder="Buscar: jalón, hip thrust, polea…" value={q} onChange={(e) => setQ(e.target.value)} />
+        <div className="chips" style={{ margin: "10px 0" }}>{GROUPS.filter((g) => g !== "Cardio" && g !== "Movilidad").map((g) => <button key={g} className={`chip ${grp === g ? "on" : ""}`} onClick={() => setGrp(grp === g ? null : g)}>{g}</button>)}</div>
+        <div style={{ maxHeight: "50vh", overflowY: "auto" }}>
+          {list.map((e) => (
+            <button key={e.id} className="exrow" style={{ padding: "11px 0", borderBottom: "1px solid var(--ln)" }} onClick={() => onPick(e.id)}>
+              <span>{e.n}<small style={{ display: "block", color: "var(--dm)", fontSize: 12 }}>{e.muscle}</small></span><span>{e.group}</span>
+            </button>
+          ))}
+          {list.length === 0 && <div className="empty">No hay ejercicios con esa búsqueda.</div>}
+        </div>
+        <button className="btn" onClick={onClose}>Cerrar</button>
+      </div>
+    </div>
+  );
+}
+
+function RoutineEditor({ days, onChange, onDone }) {
+  const [pickFor, setPickFor] = useState(null);
+  const upDay = (i, fn) => onChange(days.map((d, j) => (j === i ? fn(d) : d)));
+  const upEx = (i, k, patch) => upDay(i, (d) => ({ ...d, ex: d.ex.map((e, j) => (j === k ? { ...e, ...patch } : e)) }));
+  const move = (i, k, dir) => upDay(i, (d) => { const ex = [...d.ex]; const t = k + dir; if (t < 0 || t >= ex.length) return d; [ex[k], ex[t]] = [ex[t], ex[k]]; return { ...d, ex }; });
+  return (
+    <div className="redit">
+      {days.map((d, i) => (
+        <div className="day" key={i}>
+          <div className="hd">
+            <input className="in redit-name" value={d.name} placeholder={`Día ${DAY_IDS[i]}`} onChange={(e) => upDay(i, (x) => ({ ...x, name: e.target.value }))} aria-label="Nombre del día" />
+            {days.length > 1 && <button className="link" onClick={() => onChange(days.filter((_, j) => j !== i))}>Borrar día</button>}
+          </div>
+          {d.ex.length === 0 && <p className="hint">Este día aún no tiene ejercicios.</p>}
+          {d.ex.map((e, k) => (
+            <div className="redit-ex" key={k}>
+              <div className="redit-n">
+                <span>{EXERCISES[e.id].n}</span>
+                <small>{EXERCISES[e.id].muscle}</small>
+              </div>
+              <input className="in" type="number" inputMode="numeric" min="1" max="10" value={e.sets} onChange={(ev) => upEx(i, k, { sets: ev.target.value })} aria-label="Series" />
+              <span className="redit-x">×</span>
+              <input className="in" value={e.reps} onChange={(ev) => upEx(i, k, { reps: ev.target.value })} aria-label="Repeticiones" />
+              <div className="redit-btns">
+                <button aria-label="Subir" onClick={() => move(i, k, -1)}>↑</button>
+                <button aria-label="Bajar" onClick={() => move(i, k, 1)}>↓</button>
+                <button aria-label="Quitar" onClick={() => upDay(i, (x) => ({ ...x, ex: x.ex.filter((_, j) => j !== k) }))}>✕</button>
+              </div>
+            </div>
+          ))}
+          <button className="add" onClick={() => setPickFor(i)}>+ Añadir ejercicio</button>
+        </div>
+      ))}
+      {days.length < 7 && <button className="btn ghost" onClick={() => onChange([...days, { name: `Día ${DAY_IDS[days.length]}`, ex: [] }])}>+ Añadir día</button>}
+      <button className="btn" onClick={onDone}>Listo</button>
+      {pickFor !== null && <ExercisePicker onClose={() => setPickFor(null)} onPick={(id) => { upDay(pickFor, (d) => ({ ...d, ex: [...d.ex, { id, sets: 3, reps: "8–12", rir: 2, rest: 90 }] })); setPickFor(null); }} />}
+    </div>
+  );
+}
+
+function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, setMedia, uploadMedia }) {
+  const mode = state.profile.routineMode || "auto";
+  const custom = state.profile.customRoutine || [];
+  const [editing, setEditing] = useState(false);
+  const autoDays = () => buildRoutine(state.profile.days || 3, state.profile.branch).map((d) => ({ name: d.name, ex: d.ex.map(({ id, sets, reps, rir, rest }) => ({ id, sets, reps, rir, rest })) }));
   const [tech, setTech] = useState(null);
   const [q, setQ] = useState("");
   const [grp, setGrp] = useState(null);
@@ -1903,10 +2002,32 @@ function Workouts({ state, routine, onStart, setDays, media, coach, setMedia, up
     <>
       <h1>Entrenos</h1>
       <p className="sub">Elige el día que toca. Al terminar sumas {RULES.XP_PER_SESSION} XP y {RULES.GEMS_PER_SESSION} gemas.</p>
-      <div className="field"><label>Días por semana</label>
-        <div className="chips">{[2, 3, 4, 5, 6, 7].map((d) => <button key={d} className={`chip ${state.profile.days === d ? "on" : ""}`} onClick={() => setDays(d)}>{d}</button>)}</div>
+      <div className="seg">
+        <button className={mode === "auto" ? "on" : ""} onClick={() => { setProfile({ routineMode: "auto" }); setEditing(false); }}>Según mis objetivos</button>
+        <button className={mode === "custom" ? "on" : ""} onClick={() => setProfile({ routineMode: "custom" })}>Mi propia rutina</button>
       </div>
-      {routine.map((d) => (
+      {mode === "auto" && (
+        <div className="field"><label>Días por semana</label>
+          <div className="chips">{[2, 3, 4, 5, 6, 7].map((d) => <button key={d} className={`chip ${state.profile.days === d ? "on" : ""}`} onClick={() => setDays(d)}>{d}</button>)}</div>
+        </div>
+      )}
+      {mode === "custom" && custom.length === 0 && (
+        <div className="note">
+          <b>Monta tu rutina</b>
+          <p className="sub" style={{ margin: "6px 0 0" }}>Si ya tienes una rutina, apúntala aquí y la app te registra las series, te avisa de cuándo subir peso y te pinta los músculos que trabajas.</p>
+          <button className="btn" onClick={() => { setProfile({ customRoutine: autoDays() }); setEditing(true); }}>Empezar desde la automática</button>
+          <button className="btn ghost" onClick={() => { setProfile({ customRoutine: [{ name: "Día A", ex: [] }] }); setEditing(true); }}>Empezar de cero</button>
+        </div>
+      )}
+      {mode === "custom" && custom.length > 0 && editing && (
+        <>
+          <RoutineEditor days={custom} onChange={(d) => setProfile({ customRoutine: d })} onDone={() => setEditing(false)} />
+          <h2>Así queda tu semana</h2>
+          <MuscleWeek sessions={state.sessions} routine={routine} initial="plan" />
+        </>
+      )}
+      {mode === "custom" && custom.length > 0 && !editing && <button className="btn ghost" style={{ marginBottom: 6 }} onClick={() => setEditing(true)}>Editar mi rutina</button>}
+      {!(mode === "custom" && (editing || custom.length === 0)) && routine.map((d) => (
         <div className="day" key={d.id}>
           <div className="hd"><b>Día {d.id}: {d.name}</b><button className="sbtn" onClick={() => onStart(d)}>Empezar</button></div>
           {d.ex.map((e) => (
@@ -1918,8 +2039,8 @@ function Workouts({ state, routine, onStart, setDays, media, coach, setMedia, up
         </div>
       ))}
       <p className="hint">{coach ? "Modo coach: toca cualquier ejercicio para subir su vídeo o pegar el enlace." : "Toca un ejercicio para ver cómo se hace y su truquito."}</p>
-      <h2>Tus músculos</h2>
-      <MuscleWeek sessions={state.sessions} routine={routine} />
+      {!(mode === "custom" && editing) && <><h2>Tus músculos</h2>
+      <MuscleWeek sessions={state.sessions} routine={routine} /></>}
       <h2>Biblioteca de ejercicios</h2>
       <input className="in" placeholder="Buscar: hip thrust, polea, glúteo…" value={q} onChange={(e) => setQ(e.target.value)} />
       <div className="chips" style={{ margin: "10px 0" }}>{GROUPS.map((g) => <button key={g} className={`chip ${grp === g ? "on" : ""}`} onClick={() => setGrp(grp === g ? null : g)}>{g}</button>)}</div>
@@ -3039,7 +3160,7 @@ function ArcApp({ user }) {
     await setMedia(key, url);
   };
 
-  const routine = useMemo(() => buildRoutine(state.profile?.days || 3, state.profile?.branch), [state.profile?.days, state.profile?.branch]);
+  const routine = useMemo(() => activeRoutine(state.profile), [state.profile?.days, state.profile?.branch, state.profile?.routineMode, state.profile?.customRoutine]);
   const adh = useMemo(() => (state.profile ? adherenceInfo(state.habits, state.profile.startDate) : null), [state.habits, state.profile]);
   const stats = useMemo(() => {
     if (!state.profile) return null;
@@ -3194,7 +3315,7 @@ function ArcApp({ user }) {
   } else if (tab === "inicio") {
     body = <Home state={state} stats={stats} ev={ev} quote={quote} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
   } else if (tab === "entrenos") {
-    body = <Workouts state={state} routine={routine} onStart={(d) => setActive(newSession(d, state.sessions))} setDays={(d) => setProfile({ days: d })} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
+    body = <Workouts state={state} routine={routine} onStart={(d) => setActive(newSession(d, state.sessions))} setDays={(d) => setProfile({ days: d })} setProfile={setProfile} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
   } else if (tab === "ranking") {
     body = <Ranking me={{ optIn: !!state.rankOptIn, nickname: state.nickname }} state={state} api={rankApi} />;
   } else if (tab === "nutricion") {
