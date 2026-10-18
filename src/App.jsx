@@ -145,7 +145,7 @@ function Skills({ lv, L, stats, ev }) {
     const r = prov ? 1 : Math.max(1, T.filter((t) => have >= t).length); // cuántos niveles cumples en esta skill
     const part = r < max ? Math.max(0, Math.min(1, (have - T[r - 1]) / (T[r] - T[r - 1]))) : 0;
     const pct = Math.min(100, ((r - 1 + part) / (max - 1)) * 100);
-    const short = !!next && !prov && have < next[d.key];
+    const short = !!next && !prov && d.key !== "pullups" && have < next[d.key];
     return { def: d, have, rank: r, pct, short, provisional: prov };
   });
   const hi = Math.max(...rows.map((r) => r.rank));
@@ -622,7 +622,7 @@ const COOK_OPTS = [["sencilla", "Modo fácil"], ["todas", "Un poco de todo"], ["
    Lo de arriba son los valores de fábrica; applyContent() los sustituye por los guardados.
    ======================================================================== */
 
-const LIFT_OPTS = [["", "No cuenta para el nivel"], ["squat", "Sentadilla (nivel)"], ["deadlift", "Peso muerto (nivel)"], ["bench", "Press banca (nivel)"], ["pull", "Dominadas (nivel)"]];
+const LIFT_OPTS = [["", "No cuenta para el nivel"], ["squat", "Sentadilla (nivel)"], ["deadlift", "Peso muerto (nivel)"], ["bench", "Press banca (nivel)"], ["pull", "Dominadas (extra)"]];
 const TAG_OPTS = EXCLUDE_OPTS;
 
 function withFallback(obj) {
@@ -763,7 +763,7 @@ const ratioOf = (branch, best, bw) => (bw ? (best.squat + best.deadlift + (branc
 
 const FACTORS = [
   { key: "ratio", label: "Fuerza relativa", fmt: (v) => `${v.toFixed(2)}x` },
-  { key: "pullups", label: "Dominadas estrictas", fmt: (v) => `${v}` },
+  { key: "pullups", label: "Dominadas estrictas", fmt: (v) => `${v}`, optional: true }, // extra: suma, pero no frena el nivel
   { key: "months", label: "Meses sin parar", fmt: (v) => `${v}` },
   { key: "adherence", label: "Adherencia 30 días", fmt: (v) => `${v}%` },
 ];
@@ -773,16 +773,17 @@ function evaluate(branch, stats, mode) {
   const val = (k) => (k === "adherence" && stats.provisional ? Infinity : stats[k] ?? 0);
   const reach = (k) => { let idx = 0; L.forEach((lv, i) => { if (val(k) >= lv[k]) idx = i; }); return idx; };
   const perFactor = Object.fromEntries(FACTORS.map((f) => [f.key, reach(f.key)]));
-  const current = Math.min(...Object.values(perFactor));
+  const CORE = FACTORS.filter((f) => !f.optional);
+  const current = Math.min(...CORE.map((f) => perFactor[f.key]));
   const next = L[current + 1] || null;
   let progress = 1;
   if (next) {
-    progress = Math.min(...FACTORS.map((f) => {
+    progress = Math.min(...CORE.map((f) => {
       const a = L[current][f.key], b = next[f.key], v = val(f.key);
       return b <= a ? 1 : Math.max(0, Math.min(1, (v - a) / (b - a)));
     }));
   }
-  const limiter = FACTORS.reduce((m, f) => (perFactor[f.key] < perFactor[m.key] ? f : m), FACTORS[0]);
+  const limiter = CORE.reduce((m, f) => (perFactor[f.key] < perFactor[m.key] ? f : m), CORE[0]);
   return { current, next, progress, perFactor, limiter };
 }
 
@@ -967,6 +968,7 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .redit-x{color:var(--dm);text-align:center}
 .redit-btns{display:flex;gap:2px}
 .redit-btns button{background:var(--sf2);border:1px solid var(--ln);color:var(--tx);border-radius:8px;width:28px;height:30px;font:inherit;font-size:12px;cursor:pointer}
+.fac.extra{opacity:.85}.fac.extra em{font-style:normal;font-size:11px;font-weight:700;color:var(--dm);border:1px solid var(--ln);border-radius:999px;padding:1px 7px;margin-left:6px}
 .cook-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .cook-opt{background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:16px;padding:14px 8px 12px;font:inherit;font-size:13px;line-height:1.25;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;transition:transform .15s}
 .cook-opt:active{transform:scale(.97)}
@@ -1436,7 +1438,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
       {ev.next ? (
         <>
           <h2>Para llegar a {ev.next.name}</h2>
-          {FACTORS.map((f) => {
+          {FACTORS.filter((f) => !f.optional).map((f) => {
             const need = ev.next[f.key], have = stats[f.key];
             const prov = f.key === "adherence" && stats.provisional;
             const ok = prov || have >= need;
@@ -1447,6 +1449,12 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
               </div>
             );
           })}
+          {ev.next.pullups > 0 && (
+            <div className="fac extra">
+              <div className="hd"><span>Dominadas <em>extra</em></span><span>{stats.pullups} / {ev.next.pullups}</span></div>
+              <p className="hint" style={{ margin: "2px 0 0" }}>{stats.pullups >= ev.next.pullups ? "Las tienes. Suman en tus skills, aunque no hacen falta para subir." : "No hacen falta para subir de nivel. Si las consigues, suman en tus skills."}</p>
+            </div>
+          )}
           {ev.perFactor.ratio > ev.current && (
             <div className="note">Tu fuerza ya es de nivel {ev.perFactor.ratio + 1}, {L[ev.perFactor.ratio].name}. Lo que te frena ahora: {ev.limiter.label.toLowerCase()}.</div>
           )}
@@ -1485,7 +1493,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
         return (
           <div key={l.name} className="lvrow" style={{ opacity: mine && i > ev.current && !coach ? 0.4 : 1 }}>
             <div className="thumb">{img ? <img src={img} alt="" /> : <span>{i + 1}</span>}</div>
-            <div style={{ flex: 1, minWidth: 0, fontWeight: mine && i === ev.current ? 700 : 400 }}>{l.name}<small>{l.ratio.toFixed(1)}x · {l.pullups} {l.pullups === 1 ? "dominada" : "dominadas"} · {l.months} {l.months === 1 ? "mes" : "meses"}</small></div>
+            <div style={{ flex: 1, minWidth: 0, fontWeight: mine && i === ev.current ? 700 : 400 }}>{l.name}<small>{l.ratio.toFixed(1)}x tu peso · {l.months} {l.months === 1 ? "mes" : "meses"} · {l.adherence}% hábitos</small></div>
             {coach && (
               <div className="chips" style={{ width: "100%", paddingLeft: 52 }}>
                 <MediaPicker label={img ? "Cambiar" : "Imagen"} accept="image/*" onPick={(f) => uploadMedia(key, f)} onError={setErr} />
@@ -2686,7 +2694,7 @@ function Tour({ profile, ev, heroImg, perms, onFinish }) {
       title: `${male ? "Bienvenido" : "Bienvenida"} a tu arco`,
       body: <>
         <p className="tour-p">Aquí no subes de nivel por abrir la app.</p>
-        <p className="tour-p">Subes por lo que levantas, por las dominadas que consigues y por no fallarte día tras día.</p>
+        <p className="tour-p">Subes por lo que levantas, por los meses que llevas sin parar y por no fallarte día tras día.</p>
       </>,
     },
     {
@@ -2702,9 +2710,9 @@ function Tour({ profile, ev, heroImg, perms, onFinish }) {
       body: (
         <div className="tour-list">
           <div><b>Fuerza</b><span>Apunta tus series de sentadilla y peso muerto{male ? " y press banca" : ""}. La app calcula tu fuerza con tu peso.</span></div>
-          <div><b>Dominadas</b><span>Las estrictas, sin ayuda. Cada una cuenta.</span></div>
           <div><b>Meses sin parar</b><span>Si paras más de 3 semanas, la cuenta vuelve a empezar.</span></div>
           <div><b>Hábitos</b><span>Pasos, agua y sueño. Con 2 de 3 el día cuenta como cumplido.</span></div>
+          <div><b>Dominadas (extra)</b><span>No hacen falta para subir, pero suman en tus skills.</span></div>
         </div>
       ),
     },
