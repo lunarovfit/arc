@@ -3,7 +3,7 @@
 // Mientras no haya clave, o fuera del iPhone, la app no bloquea nada.
 import { Capacitor } from "@capacitor/core";
 
-const DEFAULT_KEY = "";
+const DEFAULT_KEY = "appl_dnPsIwbdESQutxlbKgSKGKcaUnQ";
 const KEY = String(import.meta.env.VITE_RC_IOS_KEY || DEFAULT_KEY).trim().replace(/^["']|["']$/g, "");
 export const ENTITLEMENT = "premium";
 export const enabled = Capacitor.isNativePlatform() && Capacitor.getPlatform() === "ios" && KEY.startsWith("appl_");
