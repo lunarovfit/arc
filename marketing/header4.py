@@ -15,13 +15,22 @@ d=ImageDraw.Draw(c)
 for i in range(1,4): d.rectangle((i*sw-4,0,i*sw+4,H),fill=(0,0,0))
 # oscurecer el centro para leer el texto
 ov=Image.new("L",(W,H),0); od=ImageDraw.Draw(ov)
-od.ellipse((W//2-1250,H//2-640,W//2+1250,H//2+640),fill=185); ov=ov.filter(ImageFilter.GaussianBlur(220))
-c.paste(Image.new("RGB",(W,H),(0,0,0)),(0,0),ov)
+pass  # sin óvalo oscuro: las 4 fotos con el mismo brillo
 # viñeta suave arriba y abajo
 g=Image.new("L",(1,H)); 
 for y in range(H): g.putpixel((0,y),int(110*max(0,1-y/300)**2+120*max(0,(y-H+380)/380)**2))
 c.paste(Image.new("RGB",(W,H),(0,0,0)),(0,0),g.resize((W,H)))
-d=ImageDraw.Draw(c); cx,cy=W//2,H//2
+cx,cy=W//2,H//2
+def texto(dr,col_w,col_p):
+    dr.text((cx,cy-200),"Sube de nivel",font=fH,fill=col_w,anchor="ma")
+    w1=dr.textlength("con fuerza ",font=fH); w2=dr.textlength("real",font=fH); x=cx-(w1+w2)/2
+    dr.text((x,cy-20),"con fuerza ",font=fH,fill=col_w); dr.text((x+w1,cy-20),"real",font=fH,fill=col_p)
+    dr.text((cx,cy+235),"by Lunarovx",font=ImageFont.truetype(F+"Inter-SemiBold.otf",64),fill=col_p,anchor="mm")
+    dr.text((cx+40,cy-360+42),"ARC",font=ImageFont.truetype(F+"Inter-ExtraBold.otf",68),fill=col_w,anchor="lm")
+fH=ImageFont.truetype(F+"Inter-ExtraBold.otf",150)
+sh=Image.new("L",(W,H),0); texto(ImageDraw.Draw(sh),255,255); sh=sh.filter(ImageFilter.MaxFilter(25)).filter(ImageFilter.GaussianBlur(38)).point(lambda v:min(255,int(v*1.1)))
+c.paste(Image.new("RGB",(W,H),(0,0,0)),(0,0),sh)
+d=ImageDraw.Draw(c)
 jp=ImageFont.truetype("/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc",58,index=0)
 logo=Image.open("/home/claude/mk/raw/logo-mark.png").convert("RGBA"); lw=120; logo=logo.resize((lw,int(logo.size[1]*lw/logo.size[0])))
 fB=ImageFont.truetype(F+"Inter-ExtraBold.otf",68); tw=d.textlength("ARC",font=fB); lx=cx-(lw+20+tw)/2
