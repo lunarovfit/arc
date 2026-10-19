@@ -11,7 +11,10 @@ export async function loadAll(userId) {
     supabase.from("habits").select("*").eq("user_id", userId).gte("day", since),
     supabase.from("media").select("key, url"),
   ]);
-  return { profile: must(profile), sessions: must(sessions), habits: must(habits), media: must(media) };
+  // Rutina que le ha puesto su coach (si la tabla aún no existe, se ignora)
+  const cr = await supabase.from("coach_clients").select("routine, updated_at").eq("client_id", userId).not("routine", "is", null).order("updated_at", { ascending: false }).limit(1);
+  const coachRoutine = !cr.error && cr.data?.[0]?.routine?.length ? cr.data[0].routine : null;
+  return { profile: must(profile), sessions: must(sessions), habits: must(habits), media: must(media), coachRoutine };
 }
 
 export const updateProfile = (userId, patch) =>
@@ -77,3 +80,18 @@ export const reportNickname = (nickname, reason) => supabase.from("rank_reports"
 export const listReports = () => supabase.from("rank_reports").select("*").eq("resolved", false).order("created_at", { ascending: false }).then(must);
 export const dismissReport = (id) => supabase.from("rank_reports").update({ resolved: true }).eq("id", id).then(must);
 export const hideFromRanking = (nick) => supabase.rpc("hide_from_ranking", { nick }).then(must);
+
+// ---------- Asesoradas (solo coach) ----------
+export const listClients = () => supabase.from("coach_clients").select("*").order("created_at", { ascending: true }).then(must);
+export const addClient = (name, email) => supabase.from("coach_clients").insert({ name, email }).select().single().then(must);
+export const updateClient = (id, patch) => supabase.from("coach_clients").update(patch).eq("id", id).select().single().then(must);
+export const removeClient = (id) => supabase.from("coach_clients").delete().eq("id", id).then(must);
+export async function clientData(clientId) {
+  const since = new Date(Date.now() - 120 * 864e5).toISOString().slice(0, 10);
+  const [profile, sessions, habits] = await Promise.all([
+    supabase.from("profiles").select("*").eq("id", clientId).single(),
+    supabase.from("workout_sessions").select("*").eq("user_id", clientId).order("performed_at", { ascending: true }),
+    supabase.from("habits").select("*").eq("user_id", clientId).gte("day", since),
+  ]);
+  return { profile: must(profile), sessions: must(sessions), habits: must(habits) };
+}

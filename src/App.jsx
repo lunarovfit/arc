@@ -1989,11 +1989,11 @@ function Tracker({ active, sessions, setActive, onFinish, onCancel, media, coach
 
 const DAY_IDS = "ABCDEFG";
 // La rutina que usa la app: la automática o la que ha montado la usuaria
+const normDays = (days) => days.map((d, i) => ({ id: DAY_IDS[i], name: d.name || `Día ${DAY_IDS[i]}`, ex: (d.ex || []).filter((e) => EXERCISES[e.id]).map((e) => ({ rir: 2, rest: 90, ...e, sets: Number(e.sets) || 3, reps: e.reps || "8–12" })) }));
 function activeRoutine(profile) {
   BODY_FEMALE = profile?.branch === "female";
-  if (profile?.routineMode === "custom" && profile.customRoutine?.length) {
-    return profile.customRoutine.map((d, i) => ({ id: DAY_IDS[i], name: d.name || `Día ${DAY_IDS[i]}`, ex: (d.ex || []).filter((e) => EXERCISES[e.id]).map((e) => ({ rir: 2, rest: 90, ...e, sets: Number(e.sets) || 3, reps: e.reps || "8–12" })) }));
-  }
+  if (profile?.coachRoutine?.length) return normDays(profile.coachRoutine); // la que pone la coach manda
+  if (profile?.routineMode === "custom" && profile.customRoutine?.length) return normDays(profile.customRoutine);
   return buildRoutine(profile?.days || 3, profile?.branch);
 }
 
@@ -2063,7 +2063,8 @@ function RoutineEditor({ days, onChange, onDone }) {
 }
 
 function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, setMedia, uploadMedia }) {
-  const mode = state.profile.routineMode || "auto";
+  const fromCoach = !!state.coachRoutine?.length;
+  const mode = fromCoach ? "coach" : state.profile.routineMode || "auto";
   const custom = state.profile.customRoutine || [];
   const [editing, setEditing] = useState(false);
   const autoDays = () => buildRoutine(state.profile.days || 3, state.profile.branch).map((d) => ({ name: d.name, ex: d.ex.map(({ id, sets, reps, rir, rest }) => ({ id, sets, reps, rir, rest })) }));
@@ -2076,10 +2077,11 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
     <>
       <h1>Entrenos</h1>
       <p className="sub">Elige el día que toca. Al terminar sumas {RULES.XP_PER_SESSION} XP y {RULES.GEMS_PER_SESSION} gemas.</p>
-      <div className="seg">
+      {fromCoach && <div className="note"><b>Rutina de tu entrenadora</b><p className="sub" style={{ margin: "4px 0 0" }}>Esta rutina te la ha preparado ella. Apunta tus series y verá cómo vas.</p></div>}
+      {!fromCoach && <div className="seg">
         <button className={mode === "auto" ? "on" : ""} onClick={() => { setProfile({ routineMode: "auto" }); setEditing(false); }}>Según mis objetivos</button>
         <button className={mode === "custom" ? "on" : ""} onClick={() => setProfile({ routineMode: "custom" })}>Mi propia rutina</button>
-      </div>
+      </div>}
       {mode === "auto" && (
         <div className="field"><label>Días por semana</label>
           <div className="chips">{[2, 3, 4, 5, 6, 7].map((d) => <button key={d} className={`chip ${state.profile.days === d ? "on" : ""}`} onClick={() => setDays(d)}>{d}</button>)}</div>
@@ -2871,7 +2873,7 @@ function Reminders({ value, onChange }) {
   );
 }
 
-function Settings({ onPaywallPreview, videos, onFinishPreview, sub, email, isCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
+function Settings({ onClients, onPaywallPreview, videos, onFinishPreview, sub, email, isCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
   const [confirm, setConfirm] = useState(null); // "data" | "account"
   const [legal, setLegal] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -2890,6 +2892,7 @@ function Settings({ onPaywallPreview, videos, onFinishPreview, sub, email, isCoa
             <button className={!coachView ? "on" : ""} onClick={() => setCoachView(false)}>Ver como clienta</button>
             <button className={coachView ? "on" : ""} onClick={() => setCoachView(true)}>Modo coach</button>
           </div>
+          <button className="btn ac" onClick={onClients}>Mis asesoradas</button>
           <button className="btn" onClick={onContent}>Editar frases, recetas, ejercicios y alimentos</button>
           <button className="btn ghost" onClick={onReports}>Denuncias del ranking</button>
           <h2>Fotos de la app</h2>
@@ -3016,7 +3019,7 @@ export default function App() {
 
 const EMPTY = { onboarded: false, profile: null, sessions: [], habits: {}, xp: 0, gems: 0, active: null, role: "client" };
 
-function fromDb({ profile, sessions, habits }) {
+function fromDb({ profile, sessions, habits, coachRoutine }) {
   return {
     onboarded: profile.onboarded,
     profile: profile.data ? { ...DEFAULT_PROFILE, ...profile.data, startDate: profile.start_date } : null,
@@ -3024,6 +3027,7 @@ function fromDb({ profile, sessions, habits }) {
     habits: Object.fromEntries(habits.map((h) => [h.day, { water: h.water ?? undefined, steps: h.steps ?? undefined, sleep: h.sleep != null ? Number(h.sleep) : undefined, weight: h.weight != null ? Number(h.weight) : undefined }])),
     xp: profile.xp, gems: profile.gems, active: profile.active_session, role: profile.role,
     nickname: profile.nickname, rankOptIn: profile.rank_opt_in && !!profile.nickname, savedLevel: profile.level,
+    coachRoutine: coachRoutine || null,
   };
 }
 
@@ -3172,6 +3176,219 @@ const PAYWALL_CSS = `
 @keyframes pwIn{from{transform:translateY(24px);opacity:0}}
 `;
 
+/* ============================ ASESORADAS (COACH) ============================ */
+
+const dayMs = 864e5;
+const fmtDate = (d) => new Date(d).toLocaleDateString("es-ES", { day: "numeric", month: "short" });
+
+// Resumen de cumplimiento de una asesorada a partir de sus datos
+function clientSummary(raw, routineDays) {
+  const p = fromDb(raw);
+  const plan = routineDays || (p.profile ? activeRoutine(p.profile).length : 0) || 3;
+  const now = Date.now();
+  const weeks = [3, 2, 1, 0].map((w) => {
+    const to = now - w * 7 * dayMs, from = to - 7 * dayMs;
+    return p.sessions.filter((s) => { const t = new Date(s.date).getTime(); return t > from && t <= to; }).length;
+  });
+  const adh = p.profile ? adherenceInfo(p.habits, p.profile.startDate) : null;
+  const weights = Object.entries(p.habits).filter(([, h]) => h.weight).sort(([a], [b]) => a.localeCompare(b));
+  const last = p.sessions[p.sessions.length - 1];
+  const trainPct = Math.round(Math.min(1, weeks.reduce((a, b) => a + b, 0) / (plan * 4)) * 100);
+  return { p, plan, weeks, adh, trainPct, last, w0: weights[0]?.[1].weight, w1: weights[weights.length - 1]?.[1].weight };
+}
+
+function ClientDetail({ client, onBack, onSaved, onRemoved }) {
+  const [data, setData] = useState(null);
+  const [err, setErr] = useState("");
+  const [tab, setTab] = useState("cumple");
+  const [days, setDays] = useState(client.routine || null);
+  const [editing, setEditing] = useState(false);
+  const [notes, setNotes] = useState(client.notes || "");
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [confirmDel, setConfirmDel] = useState(false);
+
+  useEffect(() => {
+    if (!client.client_id) return;
+    db.clientData(client.client_id).then(setData).catch(() => setErr("No se han podido cargar sus datos."));
+  }, [client.client_id]);
+
+  const sum = data ? clientSummary(data, days?.length) : null;
+  const save = async (patch, ok) => {
+    setBusy(true); setMsg("");
+    try { const row = await db.updateClient(client.id, patch); onSaved(row); setMsg(ok); } catch { setMsg("No se ha podido guardar."); } finally { setBusy(false); }
+  };
+  const fromCurrent = () => {
+    const base = sum?.p.profile ? activeRoutine(sum.p.profile) : buildRoutine(3, "female");
+    setDays(base.map((d) => ({ name: d.name, ex: d.ex.map(({ id, sets, reps, rir, rest }) => ({ id, sets, reps, rir, rest })) })));
+    setEditing(true);
+  };
+
+  return (
+    <>
+      <button className="link" onClick={onBack}>← Asesoradas</button>
+      <h1 style={{ marginTop: 10 }}>{client.name || client.email}</h1>
+      <p className="sub">{client.email}{!client.client_id && " · aún no se ha registrado"}</p>
+      <div className="seg">
+        <button className={tab === "cumple" ? "on" : ""} onClick={() => setTab("cumple")}>Cumplimiento</button>
+        <button className={tab === "rutina" ? "on" : ""} onClick={() => setTab("rutina")}>Rutina</button>
+        <button className={tab === "notas" ? "on" : ""} onClick={() => setTab("notas")}>Notas</button>
+      </div>
+
+      {tab === "cumple" && (
+        !client.client_id ? <div className="note">Cuando se registre en ARC con <b>{client.email}</b>, aparecerá aquí todo lo que haga. Puedes ir preparándole la rutina.</div>
+        : err ? <div className="err">{err}</div>
+        : !sum ? <p className="hint">Cargando…</p>
+        : (
+          <>
+            <div className="cl-kpis">
+              <div><b>{sum.trainPct}%</b><span>Entrenos (4 sem.)</span></div>
+              <div><b>{sum.adh ? `${sum.adh.pct}%` : "—"}</b><span>Hábitos (30 días)</span></div>
+              <div><b>{sum.adh?.streak ?? 0}</b><span>Días de racha</span></div>
+            </div>
+            <h2>Entrenos por semana</h2>
+            <div className="cl-weeks">
+              {sum.weeks.map((n, i) => (
+                <div key={i}>
+                  <div className="cl-col"><i style={{ height: `${Math.min(100, (n / sum.plan) * 100)}%`, background: n >= sum.plan ? "var(--okl)" : "var(--ac)" }} /></div>
+                  <b>{n}/{sum.plan}</b><span>{i === 3 ? "Esta" : `Hace ${3 - i}`}</span>
+                </div>
+              ))}
+            </div>
+            <div className="hist"><span>Último entreno</span><span>{sum.last ? `${fmtDate(sum.last.date)} · ${sum.last.dayName || "Entreno"}` : "Ninguno todavía"}</span></div>
+            <div className="hist"><span>Peso</span><span>{sum.w1 ? `${sum.w1} kg${sum.w0 && sum.w0 !== sum.w1 ? ` (${sum.w1 - sum.w0 > 0 ? "+" : ""}${(sum.w1 - sum.w0).toFixed(1)} kg)` : ""}` : "Sin registrar"}</span></div>
+            <div className="hist"><span>Entrenos en total</span><span>{sum.p.sessions.length}</span></div>
+            <h2>Sus músculos</h2>
+            <MuscleWeek sessions={sum.p.sessions} routine={days?.length ? normDays(days) : sum.p.profile ? activeRoutine(sum.p.profile) : []} />
+            <h2>Últimos entrenos</h2>
+            {sum.p.sessions.length === 0 && <div className="empty">Todavía no ha registrado ningún entreno.</div>}
+            {sum.p.sessions.slice().reverse().slice(0, 8).map((s) => (
+              <div className="hist" key={s.id}><span>{s.dayName || "Entreno"}</span><span>{fmtDate(s.date)} · {s.sets} series · {s.volume.toLocaleString("es-ES")} kg</span></div>
+            ))}
+          </>
+        )
+      )}
+
+      {tab === "rutina" && (
+        <>
+          {!days?.length && !editing && (
+            <div className="note">
+              Aún no le has puesto rutina: ahora mismo usa la suya o la automática.
+              <button className="btn" onClick={fromCurrent}>Empezar desde su rutina actual</button>
+              <button className="btn ghost" onClick={() => { setDays([{ name: "Día A", ex: [] }]); setEditing(true); }}>Empezar de cero</button>
+            </div>
+          )}
+          {days?.length > 0 && editing && (
+            <RoutineEditor days={days} onChange={setDays} onDone={() => { setEditing(false); save({ routine: days }, "Rutina guardada. La verá la próxima vez que abra la app."); }} />
+          )}
+          {days?.length > 0 && !editing && (
+            <>
+              {normDays(days).map((d) => (
+                <div className="day" key={d.id}>
+                  <div className="hd"><b>Día {d.id}: {d.name}</b></div>
+                  {d.ex.map((e, k) => <div key={k} className="exrow"><span>{EXERCISES[e.id].n}</span><span>{e.sets} × {e.reps}</span></div>)}
+                </div>
+              ))}
+              <button className="btn" onClick={() => setEditing(true)}>Editar rutina</button>
+              <button className="btn ghost" disabled={busy} onClick={() => { setDays(null); save({ routine: null }, "Rutina quitada. Vuelve a usar la suya."); }}>Quitarle la rutina</button>
+            </>
+          )}
+          {editing && <h2>Así le queda la semana</h2>}
+          {editing && <MuscleWeek sessions={[]} routine={normDays(days || [])} initial="plan" />}
+        </>
+      )}
+
+      {tab === "notas" && (
+        <>
+          <textarea className="in" rows={8} placeholder="Lesiones, objetivos, cómo va, lo que hablasteis…" value={notes} onChange={(e) => setNotes(e.target.value)} />
+          <button className="btn" disabled={busy} onClick={() => save({ notes }, "Notas guardadas.")}>Guardar notas</button>
+          <p className="hint">Solo las ves tú.</p>
+        </>
+      )}
+
+      {msg && <div className="note">{msg}</div>}
+      <h2>Asesorada</h2>
+      {!confirmDel
+        ? <button className="btn ghost" style={{ color: "#FCA5A5" }} onClick={() => setConfirmDel(true)}>Quitar de mis asesoradas</button>
+        : <div className="note">Deja de estar en tu lista y pierde la rutina que le pusiste. Su cuenta y sus datos no se tocan.
+            <button className="btn" style={{ background: "#FCA5A5" }} onClick={async () => { await db.removeClient(client.id); onRemoved(client.id); }}>Sí, quitar</button>
+            <button className="btn ghost" onClick={() => setConfirmDel(false)}>Cancelar</button>
+          </div>}
+    </>
+  );
+}
+
+function Clients({ onClose }) {
+  const [list, setList] = useState(null);
+  const [sums, setSums] = useState({});
+  const [err, setErr] = useState("");
+  const [open, setOpen] = useState(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const load = () => db.listClients().then(setList).catch(() => setErr("No se ha podido cargar la lista. ¿Has pegado el SQL de asesoradas en Supabase?"));
+  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    (list || []).filter((c) => c.client_id && !sums[c.id]).forEach((c) => db.clientData(c.client_id).then((d) => setSums((s) => ({ ...s, [c.id]: clientSummary(d, c.routine?.length) }))).catch(() => {}));
+  }, [list]);
+
+  const add = async () => {
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) { setErr("Escribe un correo válido."); return; }
+    setBusy(true); setErr("");
+    try { const row = await db.addClient(name.trim() || null, email.trim()); setList((l) => [...(l || []), row]); setName(""); setEmail(""); }
+    catch (e) { setErr(/duplicate|unique/i.test(e.message || "") ? "Ya tienes a esa persona en tu lista." : "No se ha podido añadir. Inténtalo otra vez."); }
+    finally { setBusy(false); }
+  };
+
+  const cur = open && list?.find((c) => c.id === open);
+  if (cur) return <ClientDetail client={cur} onBack={() => setOpen(null)} onSaved={(row) => setList((l) => l.map((c) => (c.id === row.id ? row : c)))} onRemoved={(id) => { setList((l) => l.filter((c) => c.id !== id)); setOpen(null); }} />;
+
+  return (
+    <>
+      <button className="link" onClick={onClose}>← Ajustes</button>
+      <h1 style={{ marginTop: 10 }}>Mis asesoradas</h1>
+      <p className="sub">Añádelas con el correo con el que usan ARC. Si aún no tienen cuenta, se unirán solas cuando se registren con ese correo.</p>
+      <div className="field"><label>Nombre</label><input className="in" value={name} onChange={(e) => setName(e.target.value)} placeholder="Marta" /></div>
+      <div className="field"><label>Correo</label><input className="in" type="email" autoCapitalize="none" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="marta@gmail.com" /></div>
+      <button className="btn ac" disabled={busy || !email} onClick={add}>{busy ? "Añadiendo…" : "Añadir asesorada"}</button>
+      {err && <div className="err" style={{ marginTop: 10 }}>{err}</div>}
+
+      <h2>Tu lista</h2>
+      {list === null && !err && <p className="hint">Cargando…</p>}
+      {list?.length === 0 && <div className="empty">Aún no has añadido a nadie.</div>}
+      {list?.map((c) => {
+        const s = sums[c.id];
+        return (
+          <button key={c.id} className="cl-row" onClick={() => setOpen(c.id)}>
+            <div className="cl-av">{(c.name || c.email)[0].toUpperCase()}</div>
+            <div className="cl-main">
+              <b>{c.name || c.email}</b>
+              <small>{!c.client_id ? "Esperando a que se registre" : s ? (s.last ? `Último entreno: ${fmtDate(s.last.date)}` : "Sin entrenos todavía") : "Cargando…"}{c.routine?.length ? " · con tu rutina" : ""}</small>
+            </div>
+            {s && <div className="cl-pct"><b style={{ color: s.trainPct >= 75 ? "var(--okl)" : s.trainPct >= 40 ? "var(--wu)" : "#FCA5A5" }}>{s.trainPct}%</b><small>cumple</small></div>}
+          </button>
+        );
+      })}
+    </>
+  );
+}
+
+const CLIENTS_CSS = `
+.cl-row{display:flex;align-items:center;gap:12px;width:100%;background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:12px 14px;margin-bottom:8px;color:var(--tx);font:inherit;text-align:left;cursor:pointer}
+.cl-av{width:40px;height:40px;border-radius:50%;background:rgba(212,139,146,.15);color:var(--ac);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+.cl-main{flex:1;min-width:0}.cl-main b{display:block;font-size:15px}.cl-main small{display:block;font-size:12px;color:var(--dm);margin-top:2px}
+.cl-pct{text-align:right}.cl-pct b{display:block;font-size:18px}.cl-pct small{font-size:11px;color:var(--dm)}
+.cl-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.cl-kpis div{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:12px 8px;text-align:center}
+.cl-kpis b{display:block;font-size:22px}.cl-kpis span{font-size:11px;color:var(--dm)}
+.cl-weeks{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+.cl-weeks>div{display:flex;flex-direction:column;align-items:center;gap:4px}
+.cl-col{width:28px;height:90px;border-radius:8px;background:var(--ln);display:flex;align-items:flex-end;overflow:hidden}
+.cl-col i{display:block;width:100%;border-radius:8px}
+.cl-weeks b{font-size:13px}.cl-weeks span{font-size:11px;color:var(--dm)}
+`;
+
 function ArcApp({ user }) {
   const [state, setState] = useState(EMPTY);
   const [media, setMediaState] = useState({});
@@ -3248,7 +3465,7 @@ function ArcApp({ user }) {
     await setMedia(key, url);
   };
 
-  const routine = useMemo(() => activeRoutine(state.profile), [state.profile?.days, state.profile?.branch, state.profile?.routineMode, state.profile?.customRoutine]);
+  const routine = useMemo(() => activeRoutine({ ...state.profile, coachRoutine: state.coachRoutine }), [state.profile?.days, state.profile?.branch, state.profile?.routineMode, state.profile?.customRoutine, state.coachRoutine]);
   const adh = useMemo(() => (state.profile ? adherenceInfo(state.habits, state.profile.startDate) : null), [state.habits, state.profile]);
   const stats = useMemo(() => {
     if (!state.profile) return null;
@@ -3384,10 +3601,12 @@ function ArcApp({ user }) {
     body = <Questionnaire initial={state.profile || DEFAULT_PROFILE} editing={state.onboarded} onSave={saveProfile} onCancel={() => setScreen("ajustes")} />;
   } else if (screen === "contenido" && isCoach) {
     body = <ContentEditor content={content} onSave={onSaveItem} onDelete={onDeleteItem} onClose={() => setScreen("ajustes")} media={media} setMedia={setMedia} uploadMedia={uploadMedia} />;
+  } else if (screen === "asesoradas" && isCoach) {
+    body = <Clients onClose={() => setScreen("ajustes")} />;
   } else if (screen === "denuncias" && isCoach) {
     body = <Reports onClose={() => setScreen("ajustes")} />;
   } else if (screen === "ajustes") {
-    body = <Settings onPaywallPreview={() => setPaywall(true)} videos={{ on: !state.profile?.hideVideos, set: (on) => setProfile({ hideVideos: !on }) }} onFinishPreview={() => setDone({ dur: 3120, sets: 18, volume: 8450, xp: RULES.XP_PER_SESSION, prs: 2 })} sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
+    body = <Settings onClients={() => setScreen("asesoradas")} onPaywallPreview={() => setPaywall(true)} videos={{ on: !state.profile?.hideVideos, set: (on) => setProfile({ hideVideos: !on }) }} onFinishPreview={() => setDone({ dur: 3120, sets: 18, volume: 8450, xp: RULES.XP_PER_SESSION, prs: 2 })} sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
       reminders={state.profile?.reminders} setReminders={(r) => setProfile({ reminders: r })}
       onEdit={() => setScreen("editar")}
       onContent={() => setScreen("contenido")}
@@ -3420,7 +3639,7 @@ function ArcApp({ user }) {
 
   return (
     <div className="arc">
-      <style>{CSS + EXTRA_CSS + LEGAL_CSS + PAYWALL_CSS}</style>
+      <style>{CSS + EXTRA_CSS + LEGAL_CSS + PAYWALL_CSS + CLIENTS_CSS}</style>
       {paywall && <Paywall media={media} coach={coach} uploadMedia={uploadMedia} setMedia={setMedia} onClose={() => setPaywall(false)} onPremium={() => { setPremium(true); setPaywall(false); setToast("¡Bienvenida a ARC completo!"); }} />}
       {toast && <div className="toast" role="status">{toast}</div>}
       {done && <FinishScreen data={done} media={media} coach={coach} uploadMedia={uploadMedia} setMedia={setMedia} onClose={() => setDone(null)} />}
