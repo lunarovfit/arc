@@ -13,15 +13,7 @@ for i,k in enumerate(ks):
     im=Image.fromarray((a*255).astype("uint8")); c.paste(im,(i*sw,0))
 # separadores finos negros
 d=ImageDraw.Draw(c)
-fade=Image.new("L",(W,H),0); fd=fade.load()
-grad=Image.new("L",(W,1))
-for x in range(W):
-    t=0
-    if sw-260<=x<sw: t=(x-(sw-260))/260
-    elif sw<=x<3*sw: t=1
-    elif 3*sw<=x<3*sw+260: t=1-(x-3*sw)/260
-    grad.putpixel((x,0),int(255*min(1,max(0,t))**1.3))
-c.paste(Image.new("RGB",(W,H),(0,0,0)),(0,0),grad.resize((W,H)))
+pass  # sin fundidos
 # oscurecer el centro para leer el texto
 ov=Image.new("L",(W,H),0); od=ImageDraw.Draw(ov)
 pass  # sin óvalo oscuro: las 4 fotos con el mismo brillo
