@@ -495,19 +495,28 @@ let FOODS = {
   pina: { n: "Piña", p: 0.5, c: 14, f: 0 },
   tofu: { n: "Tofu firme", p: 15, c: 2, f: 8 },
   soja: { n: "Soja texturizada", p: 50, c: 30, f: 1 },
+  fresas: { n: "Fresas", p: 0.7, c: 7.7, f: 0.3 },
+  frutosRojos: { n: "Frutos rojos congelados", p: 1, c: 9, f: 0.3 },
+  chia: { n: "Semillas de chía", p: 17, c: 8, f: 31 },
+  udon: { n: "Fideos udon (cocidos)", p: 2.6, c: 21, f: 0.4 },
+  pastaLentejas: { n: "Pasta de lentejas rojas", p: 25, c: 50, f: 2.5 },
+  lomoCerdo: { n: "Lomo de cerdo magro", p: 21, c: 0, f: 6 },
+  hambTernera: { n: "Hamburguesa de ternera magra", p: 20, c: 1, f: 10 },
+  salsaBBQ: { n: "Salsa barbacoa", p: 1, c: 40, f: 0.5 },
 };
 
 const VEG_SWAP = {
+  lomoCerdo: "soja", hambTernera: "soja",
   pollo: "soja", tirasPollo: "soja", hambPollo: "soja", terneraPicada: "soja",
   merluza: "tofu", salmon: "tofu", lomoAtun: "tofu", salmonAhumado: "quesoBurgos",
   pavo: "quesoBurgos", jamon: "quesoBurgos",
 };
 
-const LIMITS = { aove: 20, cremaCacahuete: 30, frutosSecos: 30, aguacate: 100, guacamole: 80, mozzarella: 60, quesoCrema: 60, proteina: 45, jamon: 120 };
+const LIMITS = { chia: 15, salsaBBQ: 20, aove: 20, cremaCacahuete: 30, frutosSecos: 30, aguacate: 100, guacamole: 80, mozzarella: 60, quesoCrema: 60, proteina: 45, jamon: 120 };
 
 // items: [alimento, "p"|"c"|"f" (se ajusta) o gramos fijos]
 let RECIPES = [
-  { slot: "desayuno", mode: "sencilla", name: "Tostadas de pavo y tomate", items: [["panIntegral", "c"], ["pavo", "p"], ["verduras", 50], ["aove", "f"]], how: "Tuesta el pan, ralla tomate por encima, un chorrito de aceite y el pavo." },
+  { slot: "desayuno", mode: "sencilla", name: "Tostadas de pavo y tomate", items: [["panIntegral", "c"], ["pavo", "p"], ["verduras", 50], ["aove", "f"]], how: "Tuesta el pan, ralla tomate por encima, un chorrito de aceite y el pavo. El pavo, con un 90% de carne como mínimo." },
   { slot: "desayuno", mode: "sencilla", name: "Porridge proteico de cacao", items: [["avena", "c"], ["lecheSemi", 200], ["proteina", "p"], ["cacao", 5], ["cremaCacahuete", "f"]], how: "Avena con la leche 2 minutos al micro, mezcla la proteína y el cacao y pon la crema de cacahuete encima." },
   { slot: "desayuno", mode: "sanji", name: "Tortitas de avena con arándanos", items: [["avena", "c"], ["claras", "p"], ["platano", 40], ["arandanos", 50], ["cremaCacahuete", "f"]],
     steps: ["Tritura la avena con las claras y el plátano hasta tener una masa lisa.", "Sartén antiadherente a fuego medio, vierte cucharones pequeños y dales la vuelta cuando salgan burbujas.", "Apila, cubre con los arándanos y termina con la crema de cacahuete un poco templada."] },
@@ -526,7 +535,7 @@ let RECIPES = [
     steps: ["Marca los ñoquis en la sartén con el aceite hasta que queden dorados por fuera.", "Sella el lomo de atún en dados 1 minuto por cada lado.", "Junta todo con el tomate y las verduras y termina con albahaca fresca."] },
 
   { slot: "merienda", mode: "sencilla", name: "Yogur proteico con plátano y frutos secos", items: [["yogurProt", "p"], ["platano", "c"], ["frutosSecos", "f"]], how: "Yogur, plátano en rodajas y frutos secos por encima." },
-  { slot: "merienda", mode: "sencilla", name: "Tortitas de arroz con jamón", items: [["tortitasArroz", "c"], ["jamon", "p"], ["quesoCrema", "f"]], how: "Unta el queso crema en las tortitas y pon el jamón encima." },
+  { slot: "merienda", mode: "sencilla", name: "Tortitas de arroz con jamón", items: [["tortitasArroz", "c"], ["jamon", "p"], ["quesoCrema", "f"]], how: "Unta el queso crema en las tortitas y pon el jamón encima. Tortitas sin aditivos: solo arroz o maíz y sal." },
   { slot: "merienda", mode: "sanji", name: "Mug cake de chocolate", items: [["avena", "c"], ["proteina", "p"], ["claras", 60], ["cacao", 10], ["cremaCacahuete", "f"]],
     steps: ["Mezcla en una taza la avena molida, la proteína, el cacao y una pizca de levadura.", "Añade las claras y un chorrito de agua hasta tener una masa espesa.", "Micro 60–90 segundos y pon la crema de cacahuete encima para que se funda."] },
 
@@ -550,7 +559,7 @@ let RECIPES = [
   { slot: "desayuno", mode: "sencilla", name: "Revuelto con tortitas y aguacate", items: [["claras", "p"], ["huevo", 60], ["tortitasArroz", "c"], ["aguacate", "f"]], how: "Revuelto de huevo y claras, tortitas al lado y aguacate en láminas. Sin gluten ni lácteos." },
   { slot: "desayuno", mode: "sanji", name: "Pancakes de plátano sin harina", items: [["platano", "c"], ["claras", "p"], ["huevo", 60], ["arandanos", 60], ["cremaCacahuete", "f"]],
     steps: ["Machaca el plátano con un tenedor y bátelo con el huevo y las claras.", "Sartén antiadherente a fuego bajo, cucharadas pequeñas y vuelta cuando cuajen los bordes.", "Sirve con los arándanos y la crema de cacahuete templada por encima."] },
-  { slot: "merienda", mode: "sencilla", name: "Tortitas con pavo y aguacate", items: [["tortitasArroz", "c"], ["pavo", "p"], ["aguacate", "f"]], how: "Aguacate machacado sobre las tortitas y el pavo encima." },
+  { slot: "merienda", mode: "sencilla", name: "Tortitas con pavo y aguacate", items: [["tortitasArroz", "c"], ["pavo", "p"], ["aguacate", "f"]], how: "Aguacate machacado sobre las tortitas y el pavo encima. Fiambre con un 90% de carne como mínimo y tortitas sin aditivos (solo arroz o maíz y sal)." },
   { slot: "desayuno", mode: "sanji", name: "Bowl morado de arándanos", items: [["arandanos", 120], ["platano", "c"], ["proteina", "p"], ["muesli", 20], ["cremaCacahuete", "f"]],
     steps: ["Congela el plátano en rodajas la noche anterior.", "Tritura los arándanos congelados, el plátano y la proteína con un chorrito de agua hasta que quede espeso como un helado.", "Sírvelo en un bol frío y decora."],
     plate: "Haz filas rectas por encima: muesli, rodajas de plátano y un hilo de crema de cacahuete cruzando el bol." },
@@ -587,6 +596,24 @@ let RECIPES = [
   { slot: "cena", mode: "sencilla", name: "Crema de verduras con pollo", items: [["cremaVerduras", 300], ["pollo", "p"], ["panIntegral", "c"], ["aove", "f"]], how: "Calienta la crema y acompaña con pollo a la plancha y pan." },
   { slot: "cena", mode: "sanji", name: "Tortilla de patata fit", items: [["patata", "c"], ["claras", "p"], ["huevo", 120], ["verduras", 60], ["aove", "f"]],
     steps: ["Patata en láminas finas y cebolla al micro 8 minutos tapadas, removiendo a la mitad.", "Bate los huevos con las claras y sal, mezcla con la patata y deja reposar 5 minutos.", "Sartén pequeña con el aceite a fuego medio-bajo, cuaja 4 minutos, dale la vuelta con un plato y 2 minutos más."] },
+  // ---- Platos reales de Luna (con foto) ----
+  {"id": "rl01", "slot": "desayuno", "mode": "sencilla", "name": "Bol de yogur frutos del bosque", "items": [["yogurProt", "p"], ["frutosRojos", 100], ["platano", "c"], ["chia", 10]], "how": "Yogur en un bol, plátano en rodajas haciendo una media luna, frutos rojos congelados en una esquina y chía y canela por encima. Usa yogur sin azúcares añadidos: los de sabor suelen llevar mucho.", "plate": "Espolvorea la canela solo en una mitad: queda precioso con el contraste."},
+  {"id": "rl02", "slot": "comida", "mode": "sanji", "name": "Bowl de salmón, lentejas y ñoquis", "items": [["salmon", "p"], ["legumbres", 100], ["noquis", "c"], ["verduras", 120]], "steps": ["Salmón al horno o airfryer a 200 °C unos 10–12 minutos con sal y limón.", "Dora los ñoquis en una sartén antiadherente sin aceite hasta que estén crujientes por fuera.", "Monta el bol con lechuga, pepino, las lentejas de bote (las del Mercadona van genial) bien enjuagadas, los ñoquis y el salmón encima."]},
+  {"id": "rl03", "slot": "comida", "mode": "sencilla", "name": "Ensalada de pollo, garbanzos y rúcula", "items": [["pollo", "p"], ["legumbres", "c"], ["verduras", 120], ["aguacate", "f"]], "how": "Pollo a la plancha en tiras, garbanzos de bote enjuagados, rúcula, pepino y el aguacate en gajos. Sal en escamas por encima. Los garbanzos de bote del Mercadona van genial; enjuágalos bien."},
+  {"id": "rl04", "slot": "comida", "mode": "sencilla", "name": "Fusilli de lentejas con pollo", "items": [["pastaLentejas", "c"], ["pollo", "p"], ["verduras", 120], ["aguacate", "f"]], "how": "Cuece la pasta de lentejas 7–8 minutos (se pasa rápido). Sirve con el pollo a la plancha, canónigos, pepino y aguacate. Sin gluten y con un montón de proteína. Mira que la pasta sea 100% harina de lentejas, sin mezcla de trigo."},
+  {"id": "rl05", "slot": "desayuno", "mode": "sencilla", "name": "Avena cremosa de plátano y arándanos", "items": [["avena", "c"], ["claras", "p"], ["platano", 50], ["arandanos", 50], ["chia", 5]], "how": "Mezcla la avena con las claras, un chorrito de leche o agua y la chía. Micro 2 minutos removiendo a la mitad. Encima, plátano, arándanos y canela."},
+  {"id": "rl06", "slot": "comida", "mode": "sanji", "name": "Udon de pollo con huevo poché", "items": [["udon", "c"], ["pollo", "p"], ["huevo", 60], ["verduras", 100], ["aove", "f"]], "steps": ["Pollo en dados a la plancha con el aceite hasta que se dore bien.", "Saltea las espinacas 1 minuto en la misma sartén y calienta el udon 2 minutos con un chorrito de soja.", "Huevo poché: agua casi hirviendo con vinagre, remolino y 3 minutos. Ponlo encima de todo y rompe la yema al comer."]},
+  {"id": "rl07", "slot": "comida", "mode": "sencilla", "name": "Táper de cerdo con batata asada", "items": [["lomoCerdo", "p"], ["batata", "c"], ["patata", 100], ["verduras", 200], ["aove", "f"]], "how": "Batata en rodajas y patata en dados al horno a 200 °C 25 minutos. Verduras salteadas (judías, brócoli, champiñón, pimiento) y el lomo en tiras a la plancha. Perfecto para llevar."},
+  {"id": "rl08", "slot": "cena", "mode": "sencilla", "name": "Revuelto de atún, tomate y aguacate", "items": [["huevo", 120], ["atun", "p"], ["verduras", 100], ["aguacate", "f"]], "how": "Revuelve los huevos con el atún escurrido a fuego medio. Sirve con tomate en rodajas y aguacate con sal."},
+  {"id": "rl09", "slot": "merienda", "mode": "sencilla", "name": "Tortitas dúo de atún con fresas", "items": [["tortitasArroz", "c"], ["atun", "p"], ["cottage", 30], ["aguacate", "f"], ["salsaBBQ", 10], ["fresas", 100]], "how": "Una tortita con cottage y atún; la otra con aguacate machacado, atún y un hilo de salsa barbacoa. Fresas al lado. Tortitas solo de arroz o maíz y sal, sin aceite de palma ni azúcar. Ojo con la barbacoa: casi la mitad es azúcar, usa poca o una zero.", "plate": "Dos tortitas, dos sabores: así no te aburres nunca."},
+  {"id": "rl10", "slot": "cena", "mode": "sencilla", "name": "Pollo desmechado con salsa de yogur", "items": [["pollo", "p"], ["verduras", 180], ["yogurProt", 60], ["aove", "f"]], "how": "Pollo cocido o a la plancha desmechado con dos tenedores. Zanahoria rallada, lechuga y una cucharada de yogur con ajo en polvo, perejil y sal como salsa. Para la salsa, yogur natural o proteico sin azúcar añadido."},
+  {"id": "rl11", "slot": "cena", "mode": "sencilla", "name": "Ternera picada con cherrys", "items": [["terneraPicada", "p"], ["verduras", 150], ["aove", "f"]], "how": "Dora la carne picada a fuego fuerte sin removerla mucho para que quede tostadita. Sirve con cherrys con orégano y lechuga."},
+  {"id": "rl12", "slot": "comida", "mode": "sencilla", "name": "Ternera, cottage y aguacate", "items": [["terneraPicada", "p"], ["cottage", 100], ["aguacate", "f"]], "how": "Carne picada bien dorada con sal y pimienta, cottage al lado y aguacate en gajos con sal en escamas. Sin cocinar casi nada y con mucha proteína. Cottage y carne picada: mira la etiqueta, que la carne sea magra (máx. 10% de grasa)."},
+  {"id": "rl13", "slot": "desayuno", "mode": "sencilla", "name": "Burger, huevos y kiwi", "items": [["hambTernera", "p"], ["huevo", 120], ["kiwi", "c"]], "how": "Hamburguesa a la plancha 3–4 minutos por lado, huevos a la plancha o revueltos en la misma sartén y kiwi en rodajas. Desayuno salado que sacia hasta la comida. Hamburguesa con un 90% de carne como mínimo y sin fécula, almidón ni rellenos (mira los ingredientes)."},
+  {"id": "rl14", "slot": "merienda", "mode": "sencilla", "name": "Yogur rosa de fresas y chía", "items": [["yogurProt", "p"], ["fresas", "c"], ["frutosRojos", 50], ["chia", 10], ["proteina", 10]], "how": "Yogur de fresa o natural, fresas en láminas, frutos rojos congelados, chía y un poco de proteína espolvoreada por encima. Si el yogur es de fresa, que sea sin azúcares añadidos."},
+  {"id": "rl15", "slot": "pre", "mode": "sencilla", "name": "Plátano y dátiles antes de entrenar", "items": [["platano", "c"], ["datiles", 20]], "how": "Un plátano y un par de dátiles 30–45 minutos antes de entrenar. Energía rápida y nada pesada."},
+  {"id": "rl16", "slot": "desayuno", "mode": "sanji", "name": "Crepe proteica de frutos rojos", "items": [["avena", "c"], ["claras", "p"], ["proteina", 15], ["yogurProt", 100], ["frutosRojos", 80]], "steps": ["Tritura la avena con las claras, la proteína y unos cuantos frutos rojos hasta tener una masa líquida.", "Sartén antiadherente grande a fuego medio, vierte toda la masa y extiéndela como una crepe. Vuelta cuando se despegue.", "Cubre con el yogur, el resto de frutos rojos y un poco de proteína espolvoreada."]},
+  {"id": "rl17", "slot": "desayuno", "mode": "sanji", "name": "Brunch completo de domingo", "items": [["huevo", 120], ["panIntegral", "c"], ["pollo", "p"], ["aguacate", "f"], ["yogurProt", 125], ["arandanos", 50]], "steps": ["Tuesta el pan y úntalo con el aguacate machacado con sal y pimienta.", "Pon por encima el pollo desmechado.", "Revuelve los huevos a fuego bajo para que queden jugosos.", "Al lado, yogur con arándanos y canela."], "plate": "Plato grande con el revuelto y la tostada, y el yogur en un bol aparte."},
 ];
 
 const SLOT_NAMES = { pre: "Pre-entreno", desayuno: "Desayuno", mediaManana: "Media mañana", comida: "Comida", merienda: "Merienda", cena: "Cena" };
@@ -601,11 +628,14 @@ let FOOD_TAGS = {
   pescado: ["merluza", "salmon", "salmonAhumado", "lomoAtun", "atun", "emperador"],
   lacteos: ["yogurProt", "quesoBatido", "quesoBurgos", "quesoCrema", "mozzarella", "lecheSemi", "proteina", "cottage"],
   huevo: ["huevo", "claras"],
-  cerdo: ["jamon"],
-  gluten: ["panIntegral", "panCristal", "panHamburguesa", "maxiTortilla", "tortillaIntegral", "basePizza", "pasta", "noquis", "avena", "muesli"],
+  cerdo: ["jamon", "lomoCerdo"],
+  gluten: ["panIntegral", "panCristal", "panHamburguesa", "maxiTortilla", "tortillaIntegral", "basePizza", "pasta", "noquis", "avena", "muesli", "udon"],
 };
 const EXCLUDE_OPTS = [["pescado", "Pescado"], ["lacteos", "Lácteos"], ["huevo", "Huevo"], ["cerdo", "Cerdo"], ["gluten", "Gluten"]];
-let TUPPER = new Set(["Pollo con arroz y verduras", "Pasta boloñesa ligera", "Poke de salmón", "Ñoquis con atún y tomate", "Bol de yogur con muesli y kiwi", "Ensalada de legumbres con atún", "Wrap de pollo para llevar", "Arroz con ternera al curry", "Emperador con batata asada", "Batido de proteína y plátano", "Yogur proteico con plátano y frutos secos", "Tortitas de arroz con jamón", "Tortilla de patata fit", "Porridge proteico de cacao", "Tortitas con pavo y aguacate", "Overnight oats de tarta de queso", "Onigiris de atún", "Lasaña boloñesa fit", "Cheesecake en vaso", "Tacos de pollo con guacamole"]);
+// Fotos de platos que vienen dentro de la app (la coach puede cambiarlas desde Editar contenido)
+const REC_IMG = new Set(["r008", "r029", "rl01", "rl02", "rl03", "rl04", "rl05", "rl06", "rl07", "rl08", "rl09", "rl10", "rl11", "rl12", "rl13", "rl14", "rl15", "rl16", "rl17"]);
+const recImg = (media, id) => media[`rec:${id}`] || (REC_IMG.has(id) ? `/recetas/${id}.jpg` : null);
+let TUPPER = new Set(["Pollo con arroz y verduras", "Pasta boloñesa ligera", "Poke de salmón", "Ñoquis con atún y tomate", "Bol de yogur con muesli y kiwi", "Ensalada de legumbres con atún", "Wrap de pollo para llevar", "Arroz con ternera al curry", "Emperador con batata asada", "Batido de proteína y plátano", "Yogur proteico con plátano y frutos secos", "Tortitas de arroz con jamón", "Tortilla de patata fit", "Porridge proteico de cacao", "Tortitas con pavo y aguacate", "Overnight oats de tarta de queso", "Onigiris de atún", "Lasaña boloñesa fit", "Cheesecake en vaso", "Tacos de pollo con guacamole", "Bowl de salmón, lentejas y ñoquis", "Ensalada de pollo, garbanzos y rúcula", "Fusilli de lentejas con pollo", "Táper de cerdo con batata asada", "Pollo desmechado con salsa de yogur"]);
 // Iconos de los modos de cocina (línea fina, mismo estilo que el resto de la app)
 function CookIcon({ mode, size = 26 }) {
   const P = { fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round" };
@@ -654,7 +684,7 @@ function buildDefaultContent() {
     quotes: QUOTES.map(([text, who, source, why, kind], i) => ({ id: `q${String(i + 1).padStart(3, "0")}`, text, who, source, why, kind: kind || "cita", active: true })),
     exercises: Object.values(EXERCISES).map((e, i) => ({ id: e.id, grp: e.group, name: e.n, muscle: e.muscle, equip: e.equip, simple: e.simple, tip: e.tip, note: e.note || "", lift: e.pull ? "pull" : e.lift || "", unit: e.unit || "", sort: i })),
     foods: Object.entries(FOODS).map(([id, f]) => ({ id, name: f.n, p: f.p, c: f.c, f: f.f, tags: tagsOf(id) })),
-    recipes: RECIPES.map((r, i) => ({ id: `r${String(i + 1).padStart(3, "0")}`, slot: r.slot, mode: r.mode, name: r.name, items: r.items, how: r.how || "", steps: r.steps || [], plate: r.plate || "", tupper: TUPPER.has(r.name), active: true, sort: i })),
+    recipes: RECIPES.map((r, i) => ({ id: r.id || `r${String(i + 1).padStart(3, "0")}`, slot: r.slot, mode: r.mode, name: r.name, items: r.items, how: r.how || "", steps: r.steps || [], plate: r.plate || "", tupper: TUPPER.has(r.name), active: true, sort: i })),
   };
 }
 const DEFAULT_CONTENT = buildDefaultContent();
@@ -943,6 +973,13 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .lv-none{color:var(--dm)}.lv-low{color:rgba(212,139,146,.75)}.lv-mid,.lv-acc{color:var(--ac)}.lv-ok{color:var(--okl)}.lv-over{color:#F87171}
 .exmus{margin:4px 0 8px}
 @media (prefers-reduced-motion:no-preference){.bm-m{animation:popIn .4s ease-out both}.mw-bar div{animation:skGrow .8s cubic-bezier(.2,.8,.2,1) both}.sug{animation:rise .4s ease-out both}}
+.shop{background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:14px 16px;margin-top:18px}
+.shop-hd{all:unset;cursor:pointer;display:flex;justify-content:space-between;align-items:baseline;width:100%}
+.shop-hd span{font-size:13px;color:var(--ac)}
+.shop ul{list-style:none;margin:10px 0 0;padding:0}
+.shop li{padding:10px 0;border-top:1px solid var(--ln);display:flex;flex-direction:column;gap:3px}
+.shop li b{font-size:14px}
+.shop li span{font-size:13px;color:var(--dm);line-height:1.45}
 .rphoto{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:14px;display:block;margin-bottom:12px;border:1px solid var(--ln)}
 .fin{position:fixed;inset:0;z-index:38;background:#000;display:flex;flex-direction:column;align-items:center;text-align:center;overflow-y:auto;overflow-x:hidden;padding:calc(30px + env(safe-area-inset-top)) 22px calc(24px + env(safe-area-inset-bottom))}
 .fin-rays{position:absolute;left:50%;top:22%;width:720px;height:720px;margin:-360px 0 0 -360px;background:repeating-conic-gradient(from 0deg,rgba(212,139,146,.13) 0deg 7deg,transparent 7deg 20deg);border-radius:50%;-webkit-mask:radial-gradient(circle,#000 18%,transparent 62%);mask:radial-gradient(circle,#000 18%,transparent 62%);pointer-events:none}
@@ -2158,6 +2195,28 @@ function recipeAllowed(r, profile) {
   });
 }
 
+// Consejos de compra: lo que más se cuela sin darte cuenta
+const SHOP_TIPS = [
+  ["Fiambre de pavo o pollo", "Con un 90% de carne como mínimo. Los baratos llevan fécula, azúcar y agua para dar peso."],
+  ["Tortitas de arroz o maíz", "Que lleven solo el cereal y sal. Nada de aceite de palma, azúcar ni sabores."],
+  ["Legumbres de bote", "Las del Mercadona son buenas: legumbre, agua y sal. Enjuágalas siempre."],
+  ["Salsas", "Barbacoa, ketchup y teriyaki pueden ser un 30–50% azúcar. Usa poca o la versión zero."],
+  ["Yogures", "Natural o proteico sin azúcares añadidos. Los «de sabor» y los «0%» a veces llevan bastante azúcar."],
+  ["Hamburguesas y carne picada", "90% de carne mínimo y sin rellenos. Mira que no ponga «preparado de carne»."],
+  ["Crema de cacahuete", "100% cacahuete. Si lleva aceite de palma o azúcar, a la estantería."],
+  ["Pan «integral»", "Que el primer ingrediente sea harina integral, no harina de trigo con salvado."],
+];
+function ShopTips() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="shop">
+      <button className="shop-hd" onClick={() => setOpen(!open)} aria-expanded={open}><b>Al hacer la compra</b><span>{open ? "Cerrar" : "Ver consejos"}</span></button>
+      {!open && <p className="hint" style={{ margin: "6px 0 0" }}>Fiambre al 90%, tortitas sin aditivos y cuidado con lo que va escondido.</p>}
+      {open && <ul>{SHOP_TIPS.map(([t, d]) => <li key={t}><b>{t}</b><span>{d}</span></li>)}</ul>}
+    </div>
+  );
+}
+
 function Nutrition({ profile, setCook, media = {} }) {
   const [rest, setRest] = useState(false);
   const [pick, setPick] = useState({});
@@ -2192,6 +2251,7 @@ function Nutrition({ profile, setCook, media = {} }) {
         <div><b>{t.f} g</b><span>Grasas</span></div>
       </div>
 
+      <ShopTips />
       <h2>Tus comidas</h2>
       <div className="seg">{COOK_OPTS.map(([v, l]) => <button key={v} className={mode === v ? "on" : ""} onClick={() => setCook(v)}>{l}</button>)}</div>
       {profile.eatOut && <p className="hint" style={{ marginTop: 0 }}>Primero te salen las que aguantan bien en táper.</p>}
@@ -2200,7 +2260,7 @@ function Nutrition({ profile, setCook, media = {} }) {
         <div className="meal" key={m.id}><div className="hd"><b>{SLOT_NAMES[m.id]}</b></div><p className="hint">Con lo que has quitado no hay recetas para esta comida todavía.</p></div>
       ) : (
         <div className="meal" key={m.id}>
-          {media[`rec:${m.recipe.id}`] && <img className="rphoto" src={media[`rec:${m.recipe.id}`]} alt={m.recipe.name} loading="lazy" />}
+          {recImg(media, m.recipe.id) && <img className="rphoto" src={recImg(media, m.recipe.id)} alt={m.recipe.name} loading="lazy" />}
           <div className="hd"><b>{SLOT_NAMES[m.id]}</b><span>{Math.round(m.tot.kcal)} kcal · P {Math.round(m.tot.p)} · H {Math.round(m.tot.c)} · G {Math.round(m.tot.f)}</span></div>
           {m.opts.length > 1
             ? <div className="chips">{m.opts.map((r, i) => <button key={r.name} className={`chip ${r === m.recipe ? "on" : ""}`} onClick={() => setPick({ ...pick, [m.k]: i })}>{r.name}</button>)}</div>
@@ -2416,7 +2476,7 @@ function EditForm({ table, row, isNew, content, onSave, onDelete, onCancel, medi
       </>}
 
       {table === "recipes" && !isNew && <Field label="Foto del plato" hint="Sale arriba de la receta en Nutrición. Mejor en horizontal.">
-        {media[`rec:${r.id}`] ? <img className="rphoto" src={media[`rec:${r.id}`]} alt="" /> : <div className="hint">Aún no tiene foto.</div>}
+        {recImg(media, r.id) ? <img className="rphoto" src={recImg(media, r.id)} alt="" /> : <div className="hint">Aún no tiene foto.</div>}
         <div className="chips" style={{ marginTop: 8 }}>
           <MediaPicker label={media[`rec:${r.id}`] ? "Cambiar foto" : "Subir foto"} accept="image/*" onPick={(f) => uploadMedia(`rec:${r.id}`, f)} onError={setErr} />
           {media[`rec:${r.id}`] && <button className="chip" onClick={() => setMedia(`rec:${r.id}`, null)}>Quitar</button>}
