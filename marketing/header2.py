@@ -2,7 +2,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 W,H=3840,1646; F="/usr/share/fonts/opentype/inter/"
 PINK=(212,139,146); WHITE=(255,255,255); DIM=(165,165,172)
 c=Image.new("RGB",(W,H),(0,0,0))
-g=Image.new("RGB",(W,H),(0,0,0)); ImageDraw.Draw(g).ellipse((1100,300,2740,1900),fill=(85,44,52)); g=g.filter(ImageFilter.GaussianBlur(320)); c=Image.blend(c,g,1)
+g=Image.new("RGB",(W,H),(0,0,0)); ImageDraw.Draw(g).ellipse((1300,350,2540,1500),fill=(26,26,30)); g=g.filter(ImageFilter.GaussianBlur(300)); c=Image.blend(c,g,1)
 def rounded(im,r):
     m=Image.new("L",im.size,0); ImageDraw.Draw(m).rounded_rectangle((0,0,im.size[0]-1,im.size[1]-1),r,fill=255); return m
 def phone(src,crop=None,w=600):
@@ -12,7 +12,7 @@ def phone(src,crop=None,w=600):
     scr=Image.new("RGB",(w,sh),(0,0,0)); scr.paste(img,(0,70))
     b=22; ph=Image.new("RGB",(w+2*b,sh+2*b),(30,30,34)); ph.paste(scr,(b,b),rounded(scr,90)); return ph
 # móviles a los lados (decorativos)
-for (s,cr),x,y,a in [(("rutina.jpg",None),-60,380,0.5),(("registro-series.jpg",None),620,260,0.8),(("nutricion.png",None),2576,260,0.8),(("video-tecnica.jpg",(270,232,625,858)),3256,380,0.5)]:
+for (s,cr),x,y,a in [(("rutina.jpg",None),-60,380,0.35),(("registro-series.jpg",None),620,260,0.6),(("nutricion.png",None),2576,260,0.6),(("video-tecnica.jpg",(270,232,625,858)),3256,380,0.35)]:
     p=phone(s,cr); dark=Image.new("RGB",p.size,(0,0,0)); p=Image.blend(dark,p,a)
     c.paste(p,(x,y),rounded(p,110))
 # centro: logo + titular (zona segura central)

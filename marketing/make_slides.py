@@ -22,7 +22,7 @@ def rounded(im, r):
 def slide(src, crop, head, sub, out):
     c=Image.new("RGB",(W,H),(0,0,0))
     # glow
-    g=Image.new("RGB",(W,H),(0,0,0)); gd=ImageDraw.Draw(g); gd.ellipse((W//2-700,1100,W//2+700,2600),fill=(70,38,44)); g=g.filter(ImageFilter.GaussianBlur(220)); c=Image.blend(c,g,1.0)
+    g=Image.new("RGB",(W,H),(0,0,0)); gd=ImageDraw.Draw(g); gd.ellipse((W//2-650,1300,W//2+650,2700),fill=(30,30,34)); g=g.filter(ImageFilter.GaussianBlur(260)); c=Image.blend(c,g,1.0)
     d=ImageDraw.Draw(c)
     # logo
     logo=Image.open("raw/logo-mark.png").convert("RGBA"); lw=110; logo=logo.resize((lw,int(logo.size[1]*lw/logo.size[0])))
