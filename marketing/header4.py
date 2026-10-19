@@ -1,8 +1,9 @@
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 W,H=3840,1646; F="/usr/share/fonts/opentype/inter/"; PINK=(212,139,146)
 c=Image.new("RGB",(W,H),(0,0,0))
-ks=["C0447","C0435","C0446","C0438"]; sw=W//4
+ks=["C0447",None,None,"C0438"]; sw=W//4
 for i,k in enumerate(ks):
+    if k is None: continue
     im=Image.open(f"/tmp/hf_{k}.png").convert("RGB")
     s=sw/im.size[0]; im=im.resize((sw,int(im.size[1]*s)),Image.LANCZOS)
     top=(im.size[1]-H)//2; im=im.crop((0,top,sw,top+H))
@@ -12,7 +13,15 @@ for i,k in enumerate(ks):
     im=Image.fromarray((a*255).astype("uint8")); c.paste(im,(i*sw,0))
 # separadores finos negros
 d=ImageDraw.Draw(c)
-for i in range(1,4): d.rectangle((i*sw-4,0,i*sw+4,H),fill=(0,0,0))
+fade=Image.new("L",(W,H),0); fd=fade.load()
+grad=Image.new("L",(W,1))
+for x in range(W):
+    t=0
+    if sw-260<=x<sw: t=(x-(sw-260))/260
+    elif sw<=x<3*sw: t=1
+    elif 3*sw<=x<3*sw+260: t=1-(x-3*sw)/260
+    grad.putpixel((x,0),int(255*min(1,max(0,t))**1.3))
+c.paste(Image.new("RGB",(W,H),(0,0,0)),(0,0),grad.resize((W,H)))
 # oscurecer el centro para leer el texto
 ov=Image.new("L",(W,H),0); od=ImageDraw.Draw(ov)
 pass  # sin óvalo oscuro: las 4 fotos con el mismo brillo
