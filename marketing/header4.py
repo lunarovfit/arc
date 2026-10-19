@@ -5,7 +5,11 @@ ks=["C0447","C0435","C0446","C0438"]; sw=W//4
 for i,k in enumerate(ks):
     im=Image.open(f"/tmp/hf_{k}.png").convert("RGB")
     s=sw/im.size[0]; im=im.resize((sw,int(im.size[1]*s)),Image.LANCZOS)
-    top=(im.size[1]-H)//2; c.paste(im.crop((0,top,sw,top+H)),(i*sw,0))
+    top=(im.size[1]-H)//2; im=im.crop((0,top,sw,top+H))
+    import numpy as np
+    a=np.asarray(im).astype(np.float32)/255; lum=(0.299*a[...,0]+0.587*a[...,1]+0.114*a[...,2]).mean()
+    g=np.log(0.30)/np.log(max(lum,1e-3)); a=np.clip(a**g,0,1)   # mismo brillo medio en todas
+    im=Image.fromarray((a*255).astype("uint8")); c.paste(im,(i*sw,0))
 # separadores finos negros
 d=ImageDraw.Draw(c)
 for i in range(1,4): d.rectangle((i*sw-4,0,i*sw+4,H),fill=(0,0,0))
@@ -26,7 +30,7 @@ fH=ImageFont.truetype(F+"Inter-ExtraBold.otf",150)
 d.text((cx,cy-200),"Sube de nivel",font=fH,fill=(255,255,255),anchor="ma")
 w1=d.textlength("con fuerza ",font=fH); w2=d.textlength("real",font=fH); x=cx-(w1+w2)/2
 d.text((x,cy-20),"con fuerza ",font=fH,fill=(255,255,255)); d.text((x+w1,cy-20),"real",font=fH,fill=PINK)
-d.text((cx,cy+230),"レベルアップ",font=jp,fill=PINK,anchor="mm")
+d.text((cx,cy+235),"by Lunarovx",font=ImageFont.truetype(F+"Inter-SemiBold.otf",64),fill=PINK,anchor="mm")
 c.save("header_3840x1646.png")
 S="/tmp/claude-0/-home-claude/3bae07ba-c8c3-5f0e-adb3-78f0953fb194/scratchpad/"
 c.resize((1280,549)).save(S+"h4.png"); cw=1700; c.crop((cx-cw//2,0,cx+cw//2,H)).resize((380,368)).save(S+"h4c.png")
