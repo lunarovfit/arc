@@ -2903,7 +2903,7 @@ function Settings({ onClients, onPaywallPreview, videos, onFinishPreview, sub, e
             <button className={!coachView ? "on" : ""} onClick={() => setCoachView(false)}>Ver como clienta</button>
             <button className={coachView ? "on" : ""} onClick={() => setCoachView(true)}>Modo coach</button>
           </div>
-          <button className="btn ac" onClick={onClients}>Mis asesoradas</button>
+          <button className="btn ac" onClick={onClients}>Mis asesorad@s</button>
           <button className="btn" onClick={onContent}>Editar frases, recetas, ejercicios y alimentos</button>
           <button className="btn ghost" onClick={onReports}>Denuncias del ranking</button>
           <h2>Fotos de la app</h2>
@@ -3338,7 +3338,7 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
 
   return (
     <>
-      <button className="link" onClick={onBack}>← Asesoradas</button>
+      <button className="link" onClick={onBack}>← Asesorad@s</button>
       <h1 style={{ marginTop: 10 }}>{client.name || client.email}</h1>
       <p className="sub">{client.email}{!client.client_id && " · aún no se ha registrado"}</p>
       <div className="seg">
@@ -3385,8 +3385,8 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
       {tab === "rutina" && (
         <>
           <div className="field"><label>Modo de niveles</label>
-            <div className="chips">{[["", "Lo elige ella"], ["otaku", "Personajes anime"], ["gymrat", "Gymrat"], ["clasico", "Sin personajes"]].map(([v, l]) => (
-              <button key={v} className={`chip ${mode === v ? "on" : ""}`} disabled={busy} onClick={() => { setMode(v); save({ mode: v }, v === "clasico" ? "Le saldrán solo niveles con número, sin personajes." : v ? "Modo cambiado. Lo verá al abrir la app." : "Vuelve a elegir ella."); }}>{l}</button>
+            <div className="chips">{[["", "Lo elige su usuari@"], ["otaku", "Personajes anime"], ["gymrat", "Gymrat"], ["clasico", "Sin personajes"]].map(([v, l]) => (
+              <button key={v} className={`chip ${mode === v ? "on" : ""}`} disabled={busy} onClick={() => { setMode(v); save({ mode: v }, v === "clasico" ? "Le saldrán solo niveles con número, sin personajes." : v ? "Modo cambiado. Lo verá al abrir la app." : "Vuelve a elegirlo su usuari@."); }}>{l}</button>
             ))}</div>
           </div>
           {!days?.length && !editing && (
@@ -3417,7 +3417,7 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
       )}
 
       {tab === "revis" && (
-        !client.client_id ? <div className="note">Cuando se registre, aquí verás sus fotos de progreso, peso, medidas y cómo le ha ido cada semana. Ella las manda desde su pestaña de Hábitos.</div>
+        !client.client_id ? <div className="note">Cuando se registre, aquí verás sus fotos de progreso, peso, medidas y cómo le ha ido cada semana. Las manda desde su pestaña de Hábitos.</div>
         : checkins === null ? <p className="hint">Cargando…</p> : <CheckinList items={checkins} />
       )}
 
@@ -3430,9 +3430,9 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
       )}
 
       {msg && <div className="note">{msg}</div>}
-      <h2>Asesorada</h2>
+      <h2>Asesorad@</h2>
       {!confirmDel
-        ? <button className="btn ghost" style={{ color: "#FCA5A5" }} onClick={() => setConfirmDel(true)}>Quitar de mis asesoradas</button>
+        ? <button className="btn ghost" style={{ color: "#FCA5A5" }} onClick={() => setConfirmDel(true)}>Quitar de mis asesorad@s</button>
         : <div className="note">Deja de estar en tu lista y pierde la rutina que le pusiste. Su cuenta y sus datos no se tocan.
             <button className="btn" style={{ background: "#FCA5A5" }} onClick={async () => { await db.removeClient(client.id); onRemoved(client.id); }}>Sí, quitar</button>
             <button className="btn ghost" onClick={() => setConfirmDel(false)}>Cancelar</button>
@@ -3450,7 +3450,7 @@ function Clients({ onClose }) {
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
 
-  const load = () => db.listClients().then(setList).catch(() => setErr("No se ha podido cargar la lista. ¿Has pegado el SQL de asesoradas en Supabase?"));
+  const load = () => db.listClients().then(setList).catch(() => setErr("No se ha podido cargar la lista. ¿Has pegado el SQL de asesorad@s en Supabase?"));
   useEffect(() => { load(); }, []);
   useEffect(() => {
     (list || []).filter((c) => c.client_id && !sums[c.id]).forEach((c) => db.clientData(c.client_id).then((d) => setSums((s) => ({ ...s, [c.id]: clientSummary(d, c.routine?.length) }))).catch(() => {}));
@@ -3470,11 +3470,11 @@ function Clients({ onClose }) {
   return (
     <>
       <button className="link" onClick={onClose}>← Ajustes</button>
-      <h1 style={{ marginTop: 10 }}>Mis asesoradas</h1>
+      <h1 style={{ marginTop: 10 }}>Mis asesorad@s</h1>
       <p className="sub">Añádelas con el correo con el que usan ARC. Si aún no tienen cuenta, se unirán solas cuando se registren con ese correo.</p>
       <div className="field"><label>Nombre</label><input className="in" value={name} onChange={(e) => setName(e.target.value)} placeholder="Marta" /></div>
       <div className="field"><label>Correo</label><input className="in" type="email" autoCapitalize="none" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="marta@gmail.com" /></div>
-      <button className="btn ac" disabled={busy || !email} onClick={add}>{busy ? "Añadiendo…" : "Añadir asesorada"}</button>
+      <button className="btn ac" disabled={busy || !email} onClick={add}>{busy ? "Añadiendo…" : "Añadir asesorad@"}</button>
       {err && <div className="err" style={{ marginTop: 10 }}>{err}</div>}
 
       <h2>Tu lista</h2>
