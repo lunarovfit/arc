@@ -12,9 +12,11 @@ export async function loadAll(userId) {
     supabase.from("media").select("key, url"),
   ]);
   // Rutina que le ha puesto su coach (si la tabla aún no existe, se ignora)
-  const cr = await supabase.from("coach_clients").select("routine, updated_at").eq("client_id", userId).not("routine", "is", null).order("updated_at", { ascending: false }).limit(1);
-  const coachRoutine = !cr.error && cr.data?.[0]?.routine?.length ? cr.data[0].routine : null;
-  return { profile: must(profile), sessions: must(sessions), habits: must(habits), media: must(media), coachRoutine };
+  let cr = await supabase.from("coach_clients").select("routine, mode, updated_at").eq("client_id", userId).order("updated_at", { ascending: false }).limit(1);
+  if (cr.error) cr = await supabase.from("coach_clients").select("routine, updated_at").eq("client_id", userId).order("updated_at", { ascending: false }).limit(1);
+  const row = !cr.error ? cr.data?.[0] : null;
+  const coach = row ? { routine: row.routine?.length ? row.routine : null, mode: row.mode || "" } : null;
+  return { profile: must(profile), sessions: must(sessions), habits: must(habits), media: must(media), coach };
 }
 
 export const updateProfile = (userId, patch) =>
@@ -94,4 +96,23 @@ export async function clientData(clientId) {
     supabase.from("habits").select("*").eq("user_id", clientId).gte("day", since),
   ]);
   return { profile: must(profile), sessions: must(sessions), habits: must(habits) };
+}
+
+// ---------- Revisiones ----------
+export const listCheckins = (clientId) => supabase.from("client_checkins").select("*").eq("client_id", clientId).order("created_at", { ascending: false }).then(must);
+export async function addCheckin(userId, { weight, waist, hip, feeling, files }) {
+  const photos = [];
+  for (let i = 0; i < files.length; i++) {
+    const path = `${userId}/${Date.now()}_${i}.jpg`;
+    must(await supabase.storage.from("checkins").upload(path, files[i], { contentType: "image/jpeg" }));
+    photos.push(path);
+  }
+  const num = (v) => (v === "" || v == null ? null : Number(String(v).replace(",", ".")));
+  return supabase.from("client_checkins").insert({ weight: num(weight), waist: num(waist), hip: num(hip), feeling: feeling || null, photos }).select().single().then(must);
+}
+export async function checkinUrls(paths) {
+  if (!paths.length) return {};
+  const { data, error } = await supabase.storage.from("checkins").createSignedUrls(paths, 3600);
+  if (error) throw error;
+  return Object.fromEntries(data.map((d) => [d.path, d.signedUrl]));
 }

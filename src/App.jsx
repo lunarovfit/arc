@@ -185,8 +185,19 @@ const RAT_STEPS = [0, 1, 2, 3, 5, 6, 8, 10, 11]; // equivalencia con los 12 nive
 const RAT_LEVELS = Object.fromEntries(["female", "male"].map((b) => [b,
   RAT_STAGES.map(([name, line], i) => ({ ...LEVELS[b][RAT_STEPS[i]], name, series: "Modo gymrat", line })),
 ]));
-const levelsOf = (branch, mode) => (mode === "gymrat" ? RAT_LEVELS : LEVELS)[branch] || LEVELS.female;
-const levelKey = (branch, mode, i) => (mode === "gymrat" ? `rat:${i}` : `lvl:${branch}:${i}`);
+// Modo clásico (sin personajes): los mismos requisitos, solo con número de nivel. Lo puede imponer la coach.
+const CLASSIC_LINES = [
+  "Has empezado. Lo más difícil ya está hecho.", "Primeras semanas sumando. El cuerpo empieza a entender de qué va esto.",
+  "La constancia empieza a notarse en los pesos.", "Ya no es una prueba: es tu rutina.", "Más fuerza que cuando empezaste, y se ve.",
+  "Medio arco. Lo que haces ya no lo hace cualquiera.", "Tus básicos se mueven con soltura.", "Disciplina de verdad: meses sin parar.",
+  "Fuerza que se nota fuera del gym.", "Pocas llegan aquí. Tú sí.", "A un paso de lo más alto.", "Arco completo. Nivel máximo.",
+];
+const CLASSIC_LEVELS = Object.fromEntries(["female", "male"].map((b) => [b, LEVELS[b].map((l, i) => ({ ...l, name: `Nivel ${i + 1}`, series: "Tu arco", line: CLASSIC_LINES[i] }))]));
+const ANIME_SRC = new Set(["Attack on Titan","Demon Slayer","Fullmetal Alchemist","Hajime no Ippo","Jujutsu Kaisen","My Hero Academia","Naruto","Neon Genesis Evangelion","One Piece","Vinland Saga","Dragon Ball","Haikyuu","Bleach"]);
+// En modo sin personajes tampoco salen frases de anime
+const pickQuote = (mode) => { const pool = mode === "clasico" ? QUOTES.filter((q) => !ANIME_SRC.has(q[2])) : QUOTES; const l = pool.length ? pool : QUOTES; return l[Math.floor(Math.random() * l.length)]; };
+const levelsOf = (branch, mode) => (mode === "gymrat" ? RAT_LEVELS : mode === "clasico" ? CLASSIC_LEVELS : LEVELS)[branch] || LEVELS.female;
+const levelKey = (branch, mode, i) => (mode === "gymrat" ? `rat:${i}` : mode === "clasico" ? `classic:${i}` : `lvl:${branch}:${i}`);
 
 // [frase, quién, de dónde, explicación, tipo]
 let QUOTES = [
@@ -1511,8 +1522,8 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
         <p className="hint" style={{ marginTop: -4 }}>Modo coach: sube una imagen para cada personaje. Mejor en vertical y con fondo oscuro.</p>
       </>}
       {err && <div className="err">{err}</div>}
-      {(vb === "rat" ? RAT_LEVELS[branch] : LEVELS[vb]).map((l, i) => {
-        const key = vb === "rat" ? `rat:${i}` : `lvl:${vb}:${i}`;
+      {(vb === "rat" ? RAT_LEVELS[branch] : mode === "clasico" && !coach ? CLASSIC_LEVELS[branch] : LEVELS[vb]).map((l, i) => {
+        const key = vb === "rat" ? `rat:${i}` : mode === "clasico" && !coach ? `classic:${i}` : `lvl:${vb}:${i}`;
         const img = media[key];
         const mine = vb === "rat" ? mode === "gymrat" : mode !== "gymrat" && vb === branch;
         return (
@@ -2720,7 +2731,7 @@ function LevelUp({ data, onClose }) {
         ))}
         <div className="lvup-img"><img src={img} alt="" /></div>
       </div>
-      <h1 className="lvup-title">{gymrat ? "Tu rata ha evolucionado" : "Personaje desbloqueado"}</h1>
+      <h1 className="lvup-title">{gymrat ? "Tu rata ha evolucionado" : data.clasico ? "Has subido de nivel" : "Personaje desbloqueado"}</h1>
       <div className="lvup-name">{to}</div>
       <p className="lvup-line">{line}</p>
       <button className="btn ac lvup-btn" onClick={onClose}>Seguir entrenando</button>
@@ -2740,7 +2751,7 @@ function useLevelUp(profile, ev, media, setProfile) {
       const L = levelsOf(profile.branch, profile.mode);
       setData({
         from: L[seen]?.name, to: L[ev.current].name, line: L[ev.current].line, idx: ev.current, total: L.length,
-        gymrat: profile.mode === "gymrat",
+        gymrat: profile.mode === "gymrat", clasico: profile.mode === "clasico",
         img: media[levelKey(profile.branch, profile.mode, ev.current)] || AVATAR[profile.branch],
       });
       setProfile({ seenLevel: ev.current });
@@ -2771,7 +2782,7 @@ function Tour({ profile, ev, heroImg, perms, onFinish }) {
       img: heroImg,
       body: <>
         <p className="tour-p">{lv.line}</p>
-        {next && <p className="tour-p dim">{gymrat ? "Tu siguiente fase" : "Tu siguiente personaje"}: <b>{next.name}</b>. En Inicio verás exactamente qué te falta.</p>}
+        {next && <p className="tour-p dim">{gymrat ? "Tu siguiente fase" : profile.mode === "clasico" ? "Tu siguiente nivel" : "Tu siguiente personaje"}: <b>{next.name}</b>. En Inicio verás exactamente qué te falta.</p>}
       </>,
     },
     {
@@ -3019,15 +3030,18 @@ export default function App() {
 
 const EMPTY = { onboarded: false, profile: null, sessions: [], habits: {}, xp: 0, gems: 0, active: null, role: "client" };
 
-function fromDb({ profile, sessions, habits, coachRoutine }) {
+function fromDb({ profile, sessions, habits, coach }) {
+  const forced = coach?.mode || "";
+  const base = profile.data ? { ...DEFAULT_PROFILE, ...profile.data, startDate: profile.start_date } : null;
   return {
     onboarded: profile.onboarded,
-    profile: profile.data ? { ...DEFAULT_PROFILE, ...profile.data, startDate: profile.start_date } : null,
+    profile: base && forced ? { ...base, ownMode: base.mode, mode: forced } : base,
+    hasCoach: !!coach, coachMode: forced,
     sessions: sessions.map((s) => ({ id: s.id, date: s.performed_at, dayId: s.day_id, dayName: s.day_name, dur: s.duration_s, volume: Number(s.volume_kg), sets: s.sets_done, exercises: s.exercises })),
     habits: Object.fromEntries(habits.map((h) => [h.day, { water: h.water ?? undefined, steps: h.steps ?? undefined, sleep: h.sleep != null ? Number(h.sleep) : undefined, weight: h.weight != null ? Number(h.weight) : undefined }])),
     xp: profile.xp, gems: profile.gems, active: profile.active_session, role: profile.role,
     nickname: profile.nickname, rankOptIn: profile.rank_opt_in && !!profile.nickname, savedLevel: profile.level,
-    coachRoutine: coachRoutine || null,
+    coachRoutine: coach?.routine || null,
   };
 }
 
@@ -3176,6 +3190,101 @@ const PAYWALL_CSS = `
 @keyframes pwIn{from{transform:translateY(24px);opacity:0}}
 `;
 
+/* ============================ REVISIONES ============================ */
+
+function CheckinList({ items }) {
+  const [urls, setUrls] = useState({});
+  const [big, setBig] = useState(null);
+  useEffect(() => {
+    const paths = items.flatMap((c) => c.photos || []).filter((p) => !urls[p]);
+    if (paths.length) db.checkinUrls(paths).then((u) => setUrls((x) => ({ ...x, ...u }))).catch(() => {});
+  }, [items]);
+  if (!items.length) return <div className="empty">Todavía no hay revisiones.</div>;
+  return (
+    <>
+      {items.map((c) => (
+        <div className="ck" key={c.id}>
+          <div className="ck-hd"><b>{new Date(c.created_at).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })}</b>
+            <span>{[c.weight && `${c.weight} kg`, c.waist && `cintura ${c.waist}`, c.hip && `cadera ${c.hip}`].filter(Boolean).join(" · ")}</span></div>
+          {c.photos?.length > 0 && <div className="ck-photos">{c.photos.map((p) => <button key={p} onClick={() => urls[p] && setBig(urls[p])}>{urls[p] ? <img src={urls[p]} alt="" /> : <span>…</span>}</button>)}</div>}
+          {c.feeling && <p className="ck-txt">{c.feeling}</p>}
+        </div>
+      ))}
+      {big && <div className="ck-big" onClick={() => setBig(null)}><img src={big} alt="" /></div>}
+    </>
+  );
+}
+
+// Lo que ve la asesorada: mandar su revisión a la coach
+function CheckinCard({ userId }) {
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState(null);
+  const [f, setF] = useState({ weight: "", waist: "", hip: "", feeling: "" });
+  const [files, setFiles] = useState([]);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState("");
+  const ref = useRef(null);
+  useEffect(() => { if (open && items === null) db.listCheckins(userId).then(setItems).catch(() => setItems([])); }, [open]);
+  const pick = async (list) => {
+    const out = [];
+    for (const file of [...list].slice(0, 3 - files.length)) {
+      const data = await readFile(file, 1400);
+      out.push({ preview: data, blob: await (await fetch(data)).blob() });
+    }
+    setFiles((x) => [...x, ...out].slice(0, 3));
+  };
+  const send = async () => {
+    setBusy(true); setMsg("");
+    try {
+      const row = await db.addCheckin(userId, { ...f, files: files.map((x) => x.blob) });
+      setItems((x) => [row, ...(x || [])]); setF({ weight: "", waist: "", hip: "", feeling: "" }); setFiles([]);
+      setMsg("Revisión enviada. Tu entrenadora ya la puede ver.");
+    } catch { setMsg("No se ha podido enviar. Revisa tu conexión e inténtalo otra vez."); }
+    finally { setBusy(false); }
+  };
+  return (
+    <div className="ckcard">
+      <div className="ck-hd"><b>Revisión con tu entrenadora</b><button className="link" onClick={() => setOpen(!open)}>{open ? "Cerrar" : "Abrir"}</button></div>
+      {!open && <p className="hint" style={{ margin: "6px 0 0" }}>Fotos de progreso, peso, medidas y cómo te ha ido. Solo las ve ella.</p>}
+      {open && (
+        <>
+          <div className="ck-photos ck-new">
+            {files.map((x, i) => <button key={i} onClick={() => setFiles(files.filter((_, j) => j !== i))} aria-label="Quitar foto"><img src={x.preview} alt="" /><i>✕</i></button>)}
+            {files.length < 3 && <button className="ck-add" onClick={() => ref.current?.click()}>+<small>{["Frente", "Perfil", "Espalda"][files.length]}</small></button>}
+            <input ref={ref} type="file" accept="image/*" multiple hidden onChange={(e) => { pick(e.target.files); e.target.value = ""; }} />
+          </div>
+          <div className="row">
+            {[["weight", "Peso (kg)"], ["waist", "Cintura (cm)"], ["hip", "Cadera (cm)"]].map(([k, l]) => (
+              <div key={k} className="field" style={{ flex: 1 }}><label>{l}</label><input className="in" inputMode="decimal" value={f[k]} onChange={(e) => setF({ ...f, [k]: e.target.value })} /></div>
+            ))}
+          </div>
+          <div className="field"><label>¿Cómo ha ido la semana?</label><textarea className="in" rows={3} value={f.feeling} placeholder="Energía, hambre, sueño, entrenos, molestias…" onChange={(e) => setF({ ...f, feeling: e.target.value })} /></div>
+          <button className="btn ac" disabled={busy || (!files.length && !f.weight && !f.feeling)} onClick={send}>{busy ? "Enviando…" : "Enviar revisión"}</button>
+          {msg && <div className="note">{msg}</div>}
+          <h2>Tus revisiones</h2>
+          {items === null ? <p className="hint">Cargando…</p> : <CheckinList items={items} />}
+        </>
+      )}
+    </div>
+  );
+}
+
+const CHECKIN_CSS = `
+.ckcard{background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:14px 16px;margin-top:18px}
+.ck-hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ck-hd span{font-size:12px;color:var(--dm);text-align:right}
+.ck{border-bottom:1px solid var(--ln);padding:12px 0}
+.ck-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.ck-photos button{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;border:1px solid var(--ln);background:#000;padding:0;cursor:pointer;color:var(--dm)}
+.ck-photos img{width:100%;height:100%;object-fit:cover}
+.ck-photos i{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.7);color:#fff;font-style:normal;font-size:11px;display:flex;align-items:center;justify-content:center}
+.ck-add{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:26px;color:var(--ac)!important;border-style:dashed!important}
+.ck-add small{font-size:11px;color:var(--dm);margin-top:4px}
+.ck-txt{font-size:14px;color:var(--dm);margin:8px 0 0;white-space:pre-wrap}
+.ck-big{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;padding:20px}
+.ck-big img{max-width:100%;max-height:100%;border-radius:14px}
+`;
+
 /* ============================ ASESORADAS (COACH) ============================ */
 
 const dayMs = 864e5;
@@ -3207,6 +3316,9 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
   const [confirmDel, setConfirmDel] = useState(false);
+  const [checkins, setCheckins] = useState(null);
+  const [mode, setMode] = useState(client.mode || "");
+  useEffect(() => { if (tab === "revis" && client.client_id && checkins === null) db.listCheckins(client.client_id).then(setCheckins).catch(() => setCheckins([])); }, [tab]);
 
   useEffect(() => {
     if (!client.client_id) return;
@@ -3232,6 +3344,7 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
       <div className="seg">
         <button className={tab === "cumple" ? "on" : ""} onClick={() => setTab("cumple")}>Cumplimiento</button>
         <button className={tab === "rutina" ? "on" : ""} onClick={() => setTab("rutina")}>Rutina</button>
+        <button className={tab === "revis" ? "on" : ""} onClick={() => setTab("revis")}>Revisiones</button>
         <button className={tab === "notas" ? "on" : ""} onClick={() => setTab("notas")}>Notas</button>
       </div>
 
@@ -3271,6 +3384,11 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
 
       {tab === "rutina" && (
         <>
+          <div className="field"><label>Modo de niveles</label>
+            <div className="chips">{[["", "Lo elige ella"], ["otaku", "Personajes anime"], ["gymrat", "Gymrat"], ["clasico", "Sin personajes"]].map(([v, l]) => (
+              <button key={v} className={`chip ${mode === v ? "on" : ""}`} disabled={busy} onClick={() => { setMode(v); save({ mode: v }, v === "clasico" ? "Le saldrán solo niveles con número, sin personajes." : v ? "Modo cambiado. Lo verá al abrir la app." : "Vuelve a elegir ella."); }}>{l}</button>
+            ))}</div>
+          </div>
           {!days?.length && !editing && (
             <div className="note">
               Aún no le has puesto rutina: ahora mismo usa la suya o la automática.
@@ -3296,6 +3414,11 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
           {editing && <h2>Así le queda la semana</h2>}
           {editing && <MuscleWeek sessions={[]} routine={normDays(days || [])} initial="plan" />}
         </>
+      )}
+
+      {tab === "revis" && (
+        !client.client_id ? <div className="note">Cuando se registre, aquí verás sus fotos de progreso, peso, medidas y cómo le ha ido cada semana. Ella las manda desde su pestaña de Hábitos.</div>
+        : checkins === null ? <p className="hint">Cargando…</p> : <CheckinList items={checkins} />
       )}
 
       {tab === "notas" && (
@@ -3418,8 +3541,9 @@ function ArcApp({ user }) {
     try {
       const [all, remote] = await Promise.all([db.loadAll(user.id), db.loadContent().catch(() => null)]);
       if (remote) { applyContent(remote); setContent({ quotes: remote.quotes.length ? remote.quotes : DEFAULT_CONTENT.quotes, exercises: remote.exercises.length ? remote.exercises : DEFAULT_CONTENT.exercises, foods: remote.foods.length ? remote.foods : DEFAULT_CONTENT.foods, recipes: remote.recipes.length ? remote.recipes : DEFAULT_CONTENT.recipes }); }
-      setQuote(QUOTES[Math.floor(Math.random() * QUOTES.length)]);
-      setState(fromDb(all));
+      const st = fromDb(all);
+      setQuote(pickQuote(st.profile?.mode));
+      setState(st);
       setMediaState(Object.fromEntries(all.media.map((m) => [m.key, m.url])));
       setLoaded(true);
     } catch (e) { setLoadErr("No hemos podido cargar tus datos. Revisa tu conexión."); }
@@ -3523,7 +3647,7 @@ function ArcApp({ user }) {
 
   if (!loaded) return <Shell>{loadErr ? <><div className="err">{loadErr}</div><button className="btn" onClick={load}>Reintentar</button></> : <p className="sub">Cargando tu arco…</p>}{splash && <Splash onDone={() => setSplash(false)} />}</Shell>;
 
-  const profileData = (p) => { const { startDate, ...rest } = p; return rest; };
+  const profileData = (p) => { const { startDate, ownMode, ...rest } = p; return ownMode !== undefined ? { ...rest, mode: ownMode } : rest; };
   const setProfile = (patch) => setState((s) => {
     const profile = { ...s.profile, ...patch };
     later("profile", () => db.updateProfile(user.id, { data: profileData(profile) }), 300);
@@ -3628,18 +3752,18 @@ function ArcApp({ user }) {
   } else if (tab === "nutricion") {
     body = <Nutrition profile={state.profile} setCook={(c) => setProfile({ cook: c })} media={media} />;
   } else {
-    body = <Habits state={state} setHabit={setHabit} adh={adh} steps={native.isNative ? {
+    body = <>{<Habits state={state} setHabit={setHabit} adh={adh} steps={native.isNative ? {
       available: native.platform === "android" || stepsAvail,
       linked: !!state.profile?.stepsLinked && stepsAvail,
       label: native.platform === "android" && !stepsAvail ? "Instalar Health Connect para leer tus pasos" : `Conectar con ${native.platform === "ios" ? "Apple Salud" : "Health Connect"}`,
       source: native.platform === "ios" ? "Apple Salud" : "Health Connect",
       busy: stepsBusy, error: stepsErr, connect: connectSteps, sync: syncSteps,
-    } : null} />;
+    } : null} />}{state.hasCoach && <CheckinCard userId={user.id} />}</>;
   }
 
   return (
     <div className="arc">
-      <style>{CSS + EXTRA_CSS + LEGAL_CSS + PAYWALL_CSS + CLIENTS_CSS}</style>
+      <style>{CSS + EXTRA_CSS + LEGAL_CSS + PAYWALL_CSS + CLIENTS_CSS + CHECKIN_CSS}</style>
       {paywall && <Paywall media={media} coach={coach} uploadMedia={uploadMedia} setMedia={setMedia} onClose={() => setPaywall(false)} onPremium={() => { setPremium(true); setPaywall(false); setToast("¡Bienvenida a ARC completo!"); }} />}
       {toast && <div className="toast" role="status">{toast}</div>}
       {done && <FinishScreen data={done} media={media} coach={coach} uploadMedia={uploadMedia} setMedia={setMedia} onClose={() => setDone(null)} />}
