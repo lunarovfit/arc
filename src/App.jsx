@@ -193,7 +193,7 @@ const CLASSIC_LINES = [
   "Fuerza que se nota fuera del gym.", "Pocas llegan aquí. Tú sí.", "A un paso de lo más alto.", "Arco completo. Nivel máximo.",
 ];
 const CLASSIC_LEVELS = Object.fromEntries(["female", "male"].map((b) => [b, LEVELS[b].map((l, i) => ({ ...l, name: `Nivel ${i + 1}`, series: "Tu arco", line: CLASSIC_LINES[i] }))]));
-const ANIME_SRC = new Set(["Attack on Titan","Demon Slayer","Fullmetal Alchemist","Hajime no Ippo","Jujutsu Kaisen","My Hero Academia","Naruto","Neon Genesis Evangelion","One Piece","Vinland Saga","Dragon Ball","Haikyuu","Bleach"]);
+const ANIME_SRC = new Set(["Attack on Titan","Demon Slayer","Fullmetal Alchemist","Hajime no Ippo","Jujutsu Kaisen","My Hero Academia","Naruto","Neon Genesis Evangelion","One Piece","Vinland Saga","Dragon Ball","Haikyuu","Bleach","Haikyuu!!","Gurren Lagann","One Punch Man","Fullmetal Alchemist: Brotherhood"]);
 // En modo sin personajes tampoco salen frases de anime
 const pickQuote = (mode) => { const pool = mode === "clasico" ? QUOTES.filter((q) => !ANIME_SRC.has(q[2])) : QUOTES; const l = pool.length ? pool : QUOTES; return l[Math.floor(Math.random() * l.length)]; };
 const levelsOf = (branch, mode) => (mode === "gymrat" ? RAT_LEVELS : mode === "clasico" ? CLASSIC_LEVELS : LEVELS)[branch] || LEVELS.female;
@@ -201,73 +201,48 @@ const levelKey = (branch, mode, i) => (mode === "gymrat" ? `rat:${i}` : mode ===
 
 // [frase, quién, de dónde, explicación, tipo]
 let QUOTES = [
-  // ---- Anime ----
   ["Un perdedor puede superar a un genio a base de esfuerzo.", "Rock Lee", "Naruto", "Lee no podía usar ninjutsu y aun así se ganó un sitio entre los mejores. Aquí nadie necesita talento para subir de nivel.", "cita"],
   ["No voy a huir ni a retirar mi palabra. Ese es mi camino ninja.", "Naruto Uzumaki", "Naruto", "Si te has dicho que hoy entrenas, hoy entrenas. Cúmplete a ti misma.", "cita"],
   ["Ve más allá. ¡Plus Ultra!", "All Might", "My Hero Academia", "Esa última repetición con buena técnica es tu Plus Ultra de hoy.", "cita"],
   ["Tú también puedes ser un héroe.", "All Might", "My Hero Academia", "Se lo dijo a un chaval sin poderes. Ese chaval acabó siendo el número uno.", "cita"],
-  ["Si ganas, vives. Si pierdes, mueres. Si no luchas, no puedes ganar.", "Eren Yeager", "Attack on Titan", "Para los días en que el sofá te llama: presentarte ya es luchar.", "cita"],
   ["¡Entregad vuestros corazones!", "Erwin Smith", "Attack on Titan", "Hoy dalo todo en el entreno. Mañana descansas.", "cita"],
-  ["Este mundo es cruel, y aun así es tan hermoso.", "Mikasa Ackerman", "Attack on Titan", "Entrenar cuesta, y verte más fuerte merece cada gota de sudor.", "cita"],
   ["Elige aquello de lo que menos te vayas a arrepentir.", "Levi Ackerman", "Attack on Titan", "¿Te arrepentirás más de ir al gym cansada o de no haber ido? Ya lo sabes.", "cita"],
   ["Tranquilo, soy el más fuerte.", "Satoru Gojo", "Jujutsu Kaisen", "Dilo antes de ponerte bajo la barra. La confianza también se entrena.", "cita"],
-  ["¿Cuándo muere una persona? Cuando es olvidada.", "Hiriluk", "One Piece", "Lo que no apuntas ni repites, se olvida. Registra tu serie.", "cita"],
-  ["¡Los sueños de las personas nunca terminan!", "Barbanegra", "One Piece", "Di en voz alta qué quieres conseguir, aunque alguien se ría.", "cita"],
   ["¡Voy a ser el Rey de los Piratas!", "Monkey D. Luffy", "One Piece", "Luffy lo grita desde el capítulo uno sin vergüenza. Ponle nombre a tu meta.", "cita"],
-  ["Cuando decidí perseguir mi sueño, ya había dejado atrás mi vida.", "Roronoa Zoro", "One Piece", "Comprometerte de verdad quita muchas dudas de golpe.", "cita"],
   ["No todo el que se esfuerza triunfa, pero todo el que ha triunfado se ha esforzado.", "Kamogawa", "Hajime no Ippo", "El esfuerzo no te asegura el resultado. Es lo único que te da opciones.", "cita"],
-  ["Quiero saber qué significa ser fuerte.", "Ippo Makunouchi", "Hajime no Ippo", "Ippo empezó por esa pregunta y lleva más de mil capítulos respondiéndola.", "cita"],
-  ["No tienes enemigos. Nadie tiene enemigos.", "Thors", "Vinland Saga", "Ni la chica de al lado ni tu cuerpo son tus enemigos. Entrena desde ahí.", "cita"],
-  ["No debo huir. No debo huir. No debo huir.", "Shinji Ikari", "Neon Genesis Evangelion", "Shinji lo repite temblando y se sube igual. Puedes ir al gym con miedo.", "cita"],
   ["¡Arde, corazón!", "Kyojuro Rengoku", "Demon Slayer", "Para cuando la motivación se apaga a mitad de entreno.", "cita"],
-  ["Levántate y camina. Sigue adelante. Tienes un buen par de piernas.", "Edward Elric", "Fullmetal Alchemist", "Tienes piernas. Hoy toca usarlas.", "cita"],
-
-  // ---- Películas ----
-  ["No importa lo fuerte que golpees. Importa lo fuerte que te pueden golpear y seguir avanzando.", "Rocky Balboa", "Rocky Balboa", "Una mala semana, un catarro, exámenes. Lo importante es volver el lunes.", "cita"],
-  ["Un paso a la vez, un golpe a la vez, un asalto a la vez.", "Rocky Balboa", "Creed", "No pienses en el año entero. Piensa en esta serie.", "cita"],
-  ["Protégete siempre.", "Frankie Dunn", "Million Dollar Baby", "Cuida tu técnica, tu descanso y tu cabeza. Sin eso no hay progreso que dure.", "cita"],
-  ["Si hay magia en el boxeo, es la de pelear más allá de lo que aguantas.", "Scrap", "Million Dollar Baby", "Maggie empezó a los 31 sin que nadie quisiera entrenarla. Nunca es tarde.", "cita"],
-  ["Nunca dejes que nadie te diga que no puedes hacer algo. Ni siquiera yo.", "Chris Gardner", "En busca de la felicidad", "Y menos la vocecita que te dice que eso no es para ti.", "cita"],
-  ["No hay ingrediente secreto.", "El padre de Po", "Kung Fu Panda", "No hay atajos. Hay constancia.", "cita"],
-  ["Ayer es historia, mañana es un misterio, pero hoy es un regalo.", "Maestro Oogway", "Kung Fu Panda", "Solo puedes entrenar hoy. Hazlo.", "cita"],
-  ["Dar cera, pulir cera.", "Señor Miyagi", "Karate Kid", "Los básicos aburridos son los que luego te salvan.", "cita"],
-  ["Hazlo o no lo hagas, pero no lo intentes.", "Yoda", "El Imperio contraataca", "Ve a por la serie con la cabeza puesta.", "cita"],
-  ["¿Por qué nos caemos? Para aprender a levantarnos.", "Thomas Wayne", "Batman Begins", "Un mal entreno también enseña.", "cita"],
-  ["Hay una diferencia entre conocer el camino y recorrerlo.", "Morfeo", "Matrix", "Saber la teoría está bien. Ir al gym está mejor.", "cita"],
-  ["El miedo es el asesino de la mente.", "Paul Atreides", "Dune", "El miedo a hacerlo mal no te puede quitar el entreno.", "cita"],
-  ["Lo único que debemos decidir es qué hacer con el tiempo que se nos ha dado.", "Gandalf", "El Señor de los Anillos", "Una hora al día te cambia el año.", "cita"],
-
-  // ---- Deporte ----
-  ["Odiaba cada minuto de entrenamiento, pero me decía: no abandones. Sufre ahora y vive el resto de tu vida como un campeón.", "Muhammad Ali", "Boxeo", "Ni a Ali le apetecía siempre. Lo hacía igual.", "cita"],
-  ["He fallado más de 9.000 tiros en mi carrera. Por eso tengo éxito.", "Michael Jordan", "Baloncesto", "Cada serie fallida es un dato para la siguiente.", "cita"],
-  ["Todo lo negativo, la presión, los retos, es una oportunidad para crecer.", "Kobe Bryant", "Baloncesto", "Ese peso que te intimida es tu próxima oportunidad.", "cita"],
-  ["Solo los disciplinados son libres.", "Eliud Kipchoge", "Maratón", "La disciplina te ahorra decidir cada día si vas o no.", "cita"],
-  ["No temo al hombre que ha practicado 10.000 patadas una vez, sino al que ha practicado una patada 10.000 veces.", "Bruce Lee", "Artes marciales", "Domina la sentadilla antes de buscar la variante rara.", "cita"],
-  ["Sé agua, amigo mío.", "Bruce Lee", "Artes marciales", "Si la máquina está ocupada, cambia de ejercicio. Adáptate y sigue.", "cita"],
-  ["Nadie va a venir a salvarte.", "David Goggins", "Ultrafondo", "Duro, pero liberador: el cambio depende de ti.", "cita"],
-  ["El dolor es inevitable. El sufrimiento es opcional.", "Haruki Murakami", "De qué hablo cuando hablo de correr", "Las piernas arden, pero lo que te cuentas mientras lo eliges tú.", "cita"],
-
-  // ---- Pensamiento ----
-  ["Lo que se interpone en el camino se convierte en el camino.", "Marco Aurelio", "Meditaciones", "Si una lesión te frena un ejercicio, trabaja lo que sí puedes.", "cita"],
-  ["No es que tengamos poco tiempo, es que perdemos mucho.", "Séneca", "Sobre la brevedad de la vida", "Una hora de entreno es menos de lo que se va en scroll.", "cita"],
-  ["Somos lo que hacemos repetidamente.", "Will Durant, sobre Aristóteles", "Filosofía", "Un día de gym no cambia nada. Cien seguidos, sí.", "cita"],
-  ["Quien tiene un porqué para vivir puede soportar casi cualquier cómo.", "Friedrich Nietzsche", "Filosofía", "Ten claro para qué entrenas. El cómo se aguanta mejor.", "cita"],
-  ["Cuando ya no podemos cambiar una situación, tenemos el reto de cambiarnos a nosotros mismos.", "Viktor Frankl", "El hombre en busca de sentido", "No controlas tu genética. Sí lo que haces con ella.", "cita"],
-  ["Un viaje de mil millas comienza con un solo paso.", "Lao Tse", "Tao Te Ching", "Tu primer paso puede ser abrir la app y mirar tu rutina.", "cita"],
-  ["Cada acción que haces es un voto por la persona que quieres ser.", "James Clear", "Hábitos atómicos", "Cada vaso de agua y cada serie cuentan como voto.", "cita"],
-  ["No subes al nivel de tus metas. Caes al nivel de tus sistemas.", "James Clear", "Hábitos atómicos", "Por eso aquí subes de nivel con hábitos, no con propósitos de año nuevo.", "cita"],
-  ["Nadie puede hacerte sentir inferior sin tu consentimiento.", "Eleanor Roosevelt", "Política y activismo", "Tu sitio en la zona de pesas es tuyo.", "cita"],
-  ["Atribuyo mi éxito a esto: nunca di ni acepté una excusa.", "Florence Nightingale", "Enfermería", "La fundadora de la enfermería moderna, también en el gym.", "cita"],
-  ["Quiérete a ti misma. Habla por ti misma.", "BTS", "Discurso en la ONU", "Entrenar por amor a tu cuerpo, no por castigo.", "cita"],
-  // Motivación
+  ["Cien flexiones, cien abdominales, cien sentadillas y diez kilómetros de carrera. Todos los días.", "Saitama", "One Punch Man", "Su secreto no era ningún poder: era no saltarse ni un día.", "cita"],
   ["Cree en ti. No en el yo que cree en ti, ni en el tú que cree en mí. Cree en el tú que cree en ti.", "Kamina", "Gurren Lagann", "Para los días en que no te ves capaz. Simon tampoco se lo creía.", "cita"],
   ["¡Manda la lógica a paseo y haz lo imposible!", "Kamina", "Gurren Lagann", "Para esa serie que te da miedo intentar.", "cita"],
   ["El talento es algo que haces florecer. El instinto es algo que pules.", "Toru Oikawa", "Haikyuu!!", "Oikawa no era un genio y llegó arriba puliendo lo suyo cada día.", "cita"],
   ["Una lección sin dolor no tiene sentido. Nadie gana nada sin sacrificar algo a cambio.", "Edward Elric", "Fullmetal Alchemist: Brotherhood", "Las agujetas, el madrugón, el táper. Eso es lo que pagas a cambio.", "cita"],
-  ["La fuerza no viene de ganar. Viene de tus luchas: cuando pasas por algo duro y decides no rendirte, eso es fuerza.", "Arnold Schwarzenegger", "Culturismo", "Los días malos también te están haciendo fuerte.", "cita"],
+  ["No importa lo fuerte que golpees. Importa lo fuerte que te pueden golpear y seguir avanzando.", "Rocky Balboa", "Rocky Balboa", "Una mala semana, un catarro, exámenes. Lo importante es volver el lunes.", "cita"],
+  ["Un paso a la vez, un golpe a la vez, un asalto a la vez.", "Rocky Balboa", "Creed", "No pienses en el año entero. Piensa en esta serie.", "cita"],
+  ["Nunca dejes que nadie te diga que no puedes hacer algo. Ni siquiera yo.", "Chris Gardner", "En busca de la felicidad", "Y menos la vocecita que te dice que eso no es para ti.", "cita"],
+  ["Hazlo o no lo hagas, pero no lo intentes.", "Yoda", "El Imperio contraataca", "Ve a por la serie con la cabeza puesta.", "cita"],
+  ["¿Por qué nos caemos? Para aprender a levantarnos.", "Thomas Wayne", "Batman Begins", "Un mal entreno también enseña.", "cita"],
+  ["Hay una diferencia entre conocer el camino y recorrerlo.", "Morfeo", "Matrix", "Saber la teoría está bien. Ir al gym está mejor.", "cita"],
+  ["Odiaba cada minuto de entrenamiento, pero me decía: no abandones. Sufre ahora y vive el resto de tu vida como un campeón.", "Muhammad Ali", "Boxeo", "Ni a Ali le apetecía siempre. Lo hacía igual.", "cita"],
   ["Los campeones no se hacen en los gimnasios. Se hacen de algo que llevan dentro: un deseo, un sueño, una visión.", "Muhammad Ali", "Boxeo", "El gym es donde se nota. Lo de dentro lo traes tú.", "cita"],
-  ["Cuando tu mente te dice que has terminado, solo vas por el 40%.", "David Goggins", "Ultrafondo", "Cuando creas que no puedes más, prueba una repetición más.", "cita"],
+  ["La fuerza no viene de ganar. Viene de tus luchas: cuando pasas por algo duro y decides no rendirte, eso es fuerza.", "Arnold Schwarzenegger", "Culturismo", "Los días malos también te están haciendo fuerte.", "cita"],
   ["Pelea un asalto más. Cuando tus brazos estén tan cansados que apenas puedas levantar la guardia, pelea un asalto más.", "James J. Corbett", "Boxeo", "La serie que haces cansada es la que te cambia.", "cita"],
+  ["Cuando tu mente te dice que has terminado, solo vas por el 40%.", "David Goggins", "Ultrafondo", "Cuando creas que no puedes más, prueba una repetición más.", "cita"],
+  ["Nadie va a venir a salvarte.", "David Goggins", "Ultrafondo", "Duro, pero liberador: el cambio depende de ti.", "cita"],
+  ["He fallado más de 9.000 tiros en mi carrera. Por eso tengo éxito.", "Michael Jordan", "Baloncesto", "Cada serie fallida es un dato para la siguiente.", "cita"],
+  ["Solo los disciplinados son libres.", "Eliud Kipchoge", "Maratón", "La disciplina te ahorra decidir cada día si vas o no.", "cita"],
+  ["No temo al hombre que ha practicado 10.000 patadas una vez, sino al que ha practicado una patada 10.000 veces.", "Bruce Lee", "Artes marciales", "Domina la sentadilla antes de buscar la variante rara.", "cita"],
+  ["Una campeona no se define por sus victorias, sino por cómo se recupera cuando cae.", "Serena Williams", "Tenis", "La semana que fallas no cuenta. Cuenta la siguiente.", "cita"],
+  ["No soy la próxima Usain Bolt ni el próximo Michael Phelps. Soy la primera Simone Biles.", "Simone Biles", "Gimnasia", "No entrenas para parecerte a nadie. Entrenas para ser tu mejor versión.", "cita"],
+  ["Puedo porque pienso que puedo.", "Carolina Marín", "Bádminton", "Su lema desde niña en Huelva. Llegó a campeona olímpica.", "cita"],
+  ["El dolor es inevitable. El sufrimiento es opcional.", "Haruki Murakami", "De qué hablo cuando hablo de correr", "Las piernas arden, pero lo que te cuentas mientras lo eliges tú.", "cita"],
+  ["Somos lo que hacemos repetidamente.", "Will Durant, sobre Aristóteles", "Filosofía", "Un día de gym no cambia nada. Cien seguidos, sí.", "cita"],
+  ["Lo que se interpone en el camino se convierte en el camino.", "Marco Aurelio", "Meditaciones", "Si una lesión te frena un ejercicio, trabaja lo que sí puedes.", "cita"],
+  ["No es que tengamos poco tiempo, es que perdemos mucho.", "Séneca", "Sobre la brevedad de la vida", "Una hora de entreno es menos de lo que se va en scroll.", "cita"],
+  ["La disciplina es el puente entre las metas y los logros.", "Jim Rohn", "Desarrollo personal", "Las ganas te traen al gym una semana. La disciplina, todo el año.", "cita"],
+  ["Cada acción que haces es un voto por la persona que quieres ser.", "James Clear", "Hábitos atómicos", "Cada vaso de agua y cada serie cuentan como voto.", "cita"],
+  ["No subes al nivel de tus metas. Caes al nivel de tus sistemas.", "James Clear", "Hábitos atómicos", "Por eso aquí subes de nivel con hábitos, no con propósitos de año nuevo.", "cita"],
+  ["Nadie puede hacerte sentir inferior sin tu consentimiento.", "Eleanor Roosevelt", "Política y activismo", "Tu sitio en la zona de pesas es tuyo.", "cita"],
+  ["Atribuyo mi éxito a esto: nunca di ni acepté una excusa.", "Florence Nightingale", "Enfermería", "La fundadora de la enfermería moderna, también en el gym.", "cita"]
 ];
 
 /* ============================ ENTRENO ============================ */
@@ -282,7 +257,7 @@ const EX_DB = [
   ["ARC-005", "Pecho", "Aperturas en máquina (pec deck)", "Pectoral", "Máquina", "Llevas los brazos desde abiertos hasta juntos por delante del pecho, en un movimiento de \"abrazo\".", "Codos ligeramente flexionados y fijos durante todo el recorrido. Si los flexionas y estiras, se convierte en press, no en aislamiento de pecho."],
   ["ARC-006", "Pecho", "Fondos en paralelas o banco", "Pectoral inferior, tríceps", "Peso corporal", "Bajas el cuerpo flexionando los codos y subes empujando, usando tu propio peso como carga.", "Inclina un poco el torso hacia delante si quieres más pecho; mantente más vertical si quieres más tríceps."],
   ["ARC-007", "Espalda", "Dominadas", "Dorsal ancho, bíceps", "Peso corporal", "Colgada de una barra con las palmas mirando hacia delante, tiras del cuerpo hacia arriba hasta pasar la barbilla por encima de la barra y bajas controlada.", "Antes de doblar los codos, baja los hombros alejándolos de las orejas. Piensa en llevar los codos al suelo, no en tirar con los brazos."],
-  ["ARC-008", "Espalda", "Dominada asistida", "Dorsal ancho, bíceps", "Máquina / banda", "Versión de dominada con ayuda de un contrapeso o una banda elástica, para quienes todavía no hacen la dominada completa.", "Controla también la bajada, no solo la subida. Bajar lento es lo que más construye fuerza para llegar a la dominada sin ayuda."],
+  ["ARC-008", "Espalda", "Dominada asistida en máquina", "Dorsal ancho, bíceps", "Máquina", "Te apoyas de rodillas en la plataforma de la máquina, que te quita parte de tu peso, y haces la dominada completa.", "Controla también la bajada, no solo la subida. Bajar lento es lo que más construye fuerza para llegar a la dominada sin ayuda."],
   ["ARC-009", "Espalda", "Jalón al pecho agarre prono", "Dorsal ancho", "Polea", "Tiras de la barra desde arriba hacia el pecho, sentada con las piernas ancladas.", "Antes de tirar con el brazo, lleva primero los hombros hacia abajo y atrás. Así activas la espalda antes que el bíceps."],
   ["ARC-010", "Espalda", "Jalón al pecho agarre supino", "Dorsal ancho, bíceps", "Polea", "Igual que el jalón normal, pero con las palmas mirando hacia ti y las manos a la anchura de los hombros. Trabaja el dorsal con algo más de bíceps.", "Lleva los codos hacia las costillas y saca pecho al llegar abajo. Con este agarre es fácil tirar solo con el bíceps; piensa en la espalda."],
   ["ARC-011", "Espalda", "Jalón unilateral en máquina (dorsal)", "Dorsal ancho", "Máquina", "Tiras de un asa con un solo brazo, llevando el codo hacia la cadera. Así trabajas cada lado de la espalda por separado y notas mejor el dorsal.", "Inclina un poco el torso hacia el lado que trabajas y no gires el cuerpo para ayudarte. Aguanta 1 segundo en la contracción."],
@@ -291,8 +266,6 @@ const EX_DB = [
   ["ARC-014", "Espalda", "Remo agarre prono en máquina sentado", "Dorsal alto, trapecio, romboides", "Máquina", "Sentada con el pecho apoyado, tiras de las asas con las palmas hacia abajo y los codos abiertos, para trabajar la parte alta y media de la espalda.", "Agarre algo más abierto que los hombros. Lleva primero los hombros atrás y después los codos. Controla la vuelta: ahí se construye."],
   ["ARC-015", "Espalda", "Remo con mancuerna a una mano", "Dorsal, romboides", "Mancuerna", "Apoyas una rodilla y una mano en un banco, y tiras de la mancuerna con el otro brazo hacia la cadera.", "Evita rotar el torso al tirar. Si giras el cuerpo para ayudarte, es que el peso es demasiado alto."],
   ["ARC-016", "Espalda", "Remo con barra", "Dorsal, trapecio, romboides", "Barra", "Inclinada hacia delante con una barra en las manos, tiras de ella hacia el abdomen y la bajas controlada.", "Fija el torso desde el principio y no lo muevas. Si necesitas balancearte para subir la barra, baja el peso."],
-  ["ARC-017", "Espalda", "Pull-over con mancuerna", "Dorsal ancho, pectoral", "Mancuerna", "Tumbada en un banco, bajas una mancuerna con los brazos casi rectos por detrás de la cabeza y la vuelves a subir, trabajando espalda y pecho a la vez.", "Piensa en mover el peso en un arco, con los brazos casi rectos. Si flexionas los codos, se convierte en un ejercicio de tríceps."],
-  ["ARC-018", "Espalda", "Reverse fly con mancuernas", "Deltoide posterior, espalda alta", "Mancuernas", "Inclinada hacia delante, abres los brazos hacia los lados con mancuernas, como si quisieras juntar los omóplatos.", "Piensa en llevar los codos hacia fuera, no las manos. Usa poco peso: el hombro posterior es un músculo pequeño."],
   ["ARC-019", "Espalda", "Reverse fly en máquina", "Deltoide posterior, espalda alta", "Máquina", "Sentada mirando hacia el respaldo de la máquina, llevas los brazos hacia atrás y hacia los lados para trabajar la parte de atrás del hombro.", "Ajusta el asiento para que las asas queden a la altura del hombro y no encojas los hombros hacia las orejas."],
   ["ARC-020", "Espalda", "Face pull", "Deltoide posterior, trapecio, manguito", "Polea", "Con una cuerda en una polea a la altura de la cara, tiras hacia ti separando las manos, como si fueras a tocarte las orejas con los pulgares.", "Tira hacia la cara abriendo las manos y piensa en enseñar los codos. Usa poco peso y mucho control."],
   ["ARC-021", "Espalda", "Peso muerto convencional", "Espalda baja, glúteo, isquiotibiales", "Barra", "Levantas una barra cargada del suelo hasta quedar completamente de pie, manteniendo la espalda recta todo el recorrido.", "Antes de tirar, empuja el suelo con los pies y aprieta las axilas como si guardaras algo debajo. La barra siempre pegada a las piernas."],
@@ -304,7 +277,6 @@ const EX_DB = [
   ["ARC-027", "Hombro", "Elevaciones laterales en polea", "Deltoide lateral", "Polea", "Lo mismo que con mancuernas, pero con el cable de una polea baja, lo que mantiene tensión constante en todo el recorrido.", "Colócate algo alejada de la polea y deja que el brazo cruce ligeramente por delante del cuerpo al empezar; así el músculo trabaja desde el primer grado del movimiento."],
   ["ARC-028", "Hombro", "Elevaciones frontales con mancuernas", "Deltoide anterior", "Mancuernas", "De pie, levantas una o dos mancuernas hacia delante hasta la altura del hombro, con los brazos casi rectos.", "Sube solo hasta la altura de los ojos y baja lento. Si balanceas el cuerpo, la mancuerna pesa de más."],
   ["ARC-029", "Bíceps", "Curl de bíceps en máquina", "Bíceps braquial", "Máquina", "Sentada o de pie, flexionas el codo contra resistencia para acercar el peso al hombro.", "No uses impulso de los hombros. Si te cuesta subir sin balancearte, el peso es demasiado alto."],
-  ["ARC-030", "Bíceps", "Curl predicador", "Bíceps braquial", "Máquina", "Con los brazos apoyados en un soporte inclinado, flexionas los codos para subir el peso y bajas hasta casi estirar el brazo. El soporte evita que hagas trampa.", "Baja del todo, hasta estirar el codo sin perder la tensión, y no despegues las axilas del apoyo al subir."],
   ["ARC-031", "Bíceps", "Curl con mancuernas agarre abierto", "Bíceps braquial", "Mancuernas", "Variante con los codos y las manos algo separados del cuerpo: subes las mancuernas hacia los hombros girando las palmas hacia arriba.", "Separa los codos solo un poco del torso y no los adelantes al subir. Controla la bajada."],
   ["ARC-032", "Bíceps", "Curl con mancuernas agarre cerrado", "Bíceps braquial", "Mancuernas", "Variante con los codos pegados al torso y las manos cerca de las caderas: subes las mancuernas hacia el centro del pecho.", "Pega los codos a las costillas y que no se muevan hacia delante. Si te cuesta subir sin balancearte, el peso es demasiado."],
   ["ARC-033", "Bíceps", "Curl de bíceps con barra en polea", "Bíceps braquial", "Polea", "De pie frente a una polea baja con una barra, flexionas los codos para subirla hacia el pecho y bajas despacio.", "Bajada controlada, estirando hasta abajo sin perder la tensión. Al subir, cuidado con no elevar los hombros."],
@@ -327,13 +299,9 @@ const EX_DB = [
   ["ARC-050", "Femoral", "Femoral sentado", "Isquiotibiales", "Máquina", "Sentada, con las piernas estiradas sobre un rodillo, flexionas las rodillas llevando el rodillo hacia abajo/atrás.", "Mantén la espalda pegada al respaldo durante todo el recorrido; despegarla resta tensión al músculo que estás trabajando."],
   ["ARC-051", "Femoral", "Peso muerto rumano con mancuernas", "Isquiotibiales, glúteo", "Mancuernas", "Con las piernas casi rectas, bajas las mancuernas pegadas a las piernas manteniendo la espalda neutra, y vuelves a subir.", "La sensación de estiramiento en la parte de atrás del muslo es tu límite de bajada, no una distancia fija. Cuando notes ese tope, para ahí."],
   ["ARC-052", "Femoral", "Peso muerto rumano a una mano", "Isquiotibiales, glúteo", "Mancuerna", "Con una mancuerna en una mano, haces una bisagra de cadera: llevas el glúteo hacia atrás, bajas la mancuerna pegada a la pierna y vuelves a subir.", "Baja en 3-4 segundos y haz una micropausa abajo. Mantén la cadera cuadrada, sin girar el torso hacia el lado de la mancuerna."],
-  ["ARC-053", "Femoral", "Buenos días", "Isquiotibiales, glúteo, lumbar", "Barra", "Con una barra ligera sobre la espalda alta, llevas la cadera hacia atrás inclinando el torso con la espalda recta y vuelves a subir.", "Empieza con muy poco peso. Baja hasta notar el estiramiento del femoral manteniendo la espalda recta; ese es tu límite de recorrido."],
-  ["ARC-054", "Glúteo y cadera", "Hip thrust con barra", "Glúteo mayor", "Barra", "La versión con más carga: te apoyas en el banco con una barra con peso sobre la cadera (normalmente con una almohadilla protectora).", "Mira hacia abajo, no hacia delante, y aprieta el glúteo arriba 1-2 segundos. Si notas la zona lumbar, has subido demasiado."],
+  ["ARC-054", "Glúteo y cadera", "Hip thrust en máquina", "Glúteo mayor", "Máquina", "Sentada con la espalda apoyada en el respaldo y el rodillo sobre la cadera, subes la cadera empujando con los talones hasta quedar en línea con el tronco.", "Mete la barbilla y mira al frente: así la espalda no se arquea y el trabajo se lo lleva el glúteo. Aguanta 1 segundo arriba apretando."],
   ["ARC-055", "Glúteo y cadera", "Hip thrust a una pierna", "Glúteo mayor", "Peso corporal / banco", "Igual que el hip thrust normal, pero con una sola pierna apoyada y la otra estirada en el aire, para trabajar cada lado por separado.", "Empieza por la pierna que peor te sale y repite el mismo número de repeticiones en la otra. Mantén la cadera nivelada, sin girar."],
   ["ARC-056", "Glúteo y cadera", "Hip thrust con banda elástica", "Glúteo mayor y medio", "Banda elástica", "El mismo movimiento, con una banda elástica rodeando las rodillas que te obliga a empujarlas hacia fuera mientras subes.", "Empuja las rodillas hacia fuera durante toda la repetición. Si se juntan, baja la carga."],
-  ["ARC-057", "Glúteo y cadera", "Patada de glúteo en máquina", "Glúteo mayor", "Máquina", "Empujas una plataforma hacia atrás con una pierna, en una máquina específica para glúteo.", "No uses impulso ni balanceo del cuerpo. El movimiento debe salir solo de la cadera hacia atrás, despacio."],
-  ["ARC-058", "Glúteo y cadera", "Patada de glúteo a cuatro patas", "Glúteo mayor", "Peso corporal", "Apoyada en manos y rodillas, llevas una pierna hacia atrás y arriba manteniendo la rodilla flexionada.", "Aprieta el glúteo con fuerza en la parte más alta del movimiento durante 1 segundo antes de bajar."],
-  ["ARC-059", "Glúteo y cadera", "Patada de rana", "Glúteo mayor", "Multipower / banco", "Apoyada en un banco frente al multipower, empujas la barra hacia arriba con la planta del pie y la rodilla flexionada. Trabaja el glúteo sin cargar la espalda.", "Agárrate bien al banco y mantén las piernas algo más abiertas que los hombros. Empuja con el glúteo, no con la zona lumbar."],
   ["ARC-060", "Glúteo y cadera", "Abducción de cadera en máquina", "Glúteo medio", "Máquina", "Sentada, separas las piernas hacia fuera contra resistencia.", "Inclínate ligeramente hacia delante en el asiento. Cambia el ángulo y mejora cuánto trabaja el glúteo frente a la cadera."],
   ["ARC-061", "Glúteo y cadera", "Aducción de cadera en máquina", "Aductores", "Máquina", "Sentada con las piernas abiertas contra las almohadillas, las cierras juntando los muslos y vuelves a abrir despacio. Trabaja la cara interna del muslo.", "Aguanta 1 segundo con las piernas juntas y controla la apertura en 3 segundos. No dejes que el peso te abra de golpe."],
   ["ARC-062", "Gemelo", "Gemelo de pie en máquina", "Gemelo", "Máquina", "De pie, te elevas sobre las puntas de los pies contra resistencia sobre los hombros.", "Baja el talón por debajo del nivel de la plataforma para estirar bien antes de volver a subir. El recorrido completo es lo que marca la diferencia aquí."],
@@ -345,7 +313,9 @@ const EX_DB = [
   ["ARC-068", "Abdomen", "Bicicleta", "Oblicuos, recto abdominal", "Peso corporal", "Tumbada bocarriba, alternas llevar el codo contrario hacia la rodilla contraria, en un movimiento de pedaleo.", "Hazlo despacio y controlado. El beneficio real está en la rotación controlada, no en la velocidad."],
   ["ARC-069", "Espalda", "Remo en polea baja con barra", "Dorsal, romboides", "Polea", "Sentada en la polea baja con los pies apoyados, tiras de la barra hacia el abdomen con las palmas mirando hacia abajo y la espalda recta.", "Primero junta las escápulas y después dobla los codos. Llega con la barra al ombligo, no al pecho, y vuelve estirando los brazos sin encorvarte."],
   ["ARC-070", "Espalda", "Jalón unilateral en polea", "Dorsal ancho", "Polea", "Sentada de lado a la polea alta, tiras del agarre con un brazo llevando el codo hacia la cadera, y luego cambias de lado.", "Piensa en meter el codo en el bolsillo del pantalón. Si giras el tronco para ayudarte, baja el peso."],
-  ["ARC-071", "Glúteo y cadera", "Hip thrust en máquina", "Glúteo mayor", "Máquina", "Sentada con la espalda apoyada en el respaldo y el rodillo sobre la cadera, subes la cadera empujando con los talones hasta quedar en línea con el tronco.", "Mete la barbilla y mira al frente: así la espalda no se arquea y el trabajo se lo lleva el glúteo. Aguanta 1 segundo arriba apretando."],
+  ["ARC-072", "Femoral", "Peso muerto rumano con barra", "Isquiotibiales, glúteo", "Barra", "De pie con la barra en las manos, bajas llevando la cadera hacia atrás con las rodillas un poco flexionadas, la barra pegada a las piernas, y subes apretando glúteo.", "Baja hasta notar que tira el femoral, no hasta el suelo. Espalda recta y barra rozando las piernas todo el rato."],
+  ["ARC-073", "Espalda", "Dominada con banda elástica", "Dorsal ancho, bíceps", "Banda elástica", "Enganchas una banda a la barra y metes la rodilla o el pie dentro: te ayuda en la parte más difícil de la subida.", "Usa la banda que te deje hacer 6-8 buenas. Cuando te salgan fáciles, cambia a una más fina."],
+  ["ARC-074", "Espalda", "Dominada negativa", "Dorsal ancho, bíceps", "Peso corporal", "Subes a la barra con un salto o un banco y bajas lo más despacio que puedas, unos 3-5 segundos, hasta estirar los brazos.", "Es la mejor forma de conseguir tu primera dominada. Controla la bajada entera, sin dejarte caer al final."],
   // Añadidos (no están en tu base de datos): revisa y escribe tu propia ficha
   ["ARC-X01", "Cuádriceps", "Sentadilla búlgara en Smith", "Cuádriceps, glúteo", "Multipower + banco", "Con el empeine de atrás apoyado en un banco y la barra guiada sobre la espalda, bajas en vertical doblando la rodilla de delante.", "Pie de delante más adelantado = más glúteo; más cerca de la barra = más cuádriceps."],
   ["ARC-X02", "Femoral", "Peso muerto rumano en Smith", "Isquiotibiales, glúteo", "Multipower", "Bisagra de cadera con la barra guiada: llevas el glúteo hacia atrás y la barra baja pegada a las piernas.", "Para cuando notes el estiramiento del femoral, no cuando la barra llegue abajo."],
@@ -361,7 +331,7 @@ const EX_EXTRA = {
   "ARC-X05": { lift: "squat" },
   "ARC-021": { lift: "deadlift" },
   "ARC-X04": { lift: "bench" },
-  "ARC-007": { pull: true, note: "No te preocupes si aún no te sale: en el vídeo tienes variantes (asistida, con banda y negativas)." },
+  "ARC-007": { pull: true, note: "No te preocupes si aún no te sale: abajo tienes sus variantes (asistida, con banda y negativas) para ir llegando." },
   "ARC-066": { unit: "s" },
   "CARDIO": { unit: "min" },
   "MOVILIDAD": { unit: "min" },
@@ -376,8 +346,8 @@ const LEGACY_EX = { sentadilla: "ARC-X05", pesoMuerto: "ARC-021", pressBanca: "A
 // Días al estilo ARC: [ejercicio, series, reps, RIR, descanso en s]
 const DAY_TEMPLATES = {
   piernaGluteo: { name: "Pierna y glúteo", ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-X01", 3, "8–10 por pierna", 2, 120], ["ARC-X02", 3, "8–10", 2, 120], ["ARC-049", 3, "10–12", 1, 90], ["ARC-060", 3, "12–15", 1, 60], ["ARC-065", 3, "12–15", 1, 60]] },
-  espaldaBiceps: { name: "Espalda y bíceps", ex: [["ARC-007", 4, "máx.", 1, 150], ["ARC-009", 3, "8–10", 2, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-011", 3, "10–12 por brazo", 1, 90], ["ARC-031", 3, "10–12", 1, 60], ["ARC-025", 3, "12–15", 1, 60], ["ARC-030", 3, "10–12", 1, 60]] },
-  gluteoFemoral: { name: "Glúteo y femoral", ex: [["ARC-054", 4, "8–10", 1, 120], ["ARC-021", 3, "4–6", 2, 180], ["ARC-050", 3, "10–12", 1, 90], ["ARC-059", 3, "12–15", 1, 60], ["ARC-061", 3, "12–15", 1, 60], ["ARC-067", 3, "10–15", 1, 60]] },
+  espaldaBiceps: { name: "Espalda y bíceps", ex: [["ARC-007", 4, "máx.", 1, 150], ["ARC-009", 3, "8–10", 2, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-011", 3, "10–12 por brazo", 1, 90], ["ARC-031", 3, "10–12", 1, 60], ["ARC-025", 3, "12–15", 1, 60], ["ARC-033", 3, "10–12", 1, 60]] },
+  gluteoFemoral: { name: "Glúteo y femoral", ex: [["ARC-054", 4, "8–10", 1, 120], ["ARC-021", 3, "4–6", 2, 180], ["ARC-050", 3, "10–12", 1, 90], ["ARC-X03", 3, "12–15", 1, 60], ["ARC-061", 3, "12–15", 1, 60], ["ARC-067", 3, "10–15", 1, 60]] },
   empuje: { name: "Pecho, hombro y tríceps", ex: [["ARC-003", 3, "8–10", 2, 120], ["ARC-004", 3, "10–12", 1, 90], ["ARC-023", 3, "8–10", 2, 90], ["ARC-027", 3, "12–15", 1, 60], ["ARC-034", 3, "10–12", 1, 60], ["ARC-035", 3, "10–12", 1, 60]] },
   cuadriceps: { name: "Cuádriceps y gemelo", ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-039", 3, "10–12", 1, 120], ["ARC-041", 3, "12–15", 1, 60], ["ARC-045", 3, "10 por pierna", 2, 90], ["ARC-062", 3, "12–15", 1, 60]] },
   calistenia: { name: "Calistenia y core", ex: [["ARC-007", 4, "máx.", 1, 120], ["ARC-001", 3, "máx.", 1, 90], ["ARC-006", 3, "máx.", 1, 90], ["ARC-067", 3, "10–15", 1, 60], ["ARC-066", 3, "30–45", 0, 60], ["ARC-068", 3, "20", 1, 45]] },
@@ -385,9 +355,9 @@ const DAY_TEMPLATES = {
   fullA: { name: "Full body A", ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-054", 3, "8–10", 1, 120], ["ARC-009", 3, "8–10", 2, 90], ["ARC-004", 3, "10–12", 1, 90], ["ARC-025", 3, "12–15", 1, 60], ["ARC-066", 3, "30–45", 0, 60]] },
   torsoA: { name: "Torso A", ex: [["ARC-X04", 4, "6–8", 2, 150], ["ARC-009", 3, "8–10", 2, 120], ["ARC-022", 3, "8–10", 2, 90], ["ARC-013", 3, "10–12", 1, 90], ["ARC-025", 3, "12–15", 1, 60], ["ARC-034", 3, "10–12", 1, 60], ["ARC-031", 3, "10–12", 1, 60]] },
   piernaA: { name: "Pierna A", ex: [["ARC-X05", 4, "6–8", 2, 180], ["ARC-051", 3, "8–10", 2, 120], ["ARC-039", 3, "10–12", 1, 120], ["ARC-049", 3, "10–12", 1, 90], ["ARC-062", 3, "12–15", 1, 60], ["ARC-065", 3, "12–15", 1, 60]] },
-  torsoB: { name: "Torso B", ex: [["ARC-007", 4, "máx.", 1, 150], ["ARC-003", 3, "8–10", 2, 120], ["ARC-016", 3, "8–10", 2, 120], ["ARC-004", 3, "10–12", 1, 90], ["ARC-020", 3, "12–15", 1, 60], ["ARC-035", 3, "10–12", 1, 60], ["ARC-030", 3, "10–12", 1, 60]] },
+  torsoB: { name: "Torso B", ex: [["ARC-007", 4, "máx.", 1, 150], ["ARC-003", 3, "8–10", 2, 120], ["ARC-016", 3, "8–10", 2, 120], ["ARC-004", 3, "10–12", 1, 90], ["ARC-020", 3, "12–15", 1, 60], ["ARC-035", 3, "10–12", 1, 60], ["ARC-033", 3, "10–12", 1, 60]] },
   piernaB: { name: "Pierna B", ex: [["ARC-021", 3, "4–6", 2, 180], ["ARC-X01", 3, "8–10 por pierna", 2, 120], ["ARC-054", 3, "8–10", 1, 120], ["ARC-041", 3, "12–15", 1, 60], ["ARC-050", 3, "10–12", 1, 60], ["ARC-067", 3, "10–15", 1, 60]] },
-  hombroBrazo: { name: "Hombro y brazos", ex: [["ARC-024", 3, "8–10", 2, 90], ["ARC-026", 3, "12–15", 1, 60], ["ARC-018", 3, "12–15", 1, 60], ["ARC-030", 3, "10–12", 1, 60], ["ARC-036", 3, "10–12", 1, 60], ["ARC-032", 3, "10–12", 1, 60], ["ARC-037", 3, "máx.", 1, 60]] },
+  hombroBrazo: { name: "Hombro y brazos", ex: [["ARC-024", 3, "8–10", 2, 90], ["ARC-026", 3, "12–15", 1, 60], ["ARC-019", 3, "12–15", 1, 60], ["ARC-033", 3, "10–12", 1, 60], ["ARC-036", 3, "10–12", 1, 60], ["ARC-032", 3, "10–12", 1, 60], ["ARC-037", 3, "máx.", 1, 60]] },
   fullMA: { name: "Full body A", ex: [["ARC-X05", 4, "6–8", 2, 180], ["ARC-X04", 4, "6–8", 2, 150], ["ARC-009", 3, "8–10", 2, 90], ["ARC-022", 3, "8–10", 2, 90], ["ARC-049", 3, "10–12", 1, 60], ["ARC-066", 3, "30–45", 0, 60]] },
   fullMB: { name: "Full body B", ex: [["ARC-021", 3, "4–6", 2, 180], ["ARC-007", 4, "máx.", 1, 150], ["ARC-003", 3, "8–10", 2, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-025", 3, "12–15", 1, 60], ["ARC-065", 3, "12–15", 1, 60]] },
   fullMC: { name: "Full body C", ex: [["ARC-039", 3, "10–12", 1, 120], ["ARC-X04", 3, "8–10", 2, 120], ["ARC-016", 3, "8–10", 2, 120], ["ARC-041", 3, "12–15", 1, 60], ["ARC-027", 3, "12–15", 1, 60], ["ARC-034", 3, "10–12", 1, 60], ["ARC-031", 3, "10–12", 1, 60]] },
@@ -702,10 +672,13 @@ const COOK_OPTS = [["sencilla", "Modo fácil"], ["todas", "Un poco de todo"], ["
 const LIFT_OPTS = [["", "No cuenta para el nivel"], ["squat", "Sentadilla (nivel)"], ["deadlift", "Peso muerto (nivel)"], ["bench", "Press banca (nivel)"], ["pull", "Dominadas (extra)"]];
 const TAG_OPTS = EXCLUDE_OPTS;
 
+// Ejercicios que se quitaron: en el historial y en rutinas guardadas se ven como su sustituto
+const EX_REMAP = { "ARC-071": "ARC-054", "ARC-030": "ARC-033", "ARC-018": "ARC-019", "ARC-057": "ARC-X03", "ARC-058": "ARC-X03", "ARC-059": "ARC-X03", "ARC-053": "ARC-072", "ARC-017": "ARC-009" };
 function withFallback(obj) {
   return new Proxy(obj, {
     get(t, k) {
       if (k in t || typeof k !== "string" || !/^(ARC-|CARDIO|MOVILIDAD|EX-)/.test(k)) return t[k];
+      if (EX_REMAP[k] && EX_REMAP[k] in t) return t[EX_REMAP[k]];
       return { id: k, group: "Otros", n: "Ejercicio eliminado", muscle: "", equip: "", simple: "", tip: "" };
     },
   });
@@ -1224,6 +1197,12 @@ textarea.in{resize:vertical;line-height:1.5}
 @keyframes fwall{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion: reduce){.fwall-row{animation:none}}
 .chip.no.on{background:transparent;color:var(--ac);border-color:var(--ac);text-decoration:line-through}
+.vars{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.var{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:3px;min-width:0}
+.var-th{aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--sf2);border:1px solid var(--ln);display:flex;align-items:center;justify-content:center;color:var(--dm);font-size:18px}
+.var-th video,.var-th img{width:100%;height:100%;object-fit:cover}
+.var b{font-size:12.5px;line-height:1.25;margin-top:4px}
+.var small{font-size:11px;color:var(--dm)}
 .tour-actions{margin-top:auto;padding-top:24px;display:flex;flex-direction:column;align-items:center;gap:14px}
 select.in{appearance:none}
 .tags{display:flex;gap:6px;margin-top:10px}
@@ -1476,7 +1455,34 @@ function MediaView({ src }) {
   return <video className="media" src={src} autoPlay loop muted playsInline controls />;
 }
 
-function TechniqueModal({ exId, media, coach, setMedia, uploadMedia, onClose }) {
+// Familias de ejercicios: dentro de cada ficha salen sus variantes
+const VARIANTS = [["ARC-054", "ARC-055", "ARC-056"], ["ARC-007", "ARC-008", "ARC-073", "ARC-074"], ["ARC-009", "ARC-010", "ARC-011", "ARC-070"], ["ARC-012", "ARC-013", "ARC-014", "ARC-015", "ARC-016", "ARC-069"], ["ARC-019", "ARC-020"], ["ARC-025", "ARC-026", "ARC-027"], ["ARC-022", "ARC-023", "ARC-024"], ["ARC-001", "ARC-002", "ARC-003", "ARC-004", "ARC-X04"], ["ARC-005", "ARC-006"], ["ARC-029", "ARC-031", "ARC-032", "ARC-033"], ["ARC-034", "ARC-035", "ARC-036", "ARC-037"], ["ARC-038", "ARC-039", "ARC-040"], ["ARC-X05", "ARC-042", "ARC-043", "ARC-044"], ["ARC-X01", "ARC-045", "ARC-046", "ARC-047", "ARC-048"], ["ARC-049", "ARC-050"], ["ARC-021", "ARC-072", "ARC-051", "ARC-052", "ARC-X02"], ["ARC-060", "ARC-061", "ARC-X03"], ["ARC-062", "ARC-063"], ["ARC-064", "ARC-065", "ARC-066", "ARC-067", "ARC-068"]];
+const variantsOf = (id) => (VARIANTS.find((f) => f.includes(id)) || []).filter((v) => v !== id && v in EXERCISES);
+
+function VariantList({ exId, media, onPick }) {
+  const list = variantsOf(exId);
+  if (!list.length) return null;
+  return (
+    <>
+      <h2 style={{ marginTop: 18 }}>Variantes</h2>
+      <div className="vars">
+        {list.map((v) => {
+          const src = media[`ex:${v}`];
+          const vid = src && !/youtu/.test(src) && !/\.(gif|png|jpe?g|webp)(\?|$)/i.test(src);
+          return (
+            <button key={v} className="var" onClick={() => onPick(v)}>
+              <div className="var-th">{src ? (vid ? <video src={src} muted autoPlay loop playsInline preload="metadata" /> : /youtu/.test(src) ? <span>▶</span> : <img src={src} alt="" loading="lazy" />) : <span>▶</span>}</div>
+              <b>{EXERCISES[v].n}</b><small>{EXERCISES[v].equip}</small>
+            </button>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
+function TechniqueModal({ exId: startId, media, coach, setMedia, uploadMedia, onClose }) {
+  const [exId, setExId] = useState(startId);
   const key = `ex:${exId}`;
   const [url, setUrl] = useState("");
   const [err, setErr] = useState("");
@@ -1493,6 +1499,7 @@ function TechniqueModal({ exId, media, coach, setMedia, uploadMedia, onClose }) 
         <p className="sub" style={{ marginBottom: 0 }}>{EXERCISES[exId].simple}</p>
         <h2 style={{ marginTop: 18 }}>Truquito</h2>
         <p className="sub" style={{ marginBottom: 0 }}>{EXERCISES[exId].tip}</p>
+        <VariantList exId={exId} media={media} onPick={setExId} />
         {exId.startsWith("ARC-X") && coach && <p className="hint">Ejercicio añadido fuera de tu base de datos: revisa la ficha.</p>}
         {coach && (
           <div style={{ marginTop: 14 }}>
@@ -2092,7 +2099,7 @@ function Tracker({ active, sessions, setActive, onFinish, onCancel, media, coach
 
 const DAY_IDS = "ABCDEFG";
 // La rutina que usa la app: la automática o la que ha montado la usuaria
-const normDays = (days) => days.map((d, i) => ({ id: DAY_IDS[i], name: d.name || `Día ${DAY_IDS[i]}`, ex: (d.ex || []).filter((e) => EXERCISES[e.id]).map((e) => ({ rir: 2, rest: 90, ...e, sets: Number(e.sets) || 3, reps: e.reps || "8–12" })) }));
+const normDays = (days) => days.map((d, i) => ({ id: DAY_IDS[i], name: d.name || `Día ${DAY_IDS[i]}`, ex: (d.ex || []).map((e) => (EX_REMAP[e.id] ? { ...e, id: EX_REMAP[e.id] } : e)).filter((e) => EXERCISES[e.id]).map((e) => ({ rir: 2, rest: 90, ...e, sets: Number(e.sets) || 3, reps: e.reps || "8–12" })) }));
 function activeRoutine(profile) {
   BODY_FEMALE = profile?.branch === "female";
   if (profile?.coachRoutine?.length) return normDays(profile.coachRoutine); // la que pone la coach manda
