@@ -1013,7 +1013,7 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .shop li{padding:10px 0;border-top:1px solid var(--ln);display:flex;flex-direction:column;gap:3px}
 .shop li b{font-size:14px}
 .shop li span{font-size:13px;color:var(--dm);line-height:1.45}
-.rphoto{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:14px;display:block;margin-bottom:12px;border:1px solid var(--ln)}
+.rphoto{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:14px;display:block;margin-bottom:12px;border:1px solid var(--ln)}
 .fin{position:fixed;inset:0;z-index:38;background:#000;display:flex;flex-direction:column;align-items:center;text-align:center;overflow-y:auto;overflow-x:hidden;padding:calc(30px + env(safe-area-inset-top)) 22px calc(24px + env(safe-area-inset-bottom))}
 .fin-rays{position:absolute;left:50%;top:22%;width:720px;height:720px;margin:-360px 0 0 -360px;background:repeating-conic-gradient(from 0deg,rgba(212,139,146,.13) 0deg 7deg,transparent 7deg 20deg);border-radius:50%;-webkit-mask:radial-gradient(circle,#000 18%,transparent 62%);mask:radial-gradient(circle,#000 18%,transparent 62%);pointer-events:none}
 .fin-stage{position:relative;width:230px;height:250px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -2530,7 +2530,7 @@ function EditForm({ table, row, isNew, content, onSave, onDelete, onCancel, medi
         </Field>}
       </>}
 
-      {table === "recipes" && !isNew && <Field label="Foto del plato" hint="Sale arriba de la receta en Nutrición. Mejor en horizontal.">
+      {table === "recipes" && !isNew && <Field label="Foto del plato" hint="Sale arriba de la receta en Nutrición, en cuadrado. Mejor desde arriba y con el plato centrado.">
         {recImg(media, r.id) ? <img className="rphoto" src={recImg(media, r.id)} alt="" /> : <div className="hint">Aún no tiene foto.</div>}
         <div className="chips" style={{ marginTop: 8 }}>
           <MediaPicker label={media[`rec:${r.id}`] ? "Cambiar foto" : "Subir foto"} accept="image/*" onPick={(f) => uploadMedia(`rec:${r.id}`, f)} onError={setErr} />
