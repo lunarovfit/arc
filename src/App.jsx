@@ -1085,6 +1085,15 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .tab{flex:1;background:none;border:0;color:var(--dm);font:inherit;font-size:12px;padding:14px 0 calc(20px + env(safe-area-inset-bottom));cursor:pointer}
 .tab.on{color:#fff;font-weight:700}
 .hero{position:relative;border-radius:22px;overflow:hidden;background:var(--sf);border:1px solid var(--ln);margin-top:22px;aspect-ratio:4/5}
+.hero-row{display:grid;grid-template-columns:42% 1fr;gap:14px;align-items:center;margin-top:22px}
+.hero-row .hero{margin-top:0;aspect-ratio:3/4;border-radius:18px}
+.hero-side{min-width:0;display:flex;flex-direction:column}
+.hero-side .name{font-size:22px;text-align:left;line-height:1.1}
+.hero-side .series{text-align:left;margin-top:2px}
+.hero-side svg{margin:4px auto 0;max-width:190px!important}
+.hero-next{margin-top:2px}
+.hero-next .bar{height:5px}
+.hero-next span{display:block;font-size:12px;color:var(--dm);margin-top:6px;line-height:1.35}
 .hero img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
 .hero-txt{position:absolute;left:0;right:0;bottom:0;padding:60px 18px 18px;background:linear-gradient(transparent,rgba(0,0,0,.92))}
 .hero-txt .name{margin-top:0;text-align:left}
@@ -1429,19 +1438,27 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
         <div className="why">{why}</div>
       </div>
 
-      <div className="hero">
-        <img src={heroImg} alt={lv.name} />
-        <div className="hero-txt">
+      <div className="hero-row">
+        <div className="hero">
+          <img src={heroImg} alt={lv.name} />
+        </div>
+        <div className="hero-side">
           <div className="name">{lv.name}</div>
           <div className="series">{lv.series}</div>
+          <ArcGauge total={L.length} current={ev.current} progress={ev.progress} />
+          {ev.next ? (
+            <div className="hero-next">
+              <div className="bar"><i style={{ width: `${Math.round(ev.progress * 100)}%`, background: "var(--ac)" }} /></div>
+              <span>{Math.round(ev.progress * 100)}% hacia {ev.next.name}</span>
+            </div>
+          ) : <div className="hero-next"><span>Arco completado</span></div>}
         </div>
       </div>
-      <Skills lv={lv} L={L} stats={stats} ev={ev} />
       <div className="gauge">
-        <ArcGauge total={L.length} current={ev.current} progress={ev.progress} />
-        <p className="line">{lv.line}</p>
+        <p className="line" style={{ textAlign: "left", margin: "12px 0 0" }}>{lv.line}</p>
         {stats.provisional && <div className="prov">Nivel provisional: la adherencia empieza a contar en tu día {RULES.ADHERENCE_MIN_DAYS}.</div>}
       </div>
+      <Skills lv={lv} L={L} stats={stats} ev={ev} />
 
       {ev.next ? (
         <>
@@ -1746,15 +1763,52 @@ const BODY = {
 };
 const MIRROR = "translate(100 0) scale(-1 1)";
 
-function BodyMap({ fill, size = 300, onPick }) {
+// Versión femenina: hombros más estrechos, cintura marcada, cadera y glúteo más anchos, y moño
+const TORSO_FF = "M35 35 Q32 48 37 58 Q41.2 68 40.4 77 Q35.4 90 34.4 99 Q40 109.5 50 111.5 Q60 109.5 65.6 99 Q64.6 90 59.6 77 Q58.8 68 63 58 Q68 48 65 35 Q58 30.5 50 30.5 Q42 30.5 35 35 Z";
+const TORSO_BF = "M34.5 36 Q31.5 50 37.5 62 Q41.6 72 40.6 82 Q35.6 94 34.6 104 Q39 115.5 50 117.5 Q61 115.5 65.4 104 Q64.4 94 59.4 82 Q58.4 72 62.5 62 Q68.5 50 65.5 36 Q58 30 50 30 Q42 30 34.5 36 Z";
+const BUN = ["base", "ellipse", { cx: 50, cy: 3.6, rx: 5.6, ry: 4.6 }];
+const BODY_F = {
+  front: [
+    BUN, ...BODY.front.slice(0, 2),
+    ["base", "path", { d: TORSO_FF }],
+    ...BODY.front.slice(3, 5).map((e) => [...e.slice(0, 4), 2.6]),
+    ...BODY.front.slice(5, 7),
+    ["hombro", "path", { d: "M35.5 34.5 Q27.5 34.5 25.6 43 Q25.1 49 26.9 53 Q30.6 46.5 36.1 44 Q38 39 35.5 34.5 Z" }, 1],
+    ["pecho", "path", { d: "M37.2 39 Q38 37 43 36.8 Q48.6 37.2 49.4 39.4 L49.4 46.5 Q48.6 54 43.2 54.2 Q37.4 53.8 36.4 47.8 Q35.8 42.6 37.2 39 Z" }, 1],
+    [...BODY.front[9].slice(0, 4), 2.6],
+    ...BODY.front.slice(10, 14),
+    ["abdomen", "path", { d: "M38.4 55 Q40.8 61.5 41.4 68 Q41.4 78 42.8 90 L42.8 57 Q40.8 55.4 38.4 55 Z" }, 1],
+    ["cuadriceps", "path", { d: "M36.3 102 Q32.4 116 34 132 Q35.5 146 40 154 Q45 152.5 47 144 Q48.3 125 47.5 110.5 Q43 105.5 36.3 102 Z" }, 1],
+    ...BODY.front.slice(16),
+  ],
+  back: [
+    BUN, ...BODY.back.slice(0, 2),
+    ["base", "path", { d: TORSO_BF }],
+    ...BODY.back.slice(3, 5).map((e) => [...e.slice(0, 4), 2.6]),
+    ...BODY.back.slice(5, 8),
+    ["espalda", "path", { d: "M50 25 L55 29.5 Q61 32 65 35.6 Q57 39 54 48 L50 56 L46 48 Q43 39 35 35.6 Q39 32 45 29.5 Z" }],
+    ["hombro", "path", { d: "M34.8 35.6 Q27 36 25.2 44 Q24.8 50 26.6 54 Q31 47.6 37 45 Q38 39.6 34.8 35.6 Z" }, 1],
+    ["espalda", "path", { d: "M38 43.5 Q36 55 40 68 Q43 77 46.4 82 L48.8 65 L48 55 Q43 46.6 38 43.5 Z" }, 1],
+    [...BODY.back[11].slice(0, 4), 2.6],
+    ["lumbar", "path", { d: "M44.4 84 Q47 89 50 90 Q53 89 55.6 84 L55 96 Q50 98 45 96 Z" }],
+    ["gluteo", "path", { d: "M35.7 96 Q33.4 106 36.7 115 Q42.5 121 49.5 118.5 L49.5 98 Q43 93.5 35.7 96 Z" }, 1],
+    ["femoral", "path", { d: "M36.5 119.5 Q34.2 132 36.5 146 Q38.8 153.5 42 155 Q46 150 47.5 140 Q48.6 128 48.2 120.5 Q43 122.5 36.5 119.5 Z" }, 1],
+    ...BODY.back.slice(15),
+  ],
+};
+let BODY_FEMALE = false; // lo fija activeRoutine con la rama de la usuaria
+
+function BodyMap({ fill, size = 300, onPick, female = BODY_FEMALE }) {
+  const B = female ? BODY_F : BODY;
   const Tag = { circle: "circle", rect: "rect", ellipse: "ellipse", path: "path" };
   const fig = (side) => (
-    <svg viewBox="12 2 76 205" width={size * 0.37} height={size} aria-hidden="true">
-      {BODY[side].flatMap(([k, t, p, m], i) => {
+    <svg viewBox="12 -2 76 209" width={size * 0.37} height={size} aria-hidden="true">
+      {B[side].flatMap(([k, t, p, m, dx], i) => {
         const El = Tag[t];
         const base = k === "base";
         const props = { ...p, fill: base ? "#1A1A1F" : fill(k), stroke: "#000", strokeWidth: base ? 0.6 : 0.9, strokeLinejoin: "round", className: base ? "" : "bm-m", style: base ? undefined : { animationDelay: `${i * 22}ms` }, onClick: !base && onPick ? () => onPick(k) : undefined };
-        return m ? [<El key={i} {...props} />, <g key={i + "m"} transform={MIRROR}><El {...props} /></g>] : [<El key={i} {...props} />];
+        const el = dx ? <g transform={`translate(${dx} 0)`}><El {...props} /></g> : <El {...props} />;
+        return m ? [<g key={i}>{el}</g>, <g key={i + "m"} transform={MIRROR}>{el}</g>] : [<g key={i}>{el}</g>];
       })}
     </svg>
   );
@@ -1936,6 +1990,7 @@ function Tracker({ active, sessions, setActive, onFinish, onCancel, media, coach
 const DAY_IDS = "ABCDEFG";
 // La rutina que usa la app: la automática o la que ha montado la usuaria
 function activeRoutine(profile) {
+  BODY_FEMALE = profile?.branch === "female";
   if (profile?.routineMode === "custom" && profile.customRoutine?.length) {
     return profile.customRoutine.map((d, i) => ({ id: DAY_IDS[i], name: d.name || `Día ${DAY_IDS[i]}`, ex: (d.ex || []).filter((e) => EXERCISES[e.id]).map((e) => ({ rir: 2, rest: 90, ...e, sets: Number(e.sets) || 3, reps: e.reps || "8–12" })) }));
   }
