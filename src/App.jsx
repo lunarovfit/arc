@@ -658,6 +658,39 @@ function CookIcon({ mode, size = 26 }) {
   );
 }
 
+// Gustos del cuestionario: cada opción agrupa alimentos de la base de datos
+const FOOD_PREFS = [
+  ["pollo", "Pollo", ["pollo", "tirasPollo", "hambPollo"]],
+  ["pavo", "Pavo y fiambre", ["pavo", "jamon"]],
+  ["ternera", "Ternera", ["terneraPicada", "hambTernera"]],
+  ["cerdo", "Cerdo", ["lomoCerdo"]],
+  ["salmon", "Salmón", ["salmon", "salmonAhumado"]],
+  ["atun", "Atún", ["atun", "lomoAtun"]],
+  ["blanco", "Pescado blanco", ["merluza", "emperador"]],
+  ["huevo", "Huevos", ["huevo", "claras"]],
+  ["lacteos", "Yogur y queso", ["yogurProt", "quesoBatido", "cottage", "quesoCrema", "mozzarella", "quesoBurgos"]],
+  ["avena", "Avena", ["avena", "muesli"]],
+  ["arroz", "Arroz", ["arroz"]],
+  ["pasta", "Pasta y ñoquis", ["pasta", "pastaLentejas", "noquis", "udon"]],
+  ["patata", "Patata y batata", ["patata", "batata"]],
+  ["legumbres", "Legumbres", ["legumbres", "lentejas"]],
+  ["pan", "Pan y tortitas", ["panIntegral", "panCristal", "tortitasArroz", "tortillaIntegral", "tortillaMaiz", "maxiTortilla", "panHamburguesa", "basePizza"]],
+  ["aguacate", "Aguacate", ["aguacate", "guacamole"]],
+  ["frutosRojos", "Frutos rojos", ["arandanos", "frutosRojos", "fresas"]],
+  ["platano", "Plátano", ["platano", "datiles"]],
+  ["cacao", "Chocolate", ["cacao"]],
+  ["cacahuete", "Crema de cacahuete", ["cremaCacahuete", "frutosSecos"]],
+];
+const prefFoods = (ids = []) => new Set(FOOD_PREFS.filter(([id]) => ids.includes(id)).flatMap(([, , foods]) => foods));
+// Ordena recetas: primero las que llevan lo que te gusta; quita las que llevan lo que no (si queda alguna)
+function byTaste(list, profile) {
+  const like = prefFoods(profile.likes), hate = prefFoods(profile.dislikes);
+  const ok = hate.size ? list.filter((r) => !r.items.some(([f]) => hate.has(f))) : list;
+  const pool = ok.length ? ok : list;
+  if (!like.size) return pool;
+  const score = (r) => new Set(r.items.map(([f]) => f).filter((f) => like.has(f))).size;
+  return [...pool].sort((a, b) => score(b) - score(a));
+}
 const COOK_OPTS = [["sencilla", "Modo fácil"], ["todas", "Un poco de todo"], ["sanji", "Modo Sanji (cocinitas)"]];
 
 /* ============================ CONTENIDO EDITABLE ============================
@@ -1183,6 +1216,13 @@ textarea.in{resize:vertical;line-height:1.5}
 .tour-list b{display:block;font-size:16px;margin-bottom:4px}
 .tour-list span{display:block;font-size:14px;line-height:1.5;color:var(--dm)}
 .tour-ok{display:block;font-style:normal;color:var(--okl);font-size:14px;margin-top:8px}
+.fwall{margin:4px -16px 18px;display:flex;flex-direction:column;gap:8px;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.fwall-row{display:flex;gap:8px;width:max-content;animation:fwall linear infinite}
+.fwall-row.rev{animation-direction:reverse}
+.fwall-row img{width:118px;height:118px;object-fit:cover;border-radius:16px;flex:none;background:var(--sf)}
+@keyframes fwall{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion: reduce){.fwall-row{animation:none}}
+.chip.no.on{background:transparent;color:var(--ac);border-color:var(--ac);text-decoration:line-through}
 .tour-actions{margin-top:auto;padding-top:24px;display:flex;flex-direction:column;align-items:center;gap:14px}
 select.in{appearance:none}
 .tags{display:flex;gap:6px;margin-top:10px}
@@ -1285,7 +1325,7 @@ function LineChart({ points, empty }) {
 
 const DEFAULT_PROFILE = {
   mode: "otaku", branch: "female", age: 21, height: 165, weight: 60, activity: 1.45, goal: "mant", veg: false, trainTime: "mid",
-  days: 3, meals: 4, cook: "sencilla", eatOut: false, exclude: [],
+  days: 3, meals: 4, cook: "sencilla", eatOut: false, exclude: [], likes: [], dislikes: [],
   months: 4, pullups: 0, squat: { kg: 60, reps: 5 }, bench: { kg: 35, reps: 6 }, deadlift: { kg: 80, reps: 4 },
 };
 
@@ -1349,7 +1389,21 @@ function Questionnaire({ initial, editing, onSave, onCancel }) {
           <button className={`chip ${!q.eatOut ? "on" : ""}`} onClick={() => set("eatOut", false)}>No, como en casa</button>
         </div>
       </div>
-      <div className="field"><label>¿Quieres quitar algo de tus comidas?</label>
+      <div className="field"><label>¿Qué es lo que más te gusta comer?</label>
+        <div className="chips">{FOOD_PREFS.map(([v, l]) => {
+          const on = (q.likes || []).includes(v);
+          return <button key={v} className={`chip ${on ? "on" : ""}`} onClick={() => setQ({ ...q, likes: on ? q.likes.filter((x) => x !== v) : [...(q.likes || []), v], dislikes: (q.dislikes || []).filter((x) => x !== v) })}>{l}</button>;
+        })}</div>
+        <div className="hint">Te saldrán primero las recetas que lo lleven.</div>
+      </div>
+      <div className="field"><label>¿Y lo que no te gusta nada?</label>
+        <div className="chips">{FOOD_PREFS.map(([v, l]) => {
+          const on = (q.dislikes || []).includes(v);
+          return <button key={v} className={`chip no ${on ? "on" : ""}`} onClick={() => setQ({ ...q, dislikes: on ? q.dislikes.filter((x) => x !== v) : [...(q.dislikes || []), v], likes: (q.likes || []).filter((x) => x !== v) })}>{l}</button>;
+        })}</div>
+        <div className="hint">Las recetas que lo lleven no te saldrán.</div>
+      </div>
+      <div className="field"><label>¿Alguna alergia o algo que no comas?</label>
         <div className="chips">{EXCLUDE_OPTS.map(([v, l]) => {
           const on = q.exclude.includes(v);
           return <button key={v} className={`chip ${on ? "on" : ""}`} onClick={() => set("exclude", on ? q.exclude.filter((x) => x !== v) : [...q.exclude, v])}>{l}</button>;
@@ -2229,6 +2283,7 @@ function Nutrition({ profile, setCook, media = {} }) {
     const all = RECIPES.filter((r) => r.slot === (SLOT_RECIPES[id] || id) && recipeAllowed(r, profile));
     let opts = mode === "todas" ? all : all.filter((r) => r.mode === mode);
     if (!opts.length) opts = all;
+    opts = byTaste(opts, profile);
     if (profile.eatOut) opts = [...opts].sort((a, b) => TUPPER.has(b.name) - TUPPER.has(a.name));
     if (!opts.length) return { id, empty: true };
     const k = `${id}-${mode}`;
@@ -2822,7 +2877,28 @@ function useLevelUp(profile, ev, media, setProfile) {
 
 /* ============================ BIENVENIDA (solo la primera vez) ============================ */
 
-function Tour({ profile, ev, heroImg, perms, onFinish }) {
+// Muro de fotos de recetas que se mueve solo (tutorial)
+function FoodWall({ profile, media }) {
+  const pics = byTaste(RECIPES, profile).map((r) => ({ src: recImg(media, r.id), name: r.name })).filter((x) => x.src);
+  const n = RECIPES.length;
+  if (!pics.length) return <p className="tour-p">Tienes {n} recetas que se ajustan solas a tus macros.</p>;
+  const rows = [0, 1, 2].map((k) => { const r = pics.filter((_, i) => i % 3 === k); return r.length ? r : pics; });
+  return (
+    <>
+      <div className="fwall" aria-hidden="true">
+        {rows.map((r, k) => (
+          <div key={k} className={`fwall-row ${k % 2 ? "rev" : ""}`} style={{ animationDuration: `${28 + k * 6}s` }}>
+            {[...r, ...r].map((x, i) => <img key={i} src={x.src} alt="" loading="lazy" />)}
+          </div>
+        ))}
+      </div>
+      <p className="tour-p">{n} recetas reales que se ajustan solas a tus macros: tú eliges si quieres algo de 5 minutos o cocinar con calma.</p>
+      <p className="tour-p dim">{profile.likes?.length ? "Te saldrán primero las que llevan lo que más te gusta." : "Puedes cambiar de plato en cada comida con un toque."}</p>
+    </>
+  );
+}
+
+function Tour({ profile, ev, heroImg, perms, onFinish, media = {} }) {
   const [i, setI] = useState(0);
   const male = profile.branch === "male";
   const gymrat = profile.mode === "gymrat";
@@ -2855,6 +2931,11 @@ function Tour({ profile, ev, heroImg, perms, onFinish }) {
           <div><b>Dominadas (extra)</b><span>No hacen falta para subir, pero suman en tus skills.</span></div>
         </div>
       ),
+    },
+    {
+      title: "Comer bien, sin dieta triste",
+      wide: true,
+      body: <FoodWall profile={profile} media={media} />,
     },
     {
       title: "Hoy empieza tu arco",
@@ -3780,7 +3861,7 @@ function ArcApp({ user }) {
 
   let body;
   if (showTour) {
-    body = <Tour profile={state.profile} ev={ev} heroImg={media[levelKey(state.profile.branch, state.profile.mode, ev.current)] || AVATAR[state.profile.branch]} perms={tourPerms} onFinish={() => { setProfile({ toured: true }); setTab("inicio"); if (!hasPremium) setPaywall(true); }} />;
+    body = <Tour media={media} profile={state.profile} ev={ev} heroImg={media[levelKey(state.profile.branch, state.profile.mode, ev.current)] || AVATAR[state.profile.branch]} perms={tourPerms} onFinish={() => { setProfile({ toured: true }); setTab("inicio"); if (!hasPremium) setPaywall(true); }} />;
   } else if (showQuestionnaire) {
     body = <Questionnaire initial={state.profile || DEFAULT_PROFILE} editing={state.onboarded} onSave={saveProfile} onCancel={() => setScreen("ajustes")} />;
   } else if (screen === "contenido" && isCoach) {
