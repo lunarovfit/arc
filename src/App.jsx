@@ -972,6 +972,11 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .redit-btns button{background:var(--sf2);border:1px solid var(--ln);color:var(--tx);border-radius:8px;width:28px;height:30px;font:inherit;font-size:12px;cursor:pointer}
 .fac.extra{opacity:.85}.fac.extra em{font-style:normal;font-size:11px;font-weight:700;color:var(--dm);border:1px solid var(--ln);border-radius:999px;padding:1px 7px;margin-left:6px}
 .exvid{display:block;width:100%;height:320px;object-fit:contain;border-radius:14px;border:1px solid var(--ln);background:#000;margin:4px 0 10px;cursor:pointer}
+.slots{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.slot{display:flex;flex-direction:column;gap:6px;align-items:stretch}
+.slot .chip{padding:6px 4px;font-size:12px;text-align:center}
+.slot-img{aspect-ratio:3/4;border-radius:10px;border:1px solid var(--ln);background:var(--sf);overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--dm);font:inherit;font-size:13px;padding:0;cursor:pointer}
+.slot-img img{width:100%;height:100%;object-fit:cover}
 .cook-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .cook-opt{background:var(--sf);border:1px solid var(--ln);color:var(--tx);border-radius:16px;padding:14px 8px 12px;font:inherit;font-size:13px;line-height:1.25;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;transition:transform .15s}
 .cook-opt:active{transform:scale(.97)}
@@ -2593,10 +2598,10 @@ function useCount(target, ms = 1000, delay = 600) {
 }
 
 function FinishScreen({ data, media, coach, uploadMedia, setMedia, onClose }) {
-  const [pick] = useState(() => {
-    const imgs = FINISH_KEYS.map((k) => media[k]).filter(Boolean);
-    return { img: imgs[Math.floor(Math.random() * imgs.length)] || null, shout: FINISH_SHOUTS[Math.floor(Math.random() * FINISH_SHOUTS.length)] };
-  });
+  const [seed] = useState(() => ({ r: Math.random(), shout: FINISH_SHOUTS[Math.floor(Math.random() * FINISH_SHOUTS.length)] }));
+  const imgs = FINISH_KEYS.map((k) => media[k]).filter(Boolean);
+  const [last, setLast] = useState(null); // la que acaba de subir la coach, para verla al momento
+  const pick = { img: (last && media[last]) || imgs[Math.floor(seed.r * imgs.length)] || null, shout: seed.shout };
   const [err, setErr] = useState("");
   const vol = useCount(data.volume || 0), sets = useCount(data.sets || 0, 700), xp = useCount(data.xp || 0, 700);
   return (
@@ -2618,11 +2623,12 @@ function FinishScreen({ data, media, coach, uploadMedia, setMedia, onClose }) {
       {coach && (
         <div className="fin-coach">
           <small>Modo coach: fotos de esta pantalla (sale una al azar)</small>
-          <div className="chips">{FINISH_KEYS.map((k, i) => (
-            <span key={k} style={{ display: "inline-flex", gap: 6 }}>
-              <MediaPicker label={media[k] ? `Cambiar ${i + 1}` : `Subir ${i + 1}`} accept="image/*" onPick={(f) => uploadMedia(k, f)} onError={setErr} />
-              {media[k] && <button className="chip" onClick={() => setMedia(k, null)}>Quitar {i + 1}</button>}
-            </span>
+          <div className="slots">{FINISH_KEYS.map((k, i) => (
+            <div key={k} className="slot">
+              <button className="slot-img" onClick={() => media[k] && setLast(k)} aria-label={`Ver foto ${i + 1}`}>{media[k] ? <img src={media[k]} alt="" /> : <span>{i + 1}</span>}</button>
+              <MediaPicker label={media[k] ? "Cambiar" : "Subir"} accept="image/*" onPick={async (f) => { await uploadMedia(k, f); setLast(k); }} onError={setErr} />
+              {media[k] && <button className="chip" onClick={() => { setMedia(k, null); if (last === k) setLast(null); }}>Quitar</button>}
+            </div>
           ))}</div>
           {err && <div className="err">{err}</div>}
         </div>
@@ -2810,7 +2816,7 @@ function Reminders({ value, onChange }) {
   );
 }
 
-function Settings({ videos, onFinishPreview, sub, email, isCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
+function Settings({ onPaywallPreview, videos, onFinishPreview, sub, email, isCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
   const [confirm, setConfirm] = useState(null); // "data" | "account"
   const [legal, setLegal] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -2831,7 +2837,10 @@ function Settings({ videos, onFinishPreview, sub, email, isCoach, coachView, set
           </div>
           <button className="btn" onClick={onContent}>Editar frases, recetas, ejercicios y alimentos</button>
           <button className="btn ghost" onClick={onReports}>Denuncias del ranking</button>
+          <h2>Fotos de la app</h2>
+          <p className="sub">Las imágenes de los personajes se cambian en Inicio, en "El arco completo". Las fotos de las recetas y los vídeos de los ejercicios, en "Editar frases, recetas, ejercicios y alimentos".</p>
           <button className="btn ghost" onClick={onFinishPreview}>Pantalla de fin de entreno (fotos)</button>
+          <button className="btn ghost" onClick={onPaywallPreview}>Pantalla de planes (memes)</button>
         </>
       )}
       <Reminders value={reminders} onChange={setReminders} />
@@ -3014,11 +3023,12 @@ function Paywall({ media, coach, uploadMedia, setMedia, onClose, onPremium }) {
       {coach && (
         <div className="pw-coach">
           <small>Modo coach: memes de la cabecera (hasta 3)</small>
-          <div className="chips">{PAYWALL_KEYS.map((k, i) => (
-            <span key={k} style={{ display: "inline-flex", gap: 6 }}>
-              <MediaPicker label={media[k] ? `Cambiar ${i + 1}` : `Subir ${i + 1}`} accept="image/*" onPick={(f) => uploadMedia(k, f)} onError={setErr} />
-              {media[k] && <button className="chip" onClick={() => setMedia(k, null)}>Quitar {i + 1}</button>}
-            </span>
+          <div className="slots" style={{ gridTemplateColumns: "repeat(3,1fr)" }}>{PAYWALL_KEYS.map((k, i) => (
+            <div key={k} className="slot">
+              <div className="slot-img" style={{ aspectRatio: "4/3" }}>{media[k] ? <img src={media[k]} alt="" /> : <span>{i + 1}</span>}</div>
+              <MediaPicker label={media[k] ? "Cambiar" : "Subir"} accept="image/*" onPick={(f) => uploadMedia(k, f)} onError={setErr} />
+              {media[k] && <button className="chip" onClick={() => setMedia(k, null)}>Quitar</button>}
+            </div>
           ))}</div>
         </div>
       )}
@@ -3322,7 +3332,7 @@ function ArcApp({ user }) {
   } else if (screen === "denuncias" && isCoach) {
     body = <Reports onClose={() => setScreen("ajustes")} />;
   } else if (screen === "ajustes") {
-    body = <Settings videos={{ on: !state.profile?.hideVideos, set: (on) => setProfile({ hideVideos: !on }) }} onFinishPreview={() => setDone({ dur: 3120, sets: 18, volume: 8450, xp: RULES.XP_PER_SESSION, prs: 2 })} sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
+    body = <Settings onPaywallPreview={() => setPaywall(true)} videos={{ on: !state.profile?.hideVideos, set: (on) => setProfile({ hideVideos: !on }) }} onFinishPreview={() => setDone({ dur: 3120, sets: 18, volume: 8450, xp: RULES.XP_PER_SESSION, prs: 2 })} sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
       reminders={state.profile?.reminders} setReminders={(r) => setProfile({ reminders: r })}
       onEdit={() => setScreen("editar")}
       onContent={() => setScreen("contenido")}
