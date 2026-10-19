@@ -1,0 +1,192 @@
+ARC · TODO LO QUE HAY QUE PONER EN APP STORE CONNECT
+=====================================================
+Ve en este orden. Lo que va entre ═══ se copia y pega tal cual.
+
+
+PASO 0 · PUBLICAR LA WEB DE PRIVACIDAD Y SOPORTE (5 minutos, gratis)
+---------------------------------------------------------------------
+Apple obliga a tener una URL de política de privacidad.
+
+1. Entra en  app.netlify.com/drop  (crea cuenta gratis con tu Gmail).
+2. Arrastra la carpeta "3_web_privacidad_y_soporte" entera a la página.
+3. Te da una dirección tipo  https://algo-raro-123.netlify.app
+   → En "Site configuration" → "Change site name" ponle  arc-lunarovx
+   → Quedará:  https://arc-lunarovx.netlify.app
+4. Comprueba que se abren:
+   https://arc-lunarovx.netlify.app                  (soporte)
+   https://arc-lunarovx.netlify.app/privacidad.html  (privacidad)
+   https://arc-lunarovx.netlify.app/terminos.html    (términos)
+
+(Si el nombre arc-lunarovx está cogido, usa otro y cambia las URLs de abajo.)
+
+
+PASO 1 · INFORMACIÓN DE LA APP  (menú izquierdo → General → Información de la app)
+----------------------------------------------------------------------------------
+Nombre (máx. 30):
+═══
+ARC Workout: niveles y gym
+═══
+
+Subtítulo (máx. 30):
+═══
+Sube de nivel con fuerza real
+═══
+
+Categoría principal:   Salud y forma física
+Categoría secundaria:  Estilo de vida
+
+URL de la política de privacidad:
+═══
+https://arc-lunarovx.netlify.app/privacidad.html
+═══
+
+Clasificación por edad → ver PASO 5.
+
+
+PASO 2 · PRECIO Y DISPONIBILIDAD  (menú izquierdo → Precio y disponibilidad)
+----------------------------------------------------------------------------
+Precio de la app:  Gratis  (0,00 €)  → se gana con las suscripciones
+Disponibilidad:    Todos los países (o solo España si quieres empezar poco a poco)
+
+
+PASO 3 · LA VERSIÓN 1.0  (menú izquierdo → iOS App → 1.0 Preparar para envío)
+------------------------------------------------------------------------------
+Capturas → apartado "iPhone 6,9"" (o 6,7"):
+   Arrastra las 7 de la carpeta "1_capturas_tienda" en orden: 01, 02, 03, 04, 05, 06, 07.
+   (Si te pide iPad, quita el iPad de los dispositivos o dime y hacemos capturas de iPad.)
+
+Texto promocional (máx. 170):
+═══
+Tu nivel sube por lo que levantas, por los meses que llevas sin parar y por tus hábitos. Rutina, recetas a tus macros y vídeos de técnica en una sola app.
+═══
+
+Descripción:
+═══
+ARC convierte tu entreno en un arco de progreso. No subes de nivel por abrir la app: subes por lo que levantas, por tu constancia y por cuidar tus hábitos.
+
+TU RUTINA
+Elige cuántos días entrenas y ARC te arma la rutina según tu objetivo. O mete la tuya propia, ejercicio a ejercicio.
+
+REGISTRA CADA SERIE
+Kilos, repeticiones, RIR y descansos con temporizador. Ves lo que hiciste la última vez y la app te dice cuándo toca subir peso.
+
+TÉCNICA EN VÍDEO
+Cada ejercicio con su vídeo, grabado en el gimnasio.
+
+TUS MÚSCULOS
+Un mapa del cuerpo con las series que haces por músculo cada semana, para que sepas qué te falta y qué te sobra.
+
+COMIDAS A TU MEDIDA
+Calculamos tus calorías y macros con un cuestionario y te damos recetas reales con las cantidades ya ajustadas. Modo fácil para el día a día o modo cocinitas si te gusta cocinar. Eliges lo que te gusta y lo que no, y lo que se puede llevar en táper.
+
+PASOS, AGUA Y SUEÑO
+Con 2 de 3 el día cuenta. Conecta con Apple Salud para los pasos.
+
+RANKING SEMANAL
+Un ranking donde gana la constancia, no los kilos. Se reinicia cada semana.
+
+SUSCRIPCIÓN
+Prueba gratis de 3 días. Después: 3,99 €/mes, 29,99 €/año o 59,99 € un solo pago para siempre. La suscripción se renueva sola salvo que la canceles al menos 24 horas antes del final del periodo, desde los Ajustes de tu cuenta de Apple.
+
+Términos de uso: https://arc-lunarovx.netlify.app/terminos.html
+Privacidad: https://arc-lunarovx.netlify.app/privacidad.html
+
+ARC no sustituye el consejo de un profesional sanitario. Consulta con tu médico antes de empezar un programa de entrenamiento o cambiar tu alimentación.
+═══
+
+Palabras clave (máx. 100, sin espacios):
+═══
+gimnasio,rutina,entreno,macros,recetas,dieta,pesas,glúteo,hábitos,fitness,progreso,calorías,proteína
+═══
+
+URL de soporte:
+═══
+https://arc-lunarovx.netlify.app
+═══
+
+URL de marketing:  (déjalo vacío)
+
+Copyright:
+═══
+2026 Luna Romero
+═══
+
+Compilación:  pulsa + y elige el build de TestFlight que tiene los pagos (el más nuevo).
+
+Compras dentro de la app y suscripciones:  marca  arc_mensual,  arc_anual  y  arc_vida.
+
+Publicación de la versión:  "Publicar manualmente" (así eliges tú el día después de aprobarla).
+
+
+PASO 4 · INFORMACIÓN PARA LA REVISIÓN DE APPLE (abajo del todo en la página de la versión)
+-------------------------------------------------------------------------------------------
+Inicio de sesión obligatorio:  SÍ
+   Crea antes en ARC una cuenta normal (NO la tuya de coach), por ejemplo:
+   Usuario:     revision.arc@gmail.com   (o el email que uses)
+   Contraseña:  la que pongas
+   Entra una vez, haz el cuestionario y deja la sesión hecha.
+
+Contacto:  Luna Romero · tu teléfono · lunaticarvcollabs@gmail.com
+
+Notas:
+═══
+ARC es una app de entrenamiento de fuerza. El usuario hace un cuestionario inicial y la app le asigna rutina, comidas ajustadas a sus macros y un nivel basado en su fuerza real y su constancia. Entrenos, Nutrición y Ranking requieren suscripción (prueba gratis de 3 días); Inicio y Hábitos son gratis. Las compras se gestionan con RevenueCat y se pueden restaurar en Ajustes. Los pasos se leen de Apple Salud solo si el usuario da permiso. La cuenta y todos los datos se pueden eliminar desde Ajustes → Eliminar mi cuenta.
+═══
+
+
+PASO 5 · CLASIFICACIÓN POR EDAD  (Información de la app → Clasificación por edad → Editar)
+-----------------------------------------------------------------------------------------
+Responde así:
+- Violencia de dibujos animados o fantasía ............ Poco frecuente / leve
+- Violencia realista .................................. No
+- Contenido sexual o desnudos ......................... No
+- Lenguaje soez u obsceno ............................. No
+- Terror / miedo ...................................... No
+- Alcohol, tabaco o drogas ............................ No
+- Información médica o sobre tratamientos ............. No
+- Temas de salud o bienestar (si te lo pregunta) ....... Sí
+- Juegos de azar / concursos .......................... No
+- Contenido generado por usuarios ..................... Sí  (apodos del ranking; se pueden denunciar)
+- Mensajería / chat entre usuarios .................... No
+- Publicidad .......................................... No
+- Acceso web sin restricciones ........................ No
+- Controles parentales ................................ No
+Edad mínima recomendada: lo que te salga (seguramente 13+). Los términos ya piden 16 años.
+
+
+PASO 6 · PRIVACIDAD DE LA APP  (menú izquierdo → Privacidad de la app → Empezar)
+--------------------------------------------------------------------------------
+"¿Recopilas datos de esta app?"  →  SÍ
+
+Marca SOLO estos tipos de datos:
+  · Información de contacto → Dirección de correo electrónico
+  · Salud y forma física → Salud            (peso, medidas)
+  · Salud y forma física → Forma física     (entrenos, pasos)
+  · Contenido del usuario → Fotos o vídeos   (fotos de revisiones)
+  · Contenido del usuario → Otro contenido del usuario  (notas, apodo del ranking)
+  · Identificadores → ID de usuario
+  · Compras → Historial de compras
+
+Para CADA uno de ellos responde igual:
+  · ¿Para qué se usa?  →  Funcionalidad de la app   (solo esa)
+  · ¿Está vinculado a la identidad del usuario?  →  SÍ
+  · ¿Se usa para rastrear (tracking)?  →  NO
+
+NO marques: ubicación, contactos, historial de navegación, datos de uso, diagnósticos,
+datos financieros, publicidad.
+
+
+PASO 7 · ENVIAR
+---------------
+Arriba a la derecha:  "Añadir a revisión"  →  "Enviar a revisión".
+Se envían juntas la app y las 3 compras. Apple suele tardar 1-3 días.
+Si te escriben pidiendo algo o la rechazan, mándame el mensaje tal cual.
+
+
+YA HECHO (no tocar)
+-------------------
+✓ Acuerdo de apps de pago firmado
+✓ Suscripciones arc_mensual (3,99 €) y arc_anual (29,99 €) con 3 días gratis
+✓ Compra de por vida arc_vida (59,99 €)
+✓ Capturas de revisión de cada compra (carpeta 2_capturas_revision_compras)
+✓ RevenueCat conectado y clave dentro de la app
