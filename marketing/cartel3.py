@@ -72,6 +72,6 @@ fy=3020; qx=W-M-qc.size[0]
 c.paste(qc,(qx,fy-10),rounded(qc.size,40)); d=ImageDraw.Draw(c)
 d.text((M,fy),"Escanéame",font=f("ExtraBold",140),fill=WHITE)
 d.text((M,fy+175),"y empieza tu arco",font=f("SemiBold",68),fill=PINK)
-d.text((M+4,fy+290),"Próximamente en iPhone  ·  3 días gratis",font=f("Medium",48),fill=DIM)
+d.text((M+4,fy+290),"Ya disponible en iPhone  ·  3 días gratis",font=f("Medium",48),fill=DIM)
 c.save("cartel/ARC_cartel_A4.png",dpi=(300,300)); c.save("cartel/ARC_cartel_A4.pdf",resolution=300)
 c.resize((620,877)).save("/tmp/claude-0/-home-claude/3bae07ba-c8c3-5f0e-adb3-78f0953fb194/scratchpad/cartel.png")
