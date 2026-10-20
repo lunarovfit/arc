@@ -51,7 +51,7 @@ def cover(img,w,h):
     l=(img.size[0]-w)//2; t=(img.size[1]-h)//2; return img.crop((l,t,l+w,t+h))
 gap=56; kw=(W-2*M-2*gap)//3; ih=360; kh=ih+200; ky=2335
 an=cover(Image.open("raw/inicio-anime-NO-APPSTORE.jpg").convert("RGB").crop((52,500,378,700)),kw,ih)
-rt=Image.new("RGB",(kw,ih),(24,24,28)); r=Image.open("raw/rat-leyenda-sinfondo.png").convert("RGBA"); r=r.crop((0,0,r.size[0],int(r.size[1]*0.58))); r.thumbnail((kw-80,ih-30)); rt.paste(r,((kw-r.size[0])//2,ih-r.size[1]),r)
+rt=Image.new("RGB",(kw,ih),(24,24,28)); r=Image.open("raw/rat-leyenda-sinfondo.png").convert("RGBA"); r=r.crop((0,0,r.size[0],int(r.size[1]*0.62))); r.thumbnail((kw-80,ih-30)); rt.paste(r,((kw-r.size[0])//2,ih-r.size[1]),r)
 _s=Image.open("raw/inicio-simple.png").convert("RGB").crop((18,262,412,470)); _s=_s.resize((kw,int(_s.size[1]*kw/_s.size[0])),Image.LANCZOS); sm=Image.new("RGB",(kw,ih),(0,0,0)); sm.paste(_s,(0,max(0,(ih-_s.size[1])//2)))
 cards=[(an,"Personajes anime","Personajes según tu fuerza"),(rt,"Gymrat","Tu rata, de enclenque a mazada"),(sm,"Sin niveles","Solo registrar y entrenar")]
 for i,(im,t,s) in enumerate(cards):
