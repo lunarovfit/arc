@@ -195,7 +195,7 @@ const ANIME_SRC = new Set(["Attack on Titan","Demon Slayer","Fullmetal Alchemist
 const pickQuote = (mode) => { const pool = mode === "clasico" || mode === "simple" ? QUOTES.filter((q) => !ANIME_SRC.has(q[2])) : QUOTES; const l = pool.length ? pool : QUOTES; return l[Math.floor(Math.random() * l.length)]; };
 const levelsOf = (branch, mode) => (mode === "gymrat" ? RAT_LEVELS : mode === "clasico" || mode === "simple" ? CLASSIC_LEVELS : LEVELS)[branch] || LEVELS.female;
 // Imagen de un nivel: la que suba la coach o, en gymrat, la rata que viene con la app
-const mediaOr = (media, key) => media[key] || (/^rat:\d$/.test(key) ? `/ratas/${key.replace(":", "-")}.png` : null);
+const mediaOr = (media, key, branch = "female") => media[key] || (/^rat:\d$/.test(key) ? `/ratas/${branch === "male" ? "male" : "female"}/${key.replace(":", "-")}.png` : null);
 const levelKey = (branch, mode, i) => (mode === "gymrat" ? `rat:${i}` : mode === "clasico" ? `classic:${i}` : `lvl:${branch}:${i}`);
 
 // [frase, quién, de dónde, explicación, tipo]
@@ -1600,7 +1600,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
   }, [state, branch]);
   const weightPoints = Object.keys(state.habits).filter((k) => state.habits[k].weight).sort().map((k) => ({ x: new Date(k).getTime(), y: Number(state.habits[k].weight) }));
   const [qq, who, from, why, kind] = quote;
-  const heroImg = mediaOr(media, levelKey(branch, mode, ev.current)) || AVATAR[branch];
+  const heroImg = mediaOr(media, levelKey(branch, mode, ev.current), branch) || AVATAR[branch];
   if (mode === "simple") return <HomeSimple state={state} stats={stats} quote={quote} ratioPoints={ratioPoints} weightPoints={weightPoints} />;
   return (
     <>
@@ -1686,7 +1686,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
       {err && <div className="err">{err}</div>}
       {(vb === "rat" ? RAT_LEVELS[branch] : mode === "clasico" && !coach ? CLASSIC_LEVELS[branch] : LEVELS[vb]).map((l, i) => {
         const key = vb === "rat" ? `rat:${i}` : mode === "clasico" && !coach ? `classic:${i}` : `lvl:${vb}:${i}`;
-        const img = mediaOr(media, key);
+        const img = mediaOr(media, key, branch);
         const mine = vb === "rat" ? mode === "gymrat" : mode !== "gymrat" && vb === branch;
         return (
           <div key={l.name} className="lvrow" style={{ opacity: mine && i > ev.current && !coach ? 0.4 : 1 }}>
@@ -2975,7 +2975,7 @@ function useLevelUp(profile, ev, media, setProfile) {
       setData({
         from: L[seen]?.name, to: L[ev.current].name, line: L[ev.current].line, idx: ev.current, total: L.length,
         gymrat: profile.mode === "gymrat", clasico: profile.mode === "clasico",
-        img: mediaOr(media, levelKey(profile.branch, profile.mode, ev.current)) || AVATAR[profile.branch],
+        img: mediaOr(media, levelKey(profile.branch, profile.mode, ev.current), profile.branch) || AVATAR[profile.branch],
       });
       setProfile({ seenLevel: ev.current });
     } else if (ev.current < seen) setProfile({ seenLevel: ev.current });
@@ -3987,7 +3987,7 @@ function ArcApp({ user }) {
 
   let body;
   if (showTour) {
-    body = <Tour media={media} profile={state.profile} ev={ev} heroImg={mediaOr(media, levelKey(state.profile.branch, state.profile.mode, ev.current)) || AVATAR[state.profile.branch]} perms={tourPerms} onFinish={() => { setProfile({ toured: true }); setTab("inicio"); if (!hasPremium) setPaywall(true); }} />;
+    body = <Tour media={media} profile={state.profile} ev={ev} heroImg={mediaOr(media, levelKey(state.profile.branch, state.profile.mode, ev.current), state.profile.branch) || AVATAR[state.profile.branch]} perms={tourPerms} onFinish={() => { setProfile({ toured: true }); setTab("inicio"); if (!hasPremium) setPaywall(true); }} />;
   } else if (showQuestionnaire) {
     body = <Questionnaire initial={state.profile || DEFAULT_PROFILE} editing={state.onboarded} onSave={saveProfile} onCancel={() => setScreen("ajustes")} />;
   } else if (screen === "contenido" && isCoach) {
