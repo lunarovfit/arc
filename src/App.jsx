@@ -172,16 +172,13 @@ function Skills({ lv, L, stats, ev }) {
 // Modo gymrat: la misma rata para todas, con 9 fases. Requisitos según la rama.
 const RAT_STAGES = [
   ["Chuminá", "La rata con ojeras que acaba de descubrir el gimnasio."],
-  ["Pardillo", "Mancuernas de juguete y sudor de verdad."],
   ["Enclenque", "Ya enseña bíceps, hay que creérselo."],
-  ["Papafrita", "Blandita por fuera, pero se agarra al banco."],
   ["Mantecado", "Se deshace en las series, pero ya se nota la masa."],
   ["Mazao", "La camiseta le pide perdón."],
-  ["Tanque", "No se mueve del banco y nadie se atreve a pedírselo."],
   ["Bestia", "El banco está preocupado."],
   ["Leyenda", "El gimnasio se mide en antes y después de ella."],
 ];
-const RAT_STEPS = [0, 1, 2, 3, 5, 6, 8, 10, 11]; // equivalencia con los 12 niveles de anime
+const RAT_STEPS = [0, 2, 4, 6, 9, 11]; // equivalencia con los 12 niveles de anime
 const RAT_LEVELS = Object.fromEntries(["female", "male"].map((b) => [b,
   RAT_STAGES.map(([name, line], i) => ({ ...LEVELS[b][RAT_STEPS[i]], name, series: "Modo gymrat", line })),
 ]));

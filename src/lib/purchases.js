@@ -2,6 +2,7 @@
 // La clave "appl_..." es pública (va dentro de la app); se puede cambiar con VITE_RC_IOS_KEY.
 // Mientras no haya clave, o fuera del iPhone, la app no bloquea nada.
 import { Capacitor } from "@capacitor/core";
+import { Purchases } from "@revenuecat/purchases-capacitor";
 
 const DEFAULT_KEY = "appl_dnPsIwbdESQutxlbKgSKGKcaUnQ";
 const KEY = String(import.meta.env.VITE_RC_IOS_KEY || DEFAULT_KEY).trim().replace(/^["']|["']$/g, "");
@@ -9,8 +10,7 @@ export const ENTITLEMENT = "premium";
 export const enabled = Capacitor.isNativePlatform() && Capacitor.getPlatform() === "ios" && KEY.startsWith("appl_");
 export const MANAGE_URL = "https://apps.apple.com/account/subscriptions";
 
-let mod = null;
-const rc = async () => (mod ||= (await import("@revenuecat/purchases-capacitor")).Purchases);
+const rc = async () => Purchases;
 const active = (info) => !!info?.entitlements?.active?.[ENTITLEMENT];
 
 let readyResolve; const ready = new Promise((r) => (readyResolve = r));
