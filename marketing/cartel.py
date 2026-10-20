@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 import qrcode
 W,H=2480,3508; F="/usr/share/fonts/opentype/inter/"; PINK=(212,139,146); WHITE=(255,255,255); DIM=(170,170,178)
-URL="https://arc-lunarovx.netlify.app"
+URL="https://arc-by-lunarovx.netlify.app"
 c=Image.new("RGB",(W,H),(0,0,0)); d=ImageDraw.Draw(c)
 g=Image.new("RGB",(W,H),(0,0,0)); ImageDraw.Draw(g).ellipse((300,1100,2180,2500),fill=(34,30,33)); g=g.filter(ImageFilter.GaussianBlur(260)); c=Image.blend(c,g,1); d=ImageDraw.Draw(c)
 f=lambda w,s: ImageFont.truetype(F+f"Inter-{w}.otf",s)

@@ -10,14 +10,14 @@ Apple obliga a tener una URL de política de privacidad.
 1. Entra en  app.netlify.com/drop  (crea cuenta gratis con tu Gmail).
 2. Arrastra la carpeta "3_web_privacidad_y_soporte" entera a la página.
 3. Te da una dirección tipo  https://algo-raro-123.netlify.app
-   → En "Site configuration" → "Change site name" ponle  arc-lunarovx
-   → Quedará:  https://arc-lunarovx.netlify.app
+   → En "Site configuration" → "Change site name" ponle  arc-by-lunarovx
+   → Quedará:  https://arc-by-lunarovx.netlify.app
 4. Comprueba que se abren:
-   https://arc-lunarovx.netlify.app                  (soporte)
-   https://arc-lunarovx.netlify.app/privacidad.html  (privacidad)
-   https://arc-lunarovx.netlify.app/terminos.html    (términos)
+   https://arc-by-lunarovx.netlify.app                  (soporte)
+   https://arc-by-lunarovx.netlify.app/privacidad.html  (privacidad)
+   https://arc-by-lunarovx.netlify.app/terminos.html    (términos)
 
-(Si el nombre arc-lunarovx está cogido, usa otro y cambia las URLs de abajo.)
+(Si el nombre arc-by-lunarovx está cogido, usa otro y cambia las URLs de abajo.)
 
 
 PASO 1 · INFORMACIÓN DE LA APP  (menú izquierdo → General → Información de la app)
@@ -37,7 +37,7 @@ Categoría secundaria:  Estilo de vida
 
 URL de la política de privacidad:
 ═══
-https://arc-lunarovx.netlify.app/privacidad.html
+https://arc-by-lunarovx.netlify.app/privacidad.html
 ═══
 
 Clasificación por edad → ver PASO 5.
@@ -88,8 +88,8 @@ Un ranking donde gana la constancia, no los kilos. Se reinicia cada semana.
 SUSCRIPCIÓN
 Prueba gratis de 3 días. Después: 3,99 €/mes, 29,99 €/año o 59,99 € un solo pago para siempre. La suscripción se renueva sola salvo que la canceles al menos 24 horas antes del final del periodo, desde los Ajustes de tu cuenta de Apple.
 
-Términos de uso: https://arc-lunarovx.netlify.app/terminos.html
-Privacidad: https://arc-lunarovx.netlify.app/privacidad.html
+Términos de uso: https://arc-by-lunarovx.netlify.app/terminos.html
+Privacidad: https://arc-by-lunarovx.netlify.app/privacidad.html
 
 ARC no sustituye el consejo de un profesional sanitario. Consulta con tu médico antes de empezar un programa de entrenamiento o cambiar tu alimentación.
 ═══
@@ -101,7 +101,7 @@ gimnasio,rutina,entreno,macros,recetas,dieta,pesas,glúteo,hábitos,fitness,prog
 
 URL de soporte:
 ═══
-https://arc-lunarovx.netlify.app
+https://arc-by-lunarovx.netlify.app
 ═══
 
 URL de marketing:  (déjalo vacío)
