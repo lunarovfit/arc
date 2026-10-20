@@ -10,7 +10,7 @@ export const ENTITLEMENT = "premium";
 export const enabled = Capacitor.isNativePlatform() && Capacitor.getPlatform() === "ios" && KEY.startsWith("appl_");
 export const MANAGE_URL = "https://apps.apple.com/account/subscriptions";
 
-const rc = async () => Purchases;
+const rc = () => Purchases; // ¡sin async! un plugin de Capacitor no se puede "await"-ear (se cuelga en .then)
 const active = (info) => !!info?.entitlements?.active?.[ENTITLEMENT];
 
 let readyResolve; const ready = new Promise((r) => (readyResolve = r));
@@ -18,7 +18,7 @@ const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeo
 
 export async function init(userId) {
   if (!enabled) return false;
-  const P = await rc();
+  const P = rc();
   try { await P.configure({ apiKey: KEY, appUserID: userId }); } finally { readyResolve(); }
   const { customerInfo } = await P.getCustomerInfo();
   return active(customerInfo);
@@ -26,7 +26,7 @@ export async function init(userId) {
 
 export async function onChange(cb) {
   if (!enabled) return;
-  const P = await rc();
+  const P = rc();
   await P.addCustomerInfoUpdateListener((info) => cb(active(info)));
 }
 
@@ -37,7 +37,7 @@ export function getPlans() {
 let stage = "inicio";
 async function getPlansInner() {
   stage = "cargando módulo de pagos";
-  const P = await rc();
+  const P = rc();
   stage = "conectando con RevenueCat";
   await withTimeout(ready, 12000);
   stage = "pidiendo ofertas";
@@ -56,7 +56,7 @@ async function getPlansInner() {
 
 // true = ya es premium; null = la usuaria canceló; lanza error si falla
 export async function buy(pkg) {
-  const P = await rc();
+  const P = rc();
   await withTimeout(ready, 12000);
   try {
     const { customerInfo } = await P.purchasePackage({ aPackage: pkg });
@@ -68,7 +68,7 @@ export async function buy(pkg) {
 }
 
 export async function restore() {
-  const P = await rc();
+  const P = rc();
   await withTimeout(ready, 12000);
   const { customerInfo } = await P.restorePurchases();
   return active(customerInfo);
