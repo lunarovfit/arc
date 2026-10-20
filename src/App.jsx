@@ -200,7 +200,6 @@ const levelKey = (branch, mode, i) => (mode === "gymrat" ? `rat:${branch === "ma
 
 // [frase, quién, de dónde, explicación, tipo]
 let QUOTES = [
-  ["Un perdedor puede superar a un genio a base de esfuerzo.", "Rock Lee", "Naruto", "Lee no podía usar ninjutsu y aun así se ganó un sitio entre los mejores. Aquí nadie necesita talento para subir de nivel.", "cita"],
   ["No voy a huir ni a retirar mi palabra. Ese es mi camino ninja.", "Naruto Uzumaki", "Naruto", "Si te has dicho que hoy entrenas, hoy entrenas. Cúmplete a ti misma.", "cita"],
   ["Ve más allá. ¡Plus Ultra!", "All Might", "My Hero Academia", "Esa última repetición con buena técnica es tu Plus Ultra de hoy.", "cita"],
   ["Tú también puedes ser un héroe.", "All Might", "My Hero Academia", "Se lo dijo a un chaval sin poderes. Ese chaval acabó siendo el número uno.", "cita"],
@@ -210,7 +209,6 @@ let QUOTES = [
   ["¡Voy a ser el Rey de los Piratas!", "Monkey D. Luffy", "One Piece", "Luffy lo grita desde el capítulo uno sin vergüenza. Ponle nombre a tu meta.", "cita"],
   ["No todo el que se esfuerza triunfa, pero todo el que ha triunfado se ha esforzado.", "Kamogawa", "Hajime no Ippo", "El esfuerzo no te asegura el resultado. Es lo único que te da opciones.", "cita"],
   ["¡Arde, corazón!", "Kyojuro Rengoku", "Demon Slayer", "Para cuando la motivación se apaga a mitad de entreno.", "cita"],
-  ["Cien flexiones, cien abdominales, cien sentadillas y diez kilómetros de carrera. Todos los días.", "Saitama", "One Punch Man", "Su secreto no era ningún poder: era no saltarse ni un día.", "cita"],
   ["Cree en ti. No en el yo que cree en ti, ni en el tú que cree en mí. Cree en el tú que cree en ti.", "Kamina", "Gurren Lagann", "Para los días en que no te ves capaz. Simon tampoco se lo creía.", "cita"],
   ["¡Manda la lógica a paseo y haz lo imposible!", "Kamina", "Gurren Lagann", "Para esa serie que te da miedo intentar.", "cita"],
   ["El talento es algo que haces florecer. El instinto es algo que pules.", "Toru Oikawa", "Haikyuu!!", "Oikawa no era un genio y llegó arriba puliendo lo suyo cada día.", "cita"],
@@ -1222,6 +1220,11 @@ textarea.in{resize:vertical;line-height:1.5}
 .warm-tips{margin:12px 0 14px;padding-left:18px}.warm-tips li{font-size:14px;color:var(--dm);line-height:1.5;margin-bottom:4px}
 img[src^="/ratas/"]{object-fit:contain!important;object-position:center bottom!important;padding:8% 6% 4%;background:radial-gradient(ellipse at 50% 70%,rgba(212,139,146,.14),transparent 65%)}
 .thumb img[src^="/ratas/"]{padding:4%}
+.social{margin-top:28px;display:flex;flex-direction:column;gap:10px}
+.social-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--ln);border-radius:16px;background:var(--sf);color:var(--tx);text-decoration:none}
+.social-row i{display:flex;width:40px;height:40px;border-radius:12px;align-items:center;justify-content:center;color:#fff;background:linear-gradient(45deg,#f9a03f,#e1306c 50%,#833ab4)}
+.social-row span{flex:1;display:flex;flex-direction:column}.social-row b{font-size:15px}.social-row small{font-size:12.5px;color:var(--dm);margin-top:2px}
+.social-row em{font-style:normal;color:var(--dm);font-size:22px}
 .tour-actions{margin-top:auto;padding-top:24px;display:flex;flex-direction:column;align-items:center;gap:14px}
 select.in{appearance:none}
 .tags{display:flex;gap:6px;margin-top:10px}
@@ -1542,6 +1545,25 @@ function TechniqueModal({ exId: startId, media, coach, setMedia, uploadMedia, on
 /* ============================ INICIO ============================ */
 
 // Inicio sin niveles: para quien solo quiere registrar sus entrenos
+// Abajo del todo: Instagram de la app y asesorías 1:1
+const APP_IG = ""; // usuario de Instagram de la app (sin @). Vacío = no sale.
+const COACH_IG = "lunarovx";
+const IgIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></svg>
+);
+function SocialLinks() {
+  return (
+    <div className="social">
+      {APP_IG && <a className="social-row" href={`https://instagram.com/${APP_IG}`} target="_blank" rel="noopener noreferrer">
+        <i><IgIcon /></i><span><b>Sigue a ARC en Instagram</b><small>@{APP_IG} · novedades y trucos</small></span><em>›</em>
+      </a>}
+      <a className="social-row" href={`https://ig.me/m/${COACH_IG}`} target="_blank" rel="noopener noreferrer">
+        <i><IgIcon /></i><span><b>Asesorías 1:1 con Luna</b><small>Escríbeme a @{COACH_IG}</small></span><em>›</em>
+      </a>
+    </div>
+  );
+}
+
 function HomeSimple({ state, stats, quote, ratioPoints, weightPoints }) {
   const [qq, who, from, why, kind] = quote;
   const ws = weekStart().toISOString().slice(0, 10);
@@ -1580,6 +1602,7 @@ function HomeSimple({ state, stats, quote, ratioPoints, weightPoints }) {
         <div className="hd"><span>Peso corporal</span><b>{currentWeight(state)} kg</b></div>
         <LineChart points={weightPoints} empty="Apunta tu peso en Hábitos dos días para ver la tendencia." />
       </div>
+      <SocialLinks />
     </>
   );
 }
@@ -1702,6 +1725,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
           </div>
         );
       })}
+      <SocialLinks />
     </>
   );
 }
@@ -2603,7 +2627,7 @@ function EditForm({ table, row, isNew, content, onSave, onDelete, onCancel, medi
       {table === "quotes" && <>
         <Field label="Frase">{area("text", "La frase tal cual", 3)}</Field>
         <div className="row">
-          <div style={{ flex: 1 }}><Field label="Quién la dice">{txt("who", "Rock Lee")}</Field></div>
+          <div style={{ flex: 1 }}><Field label="Quién la dice">{txt("who", "Muhammad Ali")}</Field></div>
           <div style={{ flex: 1 }}><Field label="De dónde">{txt("source", "Naruto")}</Field></div>
         </div>
         <Field label="Explicación" hint="Una o dos frases, cortas y en tu tono.">{area("why", "Qué tiene que ver con entrenar", 3)}</Field>
@@ -3209,6 +3233,7 @@ function Settings({ onClients, onPaywallPreview, videos, onFinishPreview, sub, e
       )}
       {err && <div className="err">{err}</div>}
       <button className="btn ghost" style={{ marginTop: 24 }} onClick={onClose}>Volver</button>
+      <SocialLinks />
       <p className="hint" style={{ textAlign: "center", fontSize: 11, opacity: 0.5 }}>ARC · versión del {typeof __BUILD__ !== "undefined" ? __BUILD__ : "—"}</p>
     </>
   );
