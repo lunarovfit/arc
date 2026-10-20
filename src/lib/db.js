@@ -45,9 +45,9 @@ export async function deleteMyData(userId) {
 
 // Elimina la cuenta entera (obligatorio para publicar en la App Store)
 export async function deleteAccount() {
-  const { error } = await supabase.functions.invoke("delete-account", { method: "POST" });
+  const { error } = await supabase.rpc("delete_my_account");
   if (error) throw error;
-  await supabase.auth.signOut();
+  await supabase.auth.signOut().catch(() => {});
 }
 
 // ---------- Contenido editable desde el panel de coach ----------
