@@ -195,8 +195,8 @@ const CLASSIC_LINES = [
 const CLASSIC_LEVELS = Object.fromEntries(["female", "male"].map((b) => [b, LEVELS[b].map((l, i) => ({ ...l, name: `Nivel ${i + 1}`, series: "Tu arco", line: CLASSIC_LINES[i] }))]));
 const ANIME_SRC = new Set(["Attack on Titan","Demon Slayer","Fullmetal Alchemist","Hajime no Ippo","Jujutsu Kaisen","My Hero Academia","Naruto","Neon Genesis Evangelion","One Piece","Vinland Saga","Dragon Ball","Haikyuu","Bleach","Haikyuu!!","Gurren Lagann","One Punch Man","Fullmetal Alchemist: Brotherhood"]);
 // En modo sin personajes tampoco salen frases de anime
-const pickQuote = (mode) => { const pool = mode === "clasico" ? QUOTES.filter((q) => !ANIME_SRC.has(q[2])) : QUOTES; const l = pool.length ? pool : QUOTES; return l[Math.floor(Math.random() * l.length)]; };
-const levelsOf = (branch, mode) => (mode === "gymrat" ? RAT_LEVELS : mode === "clasico" ? CLASSIC_LEVELS : LEVELS)[branch] || LEVELS.female;
+const pickQuote = (mode) => { const pool = mode === "clasico" || mode === "simple" ? QUOTES.filter((q) => !ANIME_SRC.has(q[2])) : QUOTES; const l = pool.length ? pool : QUOTES; return l[Math.floor(Math.random() * l.length)]; };
+const levelsOf = (branch, mode) => (mode === "gymrat" ? RAT_LEVELS : mode === "clasico" || mode === "simple" ? CLASSIC_LEVELS : LEVELS)[branch] || LEVELS.female;
 const levelKey = (branch, mode, i) => (mode === "gymrat" ? `rat:${i}` : mode === "clasico" ? `classic:${i}` : `lvl:${branch}:${i}`);
 
 // [frase, quién, de dónde, explicación, tipo]
@@ -1203,6 +1203,10 @@ textarea.in{resize:vertical;line-height:1.5}
 .var-th video,.var-th img{width:100%;height:100%;object-fit:cover}
 .var b{font-size:12.5px;line-height:1.25;margin-top:4px}
 .var small{font-size:11px;color:var(--dm)}
+.wk{background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:16px}
+.wk-main b{font-size:44px;line-height:1}.wk-main b span{font-size:22px;color:var(--dm)}
+.wk-main small{display:block;color:var(--dm);margin:4px 0 10px}
+.wk .stat3{margin-top:14px}
 .tour-actions{margin-top:auto;padding-top:24px;display:flex;flex-direction:column;align-items:center;gap:14px}
 select.in{appearance:none}
 .tags{display:flex;gap:6px;margin-top:10px}
@@ -1324,8 +1328,8 @@ function Questionnaire({ initial, editing, onSave, onCancel }) {
       <p className="sub">{editing ? "Si cambias algo, tu plan de comidas se recalcula." : "Con esto calculamos tu nivel de partida y tu plan de comidas. Solo te lo preguntamos una vez."}</p>
 
       <div className="field"><label>¿Cómo quieres subir de nivel?</label>
-        <div className="chips">{[["otaku", "Modo otaku"], ["gymrat", "Modo gymrat"]].map(([v, l]) => <button key={v} className={`chip ${(q.mode || "otaku") === v ? "on" : ""}`} onClick={() => set("mode", v)}>{l}</button>)}</div>
-        <div className="hint">{(q.mode || "otaku") === "gymrat" ? "Tu rata va de enclenque a mazada contigo." : "Desbloqueas personajes de anime según tu fuerza real."}</div>
+        <div className="chips">{[["otaku", "Modo otaku"], ["gymrat", "Modo gymrat"], ["simple", "Solo entrenar"]].map(([v, l]) => <button key={v} className={`chip ${(q.mode || "otaku") === v ? "on" : ""}`} onClick={() => set("mode", v)}>{l}</button>)}</div>
+        <div className="hint">{(q.mode || "otaku") === "gymrat" ? "Tu rata va de enclenque a mazada contigo." : q.mode === "simple" ? "Sin niveles ni personajes: registras tus entrenos, tus comidas y tus hábitos, y ya." : "Desbloqueas personajes de anime según tu fuerza real."}</div>
       </div>
       <div className="field"><label>Rama del arco</label>
         <div className="chips">{[["female", "Femenina"], ["male", "Masculina"]].map(([v, l]) => <button key={v} className={`chip ${q.branch === v ? "on" : ""}`} onClick={() => set("branch", v)}>{l}</button>)}</div>
@@ -1522,6 +1526,49 @@ function TechniqueModal({ exId: startId, media, coach, setMedia, uploadMedia, on
 
 /* ============================ INICIO ============================ */
 
+// Inicio sin niveles: para quien solo quiere registrar sus entrenos
+function HomeSimple({ state, stats, quote, ratioPoints, weightPoints }) {
+  const [qq, who, from, why, kind] = quote;
+  const ws = weekStart().toISOString().slice(0, 10);
+  const week = state.sessions.filter((s) => s.date.slice(0, 10) >= ws);
+  const goal = state.profile.days || 3;
+  const vol = week.reduce((a, s) => a + s.exercises.reduce((b, e) => b + e.sets.filter((x) => x.done && x.type !== "W").reduce((c, x) => c + (Number(x.kg) || 0) * (Number(x.reps) || 0), 0), 0), 0);
+  const routine = activeRoutine(state.profile);
+  const last = [...state.sessions].sort((a, b) => b.date.localeCompare(a.date))[0];
+  return (
+    <>
+      <div className="quote">
+        <p>{kind === "cita" ? `“${qq}”` : qq}</p>
+        <div className="who">{who}</div>
+        <div className="from">{from}</div>
+        <div className="why">{why}</div>
+      </div>
+      <h2>Tu semana</h2>
+      <div className="wk">
+        <div className="wk-main"><b>{week.length}<span>/{goal}</span></b><small>entrenos esta semana</small>
+          <div className="bar"><i style={{ width: `${Math.min(100, (week.length / goal) * 100)}%`, background: "var(--ac)" }} /></div>
+        </div>
+        <div className="stat3">
+          <div><b>{Math.round(vol).toLocaleString("es-ES")}</b><span>Kg movidos</span></div>
+          <div><b>{stats.streak}</b><span>Días de racha</span></div>
+          <div><b>{state.sessions.length}</b><span>Entrenos en total</span></div>
+        </div>
+      </div>
+      {last && <p className="hint">Último entreno: {new Date(last.date).toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "short" })}</p>}
+      <MuscleWeek sessions={state.sessions} routine={routine} />
+      <h2>Tu progreso</h2>
+      <div className="chart">
+        <div className="hd"><span>Fuerza relativa</span><b>{stats.ratio.toFixed(2)}x</b></div>
+        <LineChart points={ratioPoints} empty="Registra tu primer entreno para ver la curva." />
+      </div>
+      <div className="chart">
+        <div className="hd"><span>Peso corporal</span><b>{currentWeight(state)} kg</b></div>
+        <LineChart points={weightPoints} empty="Apunta tu peso en Hábitos dos días para ver la tendencia." />
+      </div>
+    </>
+  );
+}
+
 function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) {
   const branch = state.profile.branch;
   const mode = state.profile.mode || "otaku";
@@ -1539,6 +1586,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
   const weightPoints = Object.keys(state.habits).filter((k) => state.habits[k].weight).sort().map((k) => ({ x: new Date(k).getTime(), y: Number(state.habits[k].weight) }));
   const [qq, who, from, why, kind] = quote;
   const heroImg = media[levelKey(branch, mode, ev.current)] || AVATAR[branch];
+  if (mode === "simple") return <HomeSimple state={state} stats={stats} quote={quote} ratioPoints={ratioPoints} weightPoints={weightPoints} />;
   return (
     <>
       <div className="quote">
@@ -2632,7 +2680,7 @@ function checkNickname(n) {
   if (BAD_WORDS.some((w) => plain.includes(norm(w)))) return "Ese nombre no está permitido. Prueba con otro.";
   return "";
 }
-const levelLabel = (branch, level, mode) => (branch ? levelsOf(branch, mode)[level]?.name || "" : "");
+const levelLabel = (branch, level, mode) => (branch && mode !== "simple" ? levelsOf(branch, mode)[level]?.name || "" : "");
 const fmtDay = (d) => d.toLocaleDateString("es-ES", { day: "numeric", month: "short" });
 
 function Ranking({ me, state, api, blocked = [], onBlock, onUnblockAll }) {
@@ -2869,7 +2917,7 @@ function LevelUp({ data, onClose }) {
 function useLevelUp(profile, ev, media, setProfile) {
   const [data, setData] = useState(null);
   useEffect(() => {
-    if (!profile || !ev) return;
+    if (!profile || !ev || profile.mode === "simple") return;
     const seen = profile.seenLevel;
     const key = `${profile.mode || "otaku"}:${profile.branch}`;
     if (seen === undefined || profile.seenKey !== key) { setProfile({ seenLevel: ev.current, seenKey: key }); return; }
@@ -2974,6 +3022,12 @@ function Tour({ profile, ev, heroImg, perms, onFinish, media = {} }) {
       </div>
     ),
   });
+  if (profile.mode === "simple") {
+    slides.splice(0, 3, { title: `${male ? "Bienvenido" : "Bienvenida"} a ARC`, body: <>
+      <p className="tour-p">Aquí tienes tu rutina, tu registro de series y tus comidas ajustadas.</p>
+      <p className="tour-p dim">Sin niveles ni personajes: solo tú, tus entrenos y tu progreso.</p>
+    </> });
+  }
   const s = slides[i];
   const last = i === slides.length - 1;
   return (
@@ -3215,9 +3269,17 @@ function Paywall({ media, coach, uploadMedia, setMedia, onClose, onPremium }) {
   const [slide, setSlide] = useState(0);
   const [legal, setLegal] = useState(null);
   const memes = PAYWALL_KEYS.map((k) => media[k]).filter(Boolean);
+  const [planErr, setPlanErr] = useState("");
+  const loadPlans = () => {
+    setPlans(null); setPlanErr("");
+    purchases.getPlans().then((p) => {
+      if (!p || (!p.annual && !p.monthly && !p.lifetime)) { setPlanErr("empty"); setPlans(false); return; }
+      setPlans(p); if (!p.annual) setSel(p.monthly ? "monthly" : "lifetime");
+    }).catch((e) => { setPlanErr(String(e?.message || e)); setPlans(false); });
+  };
 
   useEffect(() => {
-    purchases.getPlans().then((p) => { setPlans(p || false); if (p && !p.annual) setSel(p.monthly ? "monthly" : "lifetime"); }).catch(() => setPlans(false));
+    loadPlans();
   }, []);
   useEffect(() => { if (memes.length < 2) return; const t = setInterval(() => setSlide((s) => (s + 1) % memes.length), 3500); return () => clearInterval(t); }, [memes.length]);
 
@@ -3261,7 +3323,11 @@ function Paywall({ media, coach, uploadMedia, setMedia, onClose, onPremium }) {
       <ul className="pw-perks">{PERKS.map((t) => <li key={t}>{t}</li>)}</ul>
 
       {plans === null && <p className="hint">Cargando planes…</p>}
-      {plans === false && <div className="err">No se han podido cargar los planes. Revisa tu conexión y vuelve a abrir esta pantalla.</div>}
+      {plans === false && <>
+        <div className="err">No se han podido cargar los planes. Revisa tu conexión e inténtalo otra vez.</div>
+        <button className="btn ghost" onClick={loadPlans}>Reintentar</button>
+        {planErr && <p className="hint" style={{ fontSize: 11, opacity: 0.6 }}>Detalle: {planErr === "empty" ? "no hay oferta activa en RevenueCat" : planErr}</p>}
+      </>}
       {plans && (
         <div className="pw-plans">
           <Plan k="annual" title="Anual" p={plans.annual} sub={`${perMonth(plans.annual)} al mes${purchases.freeTrialDays(plans.annual) ? ` · ${purchases.freeTrialDays(plans.annual)} días gratis` : ""}`} tag={founder ? "Precio fundadora" : "El más elegido"} />
@@ -3537,7 +3603,7 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
       {tab === "rutina" && (
         <>
           <div className="field"><label>Modo de niveles</label>
-            <div className="chips">{[["", "Lo elige su usuari@"], ["otaku", "Personajes anime"], ["gymrat", "Gymrat"], ["clasico", "Sin personajes"]].map(([v, l]) => (
+            <div className="chips">{[["", "Lo elige su usuari@"], ["otaku", "Personajes anime"], ["gymrat", "Gymrat"], ["clasico", "Sin personajes"], ["simple", "Sin niveles"]].map(([v, l]) => (
               <button key={v} className={`chip ${mode === v ? "on" : ""}`} disabled={busy} onClick={() => { setMode(v); save({ mode: v }, v === "clasico" ? "Le saldrán solo niveles con número, sin personajes." : v ? "Modo cambiado. Lo verá al abrir la app." : "Vuelve a elegirlo su usuari@."); }}>{l}</button>
             ))}</div>
           </div>

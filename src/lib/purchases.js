@@ -13,10 +13,13 @@ let mod = null;
 const rc = async () => (mod ||= (await import("@revenuecat/purchases-capacitor")).Purchases);
 const active = (info) => !!info?.entitlements?.active?.[ENTITLEMENT];
 
+let readyResolve; const ready = new Promise((r) => (readyResolve = r));
+const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), ms))]);
+
 export async function init(userId) {
   if (!enabled) return false;
   const P = await rc();
-  await P.configure({ apiKey: KEY, appUserID: userId });
+  try { await P.configure({ apiKey: KEY, appUserID: userId }); } finally { readyResolve(); }
   const { customerInfo } = await P.getCustomerInfo();
   return active(customerInfo);
 }
@@ -30,7 +33,9 @@ export async function onChange(cb) {
 // Devuelve la oferta actual ("fundadora" o "default", la que marques como Current en RevenueCat)
 export async function getPlans() {
   const P = await rc();
-  const { current } = await P.getOfferings();
+  await withTimeout(ready, 12000);
+  const offerings = await withTimeout(P.getOfferings(), 15000);
+  const current = offerings?.current;
   if (!current) return null;
   const pick = (type) => current.availablePackages.find((p) => p.packageType === type);
   return {
@@ -44,6 +49,7 @@ export async function getPlans() {
 // true = ya es premium; null = la usuaria canceló; lanza error si falla
 export async function buy(pkg) {
   const P = await rc();
+  await withTimeout(ready, 12000);
   try {
     const { customerInfo } = await P.purchasePackage({ aPackage: pkg });
     return active(customerInfo);
@@ -55,6 +61,7 @@ export async function buy(pkg) {
 
 export async function restore() {
   const P = await rc();
+  await withTimeout(ready, 12000);
   const { customerInfo } = await P.restorePurchases();
   return active(customerInfo);
 }
