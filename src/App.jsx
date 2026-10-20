@@ -3143,7 +3143,7 @@ function Settings({ onClients, onPaywallPreview, videos, onFinishPreview, sub, e
   const [legal, setLegal] = useState(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
-  const go = async (fn) => { setBusy(true); setErr(""); try { await fn(); } catch (e) { setErr("No se ha podido completar. Vuelve a intentarlo."); } finally { setBusy(false); } };
+  const go = async (fn) => { setBusy(true); setErr(""); try { await fn(); } catch (e) { setErr(`No se ha podido completar. Vuelve a intentarlo. (${e?.message || e?.code || e})`); } finally { setBusy(false); } };
   return (
     <>
       <h1>Ajustes</h1>
