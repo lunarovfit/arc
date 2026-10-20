@@ -3349,7 +3349,6 @@ function Paywall({ media, coach, uploadMedia, setMedia, onClose, onPremium }) {
 
   return (
     <div className="pw" role="dialog" aria-label="Planes de ARC">
-      <button className="pw-x" aria-label="Cerrar" onClick={onClose}>✕</button>
       <div className="pw-hero">
         {memes.length ? memes.map((src, i) => <img key={src} src={src} alt="" className={i === slide ? "on" : ""} />) : <div className="pw-mark"><Logo height={64} /></div>}
       </div>
