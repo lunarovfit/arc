@@ -2635,7 +2635,7 @@ function checkNickname(n) {
 const levelLabel = (branch, level, mode) => (branch ? levelsOf(branch, mode)[level]?.name || "" : "");
 const fmtDay = (d) => d.toLocaleDateString("es-ES", { day: "numeric", month: "short" });
 
-function Ranking({ me, state, api }) {
+function Ranking({ me, state, api, blocked = [], onBlock, onUnblockAll }) {
   const [board, setBoard] = useState(null);
   const [last, setLast] = useState(null);
   const [err, setErr] = useState("");
@@ -2696,7 +2696,7 @@ function Ranking({ me, state, api }) {
       {board && (
         <div style={{ marginTop: 14 }}>
           {board.length <= 1 && <div className="empty">Esta semana aún no hay nadie más. ¡Tienes la corona a tiro!</div>}
-          {board.map((r) => (
+          {board.filter((r) => r.is_me || !blocked.includes(r.nickname)).map((r) => (
             <div key={r.nickname} className={`rkrow ${r.is_me ? "me" : ""}`}>
               <span className={`pos ${r.rank <= 3 ? "top" : ""}`}>{r.rank}</span>
               <span className="who">{r.nickname}{r.is_me && " (tú)"}<small>{levelLabel(r.branch, r.level, r.mode)}</small></span>
@@ -2717,13 +2717,16 @@ function Ranking({ me, state, api }) {
       <div style={{ display: "flex", gap: 16, marginTop: 24, flexWrap: "wrap" }}>
         <button className="link" onClick={() => { setNick(me.nickname || ""); setEditing(true); }}>Cambiar mi apodo</button>
         <button className="link" onClick={async () => { await api.leave(); }}>Dejar de salir en el ranking</button>
+        {blocked.length > 0 && <button className="link" onClick={() => onUnblockAll?.()}>Desbloquear a todos ({blocked.length})</button>}
       </div>
 
       {report && (
         <div className="modal" onClick={() => setReport(null)}>
           <div className="box" onClick={(e) => e.stopPropagation()}>
-            <h1 style={{ fontSize: 20 }}>Denunciar a {report}</h1>
+            <h1 style={{ fontSize: 20 }}>{report}</h1>
             {sent ? <p className="sub">{sent}</p> : <>
+              <button className="btn ghost" onClick={() => { onBlock?.(report); setSent(`Has bloqueado a ${report}. Ya no lo verás en tu ranking.`); }}>Bloquear a {report}</button>
+              <h2 style={{ marginTop: 14 }}>Denunciar</h2>
               <p className="sub">Lo revisará la coach y, si no cumple las normas, lo quitará del ranking.</p>
               {REPORT_REASONS.map((reason) => (
                 <button key={reason} className="btn ghost" onClick={async () => {
@@ -3897,7 +3900,7 @@ function ArcApp({ user }) {
   } else if (tab === "entrenos") {
     body = <Workouts state={state} routine={routine} onStart={(d) => setActive(newSession(d, state.sessions))} setDays={(d) => setProfile({ days: d })} setProfile={setProfile} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
   } else if (tab === "ranking") {
-    body = <Ranking me={{ optIn: !!state.rankOptIn, nickname: state.nickname }} state={state} api={rankApi} />;
+    body = <Ranking me={{ optIn: !!state.rankOptIn, nickname: state.nickname }} state={state} api={rankApi} blocked={state.profile?.blocked || []} onBlock={(n) => setProfile({ blocked: [...new Set([...(state.profile?.blocked || []), n])] })} onUnblockAll={() => setProfile({ blocked: [] })} />;
   } else if (tab === "nutricion") {
     body = <Nutrition profile={state.profile} setCook={(c) => setProfile({ cook: c })} media={media} />;
   } else {
