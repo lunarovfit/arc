@@ -3339,7 +3339,7 @@ function Paywall({ media, coach, uploadMedia, setMedia, onClose, onPremium }) {
   const perMonth = (p) => p?.product?.price ? (p.product.price / 12).toLocaleString("es-ES", { style: "currency", currency: p.product.currencyCode || "EUR" }) : "";
   const go = async (fn) => {
     setBusy(true); setErr("");
-    try { const ok = await fn(); if (ok) onPremium(); else if (ok === false) setErr("No hemos encontrado ninguna compra activa en tu cuenta de Apple."); }
+    try { const ok = await fn(); if (ok) onPremium(); else if (ok === false) setErr("La compra no se ha activado todavía. Espera unos segundos y dale a Restaurar compras."); }
     catch (e) { setErr("No se ha podido completar la compra. Inténtalo otra vez en un momento."); }
     finally { setBusy(false); }
   };

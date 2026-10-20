@@ -11,7 +11,13 @@ export const enabled = Capacitor.isNativePlatform() && Capacitor.getPlatform() =
 export const MANAGE_URL = "https://apps.apple.com/account/subscriptions";
 
 const rc = () => Purchases; // ¡sin async! un plugin de Capacitor no se puede "await"-ear (se cuelga en .then)
-const active = (info) => !!info?.entitlements?.active?.[ENTITLEMENT];
+// Premium si tiene el entitlement "premium" o, por si acaso, cualquier compra o suscripción activa
+const active = (info) => !!(
+  info?.entitlements?.active?.[ENTITLEMENT] ||
+  Object.keys(info?.entitlements?.active || {}).length ||
+  (info?.activeSubscriptions || []).length ||
+  (info?.nonSubscriptionTransactions || []).some((t) => /arc_vida/.test(t?.productIdentifier || ""))
+);
 
 let readyResolve; const ready = new Promise((r) => (readyResolve = r));
 const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), ms))]);
