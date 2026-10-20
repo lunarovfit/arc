@@ -316,18 +316,15 @@ const EX_DB = [
   ["ARC-072", "Femoral", "Peso muerto rumano con barra", "Isquiotibiales, glúteo", "Barra", "De pie con la barra en las manos, bajas llevando la cadera hacia atrás con las rodillas un poco flexionadas, la barra pegada a las piernas, y subes apretando glúteo.", "Baja hasta notar que tira el femoral, no hasta el suelo. Espalda recta y barra rozando las piernas todo el rato."],
   ["ARC-073", "Espalda", "Dominada con banda elástica", "Dorsal ancho, bíceps", "Banda elástica", "Enganchas una banda a la barra y metes la rodilla o el pie dentro: te ayuda en la parte más difícil de la subida.", "Usa la banda que te deje hacer 6-8 buenas. Cuando te salgan fáciles, cambia a una más fina."],
   ["ARC-074", "Espalda", "Dominada negativa", "Dorsal ancho, bíceps", "Peso corporal", "Subes a la barra con un salto o un banco y bajas lo más despacio que puedas, unos 3-5 segundos, hasta estirar los brazos.", "Es la mejor forma de conseguir tu primera dominada. Controla la bajada entera, sin dejarte caer al final."],
-  ["ARC-M01", "Movilidad", "Cardio suave", "Cuerpo entero", "Bici, elíptica o cinta", "5 minutos a ritmo cómodo en bici, elíptica o cinta inclinada, hasta notar calor en el cuerpo.", "Tienes que poder hablar sin ahogarte. Es para calentar, no para cansarte."],
-  ["ARC-M02", "Movilidad", "Cadera 90/90", "Cadera", "Suelo", "Sentada en el suelo con las dos rodillas dobladas a 90 grados, giras las piernas de un lado a otro sin usar las manos.", "Mantén el pecho alto. Haz 6-8 cambios lentos por lado."],
-  ["ARC-M03", "Movilidad", "Gato-camello", "Columna", "Suelo", "A cuatro patas, redondeas la espalda llevando la barbilla al pecho y luego la arqueas mirando al frente.", "Muévete vértebra a vértebra y respira: sube al soltar el aire. 8-10 repeticiones."],
-  ["ARC-M04", "Movilidad", "Rotación torácica a cuatro patas", "Espalda alta", "Suelo", "A cuatro patas con una mano en la nuca, giras el codo hacia el techo y luego lo bajas hacia la otra mano.", "La cadera no se mueve: gira solo la parte de arriba de la espalda. 6-8 por lado."],
-  ["ARC-M05", "Movilidad", "Movilidad de tobillo en la pared", "Tobillo", "Pared", "Con un pie a un palmo de la pared, llevas la rodilla hacia delante hasta tocarla sin levantar el talón.", "Si llegas fácil, aleja un poco el pie. Clave para bajar más en la sentadilla. 8-10 por lado."],
-  ["ARC-M06", "Movilidad", "Puente de glúteo", "Glúteo", "Suelo", "Tumbada boca arriba con las rodillas dobladas, subes la cadera apretando el glúteo y bajas despacio.", "Aguanta 2 segundos arriba. 12-15 repeticiones para despertar el glúteo antes de pierna."],
-  ["ARC-M07", "Movilidad", "Monster walk con banda", "Glúteo medio", "Banda elástica", "Con una banda encima de las rodillas y semiflexionada, das pasos laterales y en diagonal sin juntar los pies.", "Las rodillas siempre hacia fuera. 10-12 pasos hacia cada lado."],
-  ["ARC-M08", "Movilidad", "Pase de hombros con palo o banda", "Hombro", "Palo o banda", "De pie con un palo o banda agarrado muy abierto, lo pasas por encima de la cabeza hasta detrás y vuelves.", "Brazos estirados. Si no pasa, abre más el agarre. 10 repeticiones lentas."],
-  ["ARC-M09", "Movilidad", "Face pull con banda", "Hombro y espalda alta", "Banda elástica", "Con una banda enganchada a la altura de la cara, tiras hacia ti separando las manos y abriendo los codos.", "Peso muy ligero: es activación. 15 repeticiones antes de torso."],
-  ["ARC-M10", "Movilidad", "Sentadilla profunda con apoyo", "Cadera y tobillo", "Mancuerna o peso corporal", "Bajas a una sentadilla profunda sujetando una mancuerna ligera delante del pecho y te quedas abajo moviendo la cadera.", "Empuja las rodillas hacia fuera con los codos. Quédate 30-45 segundos abajo."],
-  ["ARC-M11", "Movilidad", "Estiramiento de flexor de cadera", "Cadera", "Suelo", "En zancada con la rodilla de atrás apoyada, llevas la cadera hacia delante apretando el glúteo de esa pierna.", "Mejor al final o en días libres. 30-45 segundos por lado, respirando."],
-  ["ARC-M12", "Movilidad", "Estiramiento de pectoral en la pared", "Pecho y hombro", "Pared", "Con el antebrazo apoyado en una pared o marco de puerta, giras el cuerpo hacia el lado contrario.", "Notas el estiramiento en el pecho, no dolor en el hombro. 30 segundos por lado."],
+  ["ARC-M01", "Movilidad", "Círculos de brazos", "Hombro", "Peso corporal", "De pie con los brazos estirados a los lados, haces círculos hacia delante y luego hacia atrás, de pequeños a grandes.", "10 hacia delante y 10 hacia atrás. Hombros lejos de las orejas."],
+  ["ARC-M02", "Movilidad", "Movilidad de hombro con palo", "Hombro", "Palo o banda", "Con un palo agarrado muy abierto y los brazos estirados, lo pasas por encima de la cabeza hasta detrás y vuelves.", "Si no pasa sin doblar los codos, abre más el agarre. 10 repeticiones lentas."],
+  ["ARC-M03", "Movilidad", "Rodilla al pecho de pie", "Glúteo y cadera", "Peso corporal", "De pie, subes una rodilla y la abrazas contra el pecho un segundo; bajas y cambias de pierna, caminando o en el sitio.", "Ponte de puntillas con la pierna de apoyo para ganar equilibrio. 8 por pierna."],
+  ["ARC-M04", "Movilidad", "Balanceo de pierna adelante y atrás", "Cadera y femoral", "Peso corporal", "Apoyada en una pared o máquina, balanceas una pierna estirada hacia delante y hacia atrás, cada vez un poco más alto.", "El tronco quieto: se mueve la pierna, no la espalda. 10-12 por pierna."],
+  ["ARC-M05", "Movilidad", "Balanceo de pierna lateral", "Aductores y glúteo medio", "Peso corporal", "De frente a una pared y apoyada con las manos, balanceas una pierna de lado a lado por delante del cuerpo.", "Abre un poco más en cada balanceo, sin forzar. 10-12 por pierna."],
+  ["ARC-M06", "Movilidad", "Zancada de corredor", "Flexor de cadera", "Peso corporal", "En zancada larga con las manos en el suelo a los lados del pie de delante, llevas la cadera hacia delante y hacia atrás.", "La rodilla de atrás puede ir apoyada. 8 balanceos por lado, sin rebotes."],
+  ["ARC-M07", "Movilidad", "World's greatest stretch", "Cadera, espalda alta y hombro", "Peso corporal", "Desde la zancada de corredor, apoyas la mano contraria en el suelo y abres el otro brazo hacia el techo girando el pecho.", "Sigue la mano con la mirada. 5 por lado. Calienta casi todo el cuerpo en un solo ejercicio."],
+  ["ARC-M08", "Movilidad", "Cadera 90/90", "Cadera", "Suelo", "Sentada en el suelo con las dos rodillas dobladas a 90 grados, giras las piernas de un lado a otro.", "Pecho alto y sin usar las manos si puedes. 6-8 cambios lentos."],
+  ["ARC-M09", "Movilidad", "Plancha con rotación", "Abdomen y hombro", "Peso corporal", "En plancha sobre los codos, giras el cuerpo hacia un lado hasta quedar en plancha lateral y vuelves al centro.", "Cadera alta, sin hundirla al girar. 5 por lado, controlado."],
   // Añadidos (no están en tu base de datos): revisa y escribe tu propia ficha
   ["ARC-X01", "Cuádriceps", "Sentadilla búlgara en Smith", "Cuádriceps, glúteo", "Multipower + banco", "Con el empeine de atrás apoyado en un banco y la barra guiada sobre la espalda, bajas en vertical doblando la rodilla de delante.", "Pie de delante más adelantado = más glúteo; más cerca de la barra = más cuádriceps."],
   ["ARC-X02", "Femoral", "Peso muerto rumano en Smith", "Isquiotibiales, glúteo", "Multipower", "Bisagra de cadera con la barra guiada: llevas el glúteo hacia atrás y la barra baja pegada a las piernas.", "Para cuando notes el estiramiento del femoral, no cuando la barra llegue abajo."],
@@ -2238,28 +2235,19 @@ function RoutineEditor({ days, onChange, onDone }) {
 }
 
 // Calentamiento y movilidad (arriba del todo en Entrenos)
-const WARM_PLANS = [
-  ["pierna", "Día de pierna", ["ARC-M01", "ARC-M05", "ARC-M02", "ARC-M06", "ARC-M07", "ARC-M10"]],
-  ["torso", "Día de torso", ["ARC-M01", "ARC-M03", "ARC-M04", "ARC-M08", "ARC-M09"]],
-  ["movilidad", "Movilidad", ["ARC-M02", "ARC-M03", "ARC-M04", "ARC-M05", "ARC-M11", "ARC-M12"]],
-];
-const WARM_TIPS = {
-  pierna: ["5–10 minutos en total. No hace falta más.", "Empieza con 5 minutos de cardio suave hasta notar calor.", "Luego 1 vuelta a los ejercicios de abajo, controlados y sin rebotes.", "En el primer ejercicio, 2–3 series de aproximación subiendo el peso (las «W» del registro)."],
-  torso: ["5–10 minutos en total.", "Cardio suave y luego movilidad de espalda alta y hombros.", "La activación con banda, muy ligera: es para despertar, no para cansar.", "Antes del primer press o remo, 2–3 series de aproximación con poco peso."],
-  movilidad: ["Para el final del entreno o los días libres, 10–15 minutos.", "Aquí sí: aguanta cada estiramiento 30–60 segundos respirando lento.", "Nunca hasta el dolor. Notar tensión es normal; dolor punzante, para.", "Hecha 2–3 veces por semana se nota en la sentadilla y en los hombros."],
-};
+const WARM_LIST = ["ARC-M01", "ARC-M02", "ARC-M03", "ARC-M04", "ARC-M05", "ARC-M06", "ARC-M07", "ARC-M08", "ARC-M09"];
+const WARM_TIPS = ["Unos 5–10 minutos antes de entrenar.", "Una vuelta a todos, en este orden, sin prisa y sin rebotes.", "Luego, en el primer ejercicio, 2–3 series de aproximación subiendo el peso (las «W» del registro)."];
+
 function WarmUp({ media, onTech }) {
   const [open, setOpen] = useState(false);
-  const [plan, setPlan] = useState("pierna");
-  const list = (WARM_PLANS.find((p) => p[0] === plan)?.[2] || []).filter((id) => id in EXERCISES);
+  const list = WARM_LIST.filter((id) => id in EXERCISES);
   return (
     <div className="warm">
       <button className="warm-hd" onClick={() => setOpen(!open)} aria-expanded={open}>
         <span><b>Calentamiento y movilidad</b><small>Antes de entrenar, 5–10 minutos</small></span><i>{open ? "−" : "+"}</i>
       </button>
       {open && <>
-        <div className="seg" style={{ marginTop: 12 }}>{WARM_PLANS.map(([k, l]) => <button key={k} className={plan === k ? "on" : ""} onClick={() => setPlan(k)}>{l}</button>)}</div>
-        <ul className="warm-tips">{WARM_TIPS[plan].map((t) => <li key={t}>{t}</li>)}</ul>
+        <ul className="warm-tips">{WARM_TIPS.map((t) => <li key={t}>{t}</li>)}</ul>
         {list.length === 0 ? <p className="hint">Pronto tendrás aquí los ejercicios.</p> : (
           <div className="vars">
             {list.map((v) => {
