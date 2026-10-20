@@ -3159,6 +3159,7 @@ function Settings({ onClients, onPaywallPreview, videos, onFinishPreview, sub, e
       )}
       {err && <div className="err">{err}</div>}
       <button className="btn ghost" style={{ marginTop: 24 }} onClick={onClose}>Volver</button>
+      <p className="hint" style={{ textAlign: "center", fontSize: 11, opacity: 0.5 }}>ARC · versión del {typeof __BUILD__ !== "undefined" ? __BUILD__ : "—"}</p>
     </>
   );
 }

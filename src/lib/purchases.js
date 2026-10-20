@@ -31,10 +31,18 @@ export async function onChange(cb) {
 }
 
 // Devuelve la oferta actual ("fundadora" o "default", la que marques como Current en RevenueCat)
-export async function getPlans() {
+export function getPlans() {
+  return withTimeout(getPlansInner(), 20000).catch((e) => { throw new Error(stage + ": " + (e?.message || e)); });
+}
+let stage = "inicio";
+async function getPlansInner() {
+  stage = "cargando módulo de pagos";
   const P = await rc();
+  stage = "conectando con RevenueCat";
   await withTimeout(ready, 12000);
-  const offerings = await withTimeout(P.getOfferings(), 15000);
+  stage = "pidiendo ofertas";
+  const offerings = await P.getOfferings();
+  stage = "leyendo ofertas";
   const current = offerings?.current;
   if (!current) return null;
   const pick = (type) => current.availablePackages.find((p) => p.packageType === type);
