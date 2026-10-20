@@ -41,15 +41,15 @@ feats=[("Rutina","a tu medida"),("Registro","de cada serie"),("Comidas","a tus m
 cw=(W-2*M)//4
 for i,(t,s) in enumerate(feats):
     cx=M+cw*i+cw//2
-    d.text((cx,2010),t,font=f("ExtraBold",66),fill=WHITE,anchor="ma")
-    d.text((cx,2095),s,font=f("Medium",44),fill=DIM,anchor="ma")
-    if i: d.line((M+cw*i,2020,M+cw*i,2135),fill=LINE,width=3)
+    d.text((cx,1985),t,font=f("ExtraBold",66),fill=WHITE,anchor="ma")
+    d.text((cx,2070),s,font=f("Medium",44),fill=DIM,anchor="ma")
+    if i: d.line((M+cw*i,1995,M+cw*i,2110),fill=LINE,width=3)
 # 5 · modos
-d.text((W/2,2255),"TRES FORMAS DE SUBIR DE NIVEL",font=f("Bold",42),fill=PINK,anchor="ma")
+d.text((W/2,2205),"TRES FORMAS DE SUBIR DE NIVEL",font=f("Bold",42),fill=PINK,anchor="ma")
 def cover(img,w,h):
     r=max(w/img.size[0],h/img.size[1]); img=img.resize((int(img.size[0]*r)+1,int(img.size[1]*r)+1),Image.LANCZOS)
     l=(img.size[0]-w)//2; t=(img.size[1]-h)//2; return img.crop((l,t,l+w,t+h))
-gap=56; kw=(W-2*M-2*gap)//3; ih=360; kh=ih+200; ky=2335
+gap=56; kw=(W-2*M-2*gap)//3; ih=330; kh=ih+195; ky=2280
 an=cover(Image.open("raw/inicio-anime-NO-APPSTORE.jpg").convert("RGB").crop((52,500,378,700)),kw,ih)
 rt=Image.new("RGB",(kw,ih),(24,24,28)); r=Image.open("raw/rat-leyenda-sinfondo.png").convert("RGBA"); r=r.crop((0,0,r.size[0],int(r.size[1]*0.62))); r.thumbnail((kw-80,ih-30)); rt.paste(r,((kw-r.size[0])//2,ih-r.size[1]),r)
 _s=Image.open("raw/inicio-simple.png").convert("RGB").crop((18,262,412,470)); _s=_s.resize((kw,int(_s.size[1]*kw/_s.size[0])),Image.LANCZOS); sm=Image.new("RGB",(kw,ih),(0,0,0)); sm.paste(_s,(0,max(0,(ih-_s.size[1])//2)))
@@ -64,11 +64,11 @@ for i,(im,t,s) in enumerate(cards):
 d=ImageDraw.Draw(c)
 # 6 · llamada + QR
 q=qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_H,box_size=20,border=2); q.add_data(URL); q.make(fit=True)
-qs=400; qi=q.make_image(fill_color="black",back_color="white").convert("RGB").resize((qs,qs),Image.NEAREST)
+qs=360; qi=q.make_image(fill_color="black",back_color="white").convert("RGB").resize((qs,qs),Image.NEAREST)
 qc=Image.new("RGB",(qs+60,qs+60),WHITE); qc.paste(qi,(30,30))
 lm=Image.open("raw/logo-mark.png").convert("RGBA"); lm=lm.resize((96,int(lm.size[1]*96/lm.size[0])))
 bx=(qc.size[0]-110)//2; qc.paste(Image.new("RGB",(110,88),(0,0,0)),(bx,(qc.size[1]-88)//2),rounded((110,88),20)); lm.thumbnail((80,80)); qc.paste(lm,(bx+15,(qc.size[1]-lm.size[1])//2),lm)
-fy=3020; qx=W-M-qc.size[0]
+fy=2925; qx=W-M-qc.size[0]
 c.paste(qc,(qx,fy-10),rounded(qc.size,40)); d=ImageDraw.Draw(c)
 d.text((M,fy),"Escanéame",font=f("ExtraBold",140),fill=WHITE)
 d.text((M,fy+175),"y empieza tu arco",font=f("SemiBold",68),fill=PINK)
