@@ -22,7 +22,7 @@ def phone(src,crop=None,w=470):
     sh=int(w*2.05); img=img.resize((w,int(img.size[1]*w/img.size[0])),Image.LANCZOS)
     scr=Image.new("RGB",(w,sh),(0,0,0)); scr.paste(img,(0,64))
     b=22; ph=Image.new("RGB",(w+2*b,sh+2*b),(36,36,40)); ph.paste(scr,(b,b),rounded(scr,92)); return ph
-for (s,cr),px,py in [(("nutricion.png",None),420,1060),(("video-tecnica.jpg",(270,232,625,858)),1546,1060),(("inicio-sin-personajes.png",None),983,990)]:
+for (s,cr),px,py in [(("nutricion.png",None),420,1060),(("video-tecnica.jpg",(270,232,625,858)),1546,1060),(("mapa-muscular.jpg",None),983,990)]:
     p=phone(s,cr); c.paste(p,(px,py),rounded(p,112)); ImageDraw.Draw(c).rounded_rectangle((px,py,px+p.size[0]-1,py+p.size[1]),112,outline=(80,80,88),width=4)
 # degradado inferior para tapar el final de los móviles
 gr=Image.new("L",(1,H))
@@ -41,7 +41,8 @@ def fit(img,w,h):
     r=max(w/img.size[0],h/img.size[1]); img=img.resize((int(img.size[0]*r)+1,int(img.size[1]*r)+1),Image.LANCZOS)
     l=(img.size[0]-w)//2; t=(img.size[1]-h)//2; return img.crop((l,t,l+w,t+h))
 an=Image.open("raw/inicio-anime-NO-APPSTORE.jpg").convert("RGB"); an=an.crop((52,520,378,683))
-rt=Image.open("raw/rat-leyenda.png").convert("RGB").crop((0,10,720,370))
+_r=Image.open("raw/rat-leyenda-sinfondo.png").convert("RGBA"); _r=_r.crop((0,0,_r.size[0],int(_r.size[1]*0.55)))
+rt=Image.new("RGB",(640,320),(22,22,26)); _r.thumbnail((600,300)); rt.paste(_r,((640-_r.size[0])//2,320-_r.size[1]),_r)
 sm=Image.open("raw/inicio-simple.png").convert("RGB"); sm=sm.crop((18,235,412,480))
 cards=[(an,"Personajes anime","de animes que te inspiran"),(rt,"Gymrat","de enclenque a mazada"),(sm,"Sin niveles","solo registrar y entrenar")]
 cw2,ch=640,320; gap=(W-3*cw2)//4
