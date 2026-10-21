@@ -82,6 +82,17 @@ export const reportNickname = (nickname, reason) => supabase.from("rank_reports"
 export const listReports = () => supabase.from("rank_reports").select("*").eq("resolved", false).order("created_at", { ascending: false }).then(must);
 export const dismissReport = (id) => supabase.from("rank_reports").update({ resolved: true }).eq("id", id).then(must);
 export const hideFromRanking = (nick) => supabase.rpc("hide_from_ranking", { nick }).then(must);
+export const searchProfiles = (q) => supabase.rpc("search_profiles", { q }).then(must);
+export const publicProfile = (nick) => supabase.rpc("public_profile", { nick }).then(must);
+export const setProfilePublic = (userId, v) => supabase.from("profiles").update({ profile_public: v }).eq("id", userId).then(must);
+export const setAvatarUrl = (userId, url) => supabase.from("profiles").update({ avatar_url: url }).eq("id", userId).then(must);
+export async function uploadAvatar(userId, blob) {
+  const path = `${userId}/${Date.now()}.jpg`;
+  must(await supabase.storage.from("avatars").upload(path, blob, { upsert: true, contentType: "image/jpeg", cacheControl: "31536000" }));
+  return supabase.storage.from("avatars").getPublicUrl(path).data.publicUrl;
+}
+export const clearAvatar = (nick) => supabase.rpc("clear_avatar", { nick }).then(must);
+export const avatarOf = (nick) => supabase.rpc("avatar_of", { nick }).then(must);
 
 // ---------- Asesoradas (solo coach) ----------
 export const listClients = () => supabase.from("coach_clients").select("*").order("created_at", { ascending: true }).then(must);

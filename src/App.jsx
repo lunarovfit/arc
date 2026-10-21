@@ -306,7 +306,6 @@ const EX_DB = [
   ["ARC-062", "Gemelo", "Gemelo de pie en máquina", "Gemelo", "Máquina", "De pie, te elevas sobre las puntas de los pies contra resistencia sobre los hombros.", "Baja el talón por debajo del nivel de la plataforma para estirar bien antes de volver a subir. El recorrido completo es lo que marca la diferencia aquí."],
   ["ARC-063", "Gemelo", "Gemelo sentado en máquina", "Sóleo", "Máquina", "Sentada, con el peso apoyado sobre las rodillas, te elevas sobre las puntas de los pies.", "Esta versión trabaja más la parte interna del gemelo (sóleo) que la de pie. Si solo haces una variante, te falta la otra."],
   ["ARC-064", "Abdomen", "Crunch abdominal en máquina", "Recto abdominal", "Máquina", "Sentada, flexionas el torso hacia delante contra resistencia.", "El movimiento es de la columna (te curvas), no de la cadera. Si \"doblas\" por la cintura sin curvar la espalda, no estás trabajando el abdomen de forma óptima."],
-  ["ARC-065", "Abdomen", "Crunch en polea (de rodillas)", "Recto abdominal", "Polea", "De rodillas frente a una polea alta, flexionas el torso hacia abajo sujetando una cuerda junto a la cara.", "El movimiento sale de curvar la columna hacia abajo, no de bajar la cabeza ni tirar con los brazos. Los brazos solo sujetan el peso."],
   ["ARC-066", "Abdomen", "Plancha", "Core (transverso, recto)", "Peso corporal", "Mantienes el cuerpo recto apoyado en antebrazos y puntas de los pies, sin moverte.", "Aprieta los glúteos durante todo el ejercicio. Evita que la cadera se hunda, que es el fallo más común."],
   ["ARC-067", "Abdomen", "Elevación de piernas", "Abdomen inferior, flexores de cadera", "Peso corporal", "Levantas las piernas (rectas o flexionadas) usando el abdomen, en vez del impulso de las caderas.", "Si notas que trabaja más la zona lumbar o la cadera que el abdomen, flexiona más las rodillas hasta que sea manejable con buena técnica."],
   ["ARC-068", "Abdomen", "Bicicleta", "Oblicuos, recto abdominal", "Peso corporal", "Tumbada bocarriba, alternas llevar el codo contrario hacia la rodilla contraria, en un movimiento de pedaleo.", "Hazlo despacio y controlado. El beneficio real está en la rotación controlada, no en la velocidad."],
@@ -360,27 +359,44 @@ let GROUPS = [...new Set(EX_DB.map((e) => e[1]))];
 let EXERCISES = Object.fromEntries(EX_DB.map(([id, group, n, muscle, equip, simple, tip]) => [id, { id, group, n, muscle, equip, simple, tip, ...(EX_EXTRA[id] || {}) }]));
 
 // sesiones guardadas con la versión anterior
-const LEGACY_EX = { sentadilla: "ARC-X05", pesoMuerto: "ARC-021", pressBanca: "ARC-X04", dominadas: "ARC-007", hipThrust: "ARC-054", rumano: "ARC-051", bulgaras: "ARC-X01", prensa: "ARC-039", curlFemoral: "ARC-049", abduccion: "ARC-060", remo: "ARC-016", remoMancuerna: "ARC-015", pressMilitar: "ARC-022", elevLaterales: "ARC-025", jalon: "ARC-009", fondos: "ARC-006", flexiones: "ARC-001", crunch: "ARC-065", elevPiernas: "ARC-067", plancha: "ARC-066", cardio: "CARDIO", movilidad: "MOVILIDAD" };
+const LEGACY_EX = { sentadilla: "ARC-X05", pesoMuerto: "ARC-021", pressBanca: "ARC-X04", dominadas: "ARC-007", hipThrust: "ARC-054", rumano: "ARC-051", bulgaras: "ARC-X01", prensa: "ARC-039", curlFemoral: "ARC-049", abduccion: "ARC-060", remo: "ARC-016", remoMancuerna: "ARC-015", pressMilitar: "ARC-022", elevLaterales: "ARC-025", jalon: "ARC-009", fondos: "ARC-006", flexiones: "ARC-001", crunch: "ARC-064", elevPiernas: "ARC-067", plancha: "ARC-066", cardio: "CARDIO", movilidad: "MOVILIDAD" };
 
 // Días al estilo ARC: [ejercicio, series, reps, RIR, descanso en s]
 const DAY_TEMPLATES = {
-  piernaGluteo: { name: "Pierna y glúteo", ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-X01", 3, "8–10 por pierna", 2, 120], ["ARC-X02", 3, "8–10", 2, 120], ["ARC-049", 3, "10–12", 1, 90], ["ARC-060", 3, "12–15", 1, 60], ["ARC-065", 3, "12–15", 1, 60]] },
+  piernaGluteo: { name: "Pierna y glúteo", ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-X01", 3, "8–10 por pierna", 2, 120], ["ARC-X02", 3, "8–10", 2, 120], ["ARC-049", 3, "10–12", 1, 90], ["ARC-060", 3, "12–15", 1, 60], ["ARC-081", 3, "12–15", 1, 60, "abs"]] },
   espaldaBiceps: { name: "Espalda y bíceps", ex: [["ARC-007", 4, "máx.", 1, 150], ["ARC-009", 3, "8–10", 2, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-011", 3, "10–12 por brazo", 1, 90], ["ARC-031", 3, "10–12", 1, 60], ["ARC-025", 3, "12–15", 1, 60], ["ARC-033", 3, "10–12", 1, 60]] },
   gluteoFemoral: { name: "Glúteo y femoral", ex: [["ARC-054", 4, "8–10", 1, 120], ["ARC-021", 3, "4–6", 2, 180], ["ARC-050", 3, "10–12", 1, 90], ["ARC-X03", 3, "12–15", 1, 60], ["ARC-061", 3, "12–15", 1, 60], ["ARC-067", 3, "10–15", 1, 60]] },
   empuje: { name: "Pecho, hombro y tríceps", ex: [["ARC-003", 3, "8–10", 2, 120], ["ARC-004", 3, "10–12", 1, 90], ["ARC-023", 3, "8–10", 2, 90], ["ARC-027", 3, "12–15", 1, 60], ["ARC-034", 3, "10–12", 1, 60], ["ARC-035", 3, "10–12", 1, 60]] },
   cuadriceps: { name: "Cuádriceps y gemelo", ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-039", 3, "10–12", 1, 120], ["ARC-041", 3, "12–15", 1, 60], ["ARC-045", 3, "10 por pierna", 2, 90], ["ARC-062", 3, "12–15", 1, 60]] },
   calistenia: { name: "Calistenia y core", ex: [["ARC-007", 4, "máx.", 1, 120], ["ARC-001", 3, "máx.", 1, 90], ["ARC-006", 3, "máx.", 1, 90], ["ARC-067", 3, "10–15", 1, 60], ["ARC-066", 3, "30–45", 0, 60], ["ARC-068", 3, "20", 1, 45]] },
-  cardioAbs: { name: "Cardio y abdominales", ex: [["CARDIO", 1, "30", 0, 60], ["ARC-064", 3, "12–15", 1, 60], ["ARC-065", 3, "12–15", 1, 60], ["ARC-067", 3, "10–15", 1, 60], ["ARC-066", 3, "45", 0, 60]] },
+  cardioAbs: { name: "Cardio y abdominales", ex: [["CARDIO", 1, "30", 0, 60], ["ARC-081", 3, "12–15", 1, 60, "abs"], ["ARC-067", 3, "10–15", 1, 60], ["ARC-066", 3, "45", 0, 60]] },
   fullA: { name: "Full body A", ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-054", 3, "8–10", 1, 120], ["ARC-009", 3, "8–10", 2, 90], ["ARC-004", 3, "10–12", 1, 90], ["ARC-025", 3, "12–15", 1, 60], ["ARC-066", 3, "30–45", 0, 60]] },
   torsoA: { name: "Torso A", ex: [["ARC-X04", 4, "6–8", 2, 150], ["ARC-009", 3, "8–10", 2, 120], ["ARC-022", 3, "8–10", 2, 90], ["ARC-013", 3, "10–12", 1, 90], ["ARC-025", 3, "12–15", 1, 60], ["ARC-034", 3, "10–12", 1, 60], ["ARC-031", 3, "10–12", 1, 60]] },
-  piernaA: { name: "Pierna A", ex: [["ARC-X05", 4, "6–8", 2, 180], ["ARC-051", 3, "8–10", 2, 120], ["ARC-039", 3, "10–12", 1, 120], ["ARC-049", 3, "10–12", 1, 90], ["ARC-062", 3, "12–15", 1, 60], ["ARC-065", 3, "12–15", 1, 60]] },
+  piernaA: { name: "Pierna A", ex: [["ARC-X05", 4, "6–8", 2, 180], ["ARC-051", 3, "8–10", 2, 120], ["ARC-039", 3, "10–12", 1, 120], ["ARC-049", 3, "10–12", 1, 90], ["ARC-062", 3, "12–15", 1, 60], ["ARC-081", 3, "12–15", 1, 60, "abs"]] },
   torsoB: { name: "Torso B", ex: [["ARC-007", 4, "máx.", 1, 150], ["ARC-003", 3, "8–10", 2, 120], ["ARC-016", 3, "8–10", 2, 120], ["ARC-004", 3, "10–12", 1, 90], ["ARC-020", 3, "12–15", 1, 60], ["ARC-035", 3, "10–12", 1, 60], ["ARC-033", 3, "10–12", 1, 60]] },
   piernaB: { name: "Pierna B", ex: [["ARC-021", 3, "4–6", 2, 180], ["ARC-X01", 3, "8–10 por pierna", 2, 120], ["ARC-054", 3, "8–10", 1, 120], ["ARC-041", 3, "12–15", 1, 60], ["ARC-050", 3, "10–12", 1, 60], ["ARC-067", 3, "10–15", 1, 60]] },
   hombroBrazo: { name: "Hombro y brazos", ex: [["ARC-024", 3, "8–10", 2, 90], ["ARC-026", 3, "12–15", 1, 60], ["ARC-019", 3, "12–15", 1, 60], ["ARC-033", 3, "10–12", 1, 60], ["ARC-036", 3, "10–12", 1, 60], ["ARC-032", 3, "10–12", 1, 60], ["ARC-037", 3, "máx.", 1, 60]] },
   fullMA: { name: "Full body A", ex: [["ARC-X05", 4, "6–8", 2, 180], ["ARC-X04", 4, "6–8", 2, 150], ["ARC-009", 3, "8–10", 2, 90], ["ARC-022", 3, "8–10", 2, 90], ["ARC-049", 3, "10–12", 1, 60], ["ARC-066", 3, "30–45", 0, 60]] },
-  fullMB: { name: "Full body B", ex: [["ARC-021", 3, "4–6", 2, 180], ["ARC-007", 4, "máx.", 1, 150], ["ARC-003", 3, "8–10", 2, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-025", 3, "12–15", 1, 60], ["ARC-065", 3, "12–15", 1, 60]] },
+  fullMB: { name: "Full body B", ex: [["ARC-021", 3, "4–6", 2, 180], ["ARC-007", 4, "máx.", 1, 150], ["ARC-003", 3, "8–10", 2, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-025", 3, "12–15", 1, 60], ["ARC-081", 3, "12–15", 1, 60, "abs"]] },
   fullMC: { name: "Full body C", ex: [["ARC-039", 3, "10–12", 1, 120], ["ARC-X04", 3, "8–10", 2, 120], ["ARC-016", 3, "8–10", 2, 120], ["ARC-041", 3, "12–15", 1, 60], ["ARC-027", 3, "12–15", 1, 60], ["ARC-034", 3, "10–12", 1, 60], ["ARC-031", 3, "10–12", 1, 60]] },
-  fullB: { name: "Full body B", ex: [["ARC-021", 3, "4–6", 2, 180], ["ARC-007", 4, "máx.", 1, 150], ["ARC-039", 3, "10–12", 1, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-023", 3, "8–10", 2, 90], ["ARC-065", 3, "12–15", 1, 60]] },
+  fullB: { name: "Full body B", ex: [["ARC-021", 3, "4–6", 2, 180], ["ARC-007", 4, "máx.", 1, 150], ["ARC-039", 3, "10–12", 1, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-023", 3, "8–10", 2, 90], ["ARC-081", 3, "12–15", 1, 60, "abs"]] },
+  // Prioridad glúteo: casi nada de pecho, mucho glúteo y pierna, espalda y hombro para la postura
+  fullGA: { name: "Full body A", ex: [["ARC-054", 4, "8–10", 1, 120], ["ARC-042", 3, "6–8", 2, 150], ["ARC-009", 3, "8–10", 2, 90], ["ARC-022", 3, "8–10", 2, 90], ["ARC-060", 3, "12–15", 1, 60], ["ARC-081", 3, "12–15", 1, 60, "abs"]] },
+  fullGB: { name: "Full body B", ex: [["ARC-021", 3, "4–6", 2, 180], ["ARC-X01", 3, "8–10 por pierna", 2, 120], ["ARC-050", 3, "10–12", 1, 90], ["ARC-013", 3, "10–12", 1, 90], ["ARC-026", 3, "12–15", 1, 60], ["ARC-081", 3, "12–15", 1, 60, "abs"]] },
+  gluteoA: { name: "Glúteo A", ex: [["ARC-054", 4, "8–10", 1, 120], ["ARC-042", 3, "6–8", 2, 150], ["ARC-X01", 3, "8–10 por pierna", 2, 120], ["ARC-060", 3, "12–15", 1, 60], ["ARC-X03", 3, "12–15 por pierna", 1, 60], ["ARC-081", 3, "12–15", 1, 60, "abs"]] },
+  gluteoB: { name: "Glúteo y femoral", ex: [["ARC-021", 3, "4–6", 2, 180], ["ARC-072", 3, "8–10", 2, 120], ["ARC-050", 3, "10–12", 1, 90], ["ARC-055", 3, "10–12 por pierna", 1, 60], ["ARC-060", 3, "15–20", 1, 60], ["ARC-081", 3, "12–15", 1, 60, "abs"]] },
+  piernaQ: { name: "Pierna y glúteo", ex: [["ARC-076", 3, "8–10", 2, 120], ["ARC-039", 3, "10–12", 1, 120], ["ARC-078", 3, "8–10 por pierna", 2, 90], ["ARC-054", 3, "10–12", 1, 90], ["ARC-041", 3, "12–15", 1, 60], ["ARC-062", 3, "12–15", 1, 60]] },
+  gluteoC: { name: "Glúteo C", ex: [["ARC-054", 3, "12–15", 1, 90], ["ARC-045", 3, "10 por pierna", 2, 90], ["ARC-051", 3, "10–12", 1, 90], ["ARC-060", 3, "15–20", 1, 60], ["ARC-X03", 3, "12–15 por pierna", 1, 60], ["ARC-081", 3, "12–15", 1, 60, "abs"]] },
+  superiorA: { name: "Espalda y hombro", ex: [["ARC-009", 3, "8–10", 2, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-022", 3, "8–10", 2, 90], ["ARC-026", 3, "12–15", 1, 60], ["ARC-019", 3, "12–15", 1, 60], ["ARC-034", 2, "10–12", 1, 60], ["ARC-033", 2, "10–12", 1, 60]] },
+  superiorB: { name: "Hombro, espalda y brazos", ex: [["ARC-011", 3, "10–12 por brazo", 1, 90], ["ARC-015", 3, "10–12", 1, 90], ["ARC-024", 3, "8–10", 2, 90], ["ARC-027", 3, "12–15", 1, 60], ["ARC-001", 2, "máx.", 1, 60], ["ARC-031", 3, "10–12", 1, 60], ["ARC-036", 3, "10–12", 1, 60]] },
+};
+const SPLITS_GLUTE = {
+  2: ["fullGA", "fullGB"],
+  3: ["gluteoA", "superiorA", "gluteoB"],
+  4: ["gluteoA", "superiorA", "piernaQ", "gluteoB"],
+  5: ["gluteoA", "superiorA", "piernaQ", "gluteoB", "superiorB"],
+  6: ["gluteoA", "superiorA", "piernaQ", "gluteoB", "superiorB", "gluteoC"],
+  7: ["gluteoA", "superiorA", "piernaQ", "gluteoB", "superiorB", "gluteoC", "cardioAbs"],
 };
 const SPLITS = {
   2: ["fullA", "fullB"],
@@ -400,15 +416,28 @@ const SPLITS_MALE = {
 };
 // cada básico que cuenta para el nivel tiene que aparecer en la semana
 const LIFT_HOME = {
-  squat: { ex: "ARC-042", prefer: ["piernaGluteo", "cuadriceps", "fullA"] },
-  deadlift: { ex: "ARC-021", prefer: ["gluteoFemoral", "fullB", "piernaGluteo"] },
+  squat: { ex: "ARC-042", prefer: ["piernaGluteo", "gluteoA", "cuadriceps", "fullA", "fullGA", "piernaQ"] },
+  deadlift: { ex: "ARC-021", prefer: ["gluteoFemoral", "gluteoB", "fullB", "fullGB", "piernaGluteo"] },
   bench: { ex: "ARC-X04", prefer: ["empuje", "fullA", "espaldaBiceps"] },
 };
-function buildRoutine(days, branch) {
-  const S = branch === "male" ? SPLITS_MALE : SPLITS;
+const FOCUS = [
+  { id: "gluteo", label: "Glúteo y pierna" },
+  { id: "equilibrado", label: "Todo por igual" },
+  { id: "superior", label: "Tren superior" },
+];
+const focusOf = (p) => p?.focus || (p?.branch === "male" ? "equilibrado" : "gluteo");
+const UPPER_DAYS = ["superiorA", "superiorB", "espaldaBiceps", "empuje", "torsoA", "torsoB", "hombroBrazo", "calistenia", "fullA", "fullB", "fullGA", "fullGB", "fullMA", "fullMB", "fullMC"];
+function buildRoutine(days, branch, profile = {}) {
+  const focus = focusOf({ ...profile, branch });
+  const S = focus === "gluteo" ? SPLITS_GLUTE : focus === "superior" || branch === "male" ? SPLITS_MALE : SPLITS;
   const keys = S[days] || S[3];
   const plan = keys.map((k) => ({ key: k, ex: [...DAY_TEMPLATES[k].ex] }));
-  const lifts = branch === "male" ? ["squat", "deadlift", "bench"] : ["squat", "deadlift"];
+  const lifts = branch === "male" && focus !== "gluteo" ? ["squat", "deadlift", "bench"] : ["squat", "deadlift"];
+  // En déficit: 15-20 min de cardio al final de dos días de tren superior (o de los dos primeros)
+  if (profile.goal === "deficit") {
+    const ups = plan.filter((d) => UPPER_DAYS.includes(d.key) && !d.ex.some(([id]) => id === "CARDIO"));
+    (ups.length ? ups : plan).slice(0, 2).forEach((d) => d.ex.push(["CARDIO", 1, "15–20", 0, 60]));
+  }
   for (const l of lifts) {
     const has = plan.some((d) => d.ex.some(([id]) => EXERCISES[id].lift === l));
     if (has) continue;
@@ -419,7 +448,7 @@ function buildRoutine(days, branch) {
   return plan.map((d, i) => ({
     id: "ABCDEFG"[i],
     name: DAY_TEMPLATES[d.key].name,
-    ex: d.ex.map(([id, sets, reps, rir, rest]) => ({ id, sets, reps, rir, rest })),
+    ex: d.ex.map(([id, sets, reps, rir, rest, pick]) => ({ id, sets, reps, rir, rest, ...(pick ? { pick } : {}) })),
   }));
 }
 
@@ -692,7 +721,7 @@ const LIFT_OPTS = [["", "No cuenta para el nivel"], ["squat", "Sentadilla (nivel
 const TAG_OPTS = EXCLUDE_OPTS;
 
 // Ejercicios que se quitaron: en el historial y en rutinas guardadas se ven como su sustituto
-const EX_REMAP = { "ARC-071": "ARC-054", "ARC-030": "ARC-033", "ARC-018": "ARC-019", "ARC-057": "ARC-X03", "ARC-058": "ARC-X03", "ARC-059": "ARC-X03", "ARC-053": "ARC-072", "ARC-017": "ARC-009" };
+const EX_REMAP = { "ARC-065": "ARC-064", "ARC-071": "ARC-054", "ARC-030": "ARC-033", "ARC-018": "ARC-019", "ARC-057": "ARC-X03", "ARC-058": "ARC-X03", "ARC-059": "ARC-X03", "ARC-053": "ARC-072", "ARC-017": "ARC-009" };
 function withFallback(obj) {
   return new Proxy(obj, {
     get(t, k) {
@@ -1193,6 +1222,80 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .rkrow .who{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .rkrow .who small{display:block;color:var(--dm);font-size:12px}
 .rkrow b{font-variant-numeric:tabular-nums}
+.abspick{background:var(--sf2);border:1px solid var(--ln);border-radius:14px;padding:10px 12px;margin:0 0 12px}
+.abspick small{display:block;color:var(--dm);font-size:12px;margin-bottom:8px}
+.abspick .chips{gap:6px}.abspick .chip{padding:7px 11px;font-size:13px}
+button.rkrow{width:100%;background:none;border:0;border-bottom:1px solid var(--ln);color:var(--tx);font:inherit;text-align:left;cursor:pointer}
+.rk-list .rkrow{animation:rise .4s ease-out both}
+.rk-open{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:none;border:0;color:var(--tx);font:inherit;font-size:14px;text-align:left;padding:0;cursor:pointer}
+.rkrow .go{color:var(--dm);font-size:20px}
+.av{position:relative;flex:none;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;overflow:hidden;background:var(--sf2);color:var(--tx);font-weight:800;border:1px solid var(--ln)}
+.av img{width:100%;height:100%;object-fit:cover;object-position:50% 12%}
+.av.photo img{object-position:center}
+.av.ring{border:2px solid var(--ac);box-shadow:0 0 0 3px rgba(212,139,146,.18)}
+.av.none{color:var(--dm)}
+.wkcard{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,#17171B,#0E0E11);border:1px solid var(--ln);border-radius:18px;padding:14px 16px;margin-top:6px}
+.wkring{position:relative;width:84px;height:84px;flex:none}
+.wkring div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.wkring b{font-size:22px;line-height:1}.wkring small{font-size:11px;color:var(--dm)}
+.wkinfo{flex:1;min-width:0}
+.wkpos{display:block;font-size:15px;margin-bottom:8px}.wkpos b{color:var(--ac);font-size:18px}
+.wkinfo>small{display:block;color:var(--dm);font-size:12px;margin-top:8px}
+.wkdays{display:flex;gap:5px}
+.wkdays span{flex:1;max-width:30px;aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--dm);background:var(--sf2);border:1px solid var(--ln)}
+.wkdays span.on{background:var(--ac);color:#000;border-color:var(--ac);animation:pop .4s ease-out both}
+.wkdays span.today{border-color:#fff}
+.wkdays.big{margin-top:14px;justify-content:space-between}.wkdays.big span{max-width:38px}
+.rk-search{display:flex;align-items:center;gap:8px;background:var(--sf);border:1px solid var(--ln);border-radius:999px;padding:0 14px;margin-top:14px;color:var(--dm)}
+.rk-search input{flex:1;background:none;border:0;color:var(--tx);font:inherit;font-size:15px;padding:11px 0;outline:none;min-width:0}
+.rk-search button{background:none;border:0;color:var(--dm);font-size:14px;cursor:pointer}
+.rk-found{margin-top:6px}
+.podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:8px;margin:22px 0 8px}
+.pd{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;color:var(--tx);font:inherit;padding:0;cursor:pointer;min-width:0;animation:rise .55s cubic-bezier(.2,.9,.3,1.2) both}
+.pd.p1{animation-delay:.05s}.pd.p2{animation-delay:.18s}.pd.p3{animation-delay:.3s}
+.pd .pn{font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:4px}
+.pd small{font-size:12px;color:var(--dm);font-variant-numeric:tabular-nums}
+.pd.me .pn{color:var(--ac)}
+.pd .step{width:100%;margin-top:8px;border-radius:14px 14px 4px 4px;background:linear-gradient(180deg,#232329,#121215);border:1px solid var(--ln);border-bottom:0;display:flex;justify-content:center;padding-top:10px;transform-origin:bottom;animation:stepUp .7s cubic-bezier(.2,.9,.3,1.1) both}
+.pd .step span{font-size:22px;font-weight:900;color:var(--dm)}
+.pd.p1 .step{height:96px;background:linear-gradient(180deg,rgba(212,139,146,.45),rgba(212,139,146,.06));border-color:rgba(212,139,146,.5)}
+.pd.p1 .step span{color:#fff;font-size:28px}
+.pd.p2 .step{height:68px;animation-delay:.12s}.pd.p3 .step{height:50px;animation-delay:.24s}
+.pd.p1 .av.ring{box-shadow:0 0 0 4px rgba(245,199,107,.25),0 0 28px rgba(212,139,146,.45);border-color:#F5C76B}
+.pd .crown{position:absolute;top:-20px;z-index:2;animation:crown 2.4s ease-in-out infinite}
+.pd.vacio{opacity:.35;cursor:default}
+.podium.sk div{height:150px;border-radius:14px;background:var(--sf);animation:blink 1.2s infinite}
+.podium.sk div:nth-child(2){height:190px}
+@keyframes stepUp{from{transform:scaleY(0)}to{transform:none}}
+@keyframes crown{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-4px) rotate(6deg)}}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:19;overflow:hidden}
+.confetti i{position:absolute;top:-20px;height:12px;border-radius:2px;animation:fall 2.4s cubic-bezier(.3,.6,.5,1) forwards}
+@keyframes fall{to{top:105%;transform:rotate(720deg) translateX(40px)}}
+.lastwin{display:flex;gap:10px}
+.lastwin button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:12px 6px;color:var(--tx);font:inherit;cursor:pointer;min-width:0}
+.lastwin b{font-size:14px}.lastwin small{font-size:12px;color:var(--dm);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.myprof{display:flex;gap:14px;align-items:center;background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:14px}
+.myprof-av{background:none;border:0;padding:0;cursor:pointer}
+.prof-hd{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding-top:6px}
+.prof-hd h1{font-size:22px;margin:6px 0 0}.prof-hd h1 small{font-size:14px;color:var(--dm)}
+.prof-hd .av{animation:popIn .4s ease-out both}
+.lvtag{font-size:12px;font-weight:700;letter-spacing:.04em;color:#000;background:var(--ac);border-radius:999px;padding:4px 10px}
+.mbar{display:grid;grid-template-columns:110px 1fr 28px;align-items:center;gap:10px;font-size:13px;margin:7px 0}
+.mbar span{color:var(--dm);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mbar div{height:10px;background:var(--sf2);border-radius:99px;overflow:hidden}
+.mbar i{display:block;height:100%;background:var(--ac);border-radius:99px;transform-origin:left;animation:skGrow .7s ease-out both}
+.mbar b{text-align:right;font-variant-numeric:tabular-nums}
+.wk8{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;align-items:end;height:90px;margin-top:6px}
+.wk8 div{height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px}
+.wk8 i{width:100%;background:var(--ac);border-radius:6px 6px 2px 2px;animation:fillUp .7s ease-out both}
+.wk8 small{font-size:11px;color:var(--dm)}
+.rk-hero{background:radial-gradient(120% 100% at 50% 0%,rgba(212,139,146,.28),transparent 70%),var(--sf);border:1px solid var(--ln);border-radius:18px;padding:22px 16px 16px;text-align:center;margin:6px 0 14px}
+.rk-hero p{margin:12px 0 0;font-weight:700}
+.rk-hero-pod{display:flex;justify-content:center;align-items:flex-end;gap:6px;height:90px}
+.rk-hero-pod span{width:54px;border-radius:10px 10px 3px 3px;background:#1D1D22;border:1px solid var(--ln);transform-origin:bottom;animation:stepUp .7s cubic-bezier(.2,.9,.3,1.1) both;display:flex;justify-content:center}
+.rk-hero-pod .b1{height:80px;background:linear-gradient(180deg,rgba(212,139,146,.55),rgba(212,139,146,.08));padding-top:0;align-items:flex-start}
+.rk-hero-pod .b1 svg{margin-top:-24px;animation:crown 2.4s ease-in-out infinite}
+.rk-hero-pod .b2{height:56px;animation-delay:.12s}.rk-hero-pod .b3{height:40px;animation-delay:.24s}
 .edrow{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--ln);color:var(--tx);font:inherit;font-size:14px;padding:12px 0;cursor:pointer}
 .edrow span{display:block;line-height:1.4}
 .edrow small{display:block;color:var(--dm);font-size:12px;margin-top:3px}
@@ -1377,6 +1480,10 @@ function Questionnaire({ initial, editing, onSave, onCancel }) {
       <div className="field"><label>Objetivo</label>
         <div className="chips">{GOALS.map((g) => <button key={g.id} className={`chip ${q.goal === g.id ? "on" : ""}`} onClick={() => set("goal", g.id)}>{g.label}</button>)}</div>
       </div>
+      <div className="field"><label>¿Qué quieres priorizar en tus entrenos?</label>
+        <div className="chips">{FOCUS.map((f) => <button key={f.id} className={`chip ${focusOf(q) === f.id ? "on" : ""}`} onClick={() => set("focus", f.id)}>{f.label}</button>)}</div>
+        <div className="hint">{focusOf(q) === "gluteo" ? "Más días de glúteo y pierna, espalda y hombro para la postura y casi nada de pecho." : focusOf(q) === "superior" ? "Más espalda, pecho, hombro y brazos, sin dejar la pierna." : "Un reparto equilibrado de todo el cuerpo."}</div>
+      </div>
       <div className="field"><label>¿A qué hora sueles entrenar?</label>
         <div className="chips">{TRAIN_TIMES.map((t) => <button key={t.id} className={`chip ${q.trainTime === t.id ? "on" : ""}`} onClick={() => set("trainTime", t.id)}>{t.label}</button>)}</div>
       </div>
@@ -1463,6 +1570,16 @@ async function readFile(file, maxW = 640) {
   return c.toDataURL(file.type === "image/png" ? "image/png" : "image/jpeg", 0.85);
 }
 
+// Recorta la foto en cuadrado (para la foto de perfil)
+async function squareImage(file, size = 400) {
+  const raw = await readFile(file, 1400);
+  const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = raw; });
+  const side = Math.min(img.width, img.height), c = document.createElement("canvas");
+  c.width = c.height = size;
+  c.getContext("2d").drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, size, size);
+  return c.toDataURL("image/jpeg", 0.85);
+}
+
 function MediaPicker({ label, accept, onPick, onError }) {
   const ref = useRef(null);
   const [busy, setBusy] = useState(false);
@@ -1491,7 +1608,7 @@ function MediaView({ src }) {
 }
 
 // Familias de ejercicios: dentro de cada ficha salen sus variantes
-const VARIANTS = [["ARC-054", "ARC-082", "ARC-055", "ARC-056"], ["ARC-007", "ARC-008", "ARC-073", "ARC-074"], ["ARC-009", "ARC-010", "ARC-011", "ARC-070"], ["ARC-012", "ARC-013", "ARC-014", "ARC-015", "ARC-016", "ARC-069"], ["ARC-019", "ARC-020"], ["ARC-025", "ARC-026", "ARC-027"], ["ARC-022", "ARC-023", "ARC-024"], ["ARC-001", "ARC-084", "ARC-085", "ARC-002", "ARC-003", "ARC-004", "ARC-X04"], ["ARC-005", "ARC-006"], ["ARC-029", "ARC-031", "ARC-032", "ARC-033"], ["ARC-034", "ARC-035", "ARC-036", "ARC-037"], ["ARC-038", "ARC-039", "ARC-040"], ["ARC-X05", "ARC-042", "ARC-075", "ARC-076", "ARC-043", "ARC-080", "ARC-044"], ["ARC-X01", "ARC-078", "ARC-045", "ARC-046", "ARC-047", "ARC-048"], ["ARC-049", "ARC-050"], ["ARC-021", "ARC-072", "ARC-051", "ARC-052", "ARC-X02"], ["ARC-060", "ARC-061", "ARC-X03"], ["ARC-062", "ARC-063"], ["ARC-064", "ARC-065", "ARC-066", "ARC-077", "ARC-079", "ARC-081", "ARC-083", "ARC-067", "ARC-068"]];
+const VARIANTS = [["ARC-054", "ARC-082", "ARC-055", "ARC-056"], ["ARC-007", "ARC-008", "ARC-073", "ARC-074"], ["ARC-009", "ARC-010", "ARC-011", "ARC-070"], ["ARC-012", "ARC-013", "ARC-014", "ARC-015", "ARC-016", "ARC-069"], ["ARC-019", "ARC-020"], ["ARC-025", "ARC-026", "ARC-027"], ["ARC-022", "ARC-023", "ARC-024"], ["ARC-001", "ARC-084", "ARC-085", "ARC-002", "ARC-003", "ARC-004", "ARC-X04"], ["ARC-005", "ARC-006"], ["ARC-029", "ARC-031", "ARC-032", "ARC-033"], ["ARC-034", "ARC-035", "ARC-036", "ARC-037"], ["ARC-038", "ARC-039", "ARC-040"], ["ARC-X05", "ARC-042", "ARC-075", "ARC-076", "ARC-043", "ARC-080", "ARC-044"], ["ARC-X01", "ARC-078", "ARC-045", "ARC-046", "ARC-047", "ARC-048"], ["ARC-049", "ARC-050"], ["ARC-021", "ARC-072", "ARC-051", "ARC-052", "ARC-X02"], ["ARC-060", "ARC-061", "ARC-X03"], ["ARC-062", "ARC-063"], ["ARC-064", "ARC-066", "ARC-077", "ARC-079", "ARC-081", "ARC-083", "ARC-067", "ARC-068"]];
 const variantsOf = (id) => (VARIANTS.find((f) => f.includes(id)) || []).filter((v) => v !== id && v in EXERCISES);
 
 function VariantList({ exId, media, onPick }) {
@@ -1753,18 +1870,42 @@ function lastSetsFor(sessions, exId) {
   return null;
 }
 
+function sessionEx(e, sessions) {
+  const prev = lastSetsFor(sessions, e.id);
+  const timed = EXERCISES[e.id].unit;
+  const sets = prev
+    ? prev.map((s) => ({ type: s.type, kg: s.kg, reps: s.reps, done: false }))
+    : [...(timed ? [] : [{ type: "W", kg: "", reps: "", done: false }]), ...Array.from({ length: e.sets }, () => ({ type: "N", kg: "", reps: timed ? String(e.reps).split("–")[0] : "", done: false }))];
+  return { exId: e.id, rest: e.rest, note: "", range: e.reps, sets, target: timed ? `${e.sets} × ${e.reps} ${timed}` : `${e.sets} × ${e.reps} · RIR ${e.rir}`, ...(e.pick ? { pick: e.pick, auto: !e.chosen } : {}) };
+}
 function newSession(day, sessions) {
-  return {
-    dayId: day.id, dayName: day.name, start: Date.now(),
-    exercises: day.ex.map((e) => {
-      const prev = lastSetsFor(sessions, e.id);
-      const timed = EXERCISES[e.id].unit;
-      const sets = prev
-        ? prev.map((s) => ({ type: s.type, kg: s.kg, reps: s.reps, done: false }))
-        : [...(timed ? [] : [{ type: "W", kg: "", reps: "", done: false }]), ...Array.from({ length: e.sets }, () => ({ type: "N", kg: "", reps: timed ? e.reps.split("–")[0] : "", done: false }))];
-      return { exId: e.id, rest: e.rest, note: "", range: e.reps, sets, target: timed ? `${e.sets} × ${e.reps} ${timed}` : `${e.sets} × ${e.reps} · RIR ${e.rir}` };
-    }),
+  return { dayId: day.id, dayName: day.name, start: Date.now(), exercises: day.ex.map((e) => sessionEx(e, sessions)) };
+}
+
+// Hueco de abdominales: la persona elige uno o varios de todos los que hay
+const ABS_IDS = () => Object.values(EXERCISES).filter((e) => e.group === "Abdomen").map((e) => e.id);
+function AbsPicker({ active, ei, sessions, setActive }) {
+  const picked = new Set(active.exercises.filter((x) => x.pick === "abs").map((x) => x.exId));
+  const toggle = (id) => {
+    const list = active.exercises;
+    if (picked.has(id)) {
+      if (picked.size === 1) return;
+      setActive({ ...active, exercises: list.filter((x) => !(x.pick === "abs" && x.exId === id)) });
+      return;
+    }
+    const timed = EXERCISES[id].unit;
+    const entry = sessionEx({ id, sets: 3, reps: timed ? "30–45" : "12–15", rir: 1, rest: 60, pick: "abs", chosen: true }, sessions);
+    const cur = list[ei];
+    const untouched = cur.auto && !cur.sets.some((st) => st.done) && picked.size === 1;
+    const last = list.reduce((a, x, i) => (x.pick === "abs" ? i : a), ei);
+    setActive({ ...active, exercises: untouched ? list.map((x, i) => (i === ei ? entry : x)) : [...list.slice(0, last + 1), entry, ...list.slice(last + 1)] });
   };
+  return (
+    <div className="abspick">
+      <small>Elige tus abdominales (uno o varios)</small>
+      <div className="chips">{ABS_IDS().map((id) => <button key={id} className={`chip ${picked.has(id) ? "on" : ""}`} onClick={() => toggle(id)}>{EXERCISES[id].n}</button>)}</div>
+    </div>
+  );
 }
 
 function HistoryModal({ exId, sessions, onClose }) {
@@ -2142,6 +2283,7 @@ function Tracker({ active, sessions, setActive, onFinish, onCancel, media, coach
               ? <img className="exvid" src={media[`ex:${e.exId}`]} alt="" onClick={() => setTech(e.exId)} />
               : <video className="exvid" src={media[`ex:${e.exId}`]} autoPlay loop muted playsInline preload="auto" onClick={() => setTech(e.exId)} />)}
             <div className="tgt">{e.target}</div>
+            {e.pick === "abs" && active.exercises.findIndex((x) => x.pick === "abs") === ei && <AbsPicker active={active} ei={ei} sessions={sessions} setActive={setActive} />}
             {(() => {
               const sug = suggestFor(sessions, e.exId, e.range || (e.target.match(/× ([^·]+)/) || [])[1]);
               return <Suggest s={sug} onApply={sug?.kg != null ? () => upd(ei, (x) => ({ ...x, sets: x.sets.map((st) => (st.type === "W" || st.done ? st : { ...st, kg: String(sug.kg) })) })) : null} />;
@@ -2205,7 +2347,7 @@ function activeRoutine(profile) {
   BODY_FEMALE = profile?.branch === "female";
   if (profile?.coachRoutine?.length) return normDays(profile.coachRoutine); // la que pone la coach manda
   if (profile?.routineMode === "custom" && profile.customRoutine?.length) return normDays(profile.customRoutine);
-  return buildRoutine(profile?.days || 3, profile?.branch);
+  return buildRoutine(profile?.days || 3, profile?.branch, profile || {});
 }
 
 function ExercisePicker({ onPick, onClose }) {
@@ -2311,7 +2453,7 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
   const mode = fromCoach ? "coach" : state.profile.routineMode || "auto";
   const custom = state.profile.customRoutine || [];
   const [editing, setEditing] = useState(false);
-  const autoDays = () => buildRoutine(state.profile.days || 3, state.profile.branch).map((d) => ({ name: d.name, ex: d.ex.map(({ id, sets, reps, rir, rest }) => ({ id, sets, reps, rir, rest })) }));
+  const autoDays = () => buildRoutine(state.profile.days || 3, state.profile.branch, state.profile).map((d) => ({ name: d.name, ex: d.ex.map(({ id, sets, reps, rir, rest, pick }) => ({ id, sets, reps, rir, rest, ...(pick ? { pick } : {}) })) }));
   const [tech, setTech] = useState(null);
   const [q, setQ] = useState("");
   const [grp, setGrp] = useState(null);
@@ -2330,6 +2472,8 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
       {mode === "auto" && (
         <div className="field"><label>Días por semana</label>
           <div className="chips">{[2, 3, 4, 5, 6, 7].map((d) => <button key={d} className={`chip ${state.profile.days === d ? "on" : ""}`} onClick={() => setDays(d)}>{d}</button>)}</div>
+          <label style={{ marginTop: 14 }}>Prioridad</label>
+          <div className="chips">{FOCUS.map((f) => <button key={f.id} className={`chip ${focusOf(state.profile) === f.id ? "on" : ""}`} onClick={() => setProfile({ focus: f.id })}>{f.label}</button>)}</div>
         </div>
       )}
       {mode === "custom" && custom.length === 0 && (
@@ -2353,7 +2497,7 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
           <div className="hd"><b>Día {d.id}: {d.name}</b><button className="sbtn" onClick={() => onStart(d)}>Empezar</button></div>
           {d.ex.map((e) => (
             <button key={e.id} className="exrow" onClick={() => setTech(e.id)}>
-              <span>{media[`ex:${e.id}`] && <span className="play">▶</span>}{EXERCISES[e.id].n}</span>
+              <span>{e.pick === "abs" ? "Abdominales (eliges tú)" : <>{media[`ex:${e.id}`] && <span className="play">▶</span>}{EXERCISES[e.id].n}</>}</span>
               <span>{e.sets} × {e.reps}{EXERCISES[e.id].unit ? ` ${EXERCISES[e.id].unit}` : ""}</span>
             </button>
           ))}
@@ -2746,7 +2890,7 @@ function EditForm({ table, row, isNew, content, onSave, onDelete, onCancel, medi
 
 const RANK_POINTS = { session: 40, habitDay: 15 }; // +40 por día entrenado, +15 por día de hábitos cumplido
 const BAD_WORDS = ["puta", "puto", "zorra", "maricon", "mariquita", "polla", "coño", "cabron", "gilipollas", "subnormal", "retrasad", "nazi", "hitler", "follar", "sexo", "porno", "fuck", "shit", "bitch", "whore", "slut", "nigga", "nigger", "admin", "coach", "lunarovx", "soporte"];
-const REPORT_REASONS = ["Nombre ofensivo", "Suplanta a alguien", "Otro motivo"];
+const REPORT_REASONS = ["Nombre ofensivo", "Foto de perfil inapropiada", "Suplanta a alguien", "Otro motivo"];
 
 function weekStart(d = new Date(), weeksAgo = 0) {
   const x = new Date(d); x.setHours(0, 0, 0, 0);
@@ -2770,7 +2914,146 @@ function checkNickname(n) {
 const levelLabel = (branch, level, mode) => (branch && mode !== "simple" ? levelsOf(branch, mode)[level]?.name || "" : "");
 const fmtDay = (d) => d.toLocaleDateString("es-ES", { day: "numeric", month: "short" });
 
-function Ranking({ me, state, api, blocked = [], onBlock, onUnblockAll }) {
+const RANK_MAX = 7 * RANK_POINTS.session + 7 * RANK_POINTS.habitDay;
+const WEEK_LETTERS = ["L", "M", "X", "J", "V", "S", "D"];
+const fmtKg = (kg) => (kg >= 1000 ? `${(kg / 1000).toLocaleString("es-ES", { maximumFractionDigits: 1 })} t` : `${Math.round(kg)} kg`);
+const relDay = (d) => {
+  const n = Math.round((new Date().setHours(0, 0, 0, 0) - new Date(d).setHours(0, 0, 0, 0)) / 864e5);
+  return n === 0 ? "Hoy" : n === 1 ? "Ayer" : n < 7 ? `Hace ${n} días` : new Date(d).toLocaleDateString("es-ES", { day: "numeric", month: "short" });
+};
+const store = { get: (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} } };
+
+const Crown = ({ size = 26 }) => (
+  <svg width={size} height={size * 0.75} viewBox="0 0 32 24" aria-hidden="true"><path d="M2 20L0 4l9 7 7-11 7 11 9-7-2 16z" fill="#F5C76B" /><rect x="2" y="21" width="28" height="3" rx="1.5" fill="#F5C76B" /><circle cx="16" cy="13" r="2.4" fill="#D48B92" /></svg>
+);
+
+function Avatar({ r, media, size = 40, ring = false }) {
+  const lvl = r.branch && r.mode !== "simple" ? mediaOr(media || {}, levelKey(r.branch, r.mode, r.level || 0)) : null;
+  const src = r.avatar_url || lvl;
+  return (
+    <span className={`av${ring ? " ring" : ""}${r.avatar_url ? " photo" : ""}${!src ? " none" : ""}`} style={{ width: size, height: size, fontSize: Math.round(size * 0.42) }}>
+      {src ? <img src={src} alt="" loading="lazy" /> : (r.nickname || "?").slice(0, 1).toUpperCase()}
+    </span>
+  );
+}
+
+function Confetti() {
+  const bits = useMemo(() => Array.from({ length: 34 }, (_, i) => ({ l: (i * 37) % 100, d: (i % 7) * 0.08, r: (i * 53) % 360, c: ["#D48B92", "#F5C76B", "#fff", "#6EE7B7"][i % 4], w: 6 + (i % 3) * 3 })), []);
+  return <div className="confetti" aria-hidden="true">{bits.map((b, i) => <i key={i} style={{ left: `${b.l}%`, animationDelay: `${b.d}s`, background: b.c, width: b.w, transform: `rotate(${b.r}deg)` }} />)}</div>;
+}
+
+function Podium({ rows, media, onOpen }) {
+  const slots = [[rows[1], 2], [rows[0], 1], [rows[2], 3]];
+  return (
+    <div className="podium">
+      {slots.map(([r, p]) => r ? (
+        <button key={r.nickname} className={`pd p${p}${r.is_me ? " me" : ""}`} onClick={() => onOpen(r.nickname)}>
+          {p === 1 && <span className="crown"><Crown /></span>}
+          <Avatar r={r} media={media} size={p === 1 ? 78 : 60} ring />
+          <b className="pn">{r.nickname}</b>
+          <small>{r.points} pts</small>
+          <div className="step"><span>{p}</span></div>
+        </button>
+      ) : <div key={p} className={`pd p${p} vacio`}><span className="av none" style={{ width: 52, height: 52 }}>?</span><div className="step"><span>{p}</span></div></div>)}
+    </div>
+  );
+}
+
+function WeekCard({ state, rank }) {
+  const mine = myWeekPoints(state);
+  const start = weekStart();
+  const trained = new Set(state.sessions.map((s) => new Date(s.date)).filter((d) => d >= start).map((d) => (d.getDay() + 6) % 7));
+  const today = (new Date().getDay() + 6) % 7;
+  const pct = Math.min(1, mine.points / RANK_MAX), R = 34, L = 2 * Math.PI * R;
+  return (
+    <div className="wkcard">
+      <div className="wkring">
+        <svg width="84" height="84" viewBox="0 0 84 84"><circle cx="42" cy="42" r={R} fill="none" stroke="var(--ln)" strokeWidth="7" />
+          <circle cx="42" cy="42" r={R} fill="none" stroke="var(--ac)" strokeWidth="7" strokeLinecap="round" strokeDasharray={L} strokeDashoffset={L * (1 - pct)} transform="rotate(-90 42 42)" style={{ transition: "stroke-dashoffset 1s ease" }} /></svg>
+        <div><b>{mine.points}</b><small>pts</small></div>
+      </div>
+      <div className="wkinfo">
+        <span className="wkpos">{rank ? <>Vas <b>{rank}º</b> esta semana</> : "Esta semana"}</span>
+        <div className="wkdays">{WEEK_LETTERS.map((l, i) => <span key={l} className={`${trained.has(i) ? "on" : ""}${i === today ? " today" : ""}`}>{l}</span>)}</div>
+        <small>{mine.sessions} {mine.sessions === 1 ? "día entrenado" : "días entrenados"} · {mine.habitDays} de hábitos</small>
+      </div>
+    </div>
+  );
+}
+
+function ProfileSheet({ nick, api, media, onClose, onReport, blocked }) {
+  const [p, setP] = useState(undefined);
+  useEffect(() => { let on = true; api.profile?.(nick).then((x) => on && setP(x || null)).catch(() => on && setP(null)); return () => { on = false; }; }, [nick]);
+  const groups = useMemo(() => {
+    if (!p?.week_ex) return [];
+    const g = {};
+    Object.entries(p.week_ex).forEach(([id, n]) => { const e = EXERCISES[EX_REMAP[id] || id]; if (e && e.group !== "Movilidad") g[e.group] = (g[e.group] || 0) + n; });
+    return Object.entries(g).sort((a, b) => b[1] - a[1]);
+  }, [p]);
+  const maxG = groups[0]?.[1] || 1;
+  const days = new Set(p?.week_days || []);
+  return (
+    <div className="modal" onClick={onClose}>
+      <div className="box prof" onClick={(e) => e.stopPropagation()}>
+        {p === undefined && <p className="sub" style={{ textAlign: "center", padding: 30 }}>Cargando perfil…</p>}
+        {p === null && <p className="sub" style={{ textAlign: "center", padding: 30 }}>Este perfil ya no está disponible.</p>}
+        {p && (
+          <>
+            <div className="prof-hd">
+              <Avatar r={p} media={media} size={92} ring />
+              <h1>{p.nickname}{p.is_me && <small> (tú)</small>}</h1>
+              {levelLabel(p.branch, p.level, p.mode) && <span className="lvtag">{levelLabel(p.branch, p.level, p.mode)}</span>}
+            </div>
+            {p.private ? <div className="empty" style={{ marginTop: 16 }}>Este perfil es privado. Solo se ve su nivel y su puesto en el ranking.</div> : (
+              <>
+                <div className="mycard" style={{ marginTop: 16 }}>
+                  <div><span>Días</span><b>{days.size}</b></div>
+                  <div><span>Series</span><b>{p.week_sets}</b></div>
+                  <div><span>Carga</span><b>{fmtKg(Number(p.week_volume) || 0)}</b></div>
+                </div>
+                <div className="wkdays big">{WEEK_LETTERS.map((l, i) => <span key={l} className={days.has(i + 1) ? "on" : ""}>{l}</span>)}</div>
+                <h2>Músculos esta semana</h2>
+                {groups.length ? groups.map(([g, n], i) => (
+                  <div key={g} className="mbar"><span>{g}</span><div><i style={{ width: `${(n / maxG) * 100}%`, animationDelay: `${i * 0.06}s` }} /></div><b>{n}</b></div>
+                )) : <p className="sub">Aún no ha entrenado esta semana.</p>}
+                <h2>Últimas 8 semanas</h2>
+                <div className="wk8">{(p.weeks || []).map((n, i, a) => <div key={i} title={`${n} días`}><i style={{ height: `${Math.max(6, (n / 7) * 100)}%`, opacity: i === a.length - 1 ? 1 : 0.55 }} /><small>{n}</small></div>)}</div>
+                {p.last?.length > 0 && <>
+                  <h2>Últimos entrenos</h2>
+                  {p.last.map((s, i) => <div key={i} className="hist"><span>{s.name || "Entreno"}<small style={{ display: "block", color: "var(--dm)" }}>{relDay(s.at)} · {Math.round((s.dur || 0) / 60)} min</small></span><span>{s.sets} series · {fmtKg(Number(s.kg) || 0)}</span></div>)}
+                </>}
+                <p className="hint" style={{ marginTop: 12 }}>{p.total_sessions} entrenos en total</p>
+              </>
+            )}
+            {!p.is_me && !blocked && <button className="link" style={{ marginTop: 14 }} onClick={() => onReport(p.nickname)}>Bloquear o denunciar</button>}
+          </>
+        )}
+        <button className="btn" style={{ marginTop: 16 }} onClick={onClose}>Cerrar</button>
+      </div>
+    </div>
+  );
+}
+
+function MyRankProfile({ me, api, media, state, onOpen }) {
+  const [err, setErr] = useState("");
+  const r = { nickname: me.nickname, avatar_url: me.avatar, branch: state.profile?.branch, mode: state.profile?.mode, level: state.savedLevel || 0 };
+  return (
+    <div className="myprof">
+      <button className="myprof-av" onClick={() => onOpen(me.nickname)} aria-label="Ver mi perfil"><Avatar r={r} media={media} size={54} ring /></button>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <b>{me.nickname}</b>
+        <div className="chips" style={{ marginTop: 6 }}>
+          <MediaPicker label={me.avatar ? "Cambiar foto" : "Poner foto"} accept="image/*" onPick={(f) => api.setAvatar(f)} onError={setErr} />
+          {me.avatar && <button className="chip" onClick={() => api.setAvatar(null).catch(() => setErr("No se ha podido quitar."))}>Quitar</button>}
+          <button className={`chip ${me.isPublic ? "on" : ""}`} onClick={() => api.setPublic(!me.isPublic).catch(() => setErr("No se ha podido guardar."))}>{me.isPublic ? "Perfil visible" : "Perfil privado"}</button>
+        </div>
+        {err && <div className="err">{err}</div>}
+      </div>
+    </div>
+  );
+}
+
+function Ranking({ me, state, api, media = {}, blocked = [], onBlock, onUnblockAll }) {
   const [board, setBoard] = useState(null);
   const [last, setLast] = useState(null);
   const [err, setErr] = useState("");
@@ -2780,17 +3063,35 @@ function Ranking({ me, state, api, blocked = [], onBlock, onUnblockAll }) {
   const [editing, setEditing] = useState(false);
   const [report, setReport] = useState(null);
   const [sent, setSent] = useState("");
+  const [open, setOpen] = useState(null);
+  const [q, setQ] = useState("");
+  const [found, setFound] = useState(null);
+  const [party, setParty] = useState("");
 
   const load = async () => {
     setErr("");
     try { const [b, l] = await Promise.all([api.load(0), api.load(1)]); setBoard(b); setLast(l.filter((r) => r.rank <= 3)); }
     catch (e) { setErr("No se ha podido cargar el ranking. Revisa tu conexión."); }
   };
-  useEffect(() => { if (me.optIn) load(); }, [me.optIn, state.sessions.length]);
+  useEffect(() => { if (me.optIn) load(); }, [me.optIn, state.sessions.length, me.avatar]);
+
+  // Confeti si has subido puestos desde la última vez que miraste
+  const myRank = board?.find((r) => r.is_me)?.rank;
+  useEffect(() => {
+    if (!myRank) return;
+    const k = `arc-rank-${dkey(weekStart())}`, prev = Number(store.get(k)) || 0;
+    if (prev && myRank < prev) { setParty(myRank === 1 ? "¡Estás la primera de la semana!" : `¡Has subido al ${myRank}º puesto!`); setTimeout(() => setParty(""), 2800); }
+    store.set(k, String(myRank));
+  }, [myRank]);
+
+  useEffect(() => {
+    if (q.trim().length < 2 || !api.search) { setFound(null); return; }
+    const t = setTimeout(() => api.search(q.trim()).then((r) => setFound(r.filter((x) => x.is_me || !blocked.includes(x.nickname)))).catch(() => setFound([])), 300);
+    return () => clearTimeout(t);
+  }, [q]);
 
   const start = weekStart(), end = new Date(start); end.setDate(end.getDate() + 6);
   const daysLeft = 7 - ((new Date().getDay() + 6) % 7);
-  const mine = myWeekPoints(state);
 
   const join = async () => {
     const e = checkNickname(nick); if (e) return setNickErr(e);
@@ -2803,8 +3104,12 @@ function Ranking({ me, state, api, blocked = [], onBlock, onUnblockAll }) {
   if (!me.optIn || editing) return (
     <>
       <h1>Ranking semanal</h1>
-      <p className="sub">Cada semana empieza de cero. Sumas {RANK_POINTS.session} puntos por cada día que entrenas y {RANK_POINTS.habitDay} por cada día que cumples tus hábitos. Gana la constancia, no los kilos.</p>
-      <div className="note" style={{ marginTop: 0, marginBottom: 18 }}>Solo se verá tu apodo, tu nivel y tus puntos. Nunca tu peso ni ningún otro dato.</div>
+      <div className="rk-hero">
+        <div className="rk-hero-pod"><span className="b2" /><span className="b1"><Crown size={30} /></span><span className="b3" /></div>
+        <p>Cada lunes empieza de cero. Gana la constancia, no los kilos.</p>
+      </div>
+      <p className="sub">Sumas {RANK_POINTS.session} puntos por cada día que entrenas y {RANK_POINTS.habitDay} por cada día que cumples tus hábitos. Puedes poner foto, ver el perfil de las demás y buscar a tus amigas.</p>
+      <div className="note" style={{ marginTop: 0, marginBottom: 18 }}>Se verá tu apodo, tu nivel, tus días entrenados y tus series de la semana. Nunca tu peso, tus medidas ni tus fotos de progreso. Puedes poner tu perfil privado cuando quieras.</div>
       <div className="field"><label>Tu apodo en el ranking</label>
         <input className="in" maxLength={20} placeholder="Por ejemplo: luna_lifts" value={nick} onChange={(e) => { setNick(e.target.value); setNickErr(""); }} />
         {nickErr && <div className="err">{nickErr}</div>}
@@ -2814,46 +3119,74 @@ function Ranking({ me, state, api, blocked = [], onBlock, onUnblockAll }) {
     </>
   );
 
+  const rows = board?.filter((r) => r.is_me || !blocked.includes(r.nickname)) || [];
+  const rest = rows.slice(3);
+
   return (
     <>
+      {party && <><Confetti /><div className="toast">{party}</div></>}
       <h1>Ranking semanal</h1>
       <p className="sub">Del {fmtDay(start)} al {fmtDay(end)} · se reinicia en {daysLeft} {daysLeft === 1 ? "día" : "días"}</p>
 
-      <div className="mycard">
-        <div><span>Tu posición</span><b>{board?.find((r) => r.is_me)?.rank ? `${board.find((r) => r.is_me).rank}º` : "—"}</b></div>
-        <div><span>Puntos</span><b>{mine.points}</b></div>
-        <div><span>Días entrenados</span><b>{mine.sessions}</b></div>
-      </div>
-      <p className="hint">+{RANK_POINTS.session} por día entrenado · +{RANK_POINTS.habitDay} por día de hábitos cumplido</p>
+      <WeekCard state={state} rank={myRank} />
 
-      {err && <><div className="err">{err}</div><button className="btn ghost" onClick={load}>Reintentar</button></>}
-      {!board && !err && <p className="sub">Cargando…</p>}
-      {board && (
-        <div style={{ marginTop: 14 }}>
-          {board.length <= 1 && <div className="empty">Esta semana aún no hay nadie más. ¡Tienes la corona a tiro!</div>}
-          {board.filter((r) => r.is_me || !blocked.includes(r.nickname)).map((r) => (
-            <div key={r.nickname} className={`rkrow ${r.is_me ? "me" : ""}`}>
-              <span className={`pos ${r.rank <= 3 ? "top" : ""}`}>{r.rank}</span>
+      <div className="rk-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2.4" /><path d="M16.5 16.5L21 21" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" /></svg>
+        <input placeholder="Buscar perfiles por apodo" value={q} onChange={(e) => setQ(e.target.value)} />
+        {q && <button aria-label="Borrar" onClick={() => setQ("")}>✕</button>}
+      </div>
+      {found && (
+        <div className="rk-found">
+          {found.length === 0 ? <p className="sub" style={{ margin: "8px 4px" }}>No hay nadie con ese apodo.</p> : found.map((r) => (
+            <button key={r.nickname} className="rkrow" onClick={() => setOpen(r.nickname)}>
+              <Avatar r={r} media={media} size={36} />
               <span className="who">{r.nickname}{r.is_me && " (tú)"}<small>{levelLabel(r.branch, r.level, r.mode)}</small></span>
-              <b>{r.points}</b>
-              {!r.is_me && <button className="dots" aria-label="Opciones" onClick={() => { setReport(r.nickname); setSent(""); }}>⋮</button>}
-            </div>
+              <span className="go">›</span>
+            </button>
           ))}
         </div>
       )}
 
-      {last?.length > 0 && (
+      {err && <><div className="err">{err}</div><button className="btn ghost" onClick={load}>Reintentar</button></>}
+      {!board && !err && <div className="podium sk"><div /><div /><div /></div>}
+      {board && !found && (
         <>
-          <h2>Ganadoras de la semana pasada</h2>
-          {last.map((r) => <div key={r.nickname} className="hist"><span>{r.rank}º · {r.nickname}</span><span>{r.points} puntos</span></div>)}
+          <Podium rows={rows} media={media} onOpen={setOpen} />
+          {rows.length <= 1 && <div className="empty">Esta semana aún no hay nadie más. ¡Tienes la corona a tiro!</div>}
+          <div className="rk-list">
+            {rest.map((r, i) => (
+              <div key={r.nickname} className={`rkrow ${r.is_me ? "me" : ""}`} style={{ animationDelay: `${0.35 + i * 0.04}s` }}>
+                <span className="pos">{r.rank}</span>
+                <button className="rk-open" onClick={() => setOpen(r.nickname)}>
+                  <Avatar r={r} media={media} size={38} />
+                  <span className="who">{r.nickname}{r.is_me && " (tú)"}<small>{levelLabel(r.branch, r.level, r.mode)}{r.days ? ` · ${r.days} ${r.days === 1 ? "día" : "días"}` : ""}</small></span>
+                </button>
+                <b>{r.points}</b>
+                {!r.is_me && <button className="dots" aria-label="Opciones" onClick={() => { setReport(r.nickname); setSent(""); }}>⋮</button>}
+              </div>
+            ))}
+          </div>
         </>
       )}
 
-      <div style={{ display: "flex", gap: 16, marginTop: 24, flexWrap: "wrap" }}>
+      {last?.length > 0 && !found && (
+        <>
+          <h2>Ganadoras de la semana pasada</h2>
+          <div className="lastwin">{last.map((r) => <button key={r.nickname} onClick={() => setOpen(r.nickname)}><Avatar r={r} media={media} size={44} /><b>{r.rank}º</b><small>{r.nickname}</small></button>)}</div>
+        </>
+      )}
+
+      <h2>Tu perfil</h2>
+      <MyRankProfile me={me} api={api} media={media} state={state} onOpen={setOpen} />
+      <p className="hint">Foto tuya o algo que te represente. Nada de desnudos ni fotos de otras personas: se puede denunciar y la coach la quitará.</p>
+
+      <div style={{ display: "flex", gap: 16, marginTop: 18, flexWrap: "wrap" }}>
         <button className="link" onClick={() => { setNick(me.nickname || ""); setEditing(true); }}>Cambiar mi apodo</button>
         <button className="link" onClick={async () => { await api.leave(); }}>Dejar de salir en el ranking</button>
         {blocked.length > 0 && <button className="link" onClick={() => onUnblockAll?.()}>Desbloquear a todos ({blocked.length})</button>}
       </div>
+
+      {open && <ProfileSheet nick={open} api={api} media={media} blocked={blocked.includes(open)} onClose={() => setOpen(null)} onReport={(n) => { setOpen(null); setReport(n); setSent(""); }} />}
 
       {report && (
         <div className="modal" onClick={() => setReport(null)}>
@@ -3252,6 +3585,12 @@ function Settings({ onClients, onPaywallPreview, videos, onFinishPreview, sub, e
   );
 }
 
+function ReportAvatar({ nick }) {
+  const [url, setUrl] = useState(null);
+  useEffect(() => { db.avatarOf(nick).then(setUrl).catch(() => {}); }, [nick]);
+  return url ? <img src={url} alt="" style={{ width: 72, height: 72, borderRadius: 12, objectFit: "cover", display: "block", marginTop: 8 }} /> : null;
+}
+
 function Reports({ onClose }) {
   const [list, setList] = useState(null);
   const [err, setErr] = useState("");
@@ -3261,14 +3600,16 @@ function Reports({ onClose }) {
   return (
     <>
       <h1>Denuncias del ranking</h1>
-      <p className="sub">Si quitas a alguien, desaparece del ranking y pierde su apodo.</p>
+      <p className="sub">Si quitas a alguien, desaparece del ranking y pierde su apodo. Si solo es la foto, quítale la foto y sigue en el ranking.</p>
       {err && <div className="err">{err}</div>}
       {list && list.length === 0 && <div className="empty">No hay denuncias pendientes.</div>}
       {list?.map((r) => (
         <div key={r.id} className="day">
           <div className="hd"><b>{r.nickname}</b><small>{new Date(r.created_at).toLocaleDateString("es-ES")}</small></div>
           <small>{r.reason}</small>
+          <ReportAvatar nick={r.nickname} />
           <div className="chips" style={{ marginTop: 10 }}>
+            <button className="chip" onClick={() => act(() => db.clearAvatar(r.nickname))}>Quitar su foto</button>
             <button className="chip" onClick={() => act(() => db.hideFromRanking(r.nickname))}>Quitar del ranking</button>
             <button className="chip" onClick={() => act(() => db.dismissReport(r.id))}>Está bien, ignorar</button>
           </div>
@@ -3336,6 +3677,7 @@ function fromDb({ profile, sessions, habits, coach }) {
     habits: Object.fromEntries(habits.map((h) => [h.day, { water: h.water ?? undefined, steps: h.steps ?? undefined, sleep: h.sleep != null ? Number(h.sleep) : undefined, weight: h.weight != null ? Number(h.weight) : undefined }])),
     xp: profile.xp, gems: profile.gems, active: profile.active_session, role: profile.role,
     nickname: profile.nickname, rankOptIn: profile.rank_opt_in && !!profile.nickname, savedLevel: profile.level,
+    avatar: profile.avatar_url || null, profilePublic: profile.profile_public !== false,
     coachRoutine: coach?.routine || null,
   };
 }
@@ -3920,6 +4262,15 @@ function ArcApp({ user }) {
     join: async (nickname) => { await db.joinRanking(user.id, nickname, ev?.current || 0); setState((s) => ({ ...s, nickname, rankOptIn: true, savedLevel: ev?.current || 0 })); },
     leave: async () => { await db.leaveRanking(user.id); setState((s) => ({ ...s, rankOptIn: false })); },
     report: (nick, reason) => db.reportNickname(nick, reason),
+    search: (q) => db.searchProfiles(q),
+    profile: (nick) => db.publicProfile(nick),
+    setAvatar: async (file) => {
+      let url = null;
+      if (file) { const data = await squareImage(file, 400); url = await db.uploadAvatar(user.id, await (await fetch(data)).blob()); }
+      await db.setAvatarUrl(user.id, url);
+      setState((s) => ({ ...s, avatar: url }));
+    },
+    setPublic: async (v) => { await db.setProfilePublic(user.id, v); setState((s) => ({ ...s, profilePublic: v })); },
   };
 
   // Pasos y recordatorios (solo en el móvil)
@@ -4054,7 +4405,7 @@ function ArcApp({ user }) {
   } else if (tab === "entrenos") {
     body = <Workouts state={state} routine={routine} onStart={(d) => setActive(newSession(d, state.sessions))} setDays={(d) => setProfile({ days: d })} setProfile={setProfile} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
   } else if (tab === "ranking") {
-    body = <Ranking me={{ optIn: !!state.rankOptIn, nickname: state.nickname }} state={state} api={rankApi} blocked={state.profile?.blocked || []} onBlock={(n) => setProfile({ blocked: [...new Set([...(state.profile?.blocked || []), n])] })} onUnblockAll={() => setProfile({ blocked: [] })} />;
+    body = <Ranking me={{ optIn: !!state.rankOptIn, nickname: state.nickname, avatar: state.avatar, isPublic: state.profilePublic !== false }} state={{ ...state, savedLevel: ev?.current ?? state.savedLevel }} api={rankApi} media={media} blocked={state.profile?.blocked || []} onBlock={(n) => setProfile({ blocked: [...new Set([...(state.profile?.blocked || []), n])] })} onUnblockAll={() => setProfile({ blocked: [] })} />;
   } else if (tab === "nutricion") {
     body = <Nutrition profile={state.profile} setCook={(c) => setProfile({ cook: c })} media={media} />;
   } else {
