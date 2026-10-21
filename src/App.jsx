@@ -2266,7 +2266,7 @@ function RoutineEditor({ days, onChange, onDone }) {
 }
 
 // Calentamiento y movilidad (arriba del todo en Entrenos)
-const WARM_LIST = ["ARC-M01", "ARC-M02", "ARC-M03", "ARC-M04", "ARC-M06", "ARC-M07", "ARC-M08", "ARC-M09"];
+const WARM_LIST = ["ARC-M01", "ARC-M02", "ARC-M03", "ARC-M04", "ARC-M06", "ARC-M07", "ARC-M08"];
 const WARM_TIPS = ["Unos 5–10 minutos antes de entrenar.", "Una vuelta a todos, en este orden, sin prisa y sin rebotes.", "Luego, en el primer ejercicio, 2–3 series de aproximación subiendo el peso (las «W» del registro)."];
 
 function WarmUp({ media, onTech }) {
