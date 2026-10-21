@@ -10,7 +10,11 @@ declare uid uuid := auth.uid();
 begin
   if uid is null then raise exception 'No autenticado'; end if;
   -- fotos de revisiones
-  delete from storage.objects where bucket_id = 'checkins' and (storage.foldername(name))[1] = uid::text;
+  -- (si Supabase no deja borrarlas desde aquí, se sigue igualmente: no bloquea el borrado de la cuenta)
+  begin
+    delete from storage.objects where bucket_id = 'checkins' and (storage.foldername(name))[1] = uid::text;
+  exception when others then null;
+  end;
   -- la cuenta (perfil, entrenos, hábitos, ranking y revisiones se borran en cascada)
   delete from auth.users where id = uid;
 end;
