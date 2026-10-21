@@ -195,6 +195,8 @@ const ANIME_SRC = new Set(["Attack on Titan","Demon Slayer","Fullmetal Alchemist
 const pickQuote = (mode) => { const pool = mode === "clasico" || mode === "simple" ? QUOTES.filter((q) => !ANIME_SRC.has(q[2])) : QUOTES; const l = pool.length ? pool : QUOTES; return l[Math.floor(Math.random() * l.length)]; };
 const levelsOf = (branch, mode) => (mode === "gymrat" ? RAT_LEVELS : mode === "clasico" || mode === "simple" ? CLASSIC_LEVELS : LEVELS)[branch] || LEVELS.female;
 // Imagen de un nivel: la que suba la coach o, en gymrat, la rata que viene con la app
+const EX_VIDS = ["ARC-009", "ARC-011", "ARC-012", "ARC-013", "ARC-014", "ARC-015", "ARC-016", "ARC-019", "ARC-026", "ARC-049", "ARC-050", "ARC-054", "ARC-060", "ARC-069", "ARC-070", "ARC-075", "ARC-076", "ARC-077", "ARC-M02", "ARC-M03", "ARC-M04", "ARC-M06", "ARC-M07", "ARC-M08", "ARC-X01"];
+const BUNDLED_MEDIA = Object.fromEntries(EX_VIDS.map((id) => [`ex:${id}`, `/ejercicios/${id}.mp4`]));
 const mediaOr = (media, key) => { const m = /^rat:(female|male):(\d)$/.exec(key); return media[key] || (m ? `/ratas/${m[1]}/rat-${m[2]}.png` : null); };
 const levelKey = (branch, mode, i) => (mode === "gymrat" ? `rat:${branch === "male" ? "male" : "female"}:${i}` : mode === "clasico" ? `classic:${i}` : `lvl:${branch}:${i}`);
 
@@ -3810,7 +3812,7 @@ const CLIENTS_CSS = `
 
 function ArcApp({ user }) {
   const [state, setState] = useState(EMPTY);
-  const [media, setMediaState] = useState({});
+  const [media, setMediaState] = useState(BUNDLED_MEDIA);
   const [loaded, setLoaded] = useState(false);
   const [loadErr, setLoadErr] = useState("");
   const [tab, setTab] = useState("inicio");
@@ -3840,7 +3842,7 @@ function ArcApp({ user }) {
       const st = fromDb(all);
       setQuote(pickQuote(st.profile?.mode));
       setState(st);
-      setMediaState(Object.fromEntries(all.media.map((m) => [m.key, m.url])));
+      setMediaState({ ...BUNDLED_MEDIA, ...Object.fromEntries(all.media.map((m) => [m.key, m.url])) });
       setLoaded(true);
     } catch (e) { setLoadErr("No hemos podido cargar tus datos. Revisa tu conexión."); }
   };
