@@ -1222,6 +1222,17 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .rkrow .who{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .rkrow .who small{display:block;color:var(--dm);font-size:12px}
 .rkrow b{font-variant-numeric:tabular-nums}
+.hint a{color:var(--ac)}
+.srcs{margin-top:22px;border:1px solid var(--ln);border-radius:14px;padding:12px 14px;background:var(--sf)}
+.srcs summary{cursor:pointer;font-weight:700;font-size:14px}
+.src{display:block;padding:10px 0;border-top:1px solid var(--ln);color:var(--tx);text-decoration:none;font-size:13px;line-height:1.4}
+.src b{display:block;font-size:13px}.src span{color:var(--dm);text-decoration:underline;text-decoration-color:rgba(255,255,255,.25)}
+.hk{margin-top:12px;background:var(--sf2);border:1px solid var(--ln);border-radius:14px;padding:12px 14px}
+.hk-hd{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.hk-hd div{flex:1}.hk-hd b{display:block;font-size:15px}.hk-hd small{color:var(--dm);font-size:12px}
+.hk-st{font-size:12px;font-weight:700;color:var(--dm);border:1px solid var(--ln);border-radius:999px;padding:4px 9px}
+.hk-st.on{color:#000;background:var(--okl);border-color:var(--okl)}
+.hk p{font-size:13px;line-height:1.5;margin:0 0 10px}
 .abspick{background:var(--sf2);border:1px solid var(--ln);border-radius:14px;padding:10px 12px;margin:0 0 12px}
 .abspick small{display:block;color:var(--dm);font-size:12px;margin-bottom:8px}
 .abspick .chips{gap:6px}.abspick .chip{padding:7px 11px;font-size:13px}
@@ -2592,6 +2603,7 @@ function Nutrition({ profile, setCook, media = {} }) {
         <div><b>{t.c} g</b><span>Hidratos</span></div>
         <div><b>{t.f} g</b><span>Grasas</span></div>
       </div>
+      <p className="hint" style={{ marginTop: 8 }}>Calculado con la ecuación de Mifflin-St Jeor, tu nivel de actividad y tu objetivo. Proteína según la ISSN. <a className="inlink" href="#fuentes-nutricion" onClick={(e) => { e.preventDefault(); const d = document.getElementById("fuentes-nutricion"); if (d) { d.open = true; d.scrollIntoView({ behavior: "smooth" }); } }}>Ver fuentes</a></p>
 
       <ShopTips />
       <h2>Tus comidas</h2>
@@ -2620,12 +2632,47 @@ function Nutrition({ profile, setCook, media = {} }) {
 
       <h2>Suplementación</h2>
       <p className="sub">Información general, no una recomendación personal. La creatina monohidrato es el suplemento con más evidencia para ganar fuerza; en los estudios se usan 3–5 g al día. Antes de tomar cualquier suplemento, consúltalo con tu médico o farmacéutico, sobre todo si tomas medicación o tienes alguna enfermedad.</p>
+      <div id="fuentes-nutricion-wrap"><SourcesAnchor id="fuentes-nutricion" groups={["nutricion"]} /></div>
       <p className="hint">Plan orientativo calculado con tu cuestionario. No sustituye la consulta con un dietista-nutricionista.</p>
     </>
   );
 }
 
 /* ============================ HÁBITOS ============================ */
+
+// Fuentes científicas de los cálculos y recomendaciones (Apple 1.4.1)
+const SOURCES = {
+  nutricion: [
+    ["Calorías de reposo: ecuación de Mifflin-St Jeor", "Mifflin MD, St Jeor ST et al. A new predictive equation for resting energy expenditure in healthy individuals. Am J Clin Nutr, 1990.", "https://doi.org/10.1093/ajcn/51.2.241"],
+    ["Factor de actividad diaria", "FAO/OMS/UNU. Human energy requirements: report of a joint expert consultation, 2004.", "https://www.fao.org/3/y5686e/y5686e00.htm"],
+    ["Proteína: 1,6–2,2 g por kg al día", "Jäger R et al. ISSN Position Stand: protein and exercise. J Int Soc Sports Nutr, 2017.", "https://pubmed.ncbi.nlm.nih.gov/28642676/"],
+    ["Déficit moderado, más proteína y grasas mínimas", "Helms ER, Aragon AA, Fitschen PJ. Evidence-based recommendations for natural bodybuilding contest preparation: nutrition and supplementation. J Int Soc Sports Nutr, 2014.", "https://pmc.ncbi.nlm.nih.gov/articles/PMC4033492/"],
+    ["Reparto de grasas e hidratos", "EFSA. Dietary Reference Values for nutrients: summary report, 2017.", "https://efsa.europa.eu/en/supporting/pub/e15121"],
+    ["Creatina monohidrato 3–5 g al día", "Kreider RB et al. ISSN position stand: safety and efficacy of creatine supplementation in exercise, sport, and medicine. J Int Soc Sports Nutr, 2017.", "https://pubmed.ncbi.nlm.nih.gov/28615996/"],
+  ],
+  habitos: [
+    ["Pasos al día", "Paluch AE et al. Daily steps and all-cause mortality: a meta-analysis of 15 international cohorts. Lancet Public Health, 2022.", "https://pubmed.ncbi.nlm.nih.gov/35247352/"],
+    ["Agua: 2–2,5 L al día", "EFSA. Scientific Opinion on Dietary Reference Values for water. EFSA Journal, 2010.", "https://www.efsa.europa.eu/en/efsajournal/pub/1459"],
+    ["Sueño: 7 horas o más", "Watson NF et al. Recommended amount of sleep for a healthy adult: joint consensus statement of the AASM and SRS. Sleep, 2015.", "https://www.aasm.org/resources/pdf/adultsleepdurationconsensus.pdf"],
+  ],
+  entreno: [
+    ["Series por músculo a la semana", "Schoenfeld BJ, Ogborn D, Krieger JW. Dose-response relationship between weekly resistance training volume and increases in muscle mass. J Sports Sci, 2017.", "https://doi.org/10.1080/02640414.2016.1210197"],
+  ],
+};
+function SourcesAnchor({ id, groups }) {
+  return <details id={id} className="srcs"><summary>Fuentes científicas</summary><p className="hint" style={{ marginTop: 6 }}>Los cálculos de ARC se basan en estas fuentes. Son orientativos y no sustituyen el consejo de un profesional sanitario.</p>{groups.flatMap((g) => SOURCES[g]).map(([what, cite, url]) => <a key={url} className="src" href={url} target="_blank" rel="noopener noreferrer"><b>{what}</b><span>{cite}</span></a>)}</details>;
+}
+function Sources({ groups, title = "Fuentes científicas", open = false }) {
+  return (
+    <details className="srcs" open={open}>
+      <summary>{title}</summary>
+      <p className="hint" style={{ marginTop: 6 }}>Los cálculos de ARC se basan en estas fuentes. Son orientativos y no sustituyen el consejo de un profesional sanitario.</p>
+      {groups.flatMap((g) => SOURCES[g]).map(([what, cite, url]) => (
+        <a key={url} className="src" href={url} target="_blank" rel="noopener noreferrer"><b>{what}</b><span>{cite}</span></a>
+      ))}
+    </details>
+  );
+}
 
 function Habits({ state, setHabit, adh, steps }) {
   const today = dkey();
@@ -2645,13 +2692,13 @@ function Habits({ state, setHabit, adh, steps }) {
         <div className="hd"><b>Pasos</b><span>Meta {RULES.STEPS_GOAL.toLocaleString("es-ES")}</span></div>
         <input className="in" type="number" inputMode="numeric" placeholder="Pasos de hoy" value={h.steps ?? ""} onChange={(e) => setHabit("steps", e.target.value === "" ? "" : Number(e.target.value))} />
         <div className="bar" style={{ marginTop: 10 }}><i style={{ width: `${Math.min(100, ((h.steps || 0) / RULES.STEPS_GOAL) * 100)}%`, background: "var(--ac)" }} /></div>
-        {steps?.available && (steps.linked
+        {steps && steps.source !== "Apple Salud" && steps.available && (steps.linked
           ? <div className="chips" style={{ marginTop: 10 }}>
               <button className="chip" disabled={steps.busy} onClick={steps.sync}>{steps.busy ? "Leyendo pasos…" : "Actualizar pasos del móvil"}</button>
             </div>
           : <button className="btn ghost" style={{ marginTop: 10 }} disabled={steps.busy} onClick={steps.connect}>{steps.busy ? "Un momento…" : steps.label}</button>)}
-        {steps?.error && <div className="err">{steps.error}</div>}
-        {steps?.linked && !steps.error && <p className="hint">Se leen solos de {steps.source} cada vez que abres Hábitos.</p>}
+        {steps && steps.source !== "Apple Salud" && steps.error && <div className="err">{steps.error}</div>}
+        {steps?.source === "Apple Salud" && <HealthKitCard steps={steps} />}
       </div>
 
       <div className="hb">
@@ -2678,7 +2725,32 @@ function Habits({ state, setHabit, adh, steps }) {
         <input className="in" type="number" step="0.1" inputMode="decimal" placeholder="kg" value={h.weight ?? ""} onChange={(e) => setHabit("weight", e.target.value === "" ? "" : Number(e.target.value))} />
         <p className="hint">Pésate en ayunas y fíjate en la tendencia, no en un día suelto.</p>
       </div>
+      <Sources groups={["habitos"]} title="Fuentes de estas metas" />
     </>
+  );
+}
+
+// Integración con Apple Salud (HealthKit), bien visible para la usuaria
+const HealthIcon = ({ size = 30 }) => (
+  <svg width={size} height={size} viewBox="0 0 30 30" aria-hidden="true"><rect width="30" height="30" rx="7" fill="#fff" /><path d="M15 23.5s-7.5-4.6-7.5-10.1A4.1 4.1 0 0 1 15 11a4.1 4.1 0 0 1 7.5 2.4c0 5.5-7.5 10.1-7.5 10.1z" fill="#FF2D55" /></svg>
+);
+function HealthKitCard({ steps }) {
+  return (
+    <div className="hk">
+      <div className="hk-hd">
+        <HealthIcon />
+        <div><b>Apple Salud</b><small>Integración con HealthKit</small></div>
+        <span className={`hk-st ${steps.linked ? "on" : ""}`}>{steps.linked ? "Conectado" : "Sin conectar"}</span>
+      </div>
+      <p>ARC usa <b>HealthKit</b> para leer tus pasos diarios de la app Salud y apuntarlos aquí automáticamente. Solo lee los pasos: no escribe nada en Salud, no comparte tus datos con nadie y no los usa para publicidad.</p>
+      {steps.available
+        ? (steps.linked
+          ? <button className="chip" disabled={steps.busy} onClick={steps.sync}>{steps.busy ? "Leyendo pasos de Apple Salud…" : "Actualizar pasos desde Apple Salud"}</button>
+          : <button className="btn ghost" style={{ marginTop: 4 }} disabled={steps.busy} onClick={steps.connect}>{steps.busy ? "Un momento…" : "Conectar con Apple Salud"}</button>)
+        : <p className="hint">Apple Salud no está disponible en este dispositivo. Puedes apuntar tus pasos a mano.</p>}
+      {steps.error && <div className="err">{steps.error}</div>}
+      <p className="hint">Puedes quitar el permiso cuando quieras en Ajustes del iPhone → Salud → Acceso a datos y dispositivos → ARC.</p>
+    </div>
   );
 }
 
@@ -3560,6 +3632,8 @@ function Settings({ onClients, onPaywallPreview, videos, onFinishPreview, sub, e
       )}
       <h2>Salud y privacidad</h2>
       <p className="hint">ARC da orientación general de entreno y alimentación. No es consejo médico ni sustituye a un profesional sanitario. Si tienes una lesión, una enfermedad o estás embarazada, consulta antes de empezar.</p>
+      <p className="hint"><b>Apple Salud (HealthKit):</b> si lo conectas en Hábitos, ARC lee tus pasos diarios de la app Salud. Solo lectura: no escribe nada ni comparte tus datos. Puedes quitar el permiso en Ajustes del iPhone → Salud → Acceso a datos y dispositivos → ARC.</p>
+      <Sources groups={["nutricion", "habitos", "entreno"]} />
       <div className="legal-links">
         <button className="inlink" onClick={() => setLegal("privacidad")}>Política de privacidad</button>
         <button className="inlink" onClick={() => setLegal("terminos")}>Términos de uso</button>
@@ -4366,8 +4440,8 @@ function ArcApp({ user }) {
   };
   const tourPerms = native.isNative ? [
     { key: "steps", title: native.platform === "ios" ? "Pasos de Apple Salud" : "Pasos de Health Connect",
-      text: "Así tus pasos se apuntan solos en Hábitos, sin escribir nada.",
-      button: native.platform === "android" && !stepsAvail ? "Instalar Health Connect" : "Conectar pasos",
+      text: native.platform === "ios" ? "ARC usa HealthKit para leer tus pasos de la app Salud y apuntarlos solos en Hábitos. Solo lectura, nunca se comparten." : "Así tus pasos se apuntan solos en Hábitos, sin escribir nada.",
+      button: native.platform === "android" && !stepsAvail ? "Instalar Health Connect" : native.platform === "ios" ? "Conectar con Apple Salud" : "Conectar pasos",
       done: !!state.profile?.stepsLinked, doneText: "Conectado", busy: stepsBusy, error: stepsErr, onAsk: connectSteps },
     { key: "notif", title: "Recordatorios",
       text: "Un aviso los días de entreno y el cierre del domingo. Nada de spam.",
