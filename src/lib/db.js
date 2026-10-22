@@ -85,7 +85,10 @@ export const hideFromRanking = (nick) => supabase.rpc("hide_from_ranking", { nic
 export const searchProfiles = (q) => supabase.rpc("search_profiles", { q }).then(must);
 export const publicProfile = (nick) => supabase.rpc("public_profile", { nick }).then(must);
 export const setProfilePublic = (userId, v) => supabase.from("profiles").update({ profile_public: v }).eq("id", userId).then(must);
-export const setAvatarUrl = (userId, url) => supabase.from("profiles").update({ avatar_url: url }).eq("id", userId).then(must);
+export const setAvatarPending = (userId, url) => supabase.from("profiles").update({ avatar_pending: url }).eq("id", userId).then(must);
+export const clearMyAvatar = () => supabase.rpc("clear_my_avatar").then(must);
+export const pendingAvatars = () => supabase.rpc("pending_avatars").then(must);
+export const reviewAvatar = (nick, ok) => supabase.rpc("review_avatar", { nick, ok }).then(must);
 export async function uploadAvatar(userId, blob) {
   const path = `${userId}/${Date.now()}.jpg`;
   must(await supabase.storage.from("avatars").upload(path, blob, { upsert: true, contentType: "image/jpeg", cacheControl: "31536000" }));

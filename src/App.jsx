@@ -1285,6 +1285,11 @@ button.rkrow{width:100%;background:none;border:0;border-bottom:1px solid var(--l
 .lastwin{display:flex;gap:10px}
 .lastwin button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:12px 6px;color:var(--tx);font:inherit;cursor:pointer;min-width:0}
 .lastwin b{font-size:14px}.lastwin small{font-size:12px;color:var(--dm);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rk-legal{position:fixed;inset:0;z-index:40;background:#000;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
+.rk-legal-top{display:flex;justify-content:flex-end;padding:12px 18px;border-bottom:1px solid var(--ln)}
+.rk-legal iframe{flex:1;border:0;width:100%;background:#000}
+.arc .inlink{background:none;border:0;padding:0;font:inherit;color:var(--ac);text-decoration:underline;cursor:pointer}
+.pend{display:block;font-size:12px;color:var(--wu);margin-top:2px}
 .myprof{display:flex;gap:14px;align-items:center;background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:14px}
 .myprof-av{background:none;border:0;padding:0;cursor:pointer}
 .prof-hd{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding-top:6px}
@@ -3108,15 +3113,16 @@ function ProfileSheet({ nick, api, media, onClose, onReport, blocked }) {
 
 function MyRankProfile({ me, api, media, state, onOpen }) {
   const [err, setErr] = useState("");
-  const r = { nickname: me.nickname, avatar_url: me.avatar, branch: state.profile?.branch, mode: state.profile?.mode, level: state.savedLevel || 0 };
+  const r = { nickname: me.nickname, avatar_url: me.pending || me.avatar, branch: state.profile?.branch, mode: state.profile?.mode, level: state.savedLevel || 0 };
   return (
     <div className="myprof">
       <button className="myprof-av" onClick={() => onOpen(me.nickname)} aria-label="Ver mi perfil"><Avatar r={r} media={media} size={54} ring /></button>
       <div style={{ flex: 1, minWidth: 0 }}>
         <b>{me.nickname}</b>
+        {me.pending && <small className="pend">Foto en revisión: la verán las demás cuando la apruebe la coach</small>}
         <div className="chips" style={{ marginTop: 6 }}>
-          <MediaPicker label={me.avatar ? "Cambiar foto" : "Poner foto"} accept="image/*" onPick={(f) => api.setAvatar(f)} onError={setErr} />
-          {me.avatar && <button className="chip" onClick={() => api.setAvatar(null).catch(() => setErr("No se ha podido quitar."))}>Quitar</button>}
+          <MediaPicker label={me.avatar || me.pending ? "Cambiar foto" : "Poner foto"} accept="image/*" onPick={(f) => api.setAvatar(f)} onError={setErr} />
+          {(me.avatar || me.pending) && <button className="chip" onClick={() => api.setAvatar(null).catch(() => setErr("No se ha podido quitar."))}>Quitar</button>}
           <button className={`chip ${me.isPublic ? "on" : ""}`} onClick={() => api.setPublic(!me.isPublic).catch(() => setErr("No se ha podido guardar."))}>{me.isPublic ? "Perfil visible" : "Perfil privado"}</button>
         </div>
         {err && <div className="err">{err}</div>}
@@ -3139,6 +3145,13 @@ function Ranking({ me, state, api, media = {}, blocked = [], onBlock, onUnblockA
   const [q, setQ] = useState("");
   const [found, setFound] = useState(null);
   const [party, setParty] = useState("");
+  const [legalDoc, setLegalDoc] = useState(null);
+  const legalView = legalDoc && (
+    <div className="rk-legal" role="dialog" aria-label="Normas de la comunidad">
+      <div className="rk-legal-top"><button className="link" onClick={() => setLegalDoc(null)}>Cerrar</button></div>
+      <iframe title="Normas de la comunidad" src={`/${legalDoc}.html#normas`} />
+    </div>
+  );
 
   const load = async () => {
     setErr("");
@@ -3187,7 +3200,9 @@ function Ranking({ me, state, api, media = {}, blocked = [], onBlock, onUnblockA
         {nickErr && <div className="err">{nickErr}</div>}
       </div>
       <button className="btn ac" disabled={busy || !nick.trim()} onClick={join}>{busy ? "Un momento…" : me.optIn ? "Guardar apodo" : "Unirme al ranking"}</button>
+      <p className="hint" style={{ textAlign: "center" }}>Al unirte aceptas las <button className="inlink" onClick={() => setLegalDoc("terminos")}>normas de la comunidad</button>: nada de contenido ofensivo. Se puede denunciar y bloquear a cualquiera.</p>
       {editing && <button className="btn ghost" onClick={() => setEditing(false)}>Cancelar</button>}
+      {legalView}
     </>
   );
 
@@ -3250,7 +3265,7 @@ function Ranking({ me, state, api, media = {}, blocked = [], onBlock, onUnblockA
 
       <h2>Tu perfil</h2>
       <MyRankProfile me={me} api={api} media={media} state={state} onOpen={setOpen} />
-      <p className="hint">Foto tuya o algo que te represente. Nada de desnudos ni fotos de otras personas: se puede denunciar y la coach la quitará.</p>
+      <p className="hint">Foto tuya o algo que te represente. Antes de que la vean las demás la revisa la coach. Nada de desnudos, violencia ni fotos de otras personas. Consulta las <button className="inlink" onClick={() => setLegalDoc("terminos")}>normas de la comunidad</button>.</p>
 
       <div style={{ display: "flex", gap: 16, marginTop: 18, flexWrap: "wrap" }}>
         <button className="link" onClick={() => { setNick(me.nickname || ""); setEditing(true); }}>Cambiar mi apodo</button>
@@ -3258,6 +3273,7 @@ function Ranking({ me, state, api, media = {}, blocked = [], onBlock, onUnblockA
         {blocked.length > 0 && <button className="link" onClick={() => onUnblockAll?.()}>Desbloquear a todos ({blocked.length})</button>}
       </div>
 
+      {legalView}
       {open && <ProfileSheet nick={open} api={api} media={media} blocked={blocked.includes(open)} onClose={() => setOpen(null)} onReport={(n) => { setOpen(null); setReport(n); setSent(""); }} />}
 
       {report && (
@@ -3665,6 +3681,31 @@ function ReportAvatar({ nick }) {
   return url ? <img src={url} alt="" style={{ width: 72, height: 72, borderRadius: 12, objectFit: "cover", display: "block", marginTop: 8 }} /> : null;
 }
 
+function PendingAvatars() {
+  const [list, setList] = useState(null);
+  const load = () => db.pendingAvatars().then(setList).catch(() => setList([]));
+  useEffect(() => { load(); }, []);
+  if (!list?.length) return null;
+  return (
+    <>
+      <h2>Fotos de perfil por revisar</h2>
+      <p className="sub">No se ven en el ranking hasta que las apruebes.</p>
+      {list.map((r) => (
+        <div key={r.nickname} className="day" style={{ display: "flex", gap: 12, alignItems: "center" }}>
+          <img src={r.avatar_pending} alt="" style={{ width: 64, height: 64, borderRadius: 12, objectFit: "cover" }} />
+          <div style={{ flex: 1 }}>
+            <b>{r.nickname}</b>
+            <div className="chips" style={{ marginTop: 8 }}>
+              <button className="chip on" onClick={() => db.reviewAvatar(r.nickname, true).then(load)}>Aprobar</button>
+              <button className="chip" onClick={() => db.reviewAvatar(r.nickname, false).then(load)}>Rechazar</button>
+            </div>
+          </div>
+        </div>
+      ))}
+    </>
+  );
+}
+
 function Reports({ onClose }) {
   const [list, setList] = useState(null);
   const [err, setErr] = useState("");
@@ -3673,9 +3714,10 @@ function Reports({ onClose }) {
   const act = async (fn) => { try { await fn(); load(); } catch (e) { setErr("No se ha podido completar."); } };
   return (
     <>
-      <h1>Denuncias del ranking</h1>
+      <h1>Moderación del ranking</h1>
       <p className="sub">Si quitas a alguien, desaparece del ranking y pierde su apodo. Si solo es la foto, quítale la foto y sigue en el ranking.</p>
       {err && <div className="err">{err}</div>}
+      <PendingAvatars />
       {list && list.length === 0 && <div className="empty">No hay denuncias pendientes.</div>}
       {list?.map((r) => (
         <div key={r.id} className="day">
@@ -3751,7 +3793,7 @@ function fromDb({ profile, sessions, habits, coach }) {
     habits: Object.fromEntries(habits.map((h) => [h.day, { water: h.water ?? undefined, steps: h.steps ?? undefined, sleep: h.sleep != null ? Number(h.sleep) : undefined, weight: h.weight != null ? Number(h.weight) : undefined }])),
     xp: profile.xp, gems: profile.gems, active: profile.active_session, role: profile.role,
     nickname: profile.nickname, rankOptIn: profile.rank_opt_in && !!profile.nickname, savedLevel: profile.level,
-    avatar: profile.avatar_url || null, profilePublic: profile.profile_public !== false,
+    avatar: profile.avatar_url || null, avatarPending: profile.avatar_pending || null, profilePublic: profile.profile_public !== false,
     coachRoutine: coach?.routine || null,
   };
 }
@@ -3841,7 +3883,7 @@ function Paywall({ media, coach, uploadMedia, setMedia, onClose, onPremium }) {
       )}
       {err && <div className="err">{err}</div>}
       <button className="btn ac pw-cta" disabled={!pkg || busy} onClick={() => go(() => purchases.buy(pkg))}>
-        {busy ? "Un momento…" : trial ? `Empieza tus ${trial} días gratis` : sel === "lifetime" ? "Comprar de por vida" : "Suscribirme"}
+        {busy ? "Un momento…" : !pkg ? "Suscribirme" : sel === "lifetime" ? `Comprar de por vida · ${pkg.product.priceString}` : `${trial ? `${trial} días gratis, luego ` : ""}${pkg.product.priceString}/${sel === "annual" ? "año" : "mes"}`}
       </button>
       {pkg && (
         <p className="pw-fine">
@@ -3902,7 +3944,7 @@ const PAYWALL_CSS = `
 .pw-plan strong{font-size:16px;white-space:nowrap}
 .pw-plan em{position:absolute;top:-9px;left:14px;font-style:normal;font-size:11px;font-weight:800;background:var(--ac);color:#000;border-radius:999px;padding:2px 9px}
 .pw-cta{margin-top:16px}
-.pw-fine{font-size:11.5px;line-height:1.5;color:var(--dm);text-align:center;margin:10px 4px 0}
+.pw-fine{font-size:13px;line-height:1.5;color:rgba(255,255,255,.75);text-align:center;margin:10px 4px 0}
 .pw-links{display:flex;justify-content:center;gap:18px;margin-top:12px;font-size:13px}
 .pw-free{margin-top:14px;align-self:center}
 .locked{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:40px}
@@ -4339,10 +4381,11 @@ function ArcApp({ user }) {
     search: (q) => db.searchProfiles(q),
     profile: (nick) => db.publicProfile(nick),
     setAvatar: async (file) => {
-      let url = null;
-      if (file) { const data = await squareImage(file, 400); url = await db.uploadAvatar(user.id, await (await fetch(data)).blob()); }
-      await db.setAvatarUrl(user.id, url);
-      setState((s) => ({ ...s, avatar: url }));
+      if (!file) { await db.clearMyAvatar(); setState((s) => ({ ...s, avatar: null, avatarPending: null })); return; }
+      const data = await squareImage(file, 400);
+      const url = await db.uploadAvatar(user.id, await (await fetch(data)).blob());
+      await db.setAvatarPending(user.id, url);
+      setState((s) => ({ ...s, avatarPending: url }));
     },
     setPublic: async (v) => { await db.setProfilePublic(user.id, v); setState((s) => ({ ...s, profilePublic: v })); },
   };
@@ -4479,7 +4522,7 @@ function ArcApp({ user }) {
   } else if (tab === "entrenos") {
     body = <Workouts state={state} routine={routine} onStart={(d) => setActive(newSession(d, state.sessions))} setDays={(d) => setProfile({ days: d })} setProfile={setProfile} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
   } else if (tab === "ranking") {
-    body = <Ranking me={{ optIn: !!state.rankOptIn, nickname: state.nickname, avatar: state.avatar, isPublic: state.profilePublic !== false }} state={{ ...state, savedLevel: ev?.current ?? state.savedLevel }} api={rankApi} media={media} blocked={state.profile?.blocked || []} onBlock={(n) => setProfile({ blocked: [...new Set([...(state.profile?.blocked || []), n])] })} onUnblockAll={() => setProfile({ blocked: [] })} />;
+    body = <Ranking me={{ optIn: !!state.rankOptIn, nickname: state.nickname, avatar: state.avatar, pending: state.avatarPending, isPublic: state.profilePublic !== false }} state={{ ...state, savedLevel: ev?.current ?? state.savedLevel }} api={rankApi} media={media} blocked={state.profile?.blocked || []} onBlock={(n) => setProfile({ blocked: [...new Set([...(state.profile?.blocked || []), n])] })} onUnblockAll={() => setProfile({ blocked: [] })} />;
   } else if (tab === "nutricion") {
     body = <Nutrition profile={state.profile} setCook={(c) => setProfile({ cook: c })} media={media} />;
   } else {
