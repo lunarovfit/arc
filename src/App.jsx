@@ -1227,6 +1227,15 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .srcs summary{cursor:pointer;font-weight:700;font-size:14px}
 .src{display:block;padding:10px 0;border-top:1px solid var(--ln);color:var(--tx);text-decoration:none;font-size:13px;line-height:1.4}
 .src b{display:block;font-size:13px}.src span{color:var(--dm);text-decoration:underline;text-decoration-color:rgba(255,255,255,.25)}
+.steps-tile{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:14px 16px;margin:16px 0 4px}
+.st-top{display:flex;justify-content:space-between;align-items:center}
+.st-top small{color:var(--dm);font-size:13px}
+.st-src{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--dm)}
+.st-num{display:flex;align-items:baseline;gap:6px;margin:4px 0 10px}
+.st-num b{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+.st-num span{color:var(--dm);font-size:14px}
+.st-num em{margin-left:auto;font-style:normal;font-size:12px;font-weight:700;color:#000;background:var(--okl);border-radius:999px;padding:3px 9px}
+.hk.mini{padding:10px 12px}.hk.mini .hk-hd{margin-bottom:4px}.hk.mini .link{font-size:12px}
 .hk{margin-top:12px;background:var(--sf2);border:1px solid var(--ln);border-radius:14px;padding:12px 14px}
 .hk-hd{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .hk-hd div{flex:1}.hk-hd b{display:block;font-size:15px}.hk-hd small{color:var(--dm);font-size:12px}
@@ -1710,6 +1719,22 @@ function SocialLinks() {
   );
 }
 
+// Pasos de hoy en la pantalla principal
+function StepsTile({ state }) {
+  const h = state.habits[dkey()] || {};
+  const n = Number(h.steps) || 0, goal = RULES.STEPS_GOAL;
+  return (
+    <div className="steps-tile">
+      <div className="st-top">
+        <small>Pasos de hoy</small>
+        {state.profile?.stepsLinked && <span className="st-src"><HealthIcon size={14} /> Apple Salud</span>}
+      </div>
+      <div className="st-num"><b>{n.toLocaleString("es-ES")}</b><span>/ {goal.toLocaleString("es-ES")}</span>{n >= goal && <em>Meta cumplida</em>}</div>
+      <div className="bar"><i style={{ width: `${Math.min(100, (n / goal) * 100)}%`, background: "var(--ac)" }} /></div>
+    </div>
+  );
+}
+
 function HomeSimple({ state, stats, quote, ratioPoints, weightPoints }) {
   const [qq, who, from, why, kind] = quote;
   const ws = weekStart().toISOString().slice(0, 10);
@@ -1726,6 +1751,7 @@ function HomeSimple({ state, stats, quote, ratioPoints, weightPoints }) {
         <div className="from">{from}</div>
         <div className="why">{why}</div>
       </div>
+      <StepsTile state={state} />
       <h2>Tu semana</h2>
       <div className="wk">
         <div className="wk-main"><b>{week.length}<span>/{goal}</span></b><small>entrenos esta semana</small>
@@ -1800,6 +1826,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
         <p className="line" style={{ textAlign: "left", margin: "12px 0 0" }}>{lv.line}</p>
         {stats.provisional && <div className="prov">Nivel provisional: la adherencia empieza a contar en tu día {RULES.ADHERENCE_MIN_DAYS}.</div>}
       </div>
+      <StepsTile state={state} />
       <Skills lv={lv} L={L} stats={stats} ev={ev} />
 
       {ev.next ? (
@@ -2740,6 +2767,19 @@ const HealthIcon = ({ size = 30 }) => (
   <svg width={size} height={size} viewBox="0 0 30 30" aria-hidden="true"><rect width="30" height="30" rx="7" fill="#fff" /><path d="M15 23.5s-7.5-4.6-7.5-10.1A4.1 4.1 0 0 1 15 11a4.1 4.1 0 0 1 7.5 2.4c0 5.5-7.5 10.1-7.5 10.1z" fill="#FF2D55" /></svg>
 );
 function HealthKitCard({ steps }) {
+  const [more, setMore] = useState(false);
+  if (steps.linked && steps.available) return (
+    <div className="hk mini">
+      <div className="hk-hd">
+        <HealthIcon size={24} />
+        <div><b>Apple Salud</b><small>Pasos leídos con HealthKit · solo lectura</small></div>
+        <button className="chip" disabled={steps.busy} onClick={steps.sync}>{steps.busy ? "…" : "Actualizar"}</button>
+      </div>
+      {steps.error && <div className="err">{steps.error}</div>}
+      <button className="link" onClick={() => setMore(!more)}>{more ? "Ocultar" : "Más información"}</button>
+      {more && <p className="hint">ARC usa HealthKit solo para leer tus pasos diarios de la app Salud. No escribe nada en Salud, no comparte tus datos ni los usa para publicidad. Puedes quitar el permiso en Ajustes del iPhone → Salud → Acceso a datos y dispositivos → ARC.</p>}
+    </div>
+  );
   return (
     <div className="hk">
       <div className="hk-hd">
