@@ -1227,6 +1227,12 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .srcs summary{cursor:pointer;font-weight:700;font-size:14px}
 .src{display:block;padding:10px 0;border-top:1px solid var(--ln);color:var(--tx);text-decoration:none;font-size:13px;line-height:1.4}
 .src b{display:block;font-size:13px}.src span{color:var(--dm);text-decoration:underline;text-decoration-color:rgba(255,255,255,.25)}
+.lvinfo{margin-top:18px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:0 14px}
+.lvinfo summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:13px 0;cursor:pointer;font-weight:700;font-size:15px}
+.lvinfo summary::-webkit-details-marker{display:none}
+.lvinfo summary i{font-style:normal;color:var(--ac);font-size:20px;transition:transform .2s}
+.lvinfo[open] summary i{transform:rotate(45deg)}
+.lvinfo p{margin:0 0 14px;font-size:14px;line-height:1.55;color:var(--dm)}
 .steps-tile{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:14px 16px;margin:16px 0 4px}
 .st-top{display:flex;justify-content:space-between;align-items:center}
 .st-top small{color:var(--dm);font-size:13px}
@@ -1822,10 +1828,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
           ) : <div className="hero-next"><span>Arco completado</span></div>}
         </div>
       </div>
-      <div className="gauge">
-        <p className="line" style={{ textAlign: "left", margin: "12px 0 0" }}>{lv.line}</p>
-        {stats.provisional && <div className="prov">Nivel provisional: la adherencia empieza a contar en tu día {RULES.ADHERENCE_MIN_DAYS}.</div>}
-      </div>
+      {stats.provisional && <div className="gauge"><div className="prov">Nivel provisional: la adherencia empieza a contar en tu día {RULES.ADHERENCE_MIN_DAYS}.</div></div>}
       <StepsTile state={state} />
       <Skills lv={lv} L={L} stats={stats} ev={ev} />
 
@@ -1854,6 +1857,13 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
           )}
         </>
       ) : <div className="note">Has completado el arco. No queda nadie por encima.</div>}
+
+      {lv.line && (
+        <details className="lvinfo">
+          <summary><span>Sobre {lv.name}</span><i aria-hidden="true">+</i></summary>
+          <p>{lv.line}</p>
+        </details>
+      )}
 
       <h2>Tu progreso</h2>
       <div className="chart">
