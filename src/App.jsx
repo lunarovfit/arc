@@ -1233,6 +1233,14 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .shr .box{max-height:92vh}
 .shr-prev{margin:12px auto;width:62%;aspect-ratio:9/16;border-radius:16px;overflow:hidden;border:1px solid var(--ln);background:var(--sf2);display:flex;align-items:center;justify-content:center;color:var(--dm);font-size:13px}
 .shr-prev img{width:100%;height:100%;object-fit:cover;display:block}
+.shr-prev{padding:0;cursor:pointer;color:var(--dm)}
+.shr-empty{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:15px;color:var(--tx);font-weight:700;text-align:center;padding:0 14px}
+.shr-empty b{width:56px;height:56px;border-radius:50%;background:var(--ac);color:#000;font-size:34px;line-height:56px;font-weight:600}
+.shr-empty small{font-size:12px;color:var(--dm);font-weight:500}
+.shr-tip{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:24px}
+.shr-tip-box{background:var(--sf);border:1px solid var(--ac);border-radius:18px;padding:20px 18px;max-width:340px;text-align:center;animation:popIn .3s ease-out both}
+.shr-tip-box b{display:block;font-size:17px;line-height:1.35}
+.shr-tip-box p{color:var(--dm);font-size:14px;margin:8px 0 14px}
 .fin-share{margin-top:10px}
 .lvinfo{margin-top:18px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:0 14px}
 .lvinfo summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:13px 0;cursor:pointer;font-weight:700;font-size:15px}
@@ -1714,7 +1722,7 @@ function TechniqueModal({ exId: startId, media, coach, setMedia, uploadMedia, on
 
 // Inicio sin niveles: para quien solo quiere registrar sus entrenos
 // Abajo del todo: Instagram de la app y asesorías 1:1
-const APP_IG = ""; // usuario de Instagram de la app (sin @). Vacío = no sale.
+const APP_IG = "arcworkoutapp"; // usuario de Instagram de la app (sin @). Vacío = no sale.
 const COACH_IG = "lunarovx";
 const IgIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></svg>
@@ -3535,9 +3543,11 @@ async function drawShareCard({ kind, session, pr, bg, photo, levelImg, nick }) {
   const num = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   if (kind === "pr") {
     // sello "NUEVO PR"
-    x.save(); x.translate(L + 10, 1040); x.rotate(-0.07);
-    x.strokeStyle = PINK; x.lineWidth = 6; x.strokeRect(0, 0, 330, 104); x.lineWidth = 2; x.strokeRect(10, 10, 310, 84);
-    x.fillStyle = PINK; x.font = `800 58px ${SHARE_FONT}`; x.fillText("NUEVO PR", 30, 75); x.restore();
+    x.save(); x.translate(L + 14, 1040); x.rotate(-0.07);
+    x.font = `800 58px ${SHARE_FONT}`; const sw = x.measureText("NUEVO PR").width + 72;
+    x.fillStyle = "rgba(0,0,0,.35)"; x.fillRect(0, 0, sw, 104);
+    x.strokeStyle = PINK; x.lineWidth = 6; x.strokeRect(0, 0, sw, 104); x.lineWidth = 2; x.strokeRect(11, 11, sw - 22, 82);
+    x.fillStyle = PINK; x.textBaseline = "middle"; x.fillText("NUEVO PR", 36, 54); x.textBaseline = "alphabetic"; x.restore();
     let y = 1250;
     x.fillStyle = PINK; x.beginPath(); x.arc(L + 9, y - 10, 9, 0, 7); x.fill(); x.font = `700 30px ${SHARE_FONT}`; spaced(x, "NUEVO RÉCORD", L + 34, y, 5);
     x.fillStyle = "#fff"; x.font = `800 84px ${SHARE_FONT}`;
@@ -3570,29 +3580,30 @@ async function drawShareCard({ kind, session, pr, bg, photo, levelImg, nick }) {
   }
   // pie
   x.fillStyle = "#fff"; x.font = `800 32px ${SHARE_FONT}`; if (nick) spaced(x, nick.toUpperCase(), L, H - 120, 2);
-  x.fillStyle = DIM; x.font = `500 28px ${SHARE_FONT}`; x.textAlign = "right"; x.fillText("ARC by Lunarovx", R, H - 120); x.textAlign = "left";
+  x.fillStyle = DIM; x.font = `600 28px ${SHARE_FONT}`; x.textAlign = "right"; x.fillText("@arcworkoutapp", R, H - 120); x.textAlign = "left";
   return c.toDataURL("image/png");
 }
 
 // Hoja para elegir tarjeta y fondo y compartirla (Instagram, WhatsApp, guardar en fotos…)
 function ShareSheet({ session, prs = [], levelImg, nick, onClose }) {
   const [kind, setKind] = useState(prs.length ? "pr:0" : "resumen");
-  const [bg, setBg] = useState(levelImg ? "personaje" : "liso");
   const [photo, setPhoto] = useState(null);
   const [url, setUrl] = useState(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const [tip, setTip] = useState(false);
   const fileRef = useRef(null);
   useEffect(() => {
+    if (!photo) return;
     let on = true; setUrl(null);
     const pr = kind.startsWith("pr:") ? prs[Number(kind.slice(3))] : null;
-    drawShareCard({ kind: pr ? "pr" : "resumen", session, pr, bg, photo, levelImg, nick }).then((u) => on && setUrl(u)).catch(() => on && setErr("No se ha podido crear la imagen."));
+    drawShareCard({ kind: pr ? "pr" : "resumen", session, pr, bg: "foto", photo, levelImg, nick }).then((u) => on && setUrl(u)).catch(() => on && setErr("No se ha podido crear la imagen."));
     return () => { on = false; };
-  }, [kind, bg, photo]);
+  }, [kind, photo]);
   const share = async () => {
     setBusy(true); setErr("");
     try { await SHARE_IMPL(url, `arc-${kind.replace(":", "-")}.png`); } catch (e) { if (!/cancel/i.test(e?.message || "")) setErr("No se ha podido compartir. Inténtalo otra vez."); }
-    finally { setBusy(false); }
+    finally { setBusy(false); setTip(false); }
   };
   return (
     <div className="modal shr" onClick={onClose}>
@@ -3602,21 +3613,29 @@ function ShareSheet({ session, prs = [], levelImg, nick, onClose }) {
           <button className={`chip ${kind === "resumen" ? "on" : ""}`} onClick={() => setKind("resumen")}>Resumen del entreno</button>
           {prs.map((p, i) => <button key={p.exId} className={`chip ${kind === `pr:${i}` ? "on" : ""}`} onClick={() => setKind(`pr:${i}`)}>PR · {EXERCISES[p.exId].n}</button>)}
         </div>
-        <div className="shr-prev">{url ? <img src={url} alt="Vista previa de la tarjeta" /> : <span>Creando…</span>}</div>
-        <div className="chips">
-          <button className={`chip ${bg === "foto" ? "on" : ""}`} onClick={() => (photo ? setBg("foto") : fileRef.current?.click())}>{photo ? "Mi foto" : "Elegir foto"}</button>
-          {levelImg && <button className={`chip ${bg === "personaje" ? "on" : ""}`} onClick={() => setBg("personaje")}>Mi personaje</button>}
-          <button className={`chip ${bg === "liso" ? "on" : ""}`} onClick={() => setBg("liso")}>Liso</button>
-          {photo && <button className="chip" onClick={() => fileRef.current?.click()}>Cambiar foto</button>}
-        </div>
+        <button className="shr-prev" onClick={() => fileRef.current?.click()} aria-label={photo ? "Cambiar foto" : "Elegir tu foto"}>
+          {photo ? (url ? <img src={url} alt="Vista previa de la tarjeta" /> : <span>Creando…</span>) : (
+            <span className="shr-empty"><b>+</b>Elige tu foto<small>Una foto tuya entrenando o en el gym</small></span>
+          )}
+        </button>
+        {photo && <button className="chip" style={{ display: "block", margin: "0 auto" }} onClick={() => fileRef.current?.click()}>Cambiar foto</button>}
         <input ref={fileRef} type="file" accept="image/*" hidden onChange={async (e) => {
           const f = e.target.files?.[0]; e.target.value = ""; if (!f) return;
-          try { setPhoto(await readFile(f, 1400)); setBg("foto"); } catch (er) { setErr("No se ha podido abrir la foto."); }
+          try { setPhoto(await readFile(f, 1400)); } catch (er) { setErr("No se ha podido abrir la foto."); }
         }} />
         <p className="hint">La imagen se crea en tu móvil y solo se comparte si tú lo eliges. No se sube a ningún sitio.</p>
         {err && <div className="err">{err}</div>}
-        <button className="btn ac" disabled={!url || busy} onClick={share}>{busy ? "Un momento…" : "Compartir"}</button>
+        <button className="btn ac" disabled={(photo && !url) || busy} onClick={() => (photo ? setTip(true) : fileRef.current?.click())}>{busy ? "Un momento…" : photo ? "Compartir" : "Elige tu foto para compartir"}</button>
         <button className="btn" onClick={onClose}>Cerrar</button>
+        {tip && (
+          <div className="shr-tip" onClick={() => setTip(false)}>
+            <div className="shr-tip-box" onClick={(e) => e.stopPropagation()}>
+              <b>¡No te olvides de mencionar a @arcworkoutapp!</b>
+              <p>Así podemos ver tu historia y repostearla.</p>
+              <button className="btn ac" disabled={busy} onClick={share}>{busy ? "Un momento…" : "Vale, compartir"}</button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
