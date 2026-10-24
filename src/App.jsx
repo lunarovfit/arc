@@ -5,6 +5,7 @@ import * as native from "./lib/native";
 import { Auth, NewPassword } from "./Auth.jsx";
 import { LegalSheet, LEGAL_CSS } from "./Legal.jsx";
 import * as purchases from "./lib/purchases";
+import { shareImage as nativeShare } from "./lib/share";
 
 /* =====================================================================
    ARC by Lunarovx — vista previa v2
@@ -1227,6 +1228,12 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .srcs summary{cursor:pointer;font-weight:700;font-size:14px}
 .src{display:block;padding:10px 0;border-top:1px solid var(--ln);color:var(--tx);text-decoration:none;font-size:13px;line-height:1.4}
 .src b{display:block;font-size:13px}.src span{color:var(--dm);text-decoration:underline;text-decoration-color:rgba(255,255,255,.25)}
+.hist-r{display:inline-flex;align-items:center;gap:8px}
+.shr-btn{background:none;border:0;color:var(--ac);padding:2px;cursor:pointer;display:inline-flex}
+.shr .box{max-height:92vh}
+.shr-prev{margin:12px auto;width:62%;aspect-ratio:9/16;border-radius:16px;overflow:hidden;border:1px solid var(--ln);background:var(--sf2);display:flex;align-items:center;justify-content:center;color:var(--dm);font-size:13px}
+.shr-prev img{width:100%;height:100%;object-fit:cover;display:block}
+.fin-share{margin-top:10px}
 .lvinfo{margin-top:18px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:0 14px}
 .lvinfo summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:13px 0;cursor:pointer;font-weight:700;font-size:15px}
 .lvinfo summary::-webkit-details-marker{display:none}
@@ -2502,6 +2509,7 @@ function WarmUp({ media, onTech }) {
 }
 
 function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, setMedia, uploadMedia }) {
+  const [shareS, setShareS] = useState(null);
   const fromCoach = !!state.coachRoutine?.length;
   const mode = fromCoach ? "coach" : state.profile.routineMode || "auto";
   const custom = state.profile.customRoutine || [];
@@ -2572,9 +2580,11 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
       {state.sessions.slice().reverse().slice(0, 8).map((s) => (
         <div className="hist" key={s.id}>
           <span>{s.dayName || "Entreno"}</span>
-          <span>{new Date(s.date).toLocaleDateString("es-ES", { day: "numeric", month: "short" })} · {mmss(s.dur)} · {s.volume.toLocaleString("es-ES")} kg</span>
+          <span className="hist-r">{new Date(s.date).toLocaleDateString("es-ES", { day: "numeric", month: "short" })} · {mmss(s.dur)} · {s.volume.toLocaleString("es-ES")} kg
+            <button className="shr-btn" aria-label="Compartir este entreno" onClick={() => setShareS(s)}><ShareIcon /></button></span>
         </div>
       ))}
+      {shareS && (() => { const d = shareDataFor(shareS, state.sessions); return <ShareSheet session={d.session} prs={d.prs} levelImg={state.profile.mode === "simple" ? null : mediaOr(media, levelKey(state.profile.branch, state.profile.mode || "otaku", state.savedLevel || 0))} nick={state.nickname} onClose={() => setShareS(null)} />; })()}
       {tech && <TechniqueModal exId={tech} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} onClose={() => setTech(null)} />}
     </>
   );
@@ -3403,6 +3413,7 @@ function FinishScreen({ data, media, coach, uploadMedia, setMedia, onClose }) {
   const [last, setLast] = useState(null); // la que acaba de subir la coach, para verla al momento
   const pick = { img: (last && media[last]) || imgs[Math.floor(seed.r * imgs.length)] || null, shout: seed.shout };
   const [err, setErr] = useState("");
+  const [shareOpen, setShareOpen] = useState(false);
   const vol = useCount(data.volume || 0), sets = useCount(data.sets || 0, 700), xp = useCount(data.xp || 0, 700);
   return (
     <div className="fin" role="dialog" aria-label="Entreno terminado">
@@ -3433,9 +3444,200 @@ function FinishScreen({ data, media, coach, uploadMedia, setMedia, onClose }) {
           {err && <div className="err">{err}</div>}
         </div>
       )}
+      {data.share && <button className="btn fin-share" onClick={() => setShareOpen(true)}>Compartir en historias</button>}
       <button className="btn ac fin-btn" onClick={onClose}>Seguir</button>
+      {shareOpen && <ShareSheet session={data.share.session} prs={data.share.prs} levelImg={data.levelImg} nick={data.nick} onClose={() => setShareOpen(false)} />}
     </div>
   );
+}
+
+/* ============================ COMPARTIR EN HISTORIAS ============================ */
+
+// Se sustituye por el compartir nativo en la app; en el navegador comparte o descarga
+let SHARE_IMPL = async (dataUrl, name) => {
+  const blob = await (await fetch(dataUrl)).blob();
+  const file = new File([blob], name, { type: "image/png" });
+  if (navigator.canShare?.({ files: [file] })) return navigator.share({ files: [file] });
+  const a = document.createElement("a"); a.href = dataUrl; a.download = name; a.click();
+};
+
+// Récords de una sesión frente a todo lo anterior: mejor serie (1RM estimado) de cada ejercicio
+function prList(prevSessions, exercises) {
+  const bestSet = (sets) => sets.filter((x) => x.done && x.type !== "W" && Number(x.kg) > 0 && Number(x.reps) > 0)
+    .reduce((b, x) => (!b || epley(x.kg, x.reps) > epley(b.kg, b.reps) ? x : b), null);
+  return exercises.map((e) => {
+    if (EXERCISES[e.exId].unit) return null;
+    const now = bestSet(e.sets || []);
+    if (!now) return null;
+    let prev = null, prevDate = null;
+    prevSessions.forEach((s) => {
+      const x = s.exercises.find((y) => y.exId === e.exId);
+      const b = x && bestSet(x.sets || []);
+      if (b && (!prev || epley(b.kg, b.reps) > epley(prev.kg, prev.reps))) { prev = b; prevDate = s.date; }
+    });
+    if (!prev || epley(now.kg, now.reps) <= epley(prev.kg, prev.reps)) return null;
+    return { exId: e.exId, kg: Number(now.kg), reps: Number(now.reps), prevKg: Number(prev.kg), prevDate };
+  }).filter(Boolean);
+}
+
+const SHARE_FONT = '"Plus Jakarta Sans", system-ui, -apple-system, sans-serif';
+const loadImg = (src) => new Promise((res) => { if (!src) return res(null); const i = new Image(); i.crossOrigin = "anonymous"; i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+const shareDate = (d) => new Date(d).toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" }).replace(".", "").toUpperCase();
+function spaced(ctx, text, x, y, sp, align = "left") {
+  const chars = [...text]; const w = chars.reduce((a, c) => a + ctx.measureText(c).width + sp, -sp);
+  let cx = align === "right" ? x - w : align === "center" ? x - w / 2 : x;
+  chars.forEach((c) => { ctx.fillText(c, cx, y); cx += ctx.measureText(c).width + sp; });
+  return w;
+}
+function wrap(ctx, text, maxW) {
+  const words = text.split(" "), lines = []; let cur = "";
+  words.forEach((w) => { const t = cur ? `${cur} ${w}` : w; if (ctx.measureText(t).width > maxW && cur) { lines.push(cur); cur = w; } else cur = t; });
+  if (cur) lines.push(cur);
+  return lines.slice(0, 3);
+}
+function cover(ctx, img, W, H) {
+  const r = Math.max(W / img.width, H / img.height), w = img.width * r, h = img.height * r;
+  ctx.drawImage(img, (W - w) / 2, (H - h) / 2.6, w, h);
+}
+
+// Dibuja la tarjeta 1080x1920 (formato historia) y devuelve un PNG en base64
+async function drawShareCard({ kind, session, pr, bg, photo, levelImg, nick }) {
+  const W = 1080, H = 1920, PINK = "#D48B92", DIM = "rgba(255,255,255,.62)", GREEN = "#6EE7B7";
+  try { await Promise.all([document.fonts?.load(`800 90px ${SHARE_FONT}`), document.fonts?.load(`600 30px ${SHARE_FONT}`)]); } catch (e) { /* fuente del sistema */ }
+  const c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d");
+  x.fillStyle = "#050506"; x.fillRect(0, 0, W, H);
+  const bgImg = await loadImg(bg === "foto" ? photo : bg === "personaje" ? levelImg : null);
+  const logo = await loadImg("/logo-mark.png");
+  if (bgImg) {
+    cover(x, bgImg, W, H);
+    let g = x.createLinearGradient(0, 0, 0, 520); g.addColorStop(0, "rgba(0,0,0,.65)"); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(0, 0, W, 520);
+    g = x.createLinearGradient(0, 860, 0, H); g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(.45, "rgba(0,0,0,.78)"); g.addColorStop(1, "rgba(0,0,0,.95)"); x.fillStyle = g; x.fillRect(0, 860, W, H - 860);
+  } else {
+    const g = x.createRadialGradient(W / 2, 640, 40, W / 2, 640, 760); g.addColorStop(0, "rgba(212,139,146,.38)"); g.addColorStop(1, "rgba(212,139,146,0)"); x.fillStyle = g; x.fillRect(0, 0, W, H);
+    if (logo) { x.globalAlpha = .09; const lw = 760, lh = logo.height * lw / logo.width; x.drawImage(logo, (W - lw) / 2, 620 - lh / 2, lw, lh); x.globalAlpha = 1; }
+  }
+  // cabecera
+  if (logo) { const lw = 74, lh = logo.height * lw / logo.width; x.drawImage(logo, 72, 118 - lh / 2, lw, lh); }
+  x.fillStyle = "#fff"; x.textBaseline = "middle"; x.font = `800 46px ${SHARE_FONT}`; x.fillText("ARC", 162, 120);
+  const aw = x.measureText("ARC").width;
+  x.fillStyle = DIM; x.font = `500 30px ${SHARE_FONT}`; x.fillText("by Lunarovx", 162 + aw + 16, 122);
+  x.font = `600 28px ${SHARE_FONT}`; spaced(x, shareDate(kind === "pr" ? session.date || new Date() : session.date), W - 72, 122, 4, "right");
+  x.textBaseline = "alphabetic";
+
+  const L = 72, R = W - 72;
+  const stat = (label, value, unit, cx, y, color = "#fff") => {
+    x.fillStyle = DIM; x.font = `600 26px ${SHARE_FONT}`; spaced(x, label, cx, y, 4);
+    x.fillStyle = color; x.font = `800 88px ${SHARE_FONT}`; x.fillText(value, cx, y + 98);
+    const vw = x.measureText(value).width; x.font = `700 34px ${SHARE_FONT}`; x.fillText(unit, cx + vw + 8, y + 98);
+  };
+  const cols = [L, L + 400, L + 640];
+  const num = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  if (kind === "pr") {
+    // sello "NUEVO PR"
+    x.save(); x.translate(L + 10, 1040); x.rotate(-0.07);
+    x.strokeStyle = PINK; x.lineWidth = 6; x.strokeRect(0, 0, 330, 104); x.lineWidth = 2; x.strokeRect(10, 10, 310, 84);
+    x.fillStyle = PINK; x.font = `800 58px ${SHARE_FONT}`; x.fillText("NUEVO PR", 30, 75); x.restore();
+    let y = 1250;
+    x.fillStyle = PINK; x.beginPath(); x.arc(L + 9, y - 10, 9, 0, 7); x.fill(); x.font = `700 30px ${SHARE_FONT}`; spaced(x, "NUEVO RÉCORD", L + 34, y, 5);
+    x.fillStyle = "#fff"; x.font = `800 84px ${SHARE_FONT}`;
+    const lines = wrap(x, EXERCISES[pr.exId].n, R - L); y += 96; lines.forEach((l) => { x.fillText(l, L, y); y += 92; });
+    y += 4; x.fillStyle = "rgba(255,255,255,.25)"; x.fillRect(L, y, R - L, 2); y += 56;
+    stat("PESO", String(pr.kg).replace(".", ","), "kg", L, y);
+    stat("REPS", String(pr.reps), "", cols[1], y);
+    const gain = Math.round((pr.kg - pr.prevKg) * 10) / 10;
+    stat(pr.prevDate ? `VS ${new Date(pr.prevDate).toLocaleDateString("es-ES", { day: "2-digit", month: "short" }).replace(".", "").toUpperCase()}` : "ANTES", gain > 0 ? `+${String(gain).replace(".", ",")}` : `${pr.reps}r`, gain > 0 ? "kg" : "", cols[2], y, GREEN);
+  } else {
+    const prs = session.prs || 0;
+    let y = 1190 - (session.top?.length && !bgImg ? 0 : 0);
+    if (!bgImg && session.top?.length) {
+      x.font = `600 34px ${SHARE_FONT}`; let ty = 800;
+      session.top.slice(0, 4).forEach((t) => { x.fillStyle = "#fff"; x.fillText(t.name, L, ty); x.fillStyle = DIM; x.textAlign = "right"; x.fillText(t.detail, R, ty); x.textAlign = "left"; ty += 62; });
+    }
+    if (prs > 0) {
+      const t = prs === 1 ? "1 NUEVO RÉCORD" : `${prs} NUEVOS RÉCORDS`; x.font = `800 30px ${SHARE_FONT}`;
+      const tw = x.measureText(t).width + 90; x.fillStyle = PINK; x.beginPath(); x.roundRect(L, y - 120, tw, 64, 32); x.fill();
+      x.fillStyle = "#000"; x.fillText("★ " + t, L + 26, y - 77);
+    }
+    x.fillStyle = PINK; x.beginPath(); x.arc(L + 9, y - 10, 9, 0, 7); x.fill(); x.font = `700 30px ${SHARE_FONT}`; spaced(x, "ENTRENO COMPLETADO", L + 34, y, 5);
+    x.fillStyle = "#fff"; x.font = `800 92px ${SHARE_FONT}`;
+    const lines = wrap(x, session.dayName || "Entreno", R - L); y += 104; lines.forEach((l) => { x.fillText(l, L, y); y += 98; });
+    y += 4; x.fillStyle = "rgba(255,255,255,.25)"; x.fillRect(L, y, R - L, 2); y += 56;
+    const vol = Math.round(session.volume || 0);
+    stat("VOLUMEN", vol >= 100000 ? (vol / 1000).toLocaleString("es-ES", { maximumFractionDigits: 1 }) : num(vol), vol >= 100000 ? "t" : "kg", L, y);
+    stat("SERIES", String(session.sets || 0), "", cols[1], y);
+    stat("TIEMPO", String(Math.max(1, Math.round((session.dur || 0) / 60))), "min", cols[2], y);
+  }
+  // pie
+  x.fillStyle = "#fff"; x.font = `800 32px ${SHARE_FONT}`; if (nick) spaced(x, nick.toUpperCase(), L, H - 120, 2);
+  x.fillStyle = DIM; x.font = `500 28px ${SHARE_FONT}`; x.textAlign = "right"; x.fillText("ARC by Lunarovx", R, H - 120); x.textAlign = "left";
+  return c.toDataURL("image/png");
+}
+
+// Hoja para elegir tarjeta y fondo y compartirla (Instagram, WhatsApp, guardar en fotos…)
+function ShareSheet({ session, prs = [], levelImg, nick, onClose }) {
+  const [kind, setKind] = useState(prs.length ? "pr:0" : "resumen");
+  const [bg, setBg] = useState(levelImg ? "personaje" : "liso");
+  const [photo, setPhoto] = useState(null);
+  const [url, setUrl] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const fileRef = useRef(null);
+  useEffect(() => {
+    let on = true; setUrl(null);
+    const pr = kind.startsWith("pr:") ? prs[Number(kind.slice(3))] : null;
+    drawShareCard({ kind: pr ? "pr" : "resumen", session, pr, bg, photo, levelImg, nick }).then((u) => on && setUrl(u)).catch(() => on && setErr("No se ha podido crear la imagen."));
+    return () => { on = false; };
+  }, [kind, bg, photo]);
+  const share = async () => {
+    setBusy(true); setErr("");
+    try { await SHARE_IMPL(url, `arc-${kind.replace(":", "-")}.png`); } catch (e) { if (!/cancel/i.test(e?.message || "")) setErr("No se ha podido compartir. Inténtalo otra vez."); }
+    finally { setBusy(false); }
+  };
+  return (
+    <div className="modal shr" onClick={onClose}>
+      <div className="box" onClick={(e) => e.stopPropagation()}>
+        <h1 style={{ fontSize: 20 }}>Compartir en historias</h1>
+        <div className="chips">
+          <button className={`chip ${kind === "resumen" ? "on" : ""}`} onClick={() => setKind("resumen")}>Resumen del entreno</button>
+          {prs.map((p, i) => <button key={p.exId} className={`chip ${kind === `pr:${i}` ? "on" : ""}`} onClick={() => setKind(`pr:${i}`)}>PR · {EXERCISES[p.exId].n}</button>)}
+        </div>
+        <div className="shr-prev">{url ? <img src={url} alt="Vista previa de la tarjeta" /> : <span>Creando…</span>}</div>
+        <div className="chips">
+          <button className={`chip ${bg === "foto" ? "on" : ""}`} onClick={() => (photo ? setBg("foto") : fileRef.current?.click())}>{photo ? "Mi foto" : "Elegir foto"}</button>
+          {levelImg && <button className={`chip ${bg === "personaje" ? "on" : ""}`} onClick={() => setBg("personaje")}>Mi personaje</button>}
+          <button className={`chip ${bg === "liso" ? "on" : ""}`} onClick={() => setBg("liso")}>Liso</button>
+          {photo && <button className="chip" onClick={() => fileRef.current?.click()}>Cambiar foto</button>}
+        </div>
+        <input ref={fileRef} type="file" accept="image/*" hidden onChange={async (e) => {
+          const f = e.target.files?.[0]; e.target.value = ""; if (!f) return;
+          try { setPhoto(await readFile(f, 1400)); setBg("foto"); } catch (er) { setErr("No se ha podido abrir la foto."); }
+        }} />
+        <p className="hint">La imagen se crea en tu móvil y solo se comparte si tú lo eliges. No se sube a ningún sitio.</p>
+        {err && <div className="err">{err}</div>}
+        <button className="btn ac" disabled={!url || busy} onClick={share}>{busy ? "Un momento…" : "Compartir"}</button>
+        <button className="btn" onClick={onClose}>Cerrar</button>
+      </div>
+    </div>
+  );
+}
+
+const ShareIcon = () => (
+  <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v12" /><path d="M7 8l5-5 5 5" /><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" /></svg>
+);
+// Datos para la tarjeta a partir de una sesión guardada
+function shareDataFor(session, allSessions) {
+  const prev = allSessions.filter((s) => s.date < session.date);
+  const prs = prList(prev, session.exercises || []);
+  const top = (session.exercises || []).map((e) => {
+    const done = (e.sets || []).filter((x) => x.done && x.type !== "W");
+    if (!done.length) return null;
+    const best = done.reduce((b, x) => ((Number(x.kg) || 0) > (Number(b.kg) || 0) ? x : b), done[0]);
+    const vol = done.reduce((a, x) => a + (Number(x.kg) || 0) * (Number(x.reps) || 0), 0);
+    const unit = EXERCISES[e.exId].unit;
+    return { name: EXERCISES[e.exId].n, vol, detail: unit ? `${done.length} × ${best.reps} ${unit}` : `${done.length} × ${best.kg || 0} kg` };
+  }).filter(Boolean).sort((a, b) => b.vol - a.vol);
+  return { session: { ...session, prs: prs.length, top }, prs };
 }
 
 // Cuántos ejercicios superan su mejor 1RM estimado anterior
@@ -3603,6 +3805,9 @@ function Tour({ profile, ev, heroImg, perms, onFinish, media = {} }) {
 }
 
 /* ============================ AJUSTES ============================ */
+
+SHARE_IMPL = nativeShare; // compartir con la hoja nativa del móvil
+
 
 const WEEK = [[2, "L"], [3, "M"], [4, "X"], [5, "J"], [6, "V"], [7, "S"], [1, "D"]];
 
@@ -4511,7 +4716,7 @@ function ArcApp({ user }) {
       setState(next);
       const { best, pullups } = bestLifts(next);
       const lv = evaluate(next.profile.branch, { ...stats, ratio: ratioOf(next.profile.branch, best, currentWeight(next)), pullups }, next.profile.mode).current;
-      setDone({ dur: row.duration_s, sets, volume, xp: RULES.XP_PER_SESSION, prs });
+      setDone({ dur: row.duration_s, sets, volume, xp: RULES.XP_PER_SESSION, prs, share: shareDataFor(session, next.sessions), nick: state.nickname, levelImg: next.profile.mode === "simple" ? null : mediaOr(media, levelKey(next.profile.branch, next.profile.mode || "otaku", lv)) });
       setTab("inicio");
     } catch (e) { setToast("No se ha podido guardar el entreno. Tu sesión sigue abierta: vuelve a darle a Terminar."); }
   };

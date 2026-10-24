@@ -4,6 +4,12 @@
 <dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>ARC usa la cámara solo si eliges hacer una foto para tu perfil, tus revisiones o tu tarjeta de entreno para compartir.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>ARC solo accede a las fotos que tú eliges para tu perfil, tus revisiones o tu tarjeta de entreno para compartir.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>ARC guarda en tu carrete las tarjetas de tus entrenos y récords cuando tú se lo pides.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>ARC lee tus pasos de Apple Salud para rellenar tus hábitos del día automáticamente.</string>
 	<key>NSHealthUpdateUsageDescription</key>
