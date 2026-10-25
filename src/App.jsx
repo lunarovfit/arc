@@ -1242,6 +1242,43 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .shr-tip-box b{display:block;font-size:17px;line-height:1.35}
 .shr-tip-box p{color:var(--dm);font-size:14px;margin:8px 0 14px}
 .fin-share{margin-top:10px}
+.qc{display:block;width:100%;text-align:left;background:none;border:0;color:var(--tx);font:inherit;cursor:pointer;padding:6px 0 2px}
+.qc p{font-size:19px;line-height:1.32;margin:0 0 8px}
+.qc .who{font-size:13px}.qc .from{font-weight:400;color:var(--dm)}
+.qc-more{display:inline-block;margin-top:8px;font-size:12px;color:var(--ac)}
+.prize{margin-top:12px;border-radius:16px;padding:14px;background:linear-gradient(135deg,rgba(212,139,146,.22),rgba(212,139,146,.04));border:1px solid rgba(212,139,146,.45)}
+.prize-hd{display:flex;align-items:center;gap:8px}
+.prize-ic{width:26px;height:26px;border-radius:50%;background:var(--ac);color:#000;display:flex;align-items:center;justify-content:center;font-size:14px}
+.prize-hd b{font-size:15px}
+.prize p{font-size:14px;line-height:1.5;margin:8px 0 10px}
+.prize-links{display:flex;gap:16px;align-items:center;font-size:13px}
+.prize-links a{color:var(--ac);font-weight:700;text-decoration:none}
+.prize small{display:block;margin-top:10px;font-size:11px;line-height:1.4;color:var(--dm)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0 0}
+.kpi{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:11px 12px}
+.kpi small{display:flex;align-items:center;gap:4px;font-size:11.5px;color:var(--dm)}
+.kpi b{display:block;font-size:22px;font-weight:800;margin:3px 0 7px;font-variant-numeric:tabular-nums}
+.kpi b span{font-size:13px;color:var(--dm);font-weight:600}
+.kpi .bar{height:5px}
+.kpi .dots{display:flex;gap:3px}.kpi .dots i{flex:1;height:5px;border-radius:3px;background:var(--sf2)}.kpi .dots i.on{background:var(--ac)}
+.nextcard{margin-top:12px;background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:14px 14px 4px}
+.nc-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.nc-top small{color:var(--dm);font-size:12px}.nc-top b{font-size:16px}
+.nc-lim{font-size:14px;line-height:1.45;color:var(--dm);margin:8px 0 6px}.nc-lim b{color:var(--tx)}
+.fold{margin-top:10px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:0 14px}
+.fold.in{margin:0;background:none;border:0;border-top:1px solid var(--ln);border-radius:0;padding:0}
+.fold summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:13px 0;cursor:pointer;font-weight:700;font-size:15px}
+.fold.in summary{font-size:13px;font-weight:600;color:var(--dm);padding:11px 0}
+.fold summary::-webkit-details-marker{display:none}
+.fold summary i{font-style:normal;color:var(--ac);font-size:20px;transition:transform .2s}
+.fold[open] summary i{transform:rotate(45deg)}
+.fold-p{margin:0 0 14px;font-size:14px;line-height:1.55;color:var(--dm)}
+.fold .skills{margin:0 0 14px;padding:0;background:none;border:0}
+.fold .sk-title{display:none}
+.sfoot{display:flex;flex-direction:column;align-items:center;gap:8px;padding:26px 0 10px;color:var(--dm)}
+.sfoot-icons{display:flex;gap:14px}
+.sfoot-icons a{width:46px;height:46px;border-radius:50%;border:1px solid var(--ln);background:var(--sf);display:flex;align-items:center;justify-content:center;color:var(--tx)}
+.sfoot span{font-size:13px;font-weight:600;letter-spacing:.02em}
 .lvinfo{margin-top:18px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:0 14px}
 .lvinfo summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:13px 0;cursor:pointer;font-weight:700;font-size:15px}
 .lvinfo summary::-webkit-details-marker{display:none}
@@ -1730,12 +1767,38 @@ const IgIcon = () => (
 function SocialLinks() {
   return (
     <div className="social">
-      {APP_IG && <a className="social-row" href={`https://instagram.com/${APP_IG}`} target="_blank" rel="noopener noreferrer">
-        <i><IgIcon /></i><span><b>Sigue a ARC en Instagram</b><small>@{APP_IG} · novedades y trucos</small></span><em>›</em>
-      </a>}
       <a className="social-row" href={`https://ig.me/m/${COACH_IG}`} target="_blank" rel="noopener noreferrer">
         <i><IgIcon /></i><span><b>Asesorías 1:1 con Luna</b><small>Escríbeme a @{COACH_IG}</small></span><em>›</em>
       </a>
+    </div>
+  );
+}
+
+// Frase del día compacta: el "por qué" se abre al tocar
+function QuoteCard({ quote }) {
+  const [qq, who, from, why, kind] = quote;
+  const [open, setOpen] = useState(false);
+  return (
+    <button className="quote qc" onClick={() => setOpen(!open)} aria-expanded={open}>
+      <p>{kind === "cita" ? `“${qq}”` : qq}</p>
+      <div className="who">{who} <span className="from">· {from}</span></div>
+      {why && (open ? <div className="why">{why}</div> : <span className="qc-more">Por qué te lo digo</span>)}
+    </button>
+  );
+}
+
+const YtIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.5a3 3 0 0 0-2.1-2.1C19.5 4 12 4 12 4s-7.5 0-9.4.4A3 3 0 0 0 .5 6.5 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.5 3 3 0 0 0 2.1 2.1c1.9.4 9.4.4 9.4.4s7.5 0 9.4-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.5zM9.6 15.6V8.4L15.8 12z" /></svg>
+);
+// Pie de la pantalla principal: Instagram y YouTube de la app
+function SocialFooter() {
+  return (
+    <div className="sfoot">
+      <div className="sfoot-icons">
+        <a href={`https://instagram.com/${APP_IG}`} target="_blank" rel="noopener noreferrer" aria-label="Instagram de ARC"><IgIcon /></a>
+        <a href={`https://youtube.com/@${APP_IG}`} target="_blank" rel="noopener noreferrer" aria-label="YouTube de ARC"><YtIcon /></a>
+      </div>
+      <span>@{APP_IG}</span>
     </div>
   );
 }
@@ -1796,6 +1859,7 @@ function HomeSimple({ state, stats, quote, ratioPoints, weightPoints }) {
         <LineChart points={weightPoints} empty="Apunta tu peso en Hábitos dos días para ver la tendencia." />
       </div>
       <SocialLinks />
+      <SocialFooter />
     </>
   );
 }
@@ -1818,14 +1882,14 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
   const [qq, who, from, why, kind] = quote;
   const heroImg = mediaOr(media, levelKey(branch, mode, ev.current)) || AVATAR[branch];
   if (mode === "simple") return <HomeSimple state={state} stats={stats} quote={quote} ratioPoints={ratioPoints} weightPoints={weightPoints} />;
+  const ws = weekStart().toISOString().slice(0, 10);
+  const weekN = state.sessions.filter((s) => s.date.slice(0, 10) >= ws).length;
+  const goalDays = state.profile.days || 3;
+  const stepsToday = Number((state.habits[dkey()] || {}).steps) || 0;
+  const lim = ev.next ? FACTORS.find((f) => f.key === ev.limiter.key) : null;
   return (
     <>
-      <div className="quote">
-        <p>{kind === "cita" ? `“${qq}”` : qq}</p>
-        <div className="who">{who}</div>
-        <div className="from">{from}</div>
-        <div className="why">{why}</div>
-      </div>
+      <QuoteCard quote={quote} />
 
       <div className="hero-row">
         <div className="hero">
@@ -1844,58 +1908,91 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
         </div>
       </div>
       {stats.provisional && <div className="gauge"><div className="prov">Nivel provisional: la adherencia empieza a contar en tu día {RULES.ADHERENCE_MIN_DAYS}.</div></div>}
-      <StepsTile state={state} />
-      <Skills lv={lv} L={L} stats={stats} ev={ev} />
+
+      <div className="kpis">
+        <div className="kpi">
+          <small>Pasos hoy{state.profile?.stepsLinked && <HealthIcon size={12} />}</small>
+          <b>{String(stepsToday).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</b>
+          <div className="bar"><i style={{ width: `${Math.min(100, (stepsToday / RULES.STEPS_GOAL) * 100)}%`, background: "var(--ac)" }} /></div>
+        </div>
+        <div className="kpi">
+          <small>Esta semana</small>
+          <b>{weekN}<span>/{goalDays}</span></b>
+          <div className="bar"><i style={{ width: `${Math.min(100, (weekN / goalDays) * 100)}%`, background: "var(--ac)" }} /></div>
+        </div>
+        <div className="kpi">
+          <small>Racha</small>
+          <b>{stats.streak}<span> días</span></b>
+          <div className="dots">{Array.from({ length: 7 }).map((_, i) => <i key={i} className={i < Math.min(7, stats.streak) ? "on" : ""} />)}</div>
+        </div>
+      </div>
 
       {ev.next ? (
-        <>
-          <h2>Para llegar a {ev.next.name}</h2>
+        <div className="nextcard">
+          <div className="nc-top"><small>Siguiente nivel</small><b>{ev.next.name}</b></div>
+          {lim && (
+            <p className="nc-lim">Lo que más te falta: <b>{lim.label.toLowerCase()}</b>{!(lim.key === "adherence" && stats.provisional) && <> · {lim.fmt(stats[lim.key])} de {lim.fmt(ev.next[lim.key])}</>}</p>
+          )}
+          <details className="fold in">
+            <summary><span>Ver todo lo que pide</span><i aria-hidden="true">+</i></summary>
           {FACTORS.filter((f) => !f.optional).map((f) => {
-            const need = ev.next[f.key], have = stats[f.key];
-            const prov = f.key === "adherence" && stats.provisional;
-            const ok = prov || have >= need;
-            return (
-              <div key={f.key} className={`fac ${ok ? "ok" : ""}`}>
-                <div className="hd"><span>{f.label}</span><span>{prov ? "Aún sin contar" : `${f.fmt(have)} / ${f.fmt(need)}`}</span></div>
-                <div className="bar"><i style={{ width: `${prov ? 100 : Math.min(100, need ? (have / need) * 100 : 100)}%` }} /></div>
+              const need = ev.next[f.key], have = stats[f.key];
+              const prov = f.key === "adherence" && stats.provisional;
+              const ok = prov || have >= need;
+              return (
+                <div key={f.key} className={`fac ${ok ? "ok" : ""}`}>
+                  <div className="hd"><span>{f.label}</span><span>{prov ? "Aún sin contar" : `${f.fmt(have)} / ${f.fmt(need)}`}</span></div>
+                  <div className="bar"><i style={{ width: `${prov ? 100 : Math.min(100, need ? (have / need) * 100 : 100)}%` }} /></div>
+                </div>
+              );
+            })}
+            {ev.next.pullups > 0 && (
+              <div className="fac extra">
+                <div className="hd"><span>Dominadas <em>extra</em></span><span>{stats.pullups} / {ev.next.pullups}</span></div>
+                <p className="hint" style={{ margin: "2px 0 0" }}>{stats.pullups >= ev.next.pullups ? "Las tienes. Suman en tus skills, aunque no hacen falta para subir." : "No hacen falta para subir de nivel. Si las consigues, suman en tus skills."}</p>
               </div>
-            );
-          })}
-          {ev.next.pullups > 0 && (
-            <div className="fac extra">
-              <div className="hd"><span>Dominadas <em>extra</em></span><span>{stats.pullups} / {ev.next.pullups}</span></div>
-              <p className="hint" style={{ margin: "2px 0 0" }}>{stats.pullups >= ev.next.pullups ? "Las tienes. Suman en tus skills, aunque no hacen falta para subir." : "No hacen falta para subir de nivel. Si las consigues, suman en tus skills."}</p>
-            </div>
-          )}
-          {ev.perFactor.ratio > ev.current && (
-            <div className="note">Tu fuerza ya es de nivel {ev.perFactor.ratio + 1}, {L[ev.perFactor.ratio].name}. Lo que te frena ahora: {ev.limiter.label.toLowerCase()}.</div>
-          )}
-        </>
+            )}
+            {ev.next.pullups > 0 && (
+              <div className="fac extra">
+                <div className="hd"><span>Dominadas <em>extra</em></span><span>{stats.pullups} / {ev.next.pullups}</span></div>
+                <p className="hint" style={{ margin: "2px 0 0" }}>No hacen falta para subir de nivel. Si las consigues, suman en tus skills.</p>
+              </div>
+            )}
+          </details>
+        </div>
       ) : <div className="note">Has completado el arco. No queda nadie por encima.</div>}
 
+      <details className="fold">
+        <summary><span>Tus skills</span><i aria-hidden="true">+</i></summary>
+        <Skills lv={lv} L={L} stats={stats} ev={ev} />
+      </details>
+
+      <details className="fold">
+        <summary><span>Tu progreso</span><i aria-hidden="true">+</i></summary>
+        <div className="chart">
+          <div className="hd"><span>Fuerza relativa</span><b>{stats.ratio.toFixed(2)}x</b></div>
+          <LineChart points={ratioPoints} empty="Registra tu primer entreno para ver la curva." />
+        </div>
+        <div className="chart">
+          <div className="hd"><span>Peso corporal</span><b>{currentWeight(state)} kg</b></div>
+          <LineChart points={weightPoints} empty="Apunta tu peso en Hábitos dos días para ver la tendencia." />
+        </div>
+        <div className="stat3" style={{ margin: "10px 0 14px" }}>
+          <div><b>{state.sessions.length}</b><span>Entrenos</span></div>
+          <div><b>{stats.streak}</b><span>Días de racha</span></div>
+          <div><b>{state.gems}</b><span>Gemas</span></div>
+        </div>
+      </details>
+
       {lv.line && (
-        <details className="lvinfo">
+        <details className="fold">
           <summary><span>Sobre {lv.name}</span><i aria-hidden="true">+</i></summary>
-          <p>{lv.line}</p>
+          <p className="fold-p">{lv.line}</p>
         </details>
       )}
 
-      <h2>Tu progreso</h2>
-      <div className="chart">
-        <div className="hd"><span>Fuerza relativa</span><b>{stats.ratio.toFixed(2)}x</b></div>
-        <LineChart points={ratioPoints} empty="Registra tu primer entreno para ver la curva." />
-      </div>
-      <div className="chart">
-        <div className="hd"><span>Peso corporal</span><b>{currentWeight(state)} kg</b></div>
-        <LineChart points={weightPoints} empty="Apunta tu peso en Hábitos dos días para ver la tendencia." />
-      </div>
-      <div className="stat3" style={{ marginTop: 10 }}>
-        <div><b>{state.sessions.length}</b><span>Entrenos</span></div>
-        <div><b>{stats.streak}</b><span>Días de racha</span></div>
-        <div><b>{state.gems}</b><span>Gemas</span></div>
-      </div>
-
-      <h2>El arco completo</h2>
+      <details className="fold" open={coach || undefined}>
+        <summary><span>El arco completo</span><i aria-hidden="true">+</i></summary>
       {coach && <>
         <div className="seg">
           <button className={vb === "female" ? "on" : ""} onClick={() => setVb("female")}>Femenina</button>
@@ -1923,7 +2020,10 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
           </div>
         );
       })}
+      </details>
+
       <SocialLinks />
+      <SocialFooter />
     </>
   );
 }
@@ -3199,7 +3299,35 @@ function MyRankProfile({ me, api, media, state, onOpen }) {
   );
 }
 
-function Ranking({ me, state, api, media = {}, blocked = [], onBlock, onUnblockAll }) {
+// Premios y sorteos del ranking (los anuncia Luna en Instagram). Texto editable por la coach.
+const PRIZE_DEFAULT = "Las primeras del ranking entran en los premios y sorteos que anunciamos en Instagram. ¡Atenta a las historias!";
+function PrizeCard({ media, coach, setMedia, onRules }) {
+  const text = media["rank:prize"] || PRIZE_DEFAULT;
+  const [edit, setEdit] = useState(false);
+  const [val, setVal] = useState(text);
+  return (
+    <div className="prize">
+      <div className="prize-hd"><span className="prize-ic">★</span><b>Premios y sorteos</b></div>
+      {edit ? (
+        <>
+          <textarea className="in" rows={3} value={val} onChange={(e) => setVal(e.target.value)} />
+          <div className="chips" style={{ marginTop: 8 }}>
+            <button className="chip on" onClick={() => { setMedia?.("rank:prize", val.trim() || null); setEdit(false); }}>Guardar</button>
+            <button className="chip" onClick={() => { setVal(text); setEdit(false); }}>Cancelar</button>
+          </div>
+        </>
+      ) : <p>{text}</p>}
+      <div className="prize-links">
+        <a href={`https://instagram.com/${APP_IG}`} target="_blank" rel="noopener noreferrer">Ver en @{APP_IG}</a>
+        <button className="inlink" onClick={onRules}>Bases</button>
+        {coach && !edit && <button className="inlink" onClick={() => setEdit(true)}>Editar texto</button>}
+      </div>
+      <small>Apple no patrocina ni participa de ninguna forma en estos premios ni sorteos. Participar es gratis y no hace falta comprar nada.</small>
+    </div>
+  );
+}
+
+function Ranking({ me, state, api, media = {}, blocked = [], onBlock, onUnblockAll, coach = false, setMedia }) {
   const [board, setBoard] = useState(null);
   const [last, setLast] = useState(null);
   const [err, setErr] = useState("");
@@ -3217,7 +3345,7 @@ function Ranking({ me, state, api, media = {}, blocked = [], onBlock, onUnblockA
   const legalView = legalDoc && (
     <div className="rk-legal" role="dialog" aria-label="Normas de la comunidad">
       <div className="rk-legal-top"><button className="link" onClick={() => setLegalDoc(null)}>Cerrar</button></div>
-      <iframe title="Normas de la comunidad" src={`/${legalDoc}.html#normas`} />
+      <iframe title="Normas y bases" src={legalDoc === "terminos-premios" ? "/terminos.html#premios" : `/${legalDoc}.html#normas`} />
     </div>
   );
 
@@ -3284,6 +3412,7 @@ function Ranking({ me, state, api, media = {}, blocked = [], onBlock, onUnblockA
       <p className="sub">Del {fmtDay(start)} al {fmtDay(end)} · se reinicia en {daysLeft} {daysLeft === 1 ? "día" : "días"}</p>
 
       <WeekCard state={state} rank={myRank} />
+      <PrizeCard media={media} coach={coach} setMedia={setMedia} onRules={() => setLegalDoc("terminos-premios")} />
 
       <div className="rk-search">
         <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2.4" /><path d="M16.5 16.5L21 21" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" /></svg>
@@ -4796,7 +4925,7 @@ function ArcApp({ user }) {
   } else if (tab === "entrenos") {
     body = <Workouts state={state} routine={routine} onStart={(d) => setActive(newSession(d, state.sessions))} setDays={(d) => setProfile({ days: d })} setProfile={setProfile} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
   } else if (tab === "ranking") {
-    body = <Ranking me={{ optIn: !!state.rankOptIn, nickname: state.nickname, avatar: state.avatar, pending: state.avatarPending, isPublic: state.profilePublic !== false }} state={{ ...state, savedLevel: ev?.current ?? state.savedLevel }} api={rankApi} media={media} blocked={state.profile?.blocked || []} onBlock={(n) => setProfile({ blocked: [...new Set([...(state.profile?.blocked || []), n])] })} onUnblockAll={() => setProfile({ blocked: [] })} />;
+    body = <Ranking me={{ optIn: !!state.rankOptIn, nickname: state.nickname, avatar: state.avatar, pending: state.avatarPending, isPublic: state.profilePublic !== false }} state={{ ...state, savedLevel: ev?.current ?? state.savedLevel }} api={rankApi} media={media} coach={coach} setMedia={setMedia} blocked={state.profile?.blocked || []} onBlock={(n) => setProfile({ blocked: [...new Set([...(state.profile?.blocked || []), n])] })} onUnblockAll={() => setProfile({ blocked: [] })} />;
   } else if (tab === "nutricion") {
     body = <Nutrition profile={state.profile} setCook={(c) => setProfile({ cook: c })} media={media} />;
   } else {
