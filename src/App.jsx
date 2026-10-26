@@ -208,7 +208,6 @@ let QUOTES = [
   ["Elige aquello de lo que menos te vayas a arrepentir.", "Levi Ackerman", "Attack on Titan", "¿Te arrepentirás más de ir al gym cansada o de no haber ido? Ya lo sabes.", "cita"],
   ["Si muero intentándolo, al menos lo intenté.", "Monkey D. Luffy", "One Piece", "Luffy se mete en peleas que todos dan por perdidas. Lo que cuenta es plantarte, no tenerlo ganado de antemano. Hoy no hace falta el entreno perfecto, hace falta intentarlo.", "leccion"],
   ["No todo el que se esfuerza triunfa, pero todo el que ha triunfado se ha esforzado.", "Kamogawa", "Hajime no Ippo", "El esfuerzo no te asegura el resultado. Es lo único que te da opciones.", "cita"],
-  ["Cree en ti. No en el yo que cree en ti, ni en el tú que cree en mí. Cree en el tú que cree en ti.", "Kamina", "Gurren Lagann", "Para los días en que no te ves capaz. Simon tampoco se lo creía.", "cita"],
   ["El talento es algo que haces florecer. El instinto es algo que pules.", "Toru Oikawa", "Haikyuu!!", "Oikawa no era un genio y llegó arriba puliendo lo suyo cada día.", "cita"],
   ["Una lección sin dolor no tiene sentido. Nadie gana nada sin sacrificar algo a cambio.", "Edward Elric", "Fullmetal Alchemist: Brotherhood", "Las agujetas, el madrugón, el táper. Eso es lo que pagas a cambio.", "cita"],
   ["No importa lo fuerte que golpees. Importa lo fuerte que te pueden golpear y seguir avanzando.", "Rocky Balboa", "Rocky Balboa", "Una mala semana, un catarro, exámenes. Lo importante es volver el lunes.", "cita"],
@@ -228,7 +227,6 @@ let QUOTES = [
   ["Levántate y camina. Sigue adelante. Tienes dos buenas piernas.", "Edward Elric", "Fullmetal Alchemist: Brotherhood", "Ed lo perdió casi todo y aun así se levantó. Tú también puedes con hoy.", "cita"],
   ["Los sueños de las personas nunca se acaban.", "Barbanegra", "One Piece", "Da igual cuánto tiempo lleves sin entrenar o cuántas veces lo hayas dejado. Siempre puedes volver.", "cita"],
   ["No le des a nadie el poder de decidir tu destino.", "Giyu Tomioka", "Demon Slayer", "Ni a quien te dice que no es para ti, ni a la voz de tu cabeza que lo repite.", "cita"],
-  ["Tu taladro es el que perforará los cielos.", "Kamina", "Gurren Lagann", "Lo que tienes ahora, aunque te parezca poco, es justo con lo que vas a llegar.", "cita"],
 ];
 
 /* ============================ ENTRENO ============================ */
