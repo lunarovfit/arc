@@ -210,6 +210,7 @@ let QUOTES = [
   ["Elige aquello de lo que menos te vayas a arrepentir.", "Levi Ackerman", "Attack on Titan", "¿Te arrepentirás más de ir al gym cansada o de no haber ido? Ya lo sabes.", "cita"],
   ["Tranquilo, soy el más fuerte.", "Satoru Gojo", "Jujutsu Kaisen", "Dilo antes de ponerte bajo la barra. La confianza también se entrena.", "cita"],
   ["¡Voy a ser el Rey de los Piratas!", "Monkey D. Luffy", "One Piece", "Luffy lo grita desde el capítulo uno sin vergüenza. Ponle nombre a tu meta.", "cita"],
+  ["Si muero intentándolo, al menos lo intenté.", "Monkey D. Luffy", "One Piece", "Luffy se mete en peleas que todos dan por perdidas. Lo que cuenta es plantarte, no tenerlo ganado de antemano. Hoy no hace falta el entreno perfecto, hace falta intentarlo.", "leccion"],
   ["No todo el que se esfuerza triunfa, pero todo el que ha triunfado se ha esforzado.", "Kamogawa", "Hajime no Ippo", "El esfuerzo no te asegura el resultado. Es lo único que te da opciones.", "cita"],
   ["¡Arde, corazón!", "Kyojuro Rengoku", "Demon Slayer", "Para cuando la motivación se apaga a mitad de entreno.", "cita"],
   ["Cree en ti. No en el yo que cree en ti, ni en el tú que cree en mí. Cree en el tú que cree en ti.", "Kamina", "Gurren Lagann", "Para los días en que no te ves capaz. Simon tampoco se lo creía.", "cita"],
