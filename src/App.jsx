@@ -42,7 +42,7 @@ const LEVELS = {
     ["Kobeni Higashiyama", "Chainsaw Man", "Llora, tiembla y aun así esquiva un cuchillo en el último segundo. Tiene unos reflejos que ya quisieran muchos. Empezar con miedo también es empezar."],
     ["Ochaco Uraraka", "My Hero Academia", "Su poder era hacer flotar cosas, pero se puso a aprender cuerpo a cuerpo para no depender de él. Aquí aprendes a mover tu propio peso."],
     ["Nami", "One Piece", "Pasó años ahorrando ella sola para liberar a su pueblo, sin que nadie lo supiera. Constancia de la que no se ve, un día detrás de otro."],
-    ["Asuka Langley", "Neon Genesis Evangelion", "Piloto desde niña y orgullosa hasta la médula. Cuando todos la daban por acabada, volvió a subirse al Eva y peleó sola contra nueve."],
+    ["Talia Yang", "Cyberpunk: Edgerunners 2", "Lo tenía todo en las torres corpo y eligió la calle. Rebelde, sin miedo y con prisa por vivir, aunque nadie entendiera por qué. Aquí la prisa se convierte en constancia."],
     ["Nobara Kugisaki", "Jujutsu Kaisen", "Se fue de su pueblo porque se le quedaba pequeño. Martillo, clavos y cero ganas de pedir permiso a nadie."],
     ["Lucy", "Cyberpunk: Edgerunners", "Netrunner de élite con un único sueño: llegar a la luna. Fría por fuera y con un foco que nada consigue romper."],
     ["Annie Leonhart", "Attack on Titan", "Su padre la entrenó desde pequeña y acabó siendo la mejor de su promoción en cuerpo a cuerpo. Tumbaba a Reiner, que le sacaba dos cabezas."],
@@ -74,7 +74,7 @@ const MOVES = {
   "Kobeni Higashiyama": ["Reflejos al límite", "Sobrevivir"],
   "Ochaco Uraraka": ["Gravedad cero", "Cuerpo a cuerpo"],
   "Nami": ["Clima-Tact", "Estrategia"],
-  "Asuka Langley": ["Piloto de Eva", "Orgullo"],
+  "Talia Yang": ["Cromo y calle", "Rebeldía"],
   "Nobara Kugisaki": ["Resonancia", "Martillo y clavos"],
   "Lucy": ["Netrunner", "Monofilamento"],
   "Annie Leonhart": ["Patada baja", "Titán hembra"],
@@ -1625,7 +1625,7 @@ function Questionnaire({ initial, editing, onSave, onCancel }) {
 const MEDIA_PREFIX = "arc-media:";
 const MAX_MEDIA_BYTES = 4.5e6; // límite de la vista previa; en producción va a Supabase Storage
 
-async function readFile(file, maxW = 640) {
+async function readFile(file, maxW = 640, q = 0.85) {
   const raw = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
   if (!file.type.startsWith("image/") || file.type === "image/gif") return raw;
   const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = raw; });
@@ -1633,7 +1633,7 @@ async function readFile(file, maxW = 640) {
   const c = document.createElement("canvas");
   c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
   c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
-  return c.toDataURL(file.type === "image/png" ? "image/png" : "image/jpeg", 0.85);
+  return c.toDataURL(file.type === "image/png" ? "image/png" : "image/jpeg", q);
 }
 
 // Recorta la foto en cuadrado (para la foto de perfil)
@@ -4766,7 +4766,7 @@ function ArcApp({ user }) {
   const uploadMedia = async (key, file) => {
     let blob = file, type = file.type, ext = (file.name.split(".").pop() || "bin").toLowerCase();
     if (file.type.startsWith("image/") && file.type !== "image/gif") {
-      const data = await readFile(file, 900);
+      const data = await readFile(file, 1600, 0.93);
       blob = await (await fetch(data)).blob(); type = blob.type; ext = type === "image/png" ? "png" : "jpg";
     }
     const url = await db.uploadFile(`${key.replace(/:/g, "/")}/${Date.now()}.${ext}`, blob, type);
