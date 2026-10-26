@@ -1147,8 +1147,12 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .day.next .day-n{background:var(--ac);color:#000;border-color:var(--ac)}
 .day .exrow{padding:7px 0;border-top:1px solid var(--ln)}
 .day .hd{margin-bottom:10px;gap:10px}
-.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px;aspect-ratio:9/16;max-height:52vh;margin:0 auto;background:#fff;padding:4px;border-radius:14px}
-.dslot{position:relative;overflow:hidden;border:0;border-radius:8px;background:var(--sf2);color:var(--dm);font:inherit;font-size:13px;cursor:pointer;display:grid;place-items:center;padding:0}
+.dgrid{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:3px;aspect-ratio:9/16;max-height:52vh;margin:0 auto;background:#000;border-radius:14px;overflow:hidden}
+.dbadge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(10,10,12,.85);border-left:3px solid var(--ac);border-radius:8px;padding:6px 10px;pointer-events:none;white-space:nowrap}
+.dbadge small{display:block;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--dm);font-weight:700}
+.dbadge b{font-size:20px;font-weight:800}
+.dbadge em{font-style:normal;font-size:11px;color:var(--dm);font-weight:600}
+.dslot{position:relative;overflow:hidden;border:0;border-radius:0;background:var(--sf2);color:var(--dm);font:inherit;font-size:13px;cursor:pointer;display:grid;place-items:center;padding:0}
 .dslot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .dslot span{display:flex;flex-direction:column;align-items:center;gap:4px}
 .dslot span b{font-size:28px;color:#fff;font-weight:400}
@@ -1157,9 +1161,9 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .dsteps b{font-size:26px!important;font-weight:800!important}
 .dsteps em{font-style:normal;font-size:10px;color:var(--dm)}
 .dcard{display:flex;align-items:center;gap:14px;width:100%;text-align:left;margin:12px 0;padding:14px 16px;border-radius:16px;border:1px solid rgba(212,139,146,.35);background:linear-gradient(120deg,rgba(212,139,146,.18),rgba(212,139,146,.03));color:#fff;font:inherit;cursor:pointer}
-.dcard-ic{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:36px;height:52px;flex:none;padding:3px;background:#fff;border-radius:7px}
+.dcard-ic{display:grid;grid-template-columns:1fr 1fr;gap:2px;width:34px;height:52px;flex:none;background:#000;border:1px solid var(--ln);border-radius:7px;overflow:hidden}
 .dcard-ic i{background:var(--ac);border-radius:2px}
-.dcard-ic i:nth-child(2),.dcard-ic i:nth-child(3){background:#26262B}
+.dcard-ic i{background:#3a3a40}.dcard-ic i:nth-child(1),.dcard-ic i:nth-child(4){background:var(--ac)}
 .dcard-t{flex:1;min-width:0}
 .dcard-t b{display:block;font-size:15px}
 .dcard-t small{display:block;color:var(--dm);font-size:12.5px;margin-top:2px;line-height:1.35}
@@ -3956,30 +3960,33 @@ async function drawStepsCard({ kind, steps, week, goal, photo, nick }) {
   if (nick) { x.font = `800 30px ${SHARE_FONT}`; x.textBaseline = "middle"; const t = nick.toUpperCase(), w = [...t].reduce((a, ch) => a + x.measureText(ch).width + 2, 0); x.fillStyle = "rgba(0,0,0,.55)"; x.beginPath(); x.roundRect(52, 92, w + 40, 60, 30); x.fill(); x.fillStyle = "#fff"; spaced(x, t, 72, 122, 2); x.textBaseline = "alphabetic"; }
   return c.toDataURL("image/png");
 }
-// Historia "Mi día": cuatro huecos (comida, gym, pasos y foto libre)
-const DAY_SLOTS = [["food", "Comida"], ["gym", "Gym / pump"], ["steps", "Pasos"], ["free", "Lo que quieras"]];
-async function drawDayStory({ photos, steps, week, goal }) {
-  const W = 1080, H = 1920, gap = 10, cw = (W - gap) / 2, ch = (H - gap) / 2;
+// Historia "Mi día": cuatro fotos en cuadrícula y los pasos del día en el centro
+const DAY_SLOTS = [["food", "Comida"], ["free", "Lo que quieras"], ["gym", "Gym / pump"], ["more", "Otra foto"]];
+async function drawDayStory({ photos, steps }) {
+  const W = 1080, H = 1920, gap = 6, cw = (W - gap) / 2, ch = (H - gap) / 2;
   try { await document.fonts?.load(`800 90px ${SHARE_FONT}`); } catch (e) { /* fuente del sistema */ }
   const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
-  x.fillStyle = "#fff"; x.fillRect(0, 0, W, H);
+  x.fillStyle = "#000"; x.fillRect(0, 0, W, H);
   const pos = [[0, 0], [cw + gap, 0], [0, ch + gap], [cw + gap, ch + gap]];
   for (let i = 0; i < 4; i++) {
     const [k] = DAY_SLOTS[i], [px, py] = pos[i];
     x.save(); x.beginPath(); x.rect(px, py, cw, ch); x.clip();
-    if (k === "steps" && !photos.steps) drawStepsPanel(x, px, py, cw, ch, { steps, week, goal, kind: "dia", compact: true });
-    else {
-      const img = await loadImg(photos[k]);
-      x.fillStyle = "#111"; x.fillRect(px, py, cw, ch);
-      if (img) { const r = Math.max(cw / img.width, ch / img.height), w = img.width * r, h = img.height * r; x.drawImage(img, px + (cw - w) / 2, py + (ch - h) / 2, w, h); }
-      if (k === "steps") { // foto propia + número de pasos encima
-        const g = x.createLinearGradient(0, py + ch * 0.55, 0, py + ch); g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(1, "rgba(0,0,0,.8)"); x.fillStyle = g; x.fillRect(px, py, cw, ch);
-        x.fillStyle = "#D48B92"; x.font = `700 22px ${SHARE_FONT}`; spaced(x, "PASOS DE HOY", px + 36, py + ch - 120, 4);
-        x.fillStyle = "#fff"; x.font = `800 88px ${SHARE_FONT}`; x.fillText(fmtN(steps), px + 36, py + ch - 40);
-      }
-    }
+    x.fillStyle = "#111"; x.fillRect(px, py, cw, ch);
+    const img = await loadImg(photos[k]);
+    if (img) { const r = Math.max(cw / img.width, ch / img.height), w = img.width * r, h = img.height * r; x.drawImage(img, px + (cw - w) / 2, py + (ch - h) / 2, w, h); }
     x.restore();
   }
+  // pasos en el centro, como la etiqueta de Salud
+  const date = new Date().toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" }).replace(".", "");
+  x.font = `800 92px ${SHARE_FONT}`; const nw = x.measureText(fmtN(steps)).width;
+  x.font = `600 38px ${SHARE_FONT}`; const uw = x.measureText(" pasos").width;
+  const bw = nw + uw + 64, bh = 196, bx = (W - bw) / 2, by = (H - bh) / 2;
+  x.fillStyle = "rgba(10,10,12,.82)"; x.beginPath(); x.roundRect(bx, by, bw, bh, 18); x.fill();
+  x.fillStyle = "#D48B92"; x.fillRect(bx, by + 18, 5, bh - 36);
+  x.fillStyle = "rgba(255,255,255,.7)"; x.font = `700 26px ${SHARE_FONT}`; spaced(x, "PASOS DE HOY", bx + 32, by + 46, 3);
+  x.fillStyle = "#fff"; x.font = `800 92px ${SHARE_FONT}`; x.fillText(fmtN(steps), bx + 32, by + 136);
+  x.fillStyle = "rgba(255,255,255,.75)"; x.font = `600 38px ${SHARE_FONT}`; x.fillText(" pasos", bx + 32 + nw, by + 136);
+  x.fillStyle = "rgba(255,255,255,.6)"; x.font = `600 26px ${SHARE_FONT}`; x.fillText(date, bx + 32, by + 176);
   await drawBrand(x, W, H - 70, 0.85);
   return c.toDataURL("image/png");
 }
@@ -4046,28 +4053,28 @@ function DayStorySheet({ habits, onClose }) {
   const [url, setUrl] = useState(null);
   const ref = useRef(null);
   const week = stepsWeekData(habits), steps = week[6].v;
-  const ready = ["food", "gym", "free"].every((k) => photos[k]);
+  const ready = DAY_SLOTS.every(([k]) => photos[k]);
   const sh = useShareImg(url, "arc-mi-dia.png");
-  useEffect(() => { let on = true; setUrl(null); drawDayStory({ photos, steps, week, goal: RULES.STEPS_GOAL }).then((u) => on && setUrl(u)); return () => { on = false; }; }, [photos]);
+  useEffect(() => { let on = true; setUrl(null); drawDayStory({ photos, steps }).then((u) => on && setUrl(u)); return () => { on = false; }; }, [photos]);
   const pick = (k) => { setSlot(k); setTimeout(() => ref.current?.click(), 0); };
   return (
     <div className="modal shr" onClick={onClose}>
       <div className="box" onClick={(e) => e.stopPropagation()}>
         <h1 style={{ fontSize: 20 }}>Tu día en una historia</h1>
-        <p className="sub" style={{ margin: "-4px 0 10px" }}>Toca cada hueco para poner tu foto. Los pasos se ponen solos.</p>
+        <p className="sub" style={{ margin: "-4px 0 10px" }}>Toca cada hueco para poner tu foto. Tus pasos de hoy van en el centro.</p>
         <div className="dgrid">
           {DAY_SLOTS.map(([k, label]) => (
             <button key={k} className={`dslot ${photos[k] ? "has" : ""}`} onClick={() => pick(k)} aria-label={`Foto: ${label}`}>
-              {photos[k] ? <img src={photos[k]} alt="" /> : k === "steps" ? <span className="dsteps"><small>Pasos de hoy</small><b>{fmtN(steps)}</b><em>Toca si prefieres una foto</em></span> : <span><b>+</b>{label}</span>}
+              {photos[k] ? <img src={photos[k]} alt="" /> : <span><b>+</b>{label}</span>}
             </button>
           ))}
+          <div className="dbadge" aria-hidden="true"><small>Pasos de hoy</small><b>{fmtN(steps)}<em> pasos</em></b></div>
         </div>
-        {photos.steps && <button className="chip" style={{ display: "block", margin: "8px auto 0" }} onClick={() => setPhotos((p) => ({ ...p, steps: null }))}>Volver a poner los pasos solos</button>}
         <PhotoInput inputRef={ref} onPhoto={(u) => setPhotos((p) => ({ ...p, [slot]: u }))} onErr={sh.setErr} />
         {ready && url && <div className="shr-prev" style={{ marginTop: 12 }}><img src={url} alt="Vista previa de tu historia" /></div>}
         <p className="hint">La imagen se crea en tu móvil y solo se comparte si tú lo eliges.</p>
         {sh.err && <div className="err">{sh.err}</div>}
-        <button className="btn ac" disabled={!ready || !url || sh.busy} onClick={() => sh.setTip(true)}>{ready ? "Compartir" : "Pon las 3 fotos para compartir"}</button>
+        <button className="btn ac" disabled={!ready || !url || sh.busy} onClick={() => sh.setTip(true)}>{ready ? "Compartir" : "Pon las 4 fotos para compartir"}</button>
         <button className="btn ghost" onClick={onClose}>Cerrar</button>
         {sh.tip && <ShareTip busy={sh.busy} onShare={sh.share} onClose={() => sh.setTip(false)} />}
       </div>
@@ -4079,7 +4086,7 @@ function DayStoryCard({ onOpen }) {
   return (
     <button className="dcard" onClick={onOpen}>
       <span className="dcard-ic" aria-hidden="true"><i /><i /><i /><i /></span>
-      <span className="dcard-t"><b>Crea tu historia del día</b><small>Comida, gym, pasos y lo que quieras. Lista para Instagram.</small></span>
+      <span className="dcard-t"><b>Crea tu historia del día</b><small>4 fotos de tu día con tus pasos en el centro. Lista para Instagram.</small></span>
       <span className="dcard-go" aria-hidden="true">›</span>
     </button>
   );
