@@ -1226,6 +1226,17 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .prize-links{display:flex;gap:16px;align-items:center;font-size:13px}
 .prize-links a{color:var(--ac);font-weight:700;text-decoration:none}
 .prize small{display:block;margin-top:10px;font-size:11px;line-height:1.4;color:var(--dm)}
+.stw{margin-top:14px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:12px 14px}
+.stw-hd{display:flex;justify-content:space-between;align-items:baseline}
+.stw-hd span{font-size:13px;color:var(--dm)}.stw-hd b{font-size:20px}.stw-hd b small{font-size:12px;color:var(--dm);font-weight:500}
+.stw-bars{position:relative;display:grid;grid-template-columns:repeat(7,1fr);gap:8px;height:110px;margin:12px 0 4px;align-items:end}
+.stw-goal{position:absolute;left:0;right:0;border-top:1px dashed rgba(255,255,255,.45);z-index:1;pointer-events:none}
+.stw-col{height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px}
+.stw-bar{width:100%;border-radius:6px 6px 2px 2px;background:rgba(212,139,146,.55);animation:fillUp .6s ease-out both}
+.stw-bar.ok{background:var(--ac)}
+.stw-col small{font-size:11px;color:var(--dm)}.stw-col small.today{color:var(--tx);font-weight:700}
+.stw-v{font-size:13px;line-height:1.45;margin:8px 0 0;padding:8px 10px;border-radius:10px;background:var(--sf2)}
+.stw-v.ok{color:var(--okl)}.stw-v.mid{color:var(--wu)}.stw-v.low{color:#F28B82}
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0 0}
 .kpi{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:11px 12px}
 .kpi small{display:flex;align-items:center;gap:4px;font-size:11.5px;color:var(--dm)}
@@ -1749,13 +1760,12 @@ function SocialLinks() {
 // Frase del día compacta: el "por qué" se abre al tocar
 function QuoteCard({ quote }) {
   const [qq, who, from, why, kind] = quote;
-  const [open, setOpen] = useState(false);
   return (
-    <button className="quote qc" onClick={() => setOpen(!open)} aria-expanded={open}>
+    <div className="quote qc">
       <p>{kind === "cita" ? `“${qq}”` : qq}</p>
       <div className="who">{who} <span className="from">· {from}</span></div>
-      {why && (open ? <div className="why">{why}</div> : <span className="qc-more">Por qué te lo digo</span>)}
-    </button>
+      {why && <div className="why">{why}</div>}
+    </div>
   );
 }
 
@@ -1883,7 +1893,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
 
       <div className="kpis">
         <div className="kpi">
-          <small>Pasos hoy{state.profile?.stepsLinked && <HealthIcon size={12} />}</small>
+          <small>Pasos hoy</small>
           <b>{String(stepsToday).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</b>
           <div className="bar"><i style={{ width: `${Math.min(100, (stepsToday / RULES.STEPS_GOAL) * 100)}%`, background: "var(--ac)" }} /></div>
         </div>
@@ -2824,6 +2834,7 @@ function Habits({ state, setHabit, adh, steps }) {
         <div className="hd"><b>Pasos</b><span>Meta {RULES.STEPS_GOAL.toLocaleString("es-ES")}</span></div>
         <input className="in" type="number" inputMode="numeric" placeholder="Pasos de hoy" value={h.steps ?? ""} onChange={(e) => setHabit("steps", e.target.value === "" ? "" : Number(e.target.value))} />
         <div className="bar" style={{ marginTop: 10 }}><i style={{ width: `${Math.min(100, ((h.steps || 0) / RULES.STEPS_GOAL) * 100)}%`, background: "var(--ac)" }} /></div>
+        <StepsWeek habits={state.habits} />
         {steps && steps.source !== "Apple Salud" && steps.available && (steps.linked
           ? <div className="chips" style={{ marginTop: 10 }}>
               <button className="chip" disabled={steps.busy} onClick={steps.sync}>{steps.busy ? "Leyendo pasos…" : "Actualizar pasos del móvil"}</button>
@@ -2859,6 +2870,39 @@ function Habits({ state, setHabit, adh, steps }) {
       </div>
       <Sources groups={["habitos"]} title="Fuentes de estas metas" />
     </>
+  );
+}
+
+// Pasos de los últimos 7 días con la media y una valoración sincera
+function StepsWeek({ habits }) {
+  const goal = RULES.STEPS_GOAL;
+  const days = Array.from({ length: 7 }, (_, i) => { const d = new Date(); d.setDate(d.getDate() - (6 - i)); return d; });
+  const vals = days.map((d) => Number(habits[dkey(d)]?.steps) || 0);
+  const logged = vals.filter((v) => v > 0);
+  const avg = logged.length ? Math.round(logged.reduce((a, b) => a + b, 0) / logged.length) : 0;
+  const max = Math.max(goal, ...vals);
+  const fmt = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  const pct = avg / goal;
+  const verdict = !logged.length ? ["Aún no hay pasos esta semana.", ""]
+    : pct >= 1 ? ["Vas genial: estás por encima de tu meta.", "ok"]
+    : pct >= 0.85 ? [`Casi: te faltan unos ${fmt(Math.round((goal - avg) / 100) * 100)} pasos al día de media.`, "mid"]
+    : pct >= 0.6 ? [`Te estás quedando por debajo: ${fmt(avg)} de media frente a ${fmt(goal)}. Mete un paseo de 20 minutos al día.`, "low"]
+    : ["Sinceramente, esta semana te faltan muchos pasos. Prueba a ir andando a clase o al gym y a dar un paseo después de comer.", "low"];
+  const L = ["D", "L", "M", "X", "J", "V", "S"];
+  return (
+    <div className="stw">
+      <div className="stw-hd"><span>Últimos 7 días</span><b>{fmt(avg)}<small> de media</small></b></div>
+      <div className="stw-bars">
+        <i className="stw-goal" style={{ bottom: `calc(18px + (100% - 18px) * ${goal / max})` }} />
+        {vals.map((v, i) => (
+          <div key={i} className="stw-col">
+            <div className={`stw-bar ${v >= goal ? "ok" : ""}`} style={{ height: `${Math.max(v ? 4 : 0, (v / max) * 100)}%` }} />
+            <small className={i === 6 ? "today" : ""}>{L[days[i].getDay()]}</small>
+          </div>
+        ))}
+      </div>
+      {verdict[0] && <p className={`stw-v ${verdict[1]}`}>{verdict[0]}</p>}
+    </div>
   );
 }
 
