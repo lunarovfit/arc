@@ -1147,6 +1147,9 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .day.next .day-n{background:var(--ac);color:#000;border-color:var(--ac)}
 .day .exrow{padding:7px 0;border-top:1px solid var(--ln)}
 .day .hd{margin-bottom:10px;gap:10px}
+.steps-now{display:flex;align-items:baseline;gap:8px;margin:2px 0 4px}
+.steps-now b{font-size:34px;font-weight:800;letter-spacing:-.01em}
+.steps-now span{color:var(--dm);font-size:14px}
 .dgrid{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:3px;aspect-ratio:9/16;max-height:52vh;margin:0 auto;background:#000;border-radius:14px;overflow:hidden}
 .dslot .dex{font-style:normal;font-size:10.5px;line-height:1.3;color:var(--dm);text-align:center;padding:0 10px;opacity:.8}
 .dbadge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(10,10,12,.85);border-left:3px solid var(--ac);border-radius:8px;padding:6px 10px;pointer-events:none;white-space:nowrap}
@@ -1172,6 +1175,40 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .kpi.tap{cursor:pointer;position:relative}
 .kpi .kpi-sh{position:absolute;top:10px;right:10px;color:var(--dm)}
 .hb .hd .shr-mini{background:none;border:0;color:var(--ac);font:inherit;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.ntop{margin-top:16px;padding:18px;border-radius:20px;border:1px solid var(--ln);background:radial-gradient(120% 90% at 100% 0%,rgba(212,139,146,.22),transparent 60%),var(--sf)}
+.ntop .kcal{font-size:48px}
+.ntop .kcal span{font-size:15px;font-weight:600;color:var(--dm);margin-left:8px;letter-spacing:0}
+.mbar{display:flex;gap:3px;height:10px;margin:14px 0 4px;border-radius:99px;overflow:hidden}
+.mbar i{display:block;min-width:4px}
+.ntop .macros{margin-top:10px}
+.ntop .macros div{background:rgba(255,255,255,.04);position:relative;padding-left:12px}
+.ntop .macros i{position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:3px}
+.mlist{display:grid;gap:14px;margin-top:6px}
+.mcard{border-radius:20px;overflow:hidden;background:var(--sf);border:1px solid var(--ln)}
+.mhero{position:relative;height:150px;background:radial-gradient(90% 120% at 85% 10%,rgba(212,139,146,.35),transparent 60%),linear-gradient(160deg,#1c1418,#0E0E11);display:flex;align-items:flex-end}
+.mhero.ph{height:200px}
+.mhero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.mhero.ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.82))}
+.mhero-ic{position:absolute;right:16px;bottom:12px;color:rgba(255,255,255,.22)}
+.mhero-t{position:relative;z-index:1;padding:14px 16px;max-width:82%}
+.mslot{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ac);font-weight:800}
+.mname{font-size:21px;font-weight:800;line-height:1.15;margin-top:3px;text-wrap:balance}
+.mnav{position:absolute;z-index:2;right:12px;top:12px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.14);border-radius:99px;padding:3px}
+.mnav button{width:32px;height:32px;border-radius:50%;border:0;background:#fff;color:#000;font:inherit;font-size:20px;font-weight:700;line-height:1;cursor:pointer}
+.mnav span{font-size:12px;color:#fff;min-width:28px;text-align:center;font-variant-numeric:tabular-nums}
+.mbody{padding:12px 16px 14px}
+.mpills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.mpills span{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:4px 9px;border-radius:99px;background:var(--sf2);border:1px solid var(--ln)}
+.mpills span.k{background:#fff;color:#000;font-weight:800;border-color:#fff}
+.mpills span.tp{color:var(--dm)}
+.mpills i{width:7px;height:7px;border-radius:50%;display:inline-block}
+.mfoods .food{border-bottom:1px solid var(--ln);padding:7px 0}
+.mfoods .food:last-child{border-bottom:0}
+.mprep{margin-top:8px}
+.mprep summary{cursor:pointer;font-size:14px;font-weight:700;color:var(--ac);list-style:none;padding:6px 0}
+.mprep summary::-webkit-details-marker{display:none}
+.mprep summary::after{content:" +";}
+.mprep[open] summary::after{content:" –"}
 .hist{display:flex;justify-content:space-between;font-size:14px;padding:10px 0;border-bottom:1px solid var(--ln)}
 .hist span:last-child{color:var(--dm)}
 .tk-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -2850,41 +2887,68 @@ function Nutrition({ profile, setCook, media = {} }) {
         <button className={!rest ? "on" : ""} onClick={() => setRest(false)}>Día de entreno</button>
         <button className={rest ? "on" : ""} onClick={() => setRest(true)}>Día de descanso</button>
       </div>
-      <div className="kcal" style={{ marginTop: 16 }}>{t.kcal}<span style={{ fontSize: 18, fontWeight: 600, marginLeft: 6 }}>kcal</span></div>
-      <div className="macros">
-        <div><b>{t.p} g</b><span>Proteína</span></div>
-        <div><b>{t.c} g</b><span>Hidratos</span></div>
-        <div><b>{t.f} g</b><span>Grasas</span></div>
+      <div className="ntop">
+        <div className="kcal">{t.kcal}<span>kcal al día</span></div>
+        <div className="mbar" aria-hidden="true">
+          <i style={{ flex: t.p * 4, background: "var(--ac)" }} /><i style={{ flex: t.c * 4, background: "#EDE7E2" }} /><i style={{ flex: t.f * 9, background: "#F5C76B" }} />
+        </div>
+        <div className="macros">
+          <div><i style={{ background: "var(--ac)" }} /><b>{t.p} g</b><span>Proteína</span></div>
+          <div><i style={{ background: "#EDE7E2" }} /><b>{t.c} g</b><span>Hidratos</span></div>
+          <div><i style={{ background: "#F5C76B" }} /><b>{t.f} g</b><span>Grasas</span></div>
+        </div>
       </div>
-      <p className="hint" style={{ marginTop: 8 }}>Calculado con la ecuación de Mifflin-St Jeor, tu nivel de actividad y tu objetivo. Proteína según la ISSN. <a className="inlink" href="#fuentes-nutricion" onClick={(e) => { e.preventDefault(); const d = document.getElementById("fuentes-nutricion"); if (d) { d.open = true; d.scrollIntoView({ behavior: "smooth" }); } }}>Ver fuentes</a></p>
 
       <ShopTips />
       <h2>Tus comidas</h2>
       <div className="seg">{COOK_OPTS.map(([v, l]) => <button key={v} className={mode === v ? "on" : ""} onClick={() => setCook(v)}>{l}</button>)}</div>
       {profile.eatOut && <p className="hint" style={{ marginTop: 0 }}>Primero te salen las que aguantan bien en táper.</p>}
 
+      <div className="mlist">
       {meals.map((m) => m.empty ? (
-        <div className="meal" key={m.id}><div className="hd"><b>{SLOT_NAMES[m.id]}</b></div><p className="hint">Con lo que has quitado no hay recetas para esta comida todavía.</p></div>
-      ) : (
-        <div className="meal" key={m.id}>
-          {recImg(media, m.recipe.id) && <img className="rphoto" src={recImg(media, m.recipe.id)} alt={m.recipe.name} loading="lazy" />}
-          <div className="hd"><b>{SLOT_NAMES[m.id]}</b><span>{Math.round(m.tot.kcal)} kcal · P {Math.round(m.tot.p)} · H {Math.round(m.tot.c)} · G {Math.round(m.tot.f)}</span></div>
-          {m.opts.length > 1
-            ? <div className="chips">{m.opts.map((r, i) => <button key={r.name} className={`chip ${r === m.recipe ? "on" : ""}`} onClick={() => setPick({ ...pick, [m.k]: i })}>{r.name}</button>)}</div>
-            : <div className="rname">{m.recipe.name}</div>}
-          <div className="tags">
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><CookIcon mode={m.recipe.mode === "sanji" ? "sanji" : "sencilla"} size={15} />{m.recipe.mode === "sanji" ? "Modo Sanji (cocinitas)" : "Fácil"}</span>
-            {TUPPER.has(m.recipe.name) && <span>Apta para táper</span>}
+        <div className="mcard" key={m.id}><div className="mbody"><div className="mslot">{SLOT_NAMES[m.id]}</div><p className="hint">Con lo que has quitado no hay recetas para esta comida todavía.</p></div></div>
+      ) : (() => {
+        const img = recImg(media, m.recipe.id), idx = m.opts.indexOf(m.recipe), n = m.opts.length;
+        const go = (d) => setPick({ ...pick, [m.k]: (idx + d + n) % n });
+        return (
+          <div className="mcard" key={m.id}>
+            <div className={`mhero ${img ? "ph" : ""}`}>
+              {img ? <img src={img} alt={m.recipe.name} loading="lazy" /> : <span className="mhero-ic"><CookIcon mode={m.recipe.mode === "sanji" ? "sanji" : "sencilla"} size={54} /></span>}
+              <div className="mhero-t">
+                <div className="mslot">{SLOT_NAMES[m.id]}</div>
+                <div className="mname">{m.recipe.name}</div>
+              </div>
+              {n > 1 && <div className="mnav">
+                <button aria-label="Receta anterior" onClick={() => go(-1)}>‹</button>
+                <span>{idx + 1}/{n}</span>
+                <button aria-label="Otra receta" onClick={() => go(1)}>›</button>
+              </div>}
+            </div>
+            <div className="mbody">
+              <div className="mpills">
+                <span className="k">{Math.round(m.tot.kcal)} kcal</span>
+                <span><i style={{ background: "var(--ac)" }} />P {Math.round(m.tot.p)}</span>
+                <span><i style={{ background: "#EDE7E2" }} />H {Math.round(m.tot.c)}</span>
+                <span><i style={{ background: "#F5C76B" }} />G {Math.round(m.tot.f)}</span>
+                {TUPPER.has(m.recipe.name) && <span className="tp">Táper</span>}
+                <span className="tp">{m.recipe.mode === "sanji" ? "Modo Sanji" : "Fácil"}</span>
+              </div>
+              <div className="mfoods">{m.items.map((it) => <div className="food" key={it.food}><span>{FOODS[it.food].n}</span><em>{Math.round(it.g)} g</em></div>)}</div>
+              <details className="mprep">
+                <summary>Cómo se prepara</summary>
+                {m.recipe.steps ? <ol className="steps">{m.recipe.steps.map((st) => <li key={st}>{st}</li>)}</ol> : <p className="hint">{m.recipe.how}</p>}
+                {m.recipe.plate && <p className="plate">{m.recipe.plate}</p>}
+              </details>
+            </div>
           </div>
-          <div style={{ marginTop: 8 }}>{m.items.map((it) => <div className="food" key={it.food}><span>{FOODS[it.food].n}</span><em>{Math.round(it.g)} g</em></div>)}</div>
-          {m.recipe.steps ? <ol className="steps">{m.recipe.steps.map((st) => <li key={st}>{st}</li>)}</ol> : <p className="hint">{m.recipe.how}</p>}
-          {m.recipe.plate && <p className="plate">{m.recipe.plate}</p>}
-        </div>
-      ))}
+        );
+      })())}
+      </div>
       <div className="note">Total del día: {Math.round(day.kcal)} kcal, {Math.round(day.p)} g de proteína, {Math.round(day.c)} g de hidratos y {Math.round(day.f)} g de grasas. Pesos en crudo salvo patata, legumbres y cremas, que van ya cocinadas.</div>
 
       <h2>Suplementación</h2>
       <p className="sub">Información general, no una recomendación personal. La creatina monohidrato es el suplemento con más evidencia para ganar fuerza; en los estudios se usan 3–5 g al día. Antes de tomar cualquier suplemento, consúltalo con tu médico o farmacéutico, sobre todo si tomas medicación o tienes alguna enfermedad.</p>
+      <p className="hint" style={{ marginTop: 18 }}>Tus calorías se calculan con la ecuación de Mifflin-St Jeor, tu nivel de actividad y tu objetivo, y la proteína según la ISSN.</p>
       <div id="fuentes-nutricion-wrap"><SourcesAnchor id="fuentes-nutricion" groups={["nutricion"]} /></div>
       <p className="hint">Plan orientativo calculado con tu cuestionario. No sustituye la consulta con un dietista-nutricionista.</p>
     </>
@@ -2946,7 +3010,8 @@ function Habits({ state, setHabit, adh, steps }) {
       <div className="hb">
         <div className="hd"><b>Pasos</b><button className="shr-mini" onClick={() => setShareSteps(true)}><ShareIcon /> Compartir</button></div>
         <p className="hint" style={{ margin: "-4px 0 8px" }}>Meta {RULES.STEPS_GOAL.toLocaleString("es-ES")}</p>
-        <input className="in" type="number" inputMode="numeric" placeholder="Pasos de hoy" value={h.steps ?? ""} onChange={(e) => setHabit("steps", e.target.value === "" ? "" : Number(e.target.value))} />
+        <div className="steps-now"><b>{fmtN(h.steps || 0)}</b><span>pasos hoy</span></div>
+        {!(steps?.linked) && <p className="hint" style={{ margin: "4px 0 0" }}>Los pasos se leen solos del móvil{steps ? ` (${steps.source})` : ""}, así nadie puede inflarlos a mano. Conéctalo abajo para que cuenten.</p>}
         <div className="bar" style={{ marginTop: 10 }}><i style={{ width: `${Math.min(100, ((h.steps || 0) / RULES.STEPS_GOAL) * 100)}%`, background: "var(--ac)" }} /></div>
         <StepsWeek habits={state.habits} />
         <DayStoryCard onOpen={() => setDayStory(true)} />
@@ -5147,7 +5212,7 @@ function ArcApp({ user }) {
     try { await native.connectSteps(); setProfile({ stepsLinked: true }); setStepsBusy(false); await syncSteps(); }
     catch { setStepsBusy(false); setStepsErr("No has dado permiso para leer los pasos. Puedes activarlo en " + (native.platform === "ios" ? "Ajustes > Salud > Acceso a datos > ARC." : "Health Connect > Permisos de apps > ARC.")); }
   };
-  useEffect(() => { if (tab === "habitos" && state.profile?.stepsLinked && stepsAvail) syncSteps(); }, [tab, stepsAvail]);
+  useEffect(() => { if ((tab === "habitos" || tab === "inicio") && state.profile?.stepsLinked && stepsAvail) syncSteps(); }, [tab, stepsAvail]);
 
   const [levelUp, closeLevelUp] = useLevelUp(loaded && state.onboarded ? state.profile : null, ev, media, (patch) => setState((s) => {
     const profile = { ...s.profile, ...patch };
