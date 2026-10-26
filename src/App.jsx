@@ -191,7 +191,7 @@ const CLASSIC_LINES = [
   "Fuerza que se nota fuera del gym.", "Pocas llegan aquí. Tú sí.", "A un paso de lo más alto.", "Arco completo. Nivel máximo.",
 ];
 const CLASSIC_LEVELS = Object.fromEntries(["female", "male"].map((b) => [b, LEVELS[b].map((l, i) => ({ ...l, name: `Nivel ${i + 1}`, series: "Tu arco", line: CLASSIC_LINES[i] }))]));
-const ANIME_SRC = new Set(["Attack on Titan","Demon Slayer","Fullmetal Alchemist","Hajime no Ippo","Jujutsu Kaisen","My Hero Academia","Naruto","Neon Genesis Evangelion","One Piece","Vinland Saga","Dragon Ball","Haikyuu","Bleach","Haikyuu!!","Gurren Lagann","One Punch Man","Fullmetal Alchemist: Brotherhood"]);
+const ANIME_SRC = new Set(["Attack on Titan","Demon Slayer","Fullmetal Alchemist","Hajime no Ippo","Jujutsu Kaisen","My Hero Academia","Naruto","Neon Genesis Evangelion","One Piece","Vinland Saga","Dragon Ball","Haikyuu","Bleach","Haikyuu!!","Gurren Lagann","One Punch Man","Fullmetal Alchemist: Brotherhood","Black Clover"]);
 // En modo sin personajes tampoco salen frases de anime
 const pickQuote = (mode) => { const pool = mode === "clasico" || mode === "simple" ? QUOTES.filter((q) => !ANIME_SRC.has(q[2])) : QUOTES; const l = pool.length ? pool : QUOTES; return l[Math.floor(Math.random() * l.length)]; };
 const levelsOf = (branch, mode) => (mode === "gymrat" ? RAT_LEVELS : mode === "clasico" || mode === "simple" ? CLASSIC_LEVELS : LEVELS)[branch] || LEVELS.female;
@@ -222,14 +222,14 @@ let QUOTES = [
   ["Odiaba cada minuto de entrenamiento, pero me decía: no abandones. Sufre ahora y vive el resto de tu vida como un campeón.", "Muhammad Ali", "Boxeo", "Ni a Ali le apetecía siempre. Lo hacía igual.", "cita"],
   ["Nadie va a venir a salvarte.", "David Goggins", "Ultrafondo", "Duro, pero liberador: el cambio depende de ti.", "cita"],
   ["Si ganas, vives. Si pierdes, mueres. Si no luchas, no puedes ganar.", "Eren Jaeger", "Attack on Titan", "No hace falta ganar hoy. Hace falta presentarse a la pelea.", "cita"],
-  ["Nada ha pasado.", "Roronoa Zoro", "One Piece", "Lo dice lleno de heridas después de cargar él solo con todo el dolor de Luffy. Hay días que se aguantan en silencio y se sigue.", "cita"],
-  ["Cien flexiones, cien abdominales, cien sentadillas y diez kilómetros corriendo. Todos los días.", "Saitama", "One Punch Man", "Su secreto era aburrido: hacerlo cada día. El tuyo también.", "cita"],
   ["Quiero saber qué significa ser fuerte.", "Ippo Makunouchi", "Hajime no Ippo", "Ippo no sabía ni dar un puñetazo. Le movía la pregunta, no el talento.", "cita"],
-  ["No tengo enemigos.", "Thorfinn", "Vinland Saga", "En el gym no compites contra nadie. Solo contra quien eras ayer.", "cita"],
-  ["¿¡Quién demonios te crees que soy!?", "Kamina", "Gurren Lagann", "Para cuando dudes de si puedes con ese peso.", "cita"],
-  ["Luffy… ayúdame.", "Nami", "One Piece", "Después de años cargando sola con todo, pidió ayuda. Eso también es ser fuerte.", "cita"],
-  ["¡Quiero vivir!", "Nico Robin", "One Piece", "Se pasó la vida huyendo hasta que se atrevió a decir lo que quería. Dilo tú también.", "cita"],
   ["Un fracasado puede vencer a un genio a base de trabajo duro.", "Rock Lee", "Naruto", "Lee no podía usar ni ninjutsu ni genjutsu. Se hizo fuerte con lo único que le quedaba: entrenar.", "cita"],
+  ["Las cicatrices en la espalda son la vergüenza de un espadachín.", "Roronoa Zoro", "One Piece", "Zoro nunca le da la espalda a un rival, ni aunque vaya a perder. Tú tampoco a la serie que te da miedo.", "cita"],
+  ["El trabajo duro no sirve de nada si no crees en ti mismo.", "Naruto Uzumaki", "Naruto", "Puedes entrenar perfecto, pero si vas pensando que no puedes, el peso pesa el doble.", "cita"],
+  ["Ser ninja es saber aguantar.", "Jiraiya", "Naruto", "Los resultados llegan a quien aguanta las semanas en las que no se nota nada.", "cita"],
+  ["Por muy débil o inútil que te sientas, enciende tu corazón, aprieta los dientes y sigue adelante.", "Kyojuro Rengoku", "Demon Slayer", "Para los días en que todo pesa más de la cuenta. Hoy también cuenta.", "cita"],
+  ["No rendirme, esa es mi magia.", "Asta", "Black Clover", "Asta nació sin una gota de magia y aun así se plantó frente a todos. Tu talento es no dejarlo.", "cita"],
+  ["Este mundo es cruel, pero también es muy bonito.", "Mikasa Ackerman", "Attack on Titan", "Hay entrenos que duelen y días que salen solos. Los dos forman parte del camino.", "cita"],
 ];
 
 /* ============================ ENTRENO ============================ */
