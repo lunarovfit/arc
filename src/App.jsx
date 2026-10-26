@@ -59,7 +59,7 @@ const LEVELS = {
     ["David Martinez", "Cyberpunk: Edgerunners", "Un chaval de Santo Domingo que se puso un Sandevistan militar para cumplir el sueño de su madre. Lleva el cuerpo al límite, sin romperlo."],
     ["Ippo Makunouchi", "Hajime no Ippo", "Le pegaban en el instituto y acabó siendo campeón de Japón. Lo hizo dando miles de golpes al mismo saco."],
     ["Thorfinn", "Vinland Saga", "De guerrero lleno de rabia a hombre que ya no necesita pelear. Años de trabajo físico y por fin sabe para qué entrena."],
-    ["Mamoru Takamura", "Hajime no Ippo", "Campeón del mundo y el boxeador más bestia de la serie: se peleó con un oso en la montaña y ganó. Debajo del payaso hay una disciplina brutal."],
+    ["D", "Cyberpunk: Edgerunners 2", "Netrunner de Snake Nation que lo perdió todo y lleva cada pérdida a cuestas. Entendió tarde que no podía hacerlo solo. La fuerza también es dejar que te ayuden."],
     ["Yuji Itadori", "Jujutsu Kaisen", "Lanza una bola de acero como si nada y encadena Black Flashes. Fuerza explosiva y un corazón que no se rinde."],
     ["Levi Ackerman", "Attack on Titan", "El soldado más fuerte de la humanidad. Precisión milimétrica, ni un movimiento de más y una mirada que lo dice todo."],
     ["Roronoa Zoro", "One Piece", "Entrena con pesas de toneladas mientras los demás duermen. Quiere ser el mejor espadachín del mundo y no se le olvida ni un día."],
@@ -89,7 +89,7 @@ const MOVES = {
   "David Martinez": ["Sandevistan", "Cromo militar"],
   "Ippo Makunouchi": ["Dempsey Roll", "Gazelle Punch"],
   "Thorfinn": ["Dagas", "Sin enemigos"],
-  "Mamoru Takamura": ["Campeón del mundo", "Mata osos"],
+  "D": ["Netrunner", "Snake Nation"],
   "Yuji Itadori": ["Black Flash", "Puño divergente"],
   "Levi Ackerman": ["Fuerza Ackerman", "Corte giratorio"],
   "Roronoa Zoro": ["Santoryu", "Haki del rey"],
@@ -201,14 +201,6 @@ const BUNDLED_MEDIA = Object.fromEntries(EX_VIDS.map((id) => [`ex:${id}`, `/ejer
 const mediaOr = (media, key) => { const m = /^rat:(female|male):(\d)$/.exec(key); return media[key] || (m ? `/ratas/${m[1]}/rat-${m[2]}.png` : null); };
 const levelKey = (branch, mode, i) => (mode === "gymrat" ? `rat:${branch === "male" ? "male" : "female"}:${i}` : mode === "clasico" ? `classic:${i}` : `lvl:${branch}:${i}`);
 
-// Duotono negro y rosa para las imágenes de los personajes (las subidas a lvl/)
-const isLvlImg = (src) => typeof src === "string" && /(^|\/)lvl\//.test(src);
-const duoCls = (src) => (isLvlImg(src) ? "duo" : undefined);
-if (typeof document !== "undefined" && !document.getElementById("arc-duo")) {
-  const d = document.createElement("div");
-  d.innerHTML = '<svg id="arc-duo" width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="duo" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0 0 0 1 0"/><feComponentTransfer><feFuncR type="linear" slope="1.15" intercept="-0.06"/><feFuncG type="linear" slope="1.15" intercept="-0.06"/><feFuncB type="linear" slope="1.15" intercept="-0.06"/></feComponentTransfer><feComponentTransfer><feFuncR type="table" tableValues="0.055 0.831"/><feFuncG type="table" tableValues="0.055 0.545"/><feFuncB type="table" tableValues="0.067 0.573"/></feComponentTransfer></filter></svg>';
-  (document.body || document.documentElement).appendChild(d.firstChild);
-}
 
 // [frase, quién, de dónde, explicación, tipo]
 let QUOTES = [
@@ -1068,9 +1060,6 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .lift{display:grid;grid-template-columns:1fr 84px 70px;gap:8px;align-items:center;margin-bottom:8px;font-size:14px}
 .quote{padding:6px 0 4px}
 .quote p{font-size:22px;line-height:1.3;font-weight:700;letter-spacing:-.01em;margin:0 0 14px}
-.duo{filter:url(#duo)}
-.hero img.duo{animation-name:heroInD}
-@keyframes heroInD{from{transform:scale(1.12);filter:url(#duo) brightness(.4)}to{transform:none;filter:url(#duo)}}
 .quote .who{font-size:14px;font-weight:600}
 .quote .from{font-size:13px;color:var(--dm)}
 .quote .why{font-size:14px;line-height:1.5;color:var(--dm);margin:12px 0 0;padding-left:12px;border-left:2px solid var(--ac)}
@@ -1880,7 +1869,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
 
       <div className="hero-row">
         <div className="hero">
-          <img className={duoCls(heroImg)} src={heroImg} alt={lv.name} />
+          <img src={heroImg} alt={lv.name} />
         </div>
         <div className="hero-side">
           <div className="name">{lv.name}</div>
@@ -1997,7 +1986,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
         if (!coach && i <= ev.current) return null;
         return (
           <div key={l.name} className="lvrow" style={{ opacity: mine && i > ev.current && !coach ? 0.4 : 1 }}>
-            <div className="thumb">{img ? <img className={duoCls(img)} src={img} alt="" /> : <span>{i + 1}</span>}</div>
+            <div className="thumb">{img ? <img src={img} alt="" /> : <span>{i + 1}</span>}</div>
             <div style={{ flex: 1, minWidth: 0, fontWeight: mine && i === ev.current ? 700 : 400 }}>{l.name}<small>{l.ratio.toFixed(1)}x tu peso · {l.months} {l.months === 1 ? "mes" : "meses"} · {l.adherence}% hábitos</small></div>
             {coach && (
               <div className="chips" style={{ width: "100%", paddingLeft: 52 }}>
@@ -3199,7 +3188,7 @@ function Avatar({ r, media, size = 40, ring = false }) {
   const src = r.avatar_url || lvl;
   return (
     <span className={`av${ring ? " ring" : ""}${r.avatar_url ? " photo" : ""}${!src ? " none" : ""}`} style={{ width: size, height: size, fontSize: Math.round(size * 0.42) }}>
-      {src ? <img className={src === r.avatar_url ? undefined : duoCls(src)} src={src} alt="" loading="lazy" /> : (r.nickname || "?").slice(0, 1).toUpperCase()}
+      {src ? <img src={src} alt="" loading="lazy" /> : (r.nickname || "?").slice(0, 1).toUpperCase()}
     </span>
   );
 }
@@ -3579,7 +3568,7 @@ function FinishScreen({ data, media, coach, uploadMedia, setMedia, onClose }) {
       <div className="fin-rays" />
       <div className="fin-stage">
         {SPARKS.map((s, i) => <span key={i} className="lvup-spark" style={{ "--x": `${s.x}px`, "--y": `${s.y}px`, animationDelay: `${0.25 + s.d}s` }}><Star size={s.s} color={i % 2 ? "#fff" : "#D48B92"} /></span>)}
-        {pick.img ? <div className="fin-img"><img className={duoCls(pick.img)} src={pick.img} alt="" /></div> : <div className="fin-mark"><Logo height={70} /></div>}
+        {pick.img ? <div className="fin-img"><img src={pick.img} alt="" /></div> : <div className="fin-mark"><Logo height={70} /></div>}
       </div>
       <h1 className="fin-shout">{pick.shout[0]}</h1>
       <p className="fin-sub">{pick.shout[1]}</p>
@@ -3833,7 +3822,7 @@ function LevelUp({ data, onClose }) {
         {SPARKS.map((s, i) => (
           <span key={i} className="lvup-spark" style={{ "--x": `${s.x}px`, "--y": `${s.y}px`, animationDelay: `${s.d}s` }}><Star size={s.s} color={i % 2 ? "#fff" : "#D48B92"} /></span>
         ))}
-        <div className="lvup-img"><img className={duoCls(img)} src={img} alt="" /></div>
+        <div className="lvup-img"><img src={img} alt="" /></div>
       </div>
       <h1 className="lvup-title">{gymrat ? "Tu rata ha evolucionado" : data.clasico ? "Has subido de nivel" : "Personaje desbloqueado"}</h1>
       <div className="lvup-name">{to}</div>
@@ -3963,7 +3952,7 @@ function Tour({ profile, ev, heroImg, perms, onFinish, media = {} }) {
   return (
     <div className="tour">
       <div className="tour-dots" aria-hidden="true">{slides.map((_, k) => <i key={k} className={k === i ? "on" : ""} />)}</div>
-      {s.img && <div className="hero" style={{ marginTop: 18, aspectRatio: "1/1" }}><img className={duoCls(s.img)} src={s.img} alt={lv.name} /></div>}
+      {s.img && <div className="hero" style={{ marginTop: 18, aspectRatio: "1/1" }}><img src={s.img} alt={lv.name} /></div>}
       <h1 className="tour-h">{s.title}</h1>
       {s.body}
       <div className="tour-actions">
