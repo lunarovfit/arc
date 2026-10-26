@@ -47,12 +47,13 @@ export async function installHealthConnect() {
 /* ---------------- NOTIFICACIONES ---------------- */
 
 const REST_ID = 1;
-const REMINDER_IDS = { train: 100, water: 200, sunday: 300 }; // 100-107, 200-209, 300
+const REMINDER_IDS = { train: 100, water: 200, sunday: 300, story: 400 }; // 100-107, 200-209, 300, 400-407
 
 export const DEFAULT_REMINDERS = {
   train: { on: false, days: [2, 3, 5], time: "18:00" }, // 1 domingo … 7 sábado
   water: { on: false, times: ["11:00", "13:30", "17:00", "20:00"] },
   sunday: { on: false, time: "19:00" },
+  story: { on: false, days: [4, 7], time: "21:00" },
 };
 
 export async function notificationsAllowed(ask = false) {
@@ -84,7 +85,7 @@ const hm = (t) => { const [h, m] = (t || "18:00").split(":").map(Number); return
 export async function applyReminders(r = DEFAULT_REMINDERS) {
   if (!isNative) return;
   const all = [...Array(8).keys()].map((i) => REMINDER_IDS.train + i)
-    .concat([...Array(10).keys()].map((i) => REMINDER_IDS.water + i), [REMINDER_IDS.sunday]);
+    .concat([...Array(10).keys()].map((i) => REMINDER_IDS.water + i), [REMINDER_IDS.sunday], [...Array(8).keys()].map((i) => REMINDER_IDS.story + i));
   await LocalNotifications.cancel({ notifications: all.map((id) => ({ id })) });
 
   const list = [];
@@ -100,5 +101,17 @@ export async function applyReminders(r = DEFAULT_REMINDERS) {
     id: REMINDER_IDS.sunday, title: "Cierre de semana", body: "Pésate, mira tu ranking y piensa qué quieres mejorar la semana que viene.",
     schedule: { on: { weekday: 1, ...hm(r.sunday.time) }, allowWhileIdle: true },
   });
+  const STORY_MSG = ["Presume tu día", "Comida, pump y pasos: crea tu historia de hoy en ARC y súbela."];
+  if (r.story?.on) (r.story.days || []).forEach((weekday) => list.push({
+    id: REMINDER_IDS.story + weekday, title: STORY_MSG[0], body: STORY_MSG[1], extra: { open: "story" },
+    schedule: { on: { weekday, ...hm(r.story.time) }, allowWhileIdle: true },
+  }));
   if (list.length) await LocalNotifications.schedule({ notifications: list });
+}
+
+// Al tocar un aviso que abre algo dentro de la app (por ahora, la historia del día)
+export function onReminderOpen(cb) {
+  if (!isNative) return () => {};
+  const h = LocalNotifications.addListener("localNotificationActionPerformed", (e) => { const o = e?.notification?.extra?.open; if (o) cb(o); });
+  return () => { h.then?.((x) => x.remove()); };
 }

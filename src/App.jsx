@@ -208,9 +208,9 @@ const levelKey = (branch, mode, i) => (mode === "gymrat" ? `rat:${branch === "ma
 // [frase, quién, de dónde, explicación, tipo]
 let QUOTES = [
   ["Nunca olvides por qué empezaste.", "Luna", "ARC", "El día que no te apetezca, acuérdate de cómo te sentías cuando decidiste cambiar. Ese motivo sigue ahí.", "leccion"],
-  ["No voy a huir ni a retirar mi palabra. Ese es mi camino ninja.", "Naruto Uzumaki", "Naruto", "Si te has dicho que hoy entrenas, hoy entrenas. Cúmplete a ti misma.", "cita"],
+  ["No voy a huir ni a retirar mi palabra. Ese es mi camino ninja.", "Naruto Uzumaki", "Naruto", "Si te has dicho que hoy entrenas, hoy entrenas. No te falles.", "cita"],
   ["Tú también puedes ser un héroe.", "All Might", "My Hero Academia", "Se lo dijo a un chaval sin poderes. Ese chaval acabó siendo el número uno.", "cita"],
-  ["Elige aquello de lo que menos te vayas a arrepentir.", "Levi Ackerman", "Attack on Titan", "¿Te arrepentirás más de ir al gym cansada o de no haber ido? Ya lo sabes.", "cita"],
+  ["Elige aquello de lo que menos te vayas a arrepentir.", "Levi Ackerman", "Attack on Titan", "¿Te arrepentirás más de ir al gym sin ganas o de no haber ido? Ya lo sabes.", "cita"],
   ["Si muero intentándolo, al menos lo intenté.", "Monkey D. Luffy", "One Piece", "Luffy se mete en peleas que todos dan por perdidas. Lo que cuenta es plantarte, no tenerlo ganado de antemano. Hoy no hace falta el entreno perfecto, hace falta intentarlo.", "leccion"],
   ["No todo el que se esfuerza triunfa, pero todo el que ha triunfado se ha esforzado.", "Kamogawa", "Hajime no Ippo", "El esfuerzo no te asegura el resultado. Es lo único que te da opciones.", "cita"],
   ["El talento es algo que haces florecer. El instinto es algo que pules.", "Toru Oikawa", "Haikyuu!!", "Oikawa no era un genio y llegó arriba puliendo lo suyo cada día.", "cita"],
@@ -311,7 +311,7 @@ const EX_DB = [
   ["ARC-X02", "Femoral", "Peso muerto rumano en Smith", "Isquiotibiales, glúteo", "Multipower", "Bisagra de cadera con la barra guiada: llevas el glúteo hacia atrás y la barra baja pegada a las piernas.", "Para cuando notes el estiramiento del femoral, no cuando la barra llegue abajo."],
   ["ARC-X03", "Glúteo y cadera", "Patada de glúteo en polea", "Glúteo mayor", "Polea", "Con la tobillera enganchada a una polea baja, llevas la pierna hacia atrás desde la cadera y vuelves despacio.", "Inclínate un poco hacia delante y no arquees la zona lumbar al subir la pierna."],
   ["ARC-X04", "Pecho", "Press banca con barra", "Pectoral, tríceps", "Barra", "Tumbada en el banco, bajas la barra hasta el pecho y la empujas hasta estirar los brazos.", "Omóplatos juntos y pies firmes en el suelo; la barra baja a la altura del esternón."],
-  ["CARDIO", "Cardio", "Cardio (cinta inclinada, bici o elíptica)", "Corazón y piernas", "Máquina", "Ritmo en el que puedas hablar pero te cueste un poco.", "Si vas justa de tiempo, mejor 20 minutos que nada."],
+  ["CARDIO", "Cardio", "Cardio (cinta inclinada, bici o elíptica)", "Corazón y piernas", "Máquina", "Ritmo en el que puedas hablar pero te cueste un poco.", "Si vas con poco tiempo, mejor 20 minutos que nada."],
   ["MOVILIDAD", "Movilidad", "Movilidad y estiramientos", "Todo el cuerpo", "Peso corporal", "Cadera, tobillos, espalda alta y hombros, sin prisa.", "Respira lento y no fuerces el estiramiento."],
 ];
 
@@ -691,7 +691,25 @@ const TAG_OPTS = EXCLUDE_OPTS;
 
 // Ejercicios que se quitaron: en el historial y en rutinas guardadas se ven como su sustituto
 const EX_REMAP = { "ARC-065": "ARC-081", "ARC-071": "ARC-054", "ARC-030": "ARC-029", "ARC-018": "ARC-019", "ARC-057": "ARC-X03", "ARC-058": "ARC-X03", "ARC-059": "ARC-X03", "ARC-053": "ARC-072", "ARC-017": "ARC-009" , "ARC-003": "ARC-002", "ARC-005": "ARC-004", "ARC-008": "ARC-073", "ARC-010": "ARC-009", "ARC-074": "ARC-073", "ARC-024": "ARC-022", "ARC-025": "ARC-026", "ARC-031": "ARC-029", "ARC-032": "ARC-029", "ARC-033": "ARC-029", "ARC-034": "ARC-036", "ARC-035": "ARC-036", "ARC-038": "ARC-075", "ARC-039": "ARC-075", "ARC-040": "ARC-075", "ARC-044": "ARC-042", "ARC-045": "ARC-078", "ARC-046": "ARC-X01", "ARC-047": "ARC-078", "ARC-048": "ARC-078", "ARC-X05": "ARC-042", "ARC-056": "ARC-082", "ARC-061": "ARC-X03", "ARC-064": "ARC-081", "ARC-066": "ARC-077", "ARC-068": "ARC-083" };
+// Textos de ejercicios sin género (la app es para chicas y chicos). También corrige lo que venga de Supabase.
+const NEUTRAL_TXT = [
+  ["Apoyada en las manos y las puntas de los pies", "Con las manos y las puntas de los pies en el suelo"],
+  ["Colgada de una barra", "Colgándote de una barra"], ["Colgada de la barra", "Colgándote de la barra"],
+  ["sentada con las piernas ancladas", "en el asiento con las piernas ancladas"],
+  ["Inclinada hacia delante", "Con el torso inclinado hacia delante"],
+  ["De pie o sentada", "De pie o en un banco"], [", sentada, con el recorrido", ", desde el asiento, con el recorrido"],
+  ["Sentada o de pie", "En el asiento o de pie"], ["Sentada en la polea baja", "En el asiento de la polea baja"],
+  ["Sentada de lado a la polea alta", "De lado a la polea alta, en el asiento"], ["Sentada en el suelo", "En el suelo"],
+  ["Sentada con ", "En el asiento, con "], ["Sentada frente", "En el asiento, frente"], ["Sentada mirando", "En el asiento, mirando"],
+  ["Sentada, ", "En el asiento, "], ["Tumbada boca abajo", "Boca abajo en la máquina"], ["Tumbada bocarriba", "Bocarriba"],
+  ["Tumbada en un banco", "Bocarriba en un banco"], ["Tumbada en el banco", "Bocarriba en el banco"],
+  ["Apoyada en una pared o máquina", "Apoyando una mano en una pared o máquina"], ["y apoyada con las manos", "con las manos apoyadas en ella"],
+  ["Cúmplete a ti misma", "No te falles"], ["Si vas justa de tiempo", "Si vas con poco tiempo"], ["ir al gym cansada", "ir al gym sin ganas"],
+];
+const neutralTxt = (t) => (typeof t === "string" ? NEUTRAL_TXT.reduce((a, [f, r]) => a.split(f).join(r), t) : t);
+
 function withFallback(obj) {
+  for (const v of Object.values(obj)) if (v && typeof v === "object") { if (v.simple) v.simple = neutralTxt(v.simple); if (v.tip) v.tip = neutralTxt(v.tip); }
   return new Proxy(obj, {
     get(t, k) {
       if (k in t || typeof k !== "string" || !/^(ARC-|CARDIO|MOVILIDAD|EX-)/.test(k)) return t[k];
@@ -720,7 +738,7 @@ function applyContent(c) {
   const foods = c.foods?.length ? c.foods : DEFAULT_CONTENT.foods;
   const recipes = c.recipes?.length ? c.recipes : DEFAULT_CONTENT.recipes;
   const act = quotes.filter((q) => q.active !== false);
-  QUOTES = (act.length ? act : DEFAULT_CONTENT.quotes).map((q) => [q.text, q.who, q.source, q.why, q.kind]);
+  QUOTES = (act.length ? act : DEFAULT_CONTENT.quotes).map((q) => [q.text, q.who, q.source, neutralTxt(q.why), q.kind]);
   const sorted = [...exercises].sort((a, b) => (a.sort ?? 999) - (b.sort ?? 999) || a.id.localeCompare(b.id));
   EXERCISES = withFallback(Object.fromEntries(sorted.map((e) => [e.id, {
     id: e.id, group: e.grp, n: e.name, muscle: e.muscle || "", equip: e.equip || "", simple: e.simple || "", tip: e.tip || "",
@@ -740,7 +758,7 @@ const EX_IN_USE = new Set([...Object.values(DAY_TEMPLATES).flatMap((d) => d.ex.m
 
 
 const ACTIVITY = [
-  { id: 1.3, label: "Poco movimiento", hint: "Sentada casi todo el día, menos de 5.000 pasos" },
+  { id: 1.3, label: "Poco movimiento", hint: "Casi todo el día sin moverte de la silla, menos de 5.000 pasos" },
   { id: 1.45, label: "Algo activa", hint: "5.000–8.000 pasos y 2–3 entrenos" },
   { id: 1.6, label: "Activa", hint: "8.000–12.000 pasos y 3–5 entrenos" },
   { id: 1.75, label: "Muy activa", hint: "Trabajo físico o más de 12.000 pasos y 5+ entrenos" },
@@ -1129,6 +1147,26 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .day.next .day-n{background:var(--ac);color:#000;border-color:var(--ac)}
 .day .exrow{padding:7px 0;border-top:1px solid var(--ln)}
 .day .hd{margin-bottom:10px;gap:10px}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px;aspect-ratio:9/16;max-height:52vh;margin:0 auto;background:#fff;padding:4px;border-radius:14px}
+.dslot{position:relative;overflow:hidden;border:0;border-radius:8px;background:var(--sf2);color:var(--dm);font:inherit;font-size:13px;cursor:pointer;display:grid;place-items:center;padding:0}
+.dslot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dslot span{display:flex;flex-direction:column;align-items:center;gap:4px}
+.dslot span b{font-size:28px;color:#fff;font-weight:400}
+.dsteps{background:radial-gradient(120% 80% at 100% 0%,rgba(212,139,146,.45),transparent 60%),#0E0E11;position:absolute;inset:0;justify-content:center}
+.dsteps small{color:var(--ac);font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.dsteps b{font-size:26px!important;font-weight:800!important}
+.dsteps em{font-style:normal;font-size:10px;color:var(--dm)}
+.dcard{display:flex;align-items:center;gap:14px;width:100%;text-align:left;margin:12px 0;padding:14px 16px;border-radius:16px;border:1px solid rgba(212,139,146,.35);background:linear-gradient(120deg,rgba(212,139,146,.18),rgba(212,139,146,.03));color:#fff;font:inherit;cursor:pointer}
+.dcard-ic{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:36px;height:52px;flex:none;padding:3px;background:#fff;border-radius:7px}
+.dcard-ic i{background:var(--ac);border-radius:2px}
+.dcard-ic i:nth-child(2),.dcard-ic i:nth-child(3){background:#26262B}
+.dcard-t{flex:1;min-width:0}
+.dcard-t b{display:block;font-size:15px}
+.dcard-t small{display:block;color:var(--dm);font-size:12.5px;margin-top:2px;line-height:1.35}
+.dcard-go{font-size:26px;color:var(--ac)}
+.kpi.tap{cursor:pointer;position:relative}
+.kpi .kpi-sh{position:absolute;top:10px;right:10px;color:var(--dm)}
+.hb .hd .shr-mini{background:none;border:0;color:var(--ac);font:inherit;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
 .hist{display:flex;justify-content:space-between;font-size:14px;padding:10px 0;border-bottom:1px solid var(--ln)}
 .hist span:last-child{color:var(--dm)}
 .tk-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -1870,6 +1908,9 @@ function HomeSimple({ state, stats, quote, ratioPoints, weightPoints }) {
 }
 
 function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) {
+  const [shareSteps, setShareSteps] = useState(false);
+  const [dayStory, setDayStory] = useState(false);
+  useEffect(() => { const h = () => setDayStory(true); window.addEventListener("arc-story", h); return () => window.removeEventListener("arc-story", h); }, []);
   const branch = state.profile.branch;
   const mode = state.profile.mode || "otaku";
   const L = levelsOf(branch, mode);
@@ -1915,7 +1956,8 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
       {stats.provisional && <div className="gauge"><div className="prov">Nivel provisional: la adherencia empieza a contar en tu día {RULES.ADHERENCE_MIN_DAYS}.</div></div>}
 
       <div className="kpis">
-        <div className="kpi">
+        <div className="kpi tap" role="button" tabIndex={0} aria-label="Compartir tus pasos" onClick={() => setShareSteps(true)}>
+          <span className="kpi-sh"><ShareIcon /></span>
           <small>Pasos hoy</small>
           <b>{String(stepsToday).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</b>
           <div className="bar"><i style={{ width: `${Math.min(100, (stepsToday / RULES.STEPS_GOAL) * 100)}%`, background: "var(--ac)" }} /></div>
@@ -1932,6 +1974,9 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
         </div>
       </div>
 
+      <DayStoryCard onOpen={() => setDayStory(true)} />
+      {shareSteps && <StepsShareSheet habits={state.habits} nick={state.nickname} onClose={() => setShareSteps(false)} onDay={() => { setShareSteps(false); setDayStory(true); }} />}
+      {dayStory && <DayStorySheet habits={state.habits} onClose={() => setDayStory(false)} />}
       {ev.next ? (
         <details className="fold">
           <summary><span>¿Cómo subo de nivel?</span><i aria-hidden="true">+</i></summary>
@@ -2878,6 +2923,8 @@ function Sources({ groups, title = "Fuentes científicas", open = false }) {
 }
 
 function Habits({ state, setHabit, adh, steps }) {
+  const [shareSteps, setShareSteps] = useState(false);
+  const [dayStory, setDayStory] = useState(false);
   const today = dkey();
   const h = state.habits[today] || {};
   const water = h.water || 0;
@@ -2892,10 +2939,14 @@ function Habits({ state, setHabit, adh, steps }) {
       </div>
 
       <div className="hb">
-        <div className="hd"><b>Pasos</b><span>Meta {RULES.STEPS_GOAL.toLocaleString("es-ES")}</span></div>
+        <div className="hd"><b>Pasos</b><button className="shr-mini" onClick={() => setShareSteps(true)}><ShareIcon /> Compartir</button></div>
+        <p className="hint" style={{ margin: "-4px 0 8px" }}>Meta {RULES.STEPS_GOAL.toLocaleString("es-ES")}</p>
         <input className="in" type="number" inputMode="numeric" placeholder="Pasos de hoy" value={h.steps ?? ""} onChange={(e) => setHabit("steps", e.target.value === "" ? "" : Number(e.target.value))} />
         <div className="bar" style={{ marginTop: 10 }}><i style={{ width: `${Math.min(100, ((h.steps || 0) / RULES.STEPS_GOAL) * 100)}%`, background: "var(--ac)" }} /></div>
         <StepsWeek habits={state.habits} />
+        <DayStoryCard onOpen={() => setDayStory(true)} />
+        {shareSteps && <StepsShareSheet habits={state.habits} nick={state.nickname} onClose={() => setShareSteps(false)} onDay={() => { setShareSteps(false); setDayStory(true); }} />}
+        {dayStory && <DayStorySheet habits={state.habits} onClose={() => setDayStory(false)} />}
         {steps && steps.source !== "Apple Salud" && steps.available && (steps.linked
           ? <div className="chips" style={{ marginTop: 10 }}>
               <button className="chip" disabled={steps.busy} onClick={steps.sync}>{steps.busy ? "Leyendo pasos…" : "Actualizar pasos del móvil"}</button>
@@ -3364,7 +3415,7 @@ function MyRankProfile({ me, api, media, state, onOpen }) {
       <button className="myprof-av" onClick={() => onOpen(me.nickname)} aria-label="Ver mi perfil"><Avatar r={r} media={media} size={54} ring /></button>
       <div style={{ flex: 1, minWidth: 0 }}>
         <b>{me.nickname}</b>
-        {me.pending && <small className="pend">Foto en revisión: la verán las demás cuando la apruebe la coach</small>}
+        {me.pending && <small className="pend">Foto en revisión: la verá el resto cuando la apruebe la coach</small>}
         <div className="chips" style={{ marginTop: 6 }}>
           <MediaPicker label={me.avatar || me.pending ? "Cambiar foto" : "Poner foto"} accept="image/*" onPick={(f) => api.setAvatar(f)} onError={setErr} />
           {(me.avatar || me.pending) && <button className="chip" onClick={() => api.setAvatar(null).catch(() => setErr("No se ha podido quitar."))}>Quitar</button>}
@@ -3466,7 +3517,7 @@ function Ranking({ me, state, api, media = {}, blocked = [], onBlock, onUnblockA
         <div className="rk-hero-pod"><span className="b2" /><span className="b1"><Crown size={30} /></span><span className="b3" /></div>
         <p>Cada lunes empieza de cero. Gana la constancia, no los kilos.</p>
       </div>
-      <p className="sub">Sumas {RANK_POINTS.session} puntos por cada día que entrenas y {RANK_POINTS.habitDay} por cada día que cumples tus hábitos. Puedes poner foto, ver el perfil de las demás y buscar a tus amigas.</p>
+      <p className="sub">Sumas {RANK_POINTS.session} puntos por cada día que entrenas y {RANK_POINTS.habitDay} por cada día que cumples tus hábitos. Puedes poner foto, ver el perfil del resto y buscar a tu gente.</p>
       <div className="note" style={{ marginTop: 0, marginBottom: 18 }}>Se verá tu apodo, tu nivel, tus días entrenados y tus series de la semana. Nunca tu peso, tus medidas ni tus fotos de progreso. Puedes poner tu perfil privado cuando quieras.</div>
       <div className="field"><label>Tu apodo en el ranking</label>
         <input className="in" maxLength={20} placeholder="Por ejemplo: luna_lifts" value={nick} onChange={(e) => { setNick(e.target.value); setNickErr(""); }} />
@@ -3539,7 +3590,7 @@ function Ranking({ me, state, api, media = {}, blocked = [], onBlock, onUnblockA
 
       <h2>Tu perfil</h2>
       <MyRankProfile me={me} api={api} media={media} state={state} onOpen={setOpen} />
-      <p className="hint">Foto tuya o algo que te represente. Antes de que la vean las demás la revisa la coach. Nada de desnudos, violencia ni fotos de otras personas. Consulta las <button className="inlink" onClick={() => setLegalDoc("terminos")}>normas de la comunidad</button>.</p>
+      <p className="hint">Foto tuya o algo que te represente. Antes de que la vea el resto la revisa la coach. Nada de desnudos, violencia ni fotos de otras personas. Consulta las <button className="inlink" onClick={() => setLegalDoc("terminos")}>normas de la comunidad</button>.</p>
 
       <div style={{ display: "flex", gap: 16, marginTop: 18, flexWrap: "wrap" }}>
         <button className="link" onClick={() => { setNick(me.nickname || ""); setEditing(true); }}>Cambiar mi apodo</button>
@@ -3847,6 +3898,193 @@ function ShareSheet({ session, prs = [], levelImg, nick, onClose }) {
   );
 }
 
+/* ---------- Compartir pasos y "Mi día" (historia de 4 fotos) ---------- */
+const fmtN = (n) => String(Math.round(n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+function stepsWeekData(habits) {
+  const L = ["D", "L", "M", "X", "J", "V", "S"];
+  return Array.from({ length: 7 }, (_, i) => { const d = new Date(); d.setDate(d.getDate() - (6 - i)); return { l: L[d.getDay()], v: Number(habits[dkey(d)]?.steps) || 0 }; });
+}
+function drawBrand(x, W, y, size = 1) {
+  return loadImg("/logo-mark.png").then((logo) => {
+    x.save(); x.textBaseline = "middle";
+    const lw = 54 * size, lh = logo ? logo.height * lw / logo.width : 0;
+    x.font = `700 ${Math.round(28 * size)}px ${SHARE_FONT}`;
+    const tw = x.measureText("@arcworkoutapp").width, total = (logo ? lw + 14 * size : 0) + tw;
+    const pad = 18 * size, bx = W - total - pad * 2 - 40, bh = Math.max(lh, 34 * size) + pad * 1.2;
+    x.fillStyle = "rgba(0,0,0,.55)"; x.beginPath(); x.roundRect(bx, y - bh / 2, total + pad * 2, bh, bh / 2); x.fill();
+    let cx = bx + pad;
+    if (logo) { x.drawImage(logo, cx, y - lh / 2, lw, lh); cx += lw + 14 * size; }
+    x.fillStyle = "#fff"; x.fillText("@arcworkoutapp", cx, y + 1);
+    x.restore();
+  });
+}
+function drawStepsPanel(x, X, Y, W, H, { steps, week, goal, kind, compact }) {
+  const PINK = "#D48B92", DIM = "rgba(255,255,255,.62)";
+  const g = x.createLinearGradient(X, Y, X + W, Y + H); g.addColorStop(0, "#1b1216"); g.addColorStop(1, "#070708"); x.fillStyle = g; x.fillRect(X, Y, W, H);
+  const rg = x.createRadialGradient(X + W, Y, 10, X + W, Y, W * 1.1); rg.addColorStop(0, "rgba(212,139,146,.45)"); rg.addColorStop(1, "rgba(212,139,146,0)"); x.fillStyle = rg; x.fillRect(X, Y, W, H);
+  const s = compact ? 0.62 : 1, L = X + 60 * s, R = X + W - 60 * s;
+  const avg = (() => { const v = week.filter((d) => d.v > 0); return v.length ? v.reduce((a, d) => a + d.v, 0) / v.length : 0; })();
+  const big = kind === "semana" ? avg : steps;
+  let y = Y + H * (compact ? 0.2 : 0.36);
+  x.fillStyle = PINK; x.font = `700 ${Math.round(30 * s)}px ${SHARE_FONT}`; spaced(x, kind === "semana" ? "PASOS · MEDIA SEMANAL" : "PASOS DE HOY", L, y, 5 * s);
+  y += 150 * s; x.fillStyle = "#fff"; x.font = `800 ${Math.round(170 * s)}px ${SHARE_FONT}`; x.fillText(fmtN(big), L, y);
+  y += 60 * s; x.fillStyle = DIM; x.font = `600 ${Math.round(32 * s)}px ${SHARE_FONT}`;
+  x.fillText(big >= goal ? "Meta cumplida" : `${Math.min(99, Math.round((big / goal) * 100))}% de la meta de ${fmtN(goal)}`, L, y);
+  // barra de progreso
+  y += 40 * s; x.fillStyle = "rgba(255,255,255,.12)"; x.beginPath(); x.roundRect(L, y, R - L, 16 * s, 8 * s); x.fill();
+  x.fillStyle = PINK; x.beginPath(); x.roundRect(L, y, Math.max(16 * s, (R - L) * Math.min(1, big / goal)), 16 * s, 8 * s); x.fill();
+  // barras de la semana
+  const bh = (compact ? 230 : 420) * s / (compact ? 0.62 : 1) * (compact ? 0.62 : 1), by = Math.min(Y + H - 110 * s, y + 120 * s + bh);
+  const max = Math.max(goal, ...week.map((d) => d.v)), bw = (R - L) / 7;
+  x.strokeStyle = "rgba(255,255,255,.35)"; x.setLineDash([10 * s, 10 * s]); x.lineWidth = 2; x.beginPath(); const gy = by - bh * goal / max; x.moveTo(L, gy); x.lineTo(R, gy); x.stroke(); x.setLineDash([]);
+  week.forEach((d, i) => {
+    const h = Math.max(d.v ? 8 * s : 0, bh * d.v / max), bx = L + i * bw + bw * 0.18;
+    x.fillStyle = d.v >= goal ? PINK : i === 6 ? "#fff" : "rgba(255,255,255,.35)"; x.beginPath(); x.roundRect(bx, by - h, bw * 0.64, h, 10 * s); x.fill();
+    x.fillStyle = i === 6 ? "#fff" : DIM; x.font = `${i === 6 ? 800 : 600} ${Math.round(26 * s)}px ${SHARE_FONT}`; x.textAlign = "center"; x.fillText(d.l, bx + bw * 0.32, by + 44 * s); x.textAlign = "left";
+  });
+}
+async function drawStepsCard({ kind, steps, week, goal, photo, nick }) {
+  const W = 1080, H = 1920;
+  try { await document.fonts?.load(`800 90px ${SHARE_FONT}`); } catch (e) { /* fuente del sistema */ }
+  const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
+  if (photo) {
+    const img = await loadImg(photo); x.fillStyle = "#000"; x.fillRect(0, 0, W, H); if (img) cover(x, img, W, H * 0.55);
+    const g = x.createLinearGradient(0, H * 0.4, 0, H * 0.58); g.addColorStop(0, "rgba(5,5,6,0)"); g.addColorStop(1, "#070708"); x.fillStyle = g; x.fillRect(0, H * 0.4, W, H * 0.18);
+    drawStepsPanel(x, 0, H * 0.55, W, H * 0.45, { steps, week, goal, kind, compact: true });
+  } else drawStepsPanel(x, 0, 0, W, H, { steps, week, goal, kind });
+  await drawBrand(x, W, 120, 1);
+  if (nick) { x.font = `800 30px ${SHARE_FONT}`; x.textBaseline = "middle"; const t = nick.toUpperCase(), w = [...t].reduce((a, ch) => a + x.measureText(ch).width + 2, 0); x.fillStyle = "rgba(0,0,0,.55)"; x.beginPath(); x.roundRect(52, 92, w + 40, 60, 30); x.fill(); x.fillStyle = "#fff"; spaced(x, t, 72, 122, 2); x.textBaseline = "alphabetic"; }
+  return c.toDataURL("image/png");
+}
+// Historia "Mi día": cuatro huecos (comida, gym, pasos y foto libre)
+const DAY_SLOTS = [["food", "Comida"], ["gym", "Gym / pump"], ["steps", "Pasos"], ["free", "Lo que quieras"]];
+async function drawDayStory({ photos, steps, week, goal }) {
+  const W = 1080, H = 1920, gap = 10, cw = (W - gap) / 2, ch = (H - gap) / 2;
+  try { await document.fonts?.load(`800 90px ${SHARE_FONT}`); } catch (e) { /* fuente del sistema */ }
+  const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
+  x.fillStyle = "#fff"; x.fillRect(0, 0, W, H);
+  const pos = [[0, 0], [cw + gap, 0], [0, ch + gap], [cw + gap, ch + gap]];
+  for (let i = 0; i < 4; i++) {
+    const [k] = DAY_SLOTS[i], [px, py] = pos[i];
+    x.save(); x.beginPath(); x.rect(px, py, cw, ch); x.clip();
+    if (k === "steps" && !photos.steps) drawStepsPanel(x, px, py, cw, ch, { steps, week, goal, kind: "dia", compact: true });
+    else {
+      const img = await loadImg(photos[k]);
+      x.fillStyle = "#111"; x.fillRect(px, py, cw, ch);
+      if (img) { const r = Math.max(cw / img.width, ch / img.height), w = img.width * r, h = img.height * r; x.drawImage(img, px + (cw - w) / 2, py + (ch - h) / 2, w, h); }
+      if (k === "steps") { // foto propia + número de pasos encima
+        const g = x.createLinearGradient(0, py + ch * 0.55, 0, py + ch); g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(1, "rgba(0,0,0,.8)"); x.fillStyle = g; x.fillRect(px, py, cw, ch);
+        x.fillStyle = "#D48B92"; x.font = `700 22px ${SHARE_FONT}`; spaced(x, "PASOS DE HOY", px + 36, py + ch - 120, 4);
+        x.fillStyle = "#fff"; x.font = `800 88px ${SHARE_FONT}`; x.fillText(fmtN(steps), px + 36, py + ch - 40);
+      }
+    }
+    x.restore();
+  }
+  await drawBrand(x, W, H - 70, 0.85);
+  return c.toDataURL("image/png");
+}
+
+function ShareTip({ busy, onShare, onClose }) {
+  return (
+    <div className="shr-tip" onClick={onClose}>
+      <div className="shr-tip-box" onClick={(e) => e.stopPropagation()}>
+        <b>¡No te olvides de mencionar a @arcworkoutapp!</b>
+        <p>Así podemos ver tu historia y repostearla.</p>
+        <button className="btn ac" disabled={busy} onClick={onShare}>{busy ? "Un momento…" : "Vale, compartir"}</button>
+      </div>
+    </div>
+  );
+}
+function useShareImg(url, name) {
+  const [busy, setBusy] = useState(false), [err, setErr] = useState(""), [tip, setTip] = useState(false);
+  const share = async () => {
+    setBusy(true); setErr("");
+    try { await SHARE_IMPL(url, name); } catch (e) { if (!/cancel/i.test(e?.message || "")) setErr("No se ha podido compartir. Inténtalo otra vez."); }
+    finally { setBusy(false); setTip(false); }
+  };
+  return { busy, err, setErr, tip, setTip, share };
+}
+function PhotoInput({ inputRef, onPhoto, onErr }) {
+  return <input ref={inputRef} type="file" accept="image/*" hidden onChange={async (e) => {
+    const f = e.target.files?.[0]; e.target.value = ""; if (!f) return;
+    try { onPhoto(await readFile(f, 1400)); } catch (er) { onErr("No se ha podido abrir la foto."); }
+  }} />;
+}
+
+function StepsShareSheet({ habits, nick, onClose, onDay }) {
+  const [kind, setKind] = useState("dia");
+  const [photo, setPhoto] = useState(null);
+  const [url, setUrl] = useState(null);
+  const ref = useRef(null);
+  const week = stepsWeekData(habits), steps = week[6].v;
+  const sh = useShareImg(url, `arc-pasos-${kind}.png`);
+  useEffect(() => { let on = true; setUrl(null); drawStepsCard({ kind, steps, week, goal: RULES.STEPS_GOAL, photo, nick }).then((u) => on && setUrl(u)); return () => { on = false; }; }, [kind, photo]);
+  return (
+    <div className="modal shr" onClick={onClose}>
+      <div className="box" onClick={(e) => e.stopPropagation()}>
+        <h1 style={{ fontSize: 20 }}>Compartir tus pasos</h1>
+        <div className="chips"><button className={`chip ${kind === "dia" ? "on" : ""}`} onClick={() => setKind("dia")}>Hoy</button><button className={`chip ${kind === "semana" ? "on" : ""}`} onClick={() => setKind("semana")}>Esta semana</button></div>
+        <div className="shr-prev">{url ? <img src={url} alt="Vista previa" /> : <span>Creando…</span>}</div>
+        <div className="chips" style={{ justifyContent: "center" }}>
+          <button className="chip" onClick={() => ref.current?.click()}>{photo ? "Cambiar foto" : "Añadir una foto arriba"}</button>
+          {photo && <button className="chip" onClick={() => setPhoto(null)}>Sin foto</button>}
+        </div>
+        <PhotoInput inputRef={ref} onPhoto={setPhoto} onErr={sh.setErr} />
+        {sh.err && <div className="err">{sh.err}</div>}
+        <button className="btn ac" disabled={!url || sh.busy} onClick={() => sh.setTip(true)}>Compartir</button>
+        {onDay && <button className="btn" onClick={onDay}>Mejor, mi día completo (4 fotos)</button>}
+        <button className="btn ghost" onClick={onClose}>Cerrar</button>
+        {sh.tip && <ShareTip busy={sh.busy} onShare={sh.share} onClose={() => sh.setTip(false)} />}
+      </div>
+    </div>
+  );
+}
+
+function DayStorySheet({ habits, onClose }) {
+  const [photos, setPhotos] = useState({});
+  const [slot, setSlot] = useState(null);
+  const [url, setUrl] = useState(null);
+  const ref = useRef(null);
+  const week = stepsWeekData(habits), steps = week[6].v;
+  const ready = ["food", "gym", "free"].every((k) => photos[k]);
+  const sh = useShareImg(url, "arc-mi-dia.png");
+  useEffect(() => { let on = true; setUrl(null); drawDayStory({ photos, steps, week, goal: RULES.STEPS_GOAL }).then((u) => on && setUrl(u)); return () => { on = false; }; }, [photos]);
+  const pick = (k) => { setSlot(k); setTimeout(() => ref.current?.click(), 0); };
+  return (
+    <div className="modal shr" onClick={onClose}>
+      <div className="box" onClick={(e) => e.stopPropagation()}>
+        <h1 style={{ fontSize: 20 }}>Tu día en una historia</h1>
+        <p className="sub" style={{ margin: "-4px 0 10px" }}>Toca cada hueco para poner tu foto. Los pasos se ponen solos.</p>
+        <div className="dgrid">
+          {DAY_SLOTS.map(([k, label]) => (
+            <button key={k} className={`dslot ${photos[k] ? "has" : ""}`} onClick={() => pick(k)} aria-label={`Foto: ${label}`}>
+              {photos[k] ? <img src={photos[k]} alt="" /> : k === "steps" ? <span className="dsteps"><small>Pasos de hoy</small><b>{fmtN(steps)}</b><em>Toca si prefieres una foto</em></span> : <span><b>+</b>{label}</span>}
+            </button>
+          ))}
+        </div>
+        {photos.steps && <button className="chip" style={{ display: "block", margin: "8px auto 0" }} onClick={() => setPhotos((p) => ({ ...p, steps: null }))}>Volver a poner los pasos solos</button>}
+        <PhotoInput inputRef={ref} onPhoto={(u) => setPhotos((p) => ({ ...p, [slot]: u }))} onErr={sh.setErr} />
+        {ready && url && <div className="shr-prev" style={{ marginTop: 12 }}><img src={url} alt="Vista previa de tu historia" /></div>}
+        <p className="hint">La imagen se crea en tu móvil y solo se comparte si tú lo eliges.</p>
+        {sh.err && <div className="err">{sh.err}</div>}
+        <button className="btn ac" disabled={!ready || !url || sh.busy} onClick={() => sh.setTip(true)}>{ready ? "Compartir" : "Pon las 3 fotos para compartir"}</button>
+        <button className="btn ghost" onClick={onClose}>Cerrar</button>
+        {sh.tip && <ShareTip busy={sh.busy} onShare={sh.share} onClose={() => sh.setTip(false)} />}
+      </div>
+    </div>
+  );
+}
+// Botón de "Mi día" para la pantalla principal y Hábitos
+function DayStoryCard({ onOpen }) {
+  return (
+    <button className="dcard" onClick={onOpen}>
+      <span className="dcard-ic" aria-hidden="true"><i /><i /><i /><i /></span>
+      <span className="dcard-t"><b>Crea tu historia del día</b><small>Comida, gym, pasos y lo que quieras. Lista para Instagram.</small></span>
+      <span className="dcard-go" aria-hidden="true">›</span>
+    </button>
+  );
+}
+
 const ShareIcon = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v12" /><path d="M7 8l5-5 5 5" /><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" /></svg>
 );
@@ -4041,7 +4279,7 @@ function Reminders({ value, onChange }) {
   const [err, setErr] = useState("");
   const save = async (next) => {
     setErr("");
-    const anyOn = next.train.on || next.water.on || next.sunday.on;
+    const anyOn = next.train.on || next.water.on || next.sunday.on || next.story?.on;
     if (anyOn && native.isNative && !(await native.notificationsAllowed(true))) {
       setErr("ARC no tiene permiso para avisarte. Actívalo en los ajustes del móvil, en Notificaciones.");
       return;
@@ -4073,6 +4311,16 @@ function Reminders({ value, onChange }) {
       {row("water", "Beber agua", "A las " + r.water.times.join(", ").replace(/, ([^,]*)$/, " y $1"))}
       {row("sunday", "Cierre del domingo", "Pesarte, ver tu ranking y planear la semana")}
       {r.sunday.on && <input className="in" type="time" style={{ margin: "4px 0 12px", maxWidth: 140 }} value={r.sunday.time} onChange={(e) => save({ ...r, sunday: { ...r.sunday, time: e.target.value } })} />}
+      {row("story", "Presume tu día", "Te recuerda crear tu historia del día")}
+      {r.story.on && (
+        <div style={{ padding: "4px 0 12px" }}>
+          <div className="chips">{WEEK.map(([d, l]) => {
+            const on = r.story.days.includes(d);
+            return <button key={d} className={`chip ${on ? "on" : ""}`} style={{ minWidth: 40 }} onClick={() => save({ ...r, story: { ...r.story, days: on ? r.story.days.filter((x) => x !== d) : [...r.story.days, d] } })}>{l}</button>;
+          })}</div>
+          <input className="in" type="time" style={{ marginTop: 10, maxWidth: 140 }} value={r.story.time} onChange={(e) => save({ ...r, story: { ...r.story, time: e.target.value } })} />
+        </div>
+      )}
       {err && <div className="err">{err}</div>}
     </>
   );
@@ -4762,6 +5010,7 @@ function ArcApp({ user }) {
   const [loaded, setLoaded] = useState(false);
   const [loadErr, setLoadErr] = useState("");
   const [tab, setTab] = useState("inicio");
+  useEffect(() => native.onReminderOpen((o) => { if (o === "story") { setTab("inicio"); setTimeout(() => window.dispatchEvent(new Event("arc-story")), 400); } }), []);
   const [screen, setScreen] = useState(null);
   const [toast, setToast] = useState("");
   const [coachView, setCoachView] = useState(true);
@@ -5018,7 +5267,7 @@ function ArcApp({ user }) {
   return (
     <div className="arc">
       <style>{CSS + EXTRA_CSS + LEGAL_CSS + PAYWALL_CSS + CLIENTS_CSS + CHECKIN_CSS}</style>
-      {paywall && <Paywall media={media} coach={coach} uploadMedia={uploadMedia} setMedia={setMedia} onClose={() => setPaywall(false)} onPremium={() => { setPremium(true); setPaywall(false); setToast("¡Bienvenida a ARC completo!"); }} />}
+      {paywall && <Paywall media={media} coach={coach} uploadMedia={uploadMedia} setMedia={setMedia} onClose={() => setPaywall(false)} onPremium={() => { setPremium(true); setPaywall(false); setToast("¡Ya tienes ARC completo!"); }} />}
       {toast && <div className="toast" role="status">{toast}</div>}
       {done && <FinishScreen data={done} media={media} coach={coach} uploadMedia={uploadMedia} setMedia={setMedia} onClose={() => setDone(null)} />}
       {levelUp && <LevelUp data={levelUp} onClose={closeLevelUp} />}
