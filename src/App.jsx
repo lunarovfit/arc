@@ -198,7 +198,10 @@ const levelsOf = (branch, mode) => (mode === "gymrat" ? RAT_LEVELS : mode === "c
 // Imagen de un nivel: la que suba la coach o, en gymrat, la rata que viene con la app
 const EX_VIDS = ["ARC-001", "ARC-002", "ARC-004", "ARC-006", "ARC-007", "ARC-009", "ARC-011", "ARC-012", "ARC-013", "ARC-014", "ARC-015", "ARC-016", "ARC-019", "ARC-020", "ARC-022", "ARC-023", "ARC-026", "ARC-027", "ARC-028", "ARC-029", "ARC-036", "ARC-037", "ARC-041", "ARC-042", "ARC-043", "ARC-049", "ARC-050", "ARC-054", "ARC-055", "ARC-060", "ARC-067", "ARC-069", "ARC-070", "ARC-073", "ARC-075", "ARC-076", "ARC-077", "ARC-078", "ARC-079", "ARC-080", "ARC-081", "ARC-082", "ARC-083", "ARC-084", "ARC-085", "ARC-087", "ARC-088", "ARC-M01", "ARC-M02", "ARC-M03", "ARC-M04", "ARC-M06", "ARC-M07", "ARC-M08", "ARC-M09", "ARC-X01", "ARC-X03"];
 const BUNDLED_MEDIA = Object.fromEntries(EX_VIDS.map((id) => [`ex:${id}`, `/ejercicios/${id}.mp4`]));
-const mediaOr = (media, key) => { const m = /^rat:(female|male):(\d)$/.exec(key); return media[key] || (m ? `/ratas/${m[1]}/rat-${m[2]}.png` : null); };
+// Imágenes que vienen dentro de la app; una foto subida después desde el panel las sustituye
+const BUNDLED_IMG = { "lvl:female:3": "/personajes/talia.jpg", "lvl:male:6": "/personajes/d.jpg" };
+const BUNDLED_SINCE = 1793011308383;
+const mediaOr = (media, key) => { if (BUNDLED_IMG[key]) { const t = Number((/\/(\d{13})\.\w+$/.exec(media[key] || "") || [])[1]); if (!(t > BUNDLED_SINCE)) return BUNDLED_IMG[key]; } const m = /^rat:(female|male):(\d)$/.exec(key); return media[key] || (m ? `/ratas/${m[1]}/rat-${m[2]}.png` : null); };
 const levelKey = (branch, mode, i) => (mode === "gymrat" ? `rat:${branch === "male" ? "male" : "female"}:${i}` : mode === "clasico" ? `classic:${i}` : `lvl:${branch}:${i}`);
 
 
