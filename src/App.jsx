@@ -1243,6 +1243,7 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .kpi b span{font-size:13px;color:var(--dm);font-weight:600}
 .kpi .bar{height:5px}
 .kpi .dots{display:flex;gap:3px}.kpi .dots i{flex:1;height:5px;border-radius:3px;background:var(--sf2)}.kpi .dots i.on{background:var(--ac)}
+.nextcard.in{margin:0 0 12px;background:none;border:0;padding:0}
 .nextcard{margin-top:12px;background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:14px 14px 4px}
 .nc-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .nc-top small{color:var(--dm);font-size:12px}.nc-top b{font-size:16px}
@@ -1909,13 +1910,13 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
       </div>
 
       {ev.next ? (
-        <div className="nextcard">
+        <details className="fold">
+          <summary><span>¿Cómo subo de nivel?</span><i aria-hidden="true">+</i></summary>
+          <div className="nextcard in">
           <div className="nc-top"><small>Siguiente nivel</small><b>{ev.next.name}</b></div>
           {lim && (
             <p className="nc-lim">Lo que más te falta: <b>{lim.label.toLowerCase()}</b>{!(lim.key === "adherence" && stats.provisional) && <> · {lim.fmt(stats[lim.key])} de {lim.fmt(ev.next[lim.key])}</>}</p>
           )}
-          <details className="fold in">
-            <summary><span>Ver todo lo que pide</span><i aria-hidden="true">+</i></summary>
           {FACTORS.filter((f) => !f.optional).map((f) => {
               const need = ev.next[f.key], have = stats[f.key];
               const prov = f.key === "adherence" && stats.provisional;
@@ -1939,8 +1940,8 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
                 <p className="hint" style={{ margin: "2px 0 0" }}>No hacen falta para subir de nivel. Si las consigues, suman en tus skills.</p>
               </div>
             )}
-          </details>
         </div>
+        </details>
       ) : <div className="note">Has completado el arco. No queda nadie por encima.</div>}
 
       <details className="fold">
@@ -1973,7 +1974,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
       )}
 
       <details className="fold" open={coach || undefined}>
-        <summary><span>El arco completo</span><i aria-hidden="true">+</i></summary>
+        <summary><span>{coach ? "El arco completo" : "Personajes por desbloquear"}</span><i aria-hidden="true">+</i></summary>
       {coach && <>
         <div className="seg">
           <button className={vb === "female" ? "on" : ""} onClick={() => setVb("female")}>Femenina</button>
@@ -1988,6 +1989,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
         const key = vb === "ratF" ? `rat:female:${i}` : vb === "ratM" ? `rat:male:${i}` : mode === "clasico" && !coach ? `classic:${i}` : `lvl:${vb}:${i}`;
         const img = mediaOr(media, key);
         const mine = vb === "ratF" || vb === "ratM" ? mode === "gymrat" && vb === (branch === "male" ? "ratM" : "ratF") : mode !== "gymrat" && vb === branch;
+        if (!coach && i <= ev.current) return null;
         return (
           <div key={l.name} className="lvrow" style={{ opacity: mine && i > ev.current && !coach ? 0.4 : 1 }}>
             <div className="thumb">{img ? <img src={img} alt="" /> : <span>{i + 1}</span>}</div>
