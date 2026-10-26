@@ -193,7 +193,7 @@ const CLASSIC_LINES = [
 const CLASSIC_LEVELS = Object.fromEntries(["female", "male"].map((b) => [b, LEVELS[b].map((l, i) => ({ ...l, name: `Nivel ${i + 1}`, series: "Tu arco", line: CLASSIC_LINES[i] }))]));
 const ANIME_SRC = new Set(["Attack on Titan","Demon Slayer","Fullmetal Alchemist","Hajime no Ippo","Jujutsu Kaisen","My Hero Academia","Naruto","Neon Genesis Evangelion","One Piece","Vinland Saga","Dragon Ball","Haikyuu","Bleach","Haikyuu!!","Gurren Lagann","One Punch Man","Fullmetal Alchemist: Brotherhood","Black Clover","Fairy Tail"]);
 // En modo sin personajes tampoco salen frases de anime
-const pickQuote = (mode) => { const pool = mode === "clasico" || mode === "simple" ? QUOTES.filter((q) => !ANIME_SRC.has(q[2])) : QUOTES.filter((q) => ANIME_SRC.has(q[2])); const l = pool.length ? pool : QUOTES; return l[Math.floor(Math.random() * l.length)]; };
+const pickQuote = (mode) => { const mine = QUOTES.filter((q) => q[2] === "ARC"); const base = mode === "clasico" || mode === "simple" ? QUOTES.filter((q) => !ANIME_SRC.has(q[2]) && q[2] !== "ARC") : QUOTES.filter((q) => ANIME_SRC.has(q[2])); const pool = [...base, ...mine, ...mine, ...mine]; const l = pool.length ? pool : QUOTES; return l[Math.floor(Math.random() * l.length)]; };
 const levelsOf = (branch, mode) => (mode === "gymrat" ? RAT_LEVELS : mode === "clasico" || mode === "simple" ? CLASSIC_LEVELS : LEVELS)[branch] || LEVELS.female;
 // Imagen de un nivel: la que suba la coach o, en gymrat, la rata que viene con la app
 const EX_VIDS = ["ARC-001", "ARC-002", "ARC-004", "ARC-006", "ARC-007", "ARC-009", "ARC-011", "ARC-012", "ARC-013", "ARC-014", "ARC-015", "ARC-016", "ARC-019", "ARC-020", "ARC-022", "ARC-023", "ARC-026", "ARC-027", "ARC-028", "ARC-029", "ARC-036", "ARC-037", "ARC-041", "ARC-042", "ARC-043", "ARC-049", "ARC-050", "ARC-054", "ARC-055", "ARC-060", "ARC-067", "ARC-069", "ARC-070", "ARC-073", "ARC-075", "ARC-076", "ARC-077", "ARC-078", "ARC-079", "ARC-080", "ARC-081", "ARC-082", "ARC-083", "ARC-084", "ARC-085", "ARC-087", "ARC-088", "ARC-M01", "ARC-M02", "ARC-M03", "ARC-M04", "ARC-M06", "ARC-M07", "ARC-M08", "ARC-M09", "ARC-X01", "ARC-X03"];
@@ -203,6 +203,7 @@ const levelKey = (branch, mode, i) => (mode === "gymrat" ? `rat:${branch === "ma
 
 // [frase, quién, de dónde, explicación, tipo]
 let QUOTES = [
+  ["Nunca olvides por qué empezaste.", "Luna", "ARC", "El día que no te apetezca, acuérdate de cómo te sentías cuando decidiste cambiar. Ese motivo sigue ahí.", "leccion"],
   ["No voy a huir ni a retirar mi palabra. Ese es mi camino ninja.", "Naruto Uzumaki", "Naruto", "Si te has dicho que hoy entrenas, hoy entrenas. Cúmplete a ti misma.", "cita"],
   ["Tú también puedes ser un héroe.", "All Might", "My Hero Academia", "Se lo dijo a un chaval sin poderes. Ese chaval acabó siendo el número uno.", "cita"],
   ["Elige aquello de lo que menos te vayas a arrepentir.", "Levi Ackerman", "Attack on Titan", "¿Te arrepentirás más de ir al gym cansada o de no haber ido? Ya lo sabes.", "cita"],
