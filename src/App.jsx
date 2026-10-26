@@ -191,9 +191,9 @@ const CLASSIC_LINES = [
   "Fuerza que se nota fuera del gym.", "Pocas llegan aquí. Tú sí.", "A un paso de lo más alto.", "Arco completo. Nivel máximo.",
 ];
 const CLASSIC_LEVELS = Object.fromEntries(["female", "male"].map((b) => [b, LEVELS[b].map((l, i) => ({ ...l, name: `Nivel ${i + 1}`, series: "Tu arco", line: CLASSIC_LINES[i] }))]));
-const ANIME_SRC = new Set(["Attack on Titan","Demon Slayer","Fullmetal Alchemist","Hajime no Ippo","Jujutsu Kaisen","My Hero Academia","Naruto","Neon Genesis Evangelion","One Piece","Vinland Saga","Dragon Ball","Haikyuu","Bleach","Haikyuu!!","Gurren Lagann","One Punch Man","Fullmetal Alchemist: Brotherhood","Black Clover"]);
+const ANIME_SRC = new Set(["Attack on Titan","Demon Slayer","Fullmetal Alchemist","Hajime no Ippo","Jujutsu Kaisen","My Hero Academia","Naruto","Neon Genesis Evangelion","One Piece","Vinland Saga","Dragon Ball","Haikyuu","Bleach","Haikyuu!!","Gurren Lagann","One Punch Man","Fullmetal Alchemist: Brotherhood","Black Clover","Fairy Tail"]);
 // En modo sin personajes tampoco salen frases de anime
-const pickQuote = (mode) => { const pool = mode === "clasico" || mode === "simple" ? QUOTES.filter((q) => !ANIME_SRC.has(q[2])) : QUOTES; const l = pool.length ? pool : QUOTES; return l[Math.floor(Math.random() * l.length)]; };
+const pickQuote = (mode) => { const pool = mode === "clasico" || mode === "simple" ? QUOTES.filter((q) => !ANIME_SRC.has(q[2])) : QUOTES.filter((q) => ANIME_SRC.has(q[2])); const l = pool.length ? pool : QUOTES; return l[Math.floor(Math.random() * l.length)]; };
 const levelsOf = (branch, mode) => (mode === "gymrat" ? RAT_LEVELS : mode === "clasico" || mode === "simple" ? CLASSIC_LEVELS : LEVELS)[branch] || LEVELS.female;
 // Imagen de un nivel: la que suba la coach o, en gymrat, la rata que viene con la app
 const EX_VIDS = ["ARC-001", "ARC-002", "ARC-004", "ARC-006", "ARC-007", "ARC-009", "ARC-011", "ARC-012", "ARC-013", "ARC-014", "ARC-015", "ARC-016", "ARC-019", "ARC-020", "ARC-022", "ARC-023", "ARC-026", "ARC-027", "ARC-028", "ARC-029", "ARC-036", "ARC-037", "ARC-041", "ARC-042", "ARC-043", "ARC-049", "ARC-050", "ARC-054", "ARC-055", "ARC-060", "ARC-067", "ARC-069", "ARC-070", "ARC-073", "ARC-075", "ARC-076", "ARC-077", "ARC-078", "ARC-079", "ARC-080", "ARC-081", "ARC-082", "ARC-083", "ARC-084", "ARC-085", "ARC-087", "ARC-088", "ARC-M01", "ARC-M02", "ARC-M03", "ARC-M04", "ARC-M06", "ARC-M07", "ARC-M08", "ARC-M09", "ARC-X01", "ARC-X03"];
@@ -204,17 +204,11 @@ const levelKey = (branch, mode, i) => (mode === "gymrat" ? `rat:${branch === "ma
 // [frase, quién, de dónde, explicación, tipo]
 let QUOTES = [
   ["No voy a huir ni a retirar mi palabra. Ese es mi camino ninja.", "Naruto Uzumaki", "Naruto", "Si te has dicho que hoy entrenas, hoy entrenas. Cúmplete a ti misma.", "cita"],
-  ["Ve más allá. ¡Plus Ultra!", "All Might", "My Hero Academia", "Esa última repetición con buena técnica es tu Plus Ultra de hoy.", "cita"],
   ["Tú también puedes ser un héroe.", "All Might", "My Hero Academia", "Se lo dijo a un chaval sin poderes. Ese chaval acabó siendo el número uno.", "cita"],
-  ["¡Entregad vuestros corazones!", "Erwin Smith", "Attack on Titan", "Hoy dalo todo en el entreno. Mañana descansas.", "cita"],
   ["Elige aquello de lo que menos te vayas a arrepentir.", "Levi Ackerman", "Attack on Titan", "¿Te arrepentirás más de ir al gym cansada o de no haber ido? Ya lo sabes.", "cita"],
-  ["Tranquilo, soy el más fuerte.", "Satoru Gojo", "Jujutsu Kaisen", "Dilo antes de ponerte bajo la barra. La confianza también se entrena.", "cita"],
-  ["¡Voy a ser el Rey de los Piratas!", "Monkey D. Luffy", "One Piece", "Luffy lo grita desde el capítulo uno sin vergüenza. Ponle nombre a tu meta.", "cita"],
   ["Si muero intentándolo, al menos lo intenté.", "Monkey D. Luffy", "One Piece", "Luffy se mete en peleas que todos dan por perdidas. Lo que cuenta es plantarte, no tenerlo ganado de antemano. Hoy no hace falta el entreno perfecto, hace falta intentarlo.", "leccion"],
   ["No todo el que se esfuerza triunfa, pero todo el que ha triunfado se ha esforzado.", "Kamogawa", "Hajime no Ippo", "El esfuerzo no te asegura el resultado. Es lo único que te da opciones.", "cita"],
-  ["¡Arde, corazón!", "Kyojuro Rengoku", "Demon Slayer", "Para cuando la motivación se apaga a mitad de entreno.", "cita"],
   ["Cree en ti. No en el yo que cree en ti, ni en el tú que cree en mí. Cree en el tú que cree en ti.", "Kamina", "Gurren Lagann", "Para los días en que no te ves capaz. Simon tampoco se lo creía.", "cita"],
-  ["¡Manda la lógica a paseo y haz lo imposible!", "Kamina", "Gurren Lagann", "Para esa serie que te da miedo intentar.", "cita"],
   ["El talento es algo que haces florecer. El instinto es algo que pules.", "Toru Oikawa", "Haikyuu!!", "Oikawa no era un genio y llegó arriba puliendo lo suyo cada día.", "cita"],
   ["Una lección sin dolor no tiene sentido. Nadie gana nada sin sacrificar algo a cambio.", "Edward Elric", "Fullmetal Alchemist: Brotherhood", "Las agujetas, el madrugón, el táper. Eso es lo que pagas a cambio.", "cita"],
   ["No importa lo fuerte que golpees. Importa lo fuerte que te pueden golpear y seguir avanzando.", "Rocky Balboa", "Rocky Balboa", "Una mala semana, un catarro, exámenes. Lo importante es volver el lunes.", "cita"],
@@ -226,10 +220,15 @@ let QUOTES = [
   ["Un fracasado puede vencer a un genio a base de trabajo duro.", "Rock Lee", "Naruto", "Lee no podía usar ni ninjutsu ni genjutsu. Se hizo fuerte con lo único que le quedaba: entrenar.", "cita"],
   ["Las cicatrices en la espalda son la vergüenza de un espadachín.", "Roronoa Zoro", "One Piece", "Zoro nunca le da la espalda a un rival, ni aunque vaya a perder. Tú tampoco a la serie que te da miedo.", "cita"],
   ["El trabajo duro no sirve de nada si no crees en ti mismo.", "Naruto Uzumaki", "Naruto", "Puedes entrenar perfecto, pero si vas pensando que no puedes, el peso pesa el doble.", "cita"],
-  ["Ser ninja es saber aguantar.", "Jiraiya", "Naruto", "Los resultados llegan a quien aguanta las semanas en las que no se nota nada.", "cita"],
   ["Por muy débil o inútil que te sientas, enciende tu corazón, aprieta los dientes y sigue adelante.", "Kyojuro Rengoku", "Demon Slayer", "Para los días en que todo pesa más de la cuenta. Hoy también cuenta.", "cita"],
   ["No rendirme, esa es mi magia.", "Asta", "Black Clover", "Asta nació sin una gota de magia y aun así se plantó frente a todos. Tu talento es no dejarlo.", "cita"],
   ["Este mundo es cruel, pero también es muy bonito.", "Mikasa Ackerman", "Attack on Titan", "Hay entrenos que duelen y días que salen solos. Los dos forman parte del camino.", "cita"],
+  ["Quien no es capaz de sacrificar nada, nunca podrá cambiar nada.", "Armin Arlert", "Attack on Titan", "Cambiar tu cuerpo cuesta algo: horas, sueño, excusas. Elige qué das a cambio.", "cita"],
+  ["El miedo no es malo. Te dice cuál es tu debilidad, y cuando la conoces, puedes volverte más fuerte.", "Gildarts Clive", "Fairy Tail", "Ese ejercicio que evitas es justo el que más te va a hacer crecer.", "cita"],
+  ["Levántate y camina. Sigue adelante. Tienes dos buenas piernas.", "Edward Elric", "Fullmetal Alchemist: Brotherhood", "Ed lo perdió casi todo y aun así se levantó. Tú también puedes con hoy.", "cita"],
+  ["Los sueños de las personas nunca se acaban.", "Barbanegra", "One Piece", "Da igual cuánto tiempo lleves sin entrenar o cuántas veces lo hayas dejado. Siempre puedes volver.", "cita"],
+  ["No le des a nadie el poder de decidir tu destino.", "Giyu Tomioka", "Demon Slayer", "Ni a quien te dice que no es para ti, ni a la voz de tu cabeza que lo repite.", "cita"],
+  ["Tu taladro es el que perforará los cielos.", "Kamina", "Gurren Lagann", "Lo que tienes ahora, aunque te parezca poco, es justo con lo que vas a llegar.", "cita"],
 ];
 
 /* ============================ ENTRENO ============================ */
