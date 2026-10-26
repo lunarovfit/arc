@@ -1185,18 +1185,22 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .ntop .macros i{position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:3px}
 .mlist{display:grid;gap:14px;margin-top:6px}
 .mcard{border-radius:20px;overflow:hidden;background:var(--sf);border:1px solid var(--ln)}
-.mhero{position:relative;height:150px;background:radial-gradient(90% 120% at 85% 10%,rgba(212,139,146,.35),transparent 60%),linear-gradient(160deg,#1c1418,#0E0E11);display:flex;align-items:flex-end}
-.mhero.ph{height:200px}
-.mhero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.mhero.ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.82))}
-.mhero-ic{position:absolute;right:16px;bottom:12px;color:rgba(255,255,255,.22)}
-.mhero-t{position:relative;z-index:1;padding:14px 16px;max-width:82%}
+.mhead{display:flex;gap:14px;align-items:center;padding:14px 16px 12px}
+.mthumb{flex:none;width:74px;height:74px;border-radius:16px;display:grid;place-items:center;color:var(--ac);background:radial-gradient(100% 100% at 80% 0%,rgba(212,139,146,.3),transparent 70%),var(--sf2);border:1px solid var(--ln);overflow:hidden}
+.mthumb.ph img{width:100%;height:100%;object-fit:cover}
+.mhead-t{min-width:0;flex:1}
 .mslot{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ac);font-weight:800}
-.mname{font-size:21px;font-weight:800;line-height:1.15;margin-top:3px;text-wrap:balance}
-.mnav{position:absolute;z-index:2;right:12px;top:12px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.14);border-radius:99px;padding:3px}
-.mnav button{width:32px;height:32px;border-radius:50%;border:0;background:#fff;color:#000;font:inherit;font-size:20px;font-weight:700;line-height:1;cursor:pointer}
-.mnav span{font-size:12px;color:#fff;min-width:28px;text-align:center;font-variant-numeric:tabular-nums}
-.mbody{padding:12px 16px 14px}
+.mslot span{color:var(--dm);letter-spacing:.02em;text-transform:none;font-weight:600}
+.mname{font-size:17px;font-weight:800;line-height:1.2;margin-top:2px;text-wrap:balance}
+.mmac{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;font-size:12px;color:var(--dm)}
+.mmac span{display:inline-flex;align-items:center;gap:5px}
+.mmac i{width:7px;height:7px;border-radius:50%;display:inline-block}
+.mmac .tp{border:1px solid var(--ln);border-radius:99px;padding:1px 8px}
+.mswap{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 16px;padding:8px 0;border-top:1px solid var(--ln);border-bottom:1px solid var(--ln)}
+.mswap span{font-size:12px;color:var(--dm)}
+.mswap button{background:var(--sf2);border:1px solid var(--ln);color:#fff;border-radius:99px;padding:6px 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.mswap button:first-child{width:34px;padding:6px 0}
+.mbody{padding:6px 16px 12px}
 .mpills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .mpills span{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:4px 9px;border-radius:99px;background:var(--sf2);border:1px solid var(--ln)}
 .mpills span.k{background:#fff;color:#000;font-weight:800;border-color:#fff}
@@ -2912,27 +2916,20 @@ function Nutrition({ profile, setCook, media = {} }) {
         const go = (d) => setPick({ ...pick, [m.k]: (idx + d + n) % n });
         return (
           <div className="mcard" key={m.id}>
-            <div className={`mhero ${img ? "ph" : ""}`}>
-              {img ? <img src={img} alt={m.recipe.name} loading="lazy" /> : <span className="mhero-ic"><CookIcon mode={m.recipe.mode === "sanji" ? "sanji" : "sencilla"} size={54} /></span>}
-              <div className="mhero-t">
-                <div className="mslot">{SLOT_NAMES[m.id]}</div>
+            <div className="mhead">
+              <div className={`mthumb ${img ? "ph" : ""}`}>{img ? <img src={img} alt="" loading="lazy" /> : <CookIcon mode={m.recipe.mode === "sanji" ? "sanji" : "sencilla"} size={30} />}</div>
+              <div className="mhead-t">
+                <div className="mslot">{SLOT_NAMES[m.id]} <span>· {Math.round(m.tot.kcal)} kcal</span></div>
                 <div className="mname">{m.recipe.name}</div>
+                <div className="mmac"><span><i style={{ background: "var(--ac)" }} />P {Math.round(m.tot.p)}</span><span><i style={{ background: "#EDE7E2" }} />H {Math.round(m.tot.c)}</span><span><i style={{ background: "#F5C76B" }} />G {Math.round(m.tot.f)}</span>{TUPPER.has(m.recipe.name) && <span className="tp">Táper</span>}</div>
               </div>
-              {n > 1 && <div className="mnav">
-                <button aria-label="Receta anterior" onClick={() => go(-1)}>‹</button>
-                <span>{idx + 1}/{n}</span>
-                <button aria-label="Otra receta" onClick={() => go(1)}>›</button>
-              </div>}
             </div>
+            {n > 1 && <div className="mswap">
+              <button aria-label="Receta anterior" onClick={() => go(-1)}>‹</button>
+              <span>Opción {idx + 1} de {n}</span>
+              <button aria-label="Otra receta" onClick={() => go(1)}>Otra receta ›</button>
+            </div>}
             <div className="mbody">
-              <div className="mpills">
-                <span className="k">{Math.round(m.tot.kcal)} kcal</span>
-                <span><i style={{ background: "var(--ac)" }} />P {Math.round(m.tot.p)}</span>
-                <span><i style={{ background: "#EDE7E2" }} />H {Math.round(m.tot.c)}</span>
-                <span><i style={{ background: "#F5C76B" }} />G {Math.round(m.tot.f)}</span>
-                {TUPPER.has(m.recipe.name) && <span className="tp">Táper</span>}
-                <span className="tp">{m.recipe.mode === "sanji" ? "Modo Sanji" : "Fácil"}</span>
-              </div>
               <div className="mfoods">{m.items.map((it) => <div className="food" key={it.food}><span>{FOODS[it.food].n}</span><em>{Math.round(it.g)} g</em></div>)}</div>
               <details className="mprep">
                 <summary>Cómo se prepara</summary>
