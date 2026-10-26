@@ -242,7 +242,6 @@ let QUOTES = [
   ["Cada acción que haces es un voto por la persona que quieres ser.", "James Clear", "Hábitos atómicos", "Cada vaso de agua y cada serie cuentan como voto.", "cita"],
   ["No subes al nivel de tus metas. Caes al nivel de tus sistemas.", "James Clear", "Hábitos atómicos", "Por eso aquí subes de nivel con hábitos, no con propósitos de año nuevo.", "cita"],
   ["Nadie puede hacerte sentir inferior sin tu consentimiento.", "Eleanor Roosevelt", "Política y activismo", "Tu sitio en la zona de pesas es tuyo.", "cita"],
-  ["Atribuyo mi éxito a esto: nunca di ni acepté una excusa.", "Florence Nightingale", "Enfermería", "La fundadora de la enfermería moderna, también en el gym.", "cita"]
 ];
 
 /* ============================ ENTRENO ============================ */
