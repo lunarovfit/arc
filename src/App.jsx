@@ -1148,6 +1148,7 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .day .exrow{padding:7px 0;border-top:1px solid var(--ln)}
 .day .hd{margin-bottom:10px;gap:10px}
 .dgrid{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:3px;aspect-ratio:9/16;max-height:52vh;margin:0 auto;background:#000;border-radius:14px;overflow:hidden}
+.dslot .dex{font-style:normal;font-size:10.5px;line-height:1.3;color:var(--dm);text-align:center;padding:0 10px;opacity:.8}
 .dbadge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(10,10,12,.85);border-left:3px solid var(--ac);border-radius:8px;padding:6px 10px;pointer-events:none;white-space:nowrap}
 .dbadge small{display:block;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--dm);font-weight:700}
 .dbadge b{font-size:20px;font-weight:800}
@@ -3961,7 +3962,7 @@ async function drawStepsCard({ kind, steps, week, goal, photo, nick }) {
   return c.toDataURL("image/png");
 }
 // Historia "Mi día": cuatro fotos en cuadrícula y los pasos del día en el centro
-const DAY_SLOTS = [["food", "Comida"], ["free", "Lo que quieras"], ["gym", "Gym / pump"], ["more", "Otra foto"]];
+const DAY_SLOTS = [["food", "Comida", "Tu desayuno, tu táper o esa receta nueva"], ["free", "Lo que quieras", "La serie que estás viendo, tu escritorio o tu outfit"], ["gym", "Gym / pump", "Foto del pump, tu máquina favorita o el espejo"], ["more", "Otra foto", "Otra comida, un paseo o tu rest day"]];
 async function drawDayStory({ photos, steps }) {
   const W = 1080, H = 1920, gap = 6, cw = (W - gap) / 2, ch = (H - gap) / 2;
   try { await document.fonts?.load(`800 90px ${SHARE_FONT}`); } catch (e) { /* fuente del sistema */ }
@@ -4063,9 +4064,9 @@ function DayStorySheet({ habits, onClose }) {
         <h1 style={{ fontSize: 20 }}>Tu día en una historia</h1>
         <p className="sub" style={{ margin: "-4px 0 10px" }}>Toca cada hueco para poner tu foto. Tus pasos de hoy van en el centro.</p>
         <div className="dgrid">
-          {DAY_SLOTS.map(([k, label]) => (
+          {DAY_SLOTS.map(([k, label, ex]) => (
             <button key={k} className={`dslot ${photos[k] ? "has" : ""}`} onClick={() => pick(k)} aria-label={`Foto: ${label}`}>
-              {photos[k] ? <img src={photos[k]} alt="" /> : <span><b>+</b>{label}</span>}
+              {photos[k] ? <img src={photos[k]} alt="" /> : <span><b>+</b>{label}<em className="dex">{ex}</em></span>}
             </button>
           ))}
           <div className="dbadge" aria-hidden="true"><small>Pasos de hoy</small><b>{fmtN(steps)}<em> pasos</em></b></div>
