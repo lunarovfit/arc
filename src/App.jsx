@@ -46,7 +46,7 @@ const LEVELS = {
     ["Nobara Kugisaki", "Jujutsu Kaisen", "Se fue de su pueblo porque se le quedaba pequeño. Martillo, clavos y cero ganas de pedir permiso a nadie."],
     ["Lucy", "Cyberpunk: Edgerunners", "Netrunner de élite con un único sueño: llegar a la luna. Fría por fuera y con un foco que nada consigue romper."],
     ["Annie Leonhart", "Attack on Titan", "Su padre la entrenó desde pequeña y acabó siendo la mejor de su promoción en cuerpo a cuerpo. Tumbaba a Reiner, que le sacaba dos cabezas."],
-    ["Cha Hae-in", "Solo Leveling", "Cazadora de rango S que aguanta en primera línea contra lo que sea. Espada, elegancia y una resistencia que no se agota."],
+    ["Mitsuri Kanroji", "Demon Slayer", "Tiene una fuerza ocho veces mayor de lo normal y la escondía porque la hacían sentir rara. Un día dejó de esconderse y se convirtió en Pilar. Tu fuerza no se pide perdón."],
     ["Mirko", "My Hero Academia", "Heroína número 5, pelea sola y a patadas. Perdió un brazo y una pierna en la guerra y siguió luchando con una sonrisa."],
     ["Mikasa Ackerman", "Attack on Titan", "La mejor de su promoción, capaz de tumbar titanes ella sola. Fuerza Ackerman, cabeza fría y una espalda que ya quisieras."],
     ["Yuki Tsukumo", "Jujutsu Kaisen", "Hechicera de grado especial: su técnica le suma masa a cada golpe. Se plantó sola ante Kenjaku. Libre, fuerte y sin dar explicaciones."],
@@ -78,7 +78,7 @@ const MOVES = {
   "Nobara Kugisaki": ["Resonancia", "Martillo y clavos"],
   "Lucy": ["Netrunner", "Monofilamento"],
   "Annie Leonhart": ["Patada baja", "Titán hembra"],
-  "Cha Hae-in": ["Rango S", "Esgrima"],
+  "Mitsuri Kanroji": ["Respiración del amor", "Espada látigo"],
   "Mirko": ["Patada lunar", "Salto de conejo"],
   "Mikasa Ackerman": ["Fuerza Ackerman", "Equipo 3D"],
   "Yuki Tsukumo": ["Masa estelar", "Grado especial"],
@@ -199,9 +199,9 @@ const levelsOf = (branch, mode) => (mode === "gymrat" ? RAT_LEVELS : mode === "c
 const EX_VIDS = ["ARC-001", "ARC-002", "ARC-004", "ARC-006", "ARC-007", "ARC-009", "ARC-011", "ARC-012", "ARC-013", "ARC-014", "ARC-015", "ARC-016", "ARC-019", "ARC-020", "ARC-022", "ARC-023", "ARC-026", "ARC-027", "ARC-028", "ARC-029", "ARC-036", "ARC-037", "ARC-041", "ARC-042", "ARC-043", "ARC-049", "ARC-050", "ARC-054", "ARC-055", "ARC-060", "ARC-067", "ARC-069", "ARC-070", "ARC-073", "ARC-075", "ARC-076", "ARC-077", "ARC-078", "ARC-079", "ARC-080", "ARC-081", "ARC-082", "ARC-083", "ARC-084", "ARC-085", "ARC-087", "ARC-088", "ARC-M01", "ARC-M02", "ARC-M03", "ARC-M04", "ARC-M06", "ARC-M07", "ARC-M08", "ARC-M09", "ARC-X01", "ARC-X03"];
 const BUNDLED_MEDIA = Object.fromEntries(EX_VIDS.map((id) => [`ex:${id}`, `/ejercicios/${id}.mp4`]));
 // Imágenes que vienen dentro de la app; una foto subida después desde el panel las sustituye
-const BUNDLED_IMG = { "lvl:female:3": "/personajes/talia.jpg", "lvl:male:6": "/personajes/d.jpg" };
+const BUNDLED_IMG = { "lvl:female:3": "/personajes/talia.jpg", "lvl:male:6": "/personajes/d.jpg", "lvl:female:7": null };
 const BUNDLED_SINCE = 1793011308383;
-const mediaOr = (media, key) => { if (BUNDLED_IMG[key]) { const t = Number((/\/(\d{13})\.\w+$/.exec(media[key] || "") || [])[1]); if (!(t > BUNDLED_SINCE)) return BUNDLED_IMG[key]; } const m = /^rat:(female|male):(\d)$/.exec(key); return media[key] || (m ? `/ratas/${m[1]}/rat-${m[2]}.png` : null); };
+const mediaOr = (media, key) => { if (key in BUNDLED_IMG) { const t = Number((/\/(\d{13})\.\w+$/.exec(media[key] || "") || [])[1]); if (!(t > BUNDLED_SINCE)) return BUNDLED_IMG[key]; } const m = /^rat:(female|male):(\d)$/.exec(key); return media[key] || (m ? `/ratas/${m[1]}/rat-${m[2]}.png` : null); };
 const levelKey = (branch, mode, i) => (mode === "gymrat" ? `rat:${branch === "male" ? "male" : "female"}:${i}` : mode === "clasico" ? `classic:${i}` : `lvl:${branch}:${i}`);
 
 
@@ -1103,6 +1103,32 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .day .hd b{font-size:16px}
 .day small{display:block;font-size:13px;color:var(--dm);line-height:1.6}
 .sbtn{background:#fff;color:#000;border:0;border-radius:10px;padding:8px 14px;font:inherit;font-weight:700;font-size:13px;cursor:pointer}
+.wstrip{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 14px}
+.wstrip-d{display:flex;gap:6px}
+.wd{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;color:var(--dm);width:26px}
+.wd i{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--ln);display:block}
+.wd.on i{background:var(--ac);border-color:var(--ac);box-shadow:0 0 12px rgba(212,139,146,.45)}
+.wd.now span{color:#fff;font-weight:700}
+.wd.now i{border-color:#fff}
+.wstrip-c{font-size:13px;color:var(--dm);white-space:nowrap}
+.wstrip-c b{color:#fff;font-size:18px}
+.today{position:relative;overflow:hidden;border-radius:20px;padding:20px 18px 16px;margin-bottom:14px;background:radial-gradient(120% 90% at 100% 0%,rgba(212,139,146,.38),transparent 60%),linear-gradient(160deg,#1a1216,#0E0E11 70%);border:1px solid rgba(212,139,146,.35)}
+.today-tag{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);font-weight:700}
+.today-name{font-size:28px;font-weight:800;line-height:1.1;margin:6px 0 10px;letter-spacing:-.01em}
+.today-meta{display:flex;flex-wrap:wrap;gap:6px}
+.today-meta span{font-size:12px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+.today-sub{font-size:13px;color:var(--dm);margin:12px 0 14px}
+.today-go{width:100%;background:#fff;color:#000;border:0;border-radius:14px;padding:14px;font:inherit;font-weight:800;font-size:16px;cursor:pointer}
+.today-go:active{transform:scale(.98)}
+.today-xp{text-align:center;font-size:12px;color:var(--dm);margin-top:9px}
+.day-t{display:flex;align-items:center;gap:12px;min-width:0}
+.day-t b{display:block}
+.day-t small{font-size:12px!important;line-height:1.4!important}
+.day-n{flex:none;width:34px;height:34px;border-radius:10px;background:var(--sf2);border:1px solid var(--ln);display:grid;place-items:center;font-weight:800;font-size:15px}
+.day.next{border-color:rgba(212,139,146,.45)}
+.day.next .day-n{background:var(--ac);color:#000;border-color:var(--ac)}
+.day .exrow{padding:7px 0;border-top:1px solid var(--ln)}
+.day .hd{margin-bottom:10px;gap:10px}
 .hist{display:flex;justify-content:space-between;font-size:14px;padding:10px 0;border-bottom:1px solid var(--ln)}
 .hist span:last-child{color:var(--dm)}
 .tk-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -2596,6 +2622,24 @@ function WarmUp({ media, onTech }) {
   );
 }
 
+// Músculos y duración aproximada de un día de rutina
+function dayInfo(d) {
+  const groups = [...new Set(d.ex.map((e) => (e.pick === "abs" ? "Abdomen" : EXERCISES[e.id]?.group)).filter(Boolean))];
+  const sec = d.ex.reduce((a, e) => a + (e.id === "CARDIO" ? (parseInt(e.reps) || 30) * 60 : (Number(e.sets) || 3) * ((Number(e.rest) || 90) + 45)), 0);
+  return { groups, min: Math.max(15, Math.round(sec / 300) * 5) };
+}
+function WeekStrip({ sessions, goal }) {
+  const ws = weekStart();
+  const done = new Set(sessions.filter((s) => new Date(s.date) >= ws).map((s) => (new Date(s.date).getDay() + 6) % 7));
+  const today = (new Date().getDay() + 6) % 7;
+  return (
+    <div className="wstrip">
+      <div className="wstrip-d">{["L", "M", "X", "J", "V", "S", "D"].map((l, i) => <div key={l} className={`wd${done.has(i) ? " on" : ""}${i === today ? " now" : ""}`}><span>{l}</span><i /></div>)}</div>
+      <div className="wstrip-c"><b>{done.size}</b>/{goal} esta semana</div>
+    </div>
+  );
+}
+
 function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, setMedia, uploadMedia }) {
   const [shareS, setShareS] = useState(null);
   const fromCoach = !!state.coachRoutine?.length;
@@ -2607,13 +2651,32 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
   const [q, setQ] = useState("");
   const [grp, setGrp] = useState(null);
   const norm = (t) => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const last = state.sessions[state.sessions.length - 1];
+  const li = last ? routine.findIndex((d) => d.id === last.dayId) : -1;
+  const next = routine.length ? routine[(li + 1) % routine.length] : null;
+  const doneToday = !!last && new Date(last.date).toDateString() === new Date().toDateString();
+  const lastAgo = (id) => {
+    const s = [...state.sessions].reverse().find((x) => x.dayId === id);
+    if (!s) return "";
+    const n = Math.floor((new Date().setHours(0, 0, 0, 0) - new Date(s.date).setHours(0, 0, 0, 0)) / 864e5);
+    return n <= 0 ? "hoy" : n === 1 ? "ayer" : `hace ${n} días`;
+  };
   const lib = Object.values(EXERCISES).filter((e) => (!grp || e.group === grp) && (!q || norm(`${e.n} ${e.muscle} ${e.equip} ${e.group}`).includes(norm(q))));
   return (
     <>
       <h1>Entrenos</h1>
-      <p className="sub">Elige el día que toca. Al terminar sumas {RULES.XP_PER_SESSION} XP y {RULES.GEMS_PER_SESSION} gemas.</p>
+      <WeekStrip sessions={state.sessions} goal={fromCoach ? routine.length : state.profile.days || routine.length} />
+      {next && !(mode === "custom" && (editing || custom.length === 0)) && (
+        <div className="today">
+          <div className="today-tag">{doneToday ? "Hoy ya has entrenado · el siguiente" : "Hoy toca"}</div>
+          <div className="today-name">{next.name}</div>
+          <div className="today-meta">{dayInfo(next).groups.slice(0, 4).map((g) => <span key={g}>{g}</span>)}</div>
+          <div className="today-sub">{next.ex.length} ejercicios · unos {dayInfo(next).min} min{lastAgo(next.id) ? ` · última vez ${lastAgo(next.id)}` : ""}</div>
+          <button className="today-go" onClick={() => onStart(next)}>Empezar entreno</button>
+          <div className="today-xp">+{RULES.XP_PER_SESSION} XP · +{RULES.GEMS_PER_SESSION} gemas al terminar</div>
+        </div>
+      )}
       <WarmUp media={media} onTech={setTech} />
-      {fromCoach && <div className="note"><b>Rutina de tu entrenadora</b><p className="sub" style={{ margin: "4px 0 0" }}>Esta rutina te la ha preparado ella. Apunta tus series y verá cómo vas.</p></div>}
       {!fromCoach && <div className="seg">
         <button className={mode === "auto" ? "on" : ""} onClick={() => { setProfile({ routineMode: "auto" }); setEditing(false); }}>Según mis objetivos</button>
         <button className={mode === "custom" ? "on" : ""} onClick={() => setProfile({ routineMode: "custom" })}>Mi propia rutina</button>
@@ -2642,8 +2705,8 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
       )}
       {mode === "custom" && custom.length > 0 && !editing && <button className="btn ghost" style={{ marginBottom: 6 }} onClick={() => setEditing(true)}>Editar mi rutina</button>}
       {!(mode === "custom" && (editing || custom.length === 0)) && routine.map((d) => (
-        <div className="day" key={d.id}>
-          <div className="hd"><b>Día {d.id}: {d.name}</b><button className="sbtn" onClick={() => onStart(d)}>Empezar</button></div>
+        <div className={`day${next && d.id === next.id ? " next" : ""}`} key={d.id}>
+          <div className="hd"><div className="day-t"><span className="day-n">{d.id}</span><div><b>{d.name}</b><small>{dayInfo(d).groups.slice(0, 3).join(" · ")}{lastAgo(d.id) ? ` · ${lastAgo(d.id)}` : ""}</small></div></div><button className="sbtn" onClick={() => onStart(d)}>Empezar</button></div>
           {d.ex.map((e) => (
             <button key={e.id} className="exrow" onClick={() => setTech(e.id)}>
               <span>{e.pick === "abs" ? "Abdominales (eliges tú)" : <>{media[`ex:${e.id}`] && <span className="play">▶</span>}{EXERCISES[e.id].n}</>}</span>
