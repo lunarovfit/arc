@@ -193,7 +193,7 @@ const CLASSIC_LINES = [
 const CLASSIC_LEVELS = Object.fromEntries(["female", "male"].map((b) => [b, LEVELS[b].map((l, i) => ({ ...l, name: `Nivel ${i + 1}`, series: "Tu arco", line: CLASSIC_LINES[i] }))]));
 const ANIME_SRC = new Set(["Attack on Titan","Demon Slayer","Fullmetal Alchemist","Hajime no Ippo","Jujutsu Kaisen","My Hero Academia","Naruto","Neon Genesis Evangelion","One Piece","Vinland Saga","Dragon Ball","Haikyuu","Bleach","Haikyuu!!","Gurren Lagann","One Punch Man","Fullmetal Alchemist: Brotherhood","Black Clover","Fairy Tail"]);
 // En modo sin personajes tampoco salen frases de anime
-const pickQuote = (mode) => { const mine = QUOTES.filter((q) => q[2] === "ARC"); const base = mode === "clasico" || mode === "simple" ? QUOTES.filter((q) => !ANIME_SRC.has(q[2]) && q[2] !== "ARC") : QUOTES.filter((q) => ANIME_SRC.has(q[2])); const pool = [...base, ...mine, ...mine, ...mine]; const l = pool.length ? pool : QUOTES; return l[Math.floor(Math.random() * l.length)]; };
+const pickQuote = (mode) => { const mine = QUOTES.filter((q) => q[2] === "ARC"), top = mine.filter((q) => q[1] === "Luna"); const base = mode === "clasico" || mode === "simple" ? QUOTES.filter((q) => !ANIME_SRC.has(q[2]) && q[2] !== "ARC") : QUOTES.filter((q) => ANIME_SRC.has(q[2])); const pool = [...base, ...mine, ...top, ...top]; const l = pool.length ? pool : QUOTES; return l[Math.floor(Math.random() * l.length)]; };
 const levelsOf = (branch, mode) => (mode === "gymrat" ? RAT_LEVELS : mode === "clasico" || mode === "simple" ? CLASSIC_LEVELS : LEVELS)[branch] || LEVELS.female;
 // Imagen de un nivel: la que suba la coach o, en gymrat, la rata que viene con la app
 const EX_VIDS = ["ARC-001", "ARC-002", "ARC-004", "ARC-006", "ARC-007", "ARC-009", "ARC-011", "ARC-012", "ARC-013", "ARC-014", "ARC-015", "ARC-016", "ARC-019", "ARC-020", "ARC-022", "ARC-023", "ARC-026", "ARC-027", "ARC-028", "ARC-029", "ARC-036", "ARC-037", "ARC-041", "ARC-042", "ARC-043", "ARC-049", "ARC-050", "ARC-054", "ARC-055", "ARC-060", "ARC-067", "ARC-069", "ARC-070", "ARC-073", "ARC-075", "ARC-076", "ARC-077", "ARC-078", "ARC-079", "ARC-080", "ARC-081", "ARC-082", "ARC-083", "ARC-084", "ARC-085", "ARC-087", "ARC-088", "ARC-M01", "ARC-M02", "ARC-M03", "ARC-M04", "ARC-M06", "ARC-M07", "ARC-M08", "ARC-M09", "ARC-X01", "ARC-X03"];
@@ -228,6 +228,13 @@ let QUOTES = [
   ["Levántate y camina. Sigue adelante. Tienes dos buenas piernas.", "Edward Elric", "Fullmetal Alchemist: Brotherhood", "Ed lo perdió casi todo y aun así se levantó. Tú también puedes con hoy.", "cita"],
   ["Los sueños de las personas nunca se acaban.", "Barbanegra", "One Piece", "Da igual cuánto tiempo lleves sin entrenar o cuántas veces lo hayas dejado. Siempre puedes volver.", "cita"],
   ["No le des a nadie el poder de decidir tu destino.", "Giyu Tomioka", "Demon Slayer", "Ni a quien te dice que no es para ti, ni a la voz de tu cabeza que lo repite.", "cita"],
+  ["Pequeñas acciones con disciplina, repetidas cada día, crean resultados extraordinarios.", "", "ARC", "Una serie, un vaso de agua, un paseo. Por separado no parecen nada; sumados, te cambian.", "leccion"],
+  ["Tu rutina escribe tus resultados.", "", "ARC", "No cuenta lo que haces un día, cuenta lo que haces casi todos.", "leccion"],
+  ["Sigue apareciendo. A las oportunidades les encanta la repetición.", "", "ARC", "El progreso llega a quien vuelve, no a quien empieza más fuerte.", "leccion"],
+  ["Crecer exige aceptar que durante un tiempo vas a hacer el ridículo.", "", "ARC", "Todo el mundo empezó sin saber usar las máquinas. Nadie te mira tanto como crees.", "leccion"],
+  ["Tu mentalidad es un arma o una debilidad. Entrénala para que luche a tu favor, no en tu contra.", "", "ARC", "Cada vez que vas sin ganas, entrenas también la cabeza.", "leccion"],
+  ["No lo llames meta si lo tratas como un deseo. Una meta tiene horario, coste y consecuencias. Si no tiene nada de eso, es solo una fantasía.", "", "ARC", "Ponle día y hora a tu entreno y deja de ser un deseo.", "leccion"],
+  ["La disciplina pesa… pero el arrepentimiento siempre pesará más.", "Rock Lee", "Naruto", "Lee entrenaba hasta caer. Le dolía menos eso que quedarse con las ganas.", "leccion"],
 ];
 
 /* ============================ ENTRENO ============================ */
@@ -1749,7 +1756,7 @@ function QuoteCard({ quote }) {
   return (
     <div className="quote qc">
       <p>{kind === "cita" ? `“${qq}”` : qq}</p>
-      <div className="who">{who} <span className="from">· {from}</span></div>
+      <div className="who">{who ? <>{who} <span className="from">· {from}</span></> : <span className="from">{from}</span>}</div>
       {why && <div className="why">{why}</div>}
     </div>
   );
@@ -2954,7 +2961,7 @@ function ContentEditor({ content, onSave, onDelete, onClose, media, setMedia, up
   const [edit, setEdit] = useState(null);
   const rows = content[table];
   const label = (r) => table === "quotes" ? r.text : r.name;
-  const sub = (r) => table === "quotes" ? `${r.who} · ${r.source}` : table === "recipes" ? `${SLOT_NAMES[r.slot] || r.slot} · ${r.mode === "sanji" ? "Sanji" : "Fácil"}` : table === "exercises" ? `${r.id} · ${r.grp}` : `P ${r.p} · H ${r.c} · G ${r.f}`;
+  const sub = (r) => table === "quotes" ? [r.who, r.source].filter(Boolean).join(" · ") : table === "recipes" ? `${SLOT_NAMES[r.slot] || r.slot} · ${r.mode === "sanji" ? "Sanji" : "Fácil"}` : table === "exercises" ? `${r.id} · ${r.grp}` : `P ${r.p} · H ${r.c} · G ${r.f}`;
   const list = rows.filter((r) => !q || norm(`${label(r)} ${sub(r)}`).includes(norm(q)));
 
   if (edit) return <EditForm table={table} row={edit.row} isNew={edit.isNew} content={content} onCancel={() => setEdit(null)}
@@ -3000,7 +3007,7 @@ function EditForm({ table, row, isNew, content, onSave, onDelete, onCancel, medi
   const canDelete = !isNew && !locked && usedBy === 0;
 
   const validate = () => {
-    if (table === "quotes" && (!r.text.trim() || !r.who.trim())) return "Pon la frase y quién la dice.";
+    if (table === "quotes" && !r.text.trim()) return "Pon la frase.";
     if (table === "exercises" && !r.name.trim()) return "Ponle nombre al ejercicio.";
     if (table === "foods") {
       if (!r.name.trim()) return "Ponle nombre al alimento.";
