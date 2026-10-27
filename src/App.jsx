@@ -1223,6 +1223,13 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .food.edit{align-items:center}
 .gin{display:inline-flex;align-items:center;gap:6px;color:var(--dm)}
 .gin .in{width:78px;padding:7px 9px;text-align:right}
+.extras{margin-top:14px;border-radius:20px;border:1px dashed var(--ln);padding:14px 16px}
+.xadd{display:grid;gap:8px;margin-top:10px}
+.xrow{display:flex;gap:8px}
+.xrow .in{flex:1;min-width:0}
+.xrow .eatbtn{flex:none;min-width:0;padding:11px 18px}
+.eatbtn:disabled{opacity:.4}
+.xdel{background:none;border:0;color:var(--dm);font:inherit;cursor:pointer;margin-left:6px}
 .hist{display:flex;justify-content:space-between;font-size:14px;padding:10px 0;border-bottom:1px solid var(--ln)}
 .hist span:last-child{color:var(--dm)}
 .tk-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -2874,6 +2881,39 @@ function ShopTips() {
   );
 }
 
+// Picoteos y extras: lo que comes fuera del plan también cuenta
+function Extras({ eaten, setEaten, totOf }) {
+  const [food, setFood] = useState("");
+  const [g, setG] = useState("");
+  const [q, setQ] = useState("");
+  const list = Object.entries(eaten).filter(([k]) => k.startsWith("extra:"));
+  const norm = (t) => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const opts = Object.entries(FOODS).filter(([, f]) => !q || norm(f.n).includes(norm(q))).sort((a, b) => a[1].n.localeCompare(b[1].n)).slice(0, 60);
+  const add = () => {
+    const grams = Math.round(Number(g)); if (!food || !(grams > 0)) return;
+    const items = [{ food, g: grams }];
+    setEaten({ ...eaten, [`extra:${Date.now()}`]: { name: FOODS[food].n, items, tot: totOf(items) } });
+    setFood(""); setG(""); setQ("");
+  };
+  return (
+    <div className="extras">
+      <div className="mslot">Picoteos y extras</div>
+      <p className="hint" style={{ margin: "4px 0 10px" }}>Apunta también lo pequeño: un puñado de frutos secos, una galleta, la leche del café o un trozo de chocolate. Son los que más se olvidan y los que más se notan al final del día.</p>
+      {list.map(([k, e]) => (
+        <div className="food" key={k}><span>{e.name} · {Math.round(e.items[0].g)} g</span><em>{Math.round(e.tot.kcal)} kcal <button className="xdel" aria-label={`Quitar ${e.name}`} onClick={() => { const n = { ...eaten }; delete n[k]; setEaten(n); }}>✕</button></em></div>
+      ))}
+      <div className="xadd">
+        <input className="in" placeholder="Buscar alimento…" value={q} onChange={(e) => { setQ(e.target.value); setFood(""); }} aria-label="Buscar alimento" />
+        <select className="in" value={food} onChange={(e) => setFood(e.target.value)} aria-label="Alimento">
+          <option value="">Elige el alimento</option>
+          {opts.map(([id, f]) => <option key={id} value={id}>{f.n}</option>)}
+        </select>
+        <div className="xrow"><input className="in" type="number" inputMode="numeric" placeholder="Gramos" value={g} onChange={(e) => setG(e.target.value)} aria-label="Gramos" /><button className="eatbtn" disabled={!food || !(Number(g) > 0)} onClick={add}>Apuntar</button></div>
+      </div>
+    </div>
+  );
+}
+
 function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => {} }) {
   const [editing, setEditing] = useState(null);
   const [rest, setRest] = useState(false);
@@ -2981,6 +3021,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
         );
       })())}
       </div>
+      <Extras eaten={eaten} setEaten={setEaten} totOf={totOf} />
       <div className="note">Total del día: {Math.round(day.kcal)} kcal, {Math.round(day.p)} g de proteína, {Math.round(day.c)} g de hidratos y {Math.round(day.f)} g de grasas. Pesos en crudo salvo patata, legumbres y cremas, que van ya cocinadas.</div>
 
       <h2>Suplementación</h2>
