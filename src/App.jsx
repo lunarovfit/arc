@@ -476,6 +476,10 @@ let FOODS = {
   batata: { n: "Batata", p: 1.6, c: 26, f: 5 },
   lecheAlmendras: { n: "Leche de almendras 0%", p: 0.5, c: 0, f: 1.5 },
   cremaVerduras: { n: "Crema de verduras", p: 0.8, c: 4.5, f: 0.8 },
+  cremaLentejas: { n: "Crema de lentejas (Hacendado)", p: 4.6, c: 6.1, f: 2.2 },
+  cremaCalabaza: { n: "Crema de calabaza y zanahoria (Hacendado)", p: 0.9, c: 4.2, f: 2.8 },
+  parrilladaVerduras: { n: "Parrillada de verduras congelada (Hacendado)", p: 2.2, c: 10, f: 0 },
+  pimientoCongelado: { n: "Pimiento troceado congelado (Hacendado)", p: 0.9, c: 4.5, f: 0.4 },
   kiwi: { n: "Kiwi", p: 1.1, c: 11, f: 0.4 },
   mermelada: { n: "Mermelada 0%", p: 0.6, c: 11.5, f: 0 },
   cottage: { n: "Queso cottage", p: 13, c: 1.6, f: 4 },
@@ -1230,6 +1234,12 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .xrow .eatbtn{flex:none;min-width:0;padding:11px 18px}
 .eatbtn:disabled{opacity:.4}
 .xdel{background:none;border:0;color:var(--dm);font:inherit;cursor:pointer;margin-left:6px}
+.shop-ex-t{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);font-weight:800;margin:14px 0 8px}
+.shop-ex{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.shop-ex div{display:flex;flex-direction:column;gap:3px}
+.shop-ex img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;border:1px solid var(--ln)}
+.shop-ex b{font-size:13px;margin-top:4px}
+.shop-ex small{font-size:11.5px;color:var(--dm);line-height:1.35}
 .hist{display:flex;justify-content:space-between;font-size:14px;padding:10px 0;border-bottom:1px solid var(--ln)}
 .hist span:last-child{color:var(--dm)}
 .tk-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -2870,6 +2880,13 @@ const SHOP_TIPS = [
   ["Crema de cacahuete", "100% cacahuete. Si lleva aceite de palma o azúcar, a la estantería."],
   ["Pan «integral»", "Que el primer ingrediente sea harina integral, no harina de trigo con salvado."],
 ];
+// Productos de ejemplo (fotos de Luna en el Mercadona)
+const SHOP_EXAMPLES = [
+  ["crema-lentejas", "Crema de lentejas", "70 kcal · 4,6 g prot. por 100 g. La más completa: lleva legumbre."],
+  ["crema-calabaza", "Crema de calabaza y zanahoria", "48 kcal por 100 g. Ligera, añádele tu proteína al lado."],
+  ["parrillada", "Parrillada de verduras", "55 kcal por 100 g, 0 g de grasa. Solo verduras y patata asada."],
+  ["pimiento", "Pimiento troceado", "28 kcal por 100 g. Solo pimiento: perfecto para revueltos y salteados."],
+];
 function ShopTips() {
   const [open, setOpen] = useState(false);
   return (
@@ -2877,6 +2894,11 @@ function ShopTips() {
       <button className="shop-hd" onClick={() => setOpen(!open)} aria-expanded={open}><b>Al hacer la compra</b><span>{open ? "Cerrar" : "Ver consejos"}</span></button>
       {!open && <p className="hint" style={{ margin: "6px 0 0" }}>Fiambre al 90%, tortitas sin aditivos y cuidado con lo que va escondido.</p>}
       {open && <ul>{SHOP_TIPS.map(([t, d]) => <li key={t}><b>{t}</b><span>{d}</span></li>)}</ul>}
+      {open && <>
+        <div className="shop-ex-t">Ejemplos que uso yo (Mercadona)</div>
+        <div className="shop-ex">{SHOP_EXAMPLES.map(([img, n, d]) => <div key={img}><img src={`/compra/${img}.jpg`} alt={n} loading="lazy" /><b>{n}</b><small>{d}</small></div>)}</div>
+        <p className="hint" style={{ margin: "8px 0 0" }}>En otros supermercados hay parecidos: mira que lleven solo verduras (o legumbre) y poco aceite. Todos están en la app para apuntarlos en «Picoteos y extras».</p>
+      </>}
     </div>
   );
 }
