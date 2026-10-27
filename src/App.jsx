@@ -480,6 +480,7 @@ let FOODS = {
   cremaCalabaza: { n: "Crema de calabaza y zanahoria (Hacendado)", p: 0.9, c: 4.2, f: 2.8 },
   parrilladaVerduras: { n: "Parrillada de verduras congelada (Hacendado)", p: 2.2, c: 10, f: 0 },
   pimientoCongelado: { n: "Pimiento troceado congelado (Hacendado)", p: 0.9, c: 4.5, f: 0.4 },
+  panSemillas: { n: "Pan de semillas (Hacendado)", p: 11, c: 43, f: 8 },
   kiwi: { n: "Kiwi", p: 1.1, c: 11, f: 0.4 },
   mermelada: { n: "Mermelada 0%", p: 0.6, c: 11.5, f: 0 },
   cottage: { n: "Queso cottage", p: 13, c: 1.6, f: 4 },
@@ -1240,6 +1241,14 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .shop-ex img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;border:1px solid var(--ln)}
 .shop-ex b{font-size:13px;margin-top:4px}
 .shop-ex small{font-size:11.5px;color:var(--dm);line-height:1.35}
+.picks{margin-top:12px;padding:10px;border-radius:14px;background:var(--sf2);border:1px solid var(--ln)}
+.picks-t{font-size:12px;color:var(--dm);display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.mtag{background:#1E8E5A;color:#fff;font-weight:800;font-size:10.5px;letter-spacing:.04em;padding:2px 7px;border-radius:6px}
+.picks-row{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none}
+.pick{flex:none;width:120px;display:flex;flex-direction:column;gap:2px}
+.pick img{width:120px;height:120px;object-fit:cover;border-radius:10px}
+.pick b{font-size:12px;line-height:1.25;margin-top:4px}
+.pick small{font-size:10.5px;color:var(--dm);line-height:1.3}
 .hist{display:flex;justify-content:space-between;font-size:14px;padding:10px 0;border-bottom:1px solid var(--ln)}
 .hist span:last-child{color:var(--dm)}
 .tk-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -2886,7 +2895,26 @@ const SHOP_EXAMPLES = [
   ["crema-calabaza", "Crema de calabaza y zanahoria", "48 kcal por 100 g. Ligera, añádele tu proteína al lado."],
   ["parrillada", "Parrillada de verduras", "55 kcal por 100 g, 0 g de grasa. Solo verduras y patata asada."],
   ["pimiento", "Pimiento troceado", "28 kcal por 100 g. Solo pimiento: perfecto para revueltos y salteados."],
+  ["pan-semillas", "Pan de semillas", "294 kcal y 11 g de proteína por 100 g. Viene en 2 panes de 85 g."],
 ];
+// Productos del súper que encajan con cada ingrediente de las recetas
+const SHOP_PICKS = {
+  cremaVerduras: [["crema-lentejas", "Crema de lentejas", "70 kcal/100 g · la que más proteína tiene"], ["crema-calabaza", "Crema de calabaza y zanahoria", "48 kcal/100 g"]],
+  verduras: [["parrillada", "Parrillada de verduras", "55 kcal/100 g · 0 g grasa"], ["pimiento", "Pimiento troceado", "28 kcal/100 g"]],
+  panIntegral: [["pan-semillas", "Pan de semillas", "294 kcal/100 g · 11 g prot. · 2 panes de 85 g"]],
+  panCristal: [["pan-semillas", "Pan de semillas", "294 kcal/100 g · 11 g prot. · 2 panes de 85 g"]],
+};
+function ShopPicks({ items }) {
+  const seen = new Set();
+  const picks = items.flatMap((it) => SHOP_PICKS[it.food] || []).filter(([img]) => !seen.has(img) && seen.add(img));
+  if (!picks.length) return null;
+  return (
+    <div className="picks">
+      <div className="picks-t"><span className="mtag">Mercadona</span> Buenas opciones para esta receta</div>
+      <div className="picks-row">{picks.map(([img, n, d]) => <div className="pick" key={img}><img src={`/compra/${img}.jpg`} alt={n} loading="lazy" /><b>{n}</b><small>{d}</small></div>)}</div>
+    </div>
+  );
+}
 function ShopTips() {
   const [open, setOpen] = useState(false);
   return (
@@ -3032,6 +3060,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
                 {eaten[m.id] && <button className="eatedit" onClick={() => setEditing(editing === m.id ? null : m.id)}>{editing === m.id ? "Listo" : "Cambiar cantidades"}</button>}
               </div>
               {eaten[m.id] && <p className="hint" style={{ margin: "6px 0 0" }}>Has comido {r0(eaten[m.id].tot.kcal)} kcal · P {r0(eaten[m.id].tot.p)} · H {r0(eaten[m.id].tot.c)} · G {r0(eaten[m.id].tot.f)}</p>}
+              <ShopPicks items={eaten[m.id]?.items || m.items} />
               <details className="mprep">
                 <summary>Cómo se prepara</summary>
                 {m.recipe.steps ? <ol className="steps">{m.recipe.steps.map((st) => <li key={st}>{st}</li>)}</ol> : <p className="hint">{m.recipe.how}</p>}

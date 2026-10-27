@@ -5,3 +5,6 @@ insert into public.content_foods (id, name, p, c, f) values
   ('parrilladaVerduras', 'Parrillada de verduras congelada (Hacendado)', 2.2, 10, 0),
   ('pimientoCongelado', 'Pimiento troceado congelado (Hacendado)', 0.9, 4.5, 0.4)
 on conflict (id) do nothing;
+insert into public.content_foods (id, name, p, c, f) values
+  ('panSemillas', 'Pan de semillas (Hacendado)', 11, 43, 8)
+on conflict (id) do nothing;
