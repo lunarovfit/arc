@@ -2889,6 +2889,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
     if (!opts.length) opts = all;
     opts = byTaste(opts, profile);
     if (profile.eatOut) opts = [...opts].sort((a, b) => TUPPER.has(b.name) - TUPPER.has(a.name));
+    opts = [...opts].sort((a, b) => !!recImg(media, b.id) - !!recImg(media, a.id)); // primero las que tienen foto
     if (!opts.length) return { id, empty: true };
     const k = `${id}-${mode}`;
     const recipe = opts[Math.min(pick[k] || 0, opts.length - 1)];
