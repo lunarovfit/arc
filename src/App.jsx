@@ -524,8 +524,8 @@ let RECIPES = [
 
   { slot: "merienda", mode: "sencilla", name: "Yogur proteico con plátano y frutos secos", off: true, items: [["yogurProt", "p"], ["platano", "c"], ["frutosSecos", "f"]], how: "Yogur, plátano en rodajas y frutos secos por encima." },
   { slot: "merienda", mode: "sencilla", name: "Tortitas de arroz con jamón", off: true, items: [["tortitasArroz", "c"], ["jamon", "p"], ["quesoCrema", "f"]], how: "Unta el queso crema en las tortitas y pon el jamón encima. Tortitas sin aditivos: solo arroz o maíz y sal." },
-  { slot: "merienda", mode: "sanji", name: "Mug cake de chocolate", items: [["avena", "c"], ["proteina", "p"], ["claras", 60], ["cacao", 10], ["cremaCacahuete", "f"]],
-    steps: ["Mezcla en una taza la avena molida, la proteína, el cacao y una pizca de levadura.", "Añade las claras y un chorrito de agua hasta tener una masa espesa.", "Micro 60–90 segundos y pon la crema de cacahuete encima para que se funda."] },
+  { slot: "merienda", mode: "sanji", name: "Mug cake de chocolate o vainilla", items: [["avena", "c"], ["proteina", "p"], ["claras", 60], ["cacao", 10], ["cremaCacahuete", "f"]],
+    steps: ["Mezcla en una taza la avena molida, la proteína y una pizca de levadura. Sabrá a lo que sepa tu proteína: de chocolate o de vainilla.", "Si es de chocolate y lo quieres más intenso, añade el cacao. Si es de vainilla, no lo pongas.", "Añade las claras y un chorrito de agua hasta tener una masa espesa.", "Micro 60–90 segundos y pon la crema de cacahuete encima para que se funda."] },
 
   { slot: "cena", mode: "sencilla", name: "Merluza al horno con patata", items: [["merluza", "p"], ["patata", "c"], ["verduras", 200], ["aove", "f"]], how: "Merluza y patata en rodajas al horno a 200 °C con verduras y aceite." },
   { slot: "cena", mode: "sencilla", name: "Revuelto de claras con tostada", off: true, items: [["claras", "p"], ["huevo", 60], ["verduras", 100], ["panIntegral", "c"], ["aove", "f"]], how: "Revuelto de huevo y claras con las verduras y pan tostado al lado." },
