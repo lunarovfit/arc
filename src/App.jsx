@@ -505,7 +505,7 @@ const LIMITS = { chia: 15, salsaBBQ: 20, aove: 20, cremaCacahuete: 30, frutosSec
 // items: [alimento, "p"|"c"|"f" (se ajusta) o gramos fijos]
 let RECIPES = [
   { slot: "desayuno", mode: "sencilla", name: "Tostadas de pavo y tomate", items: [["panIntegral", "c"], ["pavo", "p"], ["verduras", 50], ["aove", "f"]], how: "Tuesta el pan, ralla tomate por encima, un chorrito de aceite y el pavo. El pavo, con un 90% de carne como mínimo." },
-  { slot: "desayuno", mode: "sencilla", name: "Porridge proteico de cacao", items: [["avena", "c"], ["lecheSemi", 200], ["proteina", "p"], ["cacao", 5], ["cremaCacahuete", "f"]], how: "Avena con la leche 2 minutos al micro, mezcla la proteína y el cacao y pon la crema de cacahuete encima." },
+  { slot: "desayuno", mode: "sencilla", name: "Porridge proteico de cacao", items: [["avena", "c"], ["lecheSemi", 200], ["proteina", "p"], ["cremaCacahuete", "f"]], how: "Avena con la leche 2 minutos al micro, mezcla la proteína de chocolate (te da el sabor sin tener que añadir cacao) y pon la crema de cacahuete encima." },
   { slot: "desayuno", mode: "sanji", name: "Tortitas de avena con arándanos", off: true, items: [["avena", "c"], ["claras", "p"], ["platano", 40], ["arandanos", 50], ["cremaCacahuete", "f"]],
     steps: ["Tritura la avena con las claras y el plátano hasta tener una masa lisa.", "Sartén antiadherente a fuego medio, vierte cucharones pequeños y dales la vuelta cuando salgan burbujas.", "Apila, cubre con los arándanos y termina con la crema de cacahuete un poco templada."] },
   { slot: "desayuno", mode: "sanji", name: "Tostada de aguacate, salmón y huevo poché", items: [["panCristal", "c"], ["aguacate", "f"], ["salmonAhumado", "p"], ["huevo", 60]],
@@ -1213,6 +1213,16 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .mprep summary::-webkit-details-marker{display:none}
 .mprep summary::after{content:" +";}
 .mprep[open] summary::after{content:" –"}
+.eatbar{height:8px;border-radius:99px;background:rgba(255,255,255,.1);margin:12px 0 2px;overflow:hidden}
+.eatbar i{display:block;height:100%;background:var(--ac);border-radius:99px}
+.mcard.done{border-color:rgba(110,231,183,.45)}
+.meat{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.eatbtn{flex:1;min-width:150px;background:#fff;color:#000;border:0;border-radius:12px;padding:11px;font:inherit;font-weight:800;font-size:14px;cursor:pointer}
+.eatbtn.on{background:rgba(110,231,183,.14);color:var(--okl);border:1px solid rgba(110,231,183,.45)}
+.eatedit{background:var(--sf2);border:1px solid var(--ln);color:#fff;border-radius:12px;padding:11px 14px;font:inherit;font-weight:700;font-size:13px;cursor:pointer}
+.food.edit{align-items:center}
+.gin{display:inline-flex;align-items:center;gap:6px;color:var(--dm)}
+.gin .in{width:78px;padding:7px 9px;text-align:right}
 .hist{display:flex;justify-content:space-between;font-size:14px;padding:10px 0;border-bottom:1px solid var(--ln)}
 .hist span:last-child{color:var(--dm)}
 .tk-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -2848,7 +2858,7 @@ const SHOP_TIPS = [
   ["Legumbres de bote", "Las del Mercadona son buenas: legumbre, agua y sal. Enjuágalas siempre."],
   ["Salsas", "Barbacoa, ketchup y teriyaki pueden ser un 30–50% azúcar. Usa poca o la versión zero."],
   ["Yogures", "Natural o proteico sin azúcares añadidos. Los «de sabor» y los «0%» a veces llevan bastante azúcar."],
-  ["Hamburguesas y carne picada", "90% de carne mínimo y sin rellenos. Mira que no ponga «preparado de carne»."],
+  ["Carne picada y hamburguesas", "Truco: pídela magra en la carnicería, con poca grasa. Si la compras en el súper, que sea de buena calidad: mira los ingredientes, 90% de carne mínimo y sin rellenos. Si pone «preparado de carne», a la estantería."],
   ["Crema de cacahuete", "100% cacahuete. Si lleva aceite de palma o azúcar, a la estantería."],
   ["Pan «integral»", "Que el primer ingrediente sea harina integral, no harina de trigo con salvado."],
 ];
@@ -2863,7 +2873,8 @@ function ShopTips() {
   );
 }
 
-function Nutrition({ profile, setCook, media = {} }) {
+function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => {} }) {
+  const [editing, setEditing] = useState(null);
   const [rest, setRest] = useState(false);
   const [pick, setPick] = useState({});
   const mode = profile.cook;
@@ -2883,6 +2894,22 @@ function Nutrition({ profile, setCook, media = {} }) {
     const share = plan[id];
     return { id, k, opts, recipe, ...solveRecipe(recipe, { p: t.p * share, c: t.c * share, f: t.f * share }, profile.veg) };
   });
+  const eatenTot = Object.values(eaten).reduce((a, e) => ({ p: a.p + (e.tot?.p || 0), c: a.c + (e.tot?.c || 0), f: a.f + (e.tot?.f || 0), kcal: a.kcal + (e.tot?.kcal || 0) }), { p: 0, c: 0, f: 0, kcal: 0 });
+  const anyEaten = Object.keys(eaten).length > 0;
+  const left = { kcal: t.kcal - eatenTot.kcal, p: t.p - eatenTot.p, c: t.c - eatenTot.c, f: t.f - eatenTot.f };
+  const totOf = (items) => { const x = items.reduce((a, it) => ({ p: a.p + (FOODS[it.food]?.p || 0) * it.g / 100, c: a.c + (FOODS[it.food]?.c || 0) * it.g / 100, f: a.f + (FOODS[it.food]?.f || 0) * it.g / 100 }), { p: 0, c: 0, f: 0 }); x.kcal = x.p * 4 + x.c * 4 + x.f * 9; return x; };
+  const markEaten = (m) => {
+    const next = { ...eaten };
+    if (next[m.id]) delete next[m.id];
+    else { const items = m.items.map((it) => ({ food: it.food, g: Math.round(it.g) })); next[m.id] = { name: m.recipe.name, items, tot: totOf(items) }; }
+    setEaten(next); if (!next[m.id]) setEditing(null);
+  };
+  const setGrams = (id, food, g) => {
+    const e = eaten[id]; if (!e) return;
+    const items = e.items.map((it) => (it.food === food ? { ...it, g: Math.max(0, Number(g) || 0) } : it));
+    setEaten({ ...eaten, [id]: { ...e, items, tot: totOf(items) } });
+  };
+  const r0 = (n) => Math.round(n);
   const day = meals.filter((m) => !m.empty).reduce((a, m) => ({ p: a.p + m.tot.p, c: a.c + m.tot.c, f: a.f + m.tot.f, kcal: a.kcal + m.tot.kcal }), { p: 0, c: 0, f: 0, kcal: 0 });
   return (
     <>
@@ -2892,14 +2919,17 @@ function Nutrition({ profile, setCook, media = {} }) {
         <button className={rest ? "on" : ""} onClick={() => setRest(true)}>Día de descanso</button>
       </div>
       <div className="ntop">
-        <div className="kcal">{t.kcal}<span>kcal al día</span></div>
+        {anyEaten
+          ? <div className="kcal">{r0(Math.abs(left.kcal))}<span>{left.kcal >= 0 ? `kcal te quedan de ${t.kcal}` : `kcal por encima de ${t.kcal}`}</span></div>
+          : <div className="kcal">{t.kcal}<span>kcal al día</span></div>}
+        {anyEaten && <div className="eatbar"><i style={{ width: `${Math.min(100, (eatenTot.kcal / t.kcal) * 100)}%` }} /></div>}
         <div className="mbar" aria-hidden="true">
           <i style={{ flex: t.p * 4, background: "var(--ac)" }} /><i style={{ flex: t.c * 4, background: "#EDE7E2" }} /><i style={{ flex: t.f * 9, background: "#F5C76B" }} />
         </div>
         <div className="macros">
-          <div><i style={{ background: "var(--ac)" }} /><b>{t.p} g</b><span>Proteína</span></div>
-          <div><i style={{ background: "#EDE7E2" }} /><b>{t.c} g</b><span>Hidratos</span></div>
-          <div><i style={{ background: "#F5C76B" }} /><b>{t.f} g</b><span>Grasas</span></div>
+          {[["p", "Proteína", "var(--ac)"], ["c", "Hidratos", "#EDE7E2"], ["f", "Grasas", "#F5C76B"]].map(([k, l, col]) => (
+            <div key={k}><i style={{ background: col }} /><b>{anyEaten ? r0(Math.max(0, left[k])) : t[k]} g</b><span>{l}{anyEaten && <><br />te quedan de {t[k]} g</>}</span></div>
+          ))}
         </div>
       </div>
 
@@ -2915,7 +2945,7 @@ function Nutrition({ profile, setCook, media = {} }) {
         const img = recImg(media, m.recipe.id), idx = m.opts.indexOf(m.recipe), n = m.opts.length;
         const go = (d) => setPick({ ...pick, [m.k]: (idx + d + n) % n });
         return (
-          <div className="mcard" key={m.id}>
+          <div className={`mcard${eaten[m.id] ? " done" : ""}`} key={m.id}>
             <div className="mhead">
               <div className={`mthumb ${img ? "ph" : ""}`}>{img ? <img src={img} alt="" loading="lazy" /> : <CookIcon mode={m.recipe.mode === "sanji" ? "sanji" : "sencilla"} size={30} />}</div>
               <div className="mhead-t">
@@ -2930,7 +2960,14 @@ function Nutrition({ profile, setCook, media = {} }) {
               <button aria-label="Otra receta" onClick={() => go(1)}>Otra receta ›</button>
             </div>}
             <div className="mbody">
-              <div className="mfoods">{m.items.map((it) => <div className="food" key={it.food}><span>{FOODS[it.food].n}</span><em>{Math.round(it.g)} g</em></div>)}</div>
+              {eaten[m.id] && editing === m.id
+                ? <div className="mfoods">{eaten[m.id].items.map((it) => <label className="food edit" key={it.food}><span>{FOODS[it.food]?.n || it.food}</span><span className="gin"><input className="in" type="number" inputMode="numeric" value={it.g} onChange={(e) => setGrams(m.id, it.food, e.target.value)} aria-label={`Gramos de ${FOODS[it.food]?.n || it.food}`} /> g</span></label>)}</div>
+                : <div className="mfoods">{(eaten[m.id]?.items || m.items).map((it) => <div className="food" key={it.food}><span>{FOODS[it.food]?.n || it.food}</span><em>{Math.round(it.g)} g</em></div>)}</div>}
+              <div className="meat">
+                <button className={`eatbtn${eaten[m.id] ? " on" : ""}`} onClick={() => markEaten(m)}>{eaten[m.id] ? "✓ Comida apuntada" : "Me la he comido"}</button>
+                {eaten[m.id] && <button className="eatedit" onClick={() => setEditing(editing === m.id ? null : m.id)}>{editing === m.id ? "Listo" : "Cambiar cantidades"}</button>}
+              </div>
+              {eaten[m.id] && <p className="hint" style={{ margin: "6px 0 0" }}>Has comido {r0(eaten[m.id].tot.kcal)} kcal · P {r0(eaten[m.id].tot.p)} · H {r0(eaten[m.id].tot.c)} · G {r0(eaten[m.id].tot.f)}</p>}
               <details className="mprep">
                 <summary>Cómo se prepara</summary>
                 {m.recipe.steps ? <ol className="steps">{m.recipe.steps.map((st) => <li key={st}>{st}</li>)}</ol> : <p className="hint">{m.recipe.how}</p>}
@@ -4588,7 +4625,7 @@ function fromDb({ profile, sessions, habits, coach }) {
     profile: base && forced ? { ...base, ownMode: base.mode, mode: forced } : base,
     hasCoach: !!coach, coachMode: forced,
     sessions: sessions.map((s) => ({ id: s.id, date: s.performed_at, dayId: s.day_id, dayName: s.day_name, dur: s.duration_s, volume: Number(s.volume_kg), sets: s.sets_done, exercises: s.exercises })),
-    habits: Object.fromEntries(habits.map((h) => [h.day, { water: h.water ?? undefined, steps: h.steps ?? undefined, sleep: h.sleep != null ? Number(h.sleep) : undefined, weight: h.weight != null ? Number(h.weight) : undefined }])),
+    habits: Object.fromEntries(habits.map((h) => [h.day, { water: h.water ?? undefined, steps: h.steps ?? undefined, sleep: h.sleep != null ? Number(h.sleep) : undefined, weight: h.weight != null ? Number(h.weight) : undefined, food: h.food || undefined }])),
     xp: profile.xp, gems: profile.gems, active: profile.active_session, role: profile.role,
     nickname: profile.nickname, rankOptIn: profile.rank_opt_in && !!profile.nickname, savedLevel: profile.level,
     avatar: profile.avatar_url || null, avatarPending: profile.avatar_pending || null, profilePublic: profile.profile_public !== false,
@@ -5323,7 +5360,7 @@ function ArcApp({ user }) {
   } else if (tab === "ranking") {
     body = <Ranking me={{ optIn: !!state.rankOptIn, nickname: state.nickname, avatar: state.avatar, pending: state.avatarPending, isPublic: state.profilePublic !== false }} state={{ ...state, savedLevel: ev?.current ?? state.savedLevel }} api={rankApi} media={media} coach={coach} setMedia={setMedia} blocked={state.profile?.blocked || []} onBlock={(n) => setProfile({ blocked: [...new Set([...(state.profile?.blocked || []), n])] })} onUnblockAll={() => setProfile({ blocked: [] })} />;
   } else if (tab === "nutricion") {
-    body = <Nutrition profile={state.profile} setCook={(c) => setProfile({ cook: c })} media={media} />;
+    body = <Nutrition profile={state.profile} setCook={(c) => setProfile({ cook: c })} media={media} eaten={(state.habits[dkey()] || {}).food || {}} setEaten={(v) => setHabit("food", v)} />;
   } else {
     body = <>{<Habits state={state} setHabit={setHabit} adh={adh} steps={native.isNative ? {
       available: native.platform === "android" || stepsAvail,

@@ -25,8 +25,13 @@ export const updateProfile = (userId, patch) =>
 export const addSession = (row) => supabase.from("workout_sessions").insert(row).select().single().then(must);
 
 const val = (v) => (v === "" || v === undefined ? null : v);
-export const upsertHabit = (userId, day, h) =>
-  supabase.from("habits").upsert({ user_id: userId, day, water: val(h.water), steps: val(h.steps), sleep: val(h.sleep), weight: val(h.weight) }).then(must);
+// "food" guarda lo que has comido ese día; si aún no existe la columna en Supabase, se guarda lo demás
+export const upsertHabit = async (userId, day, h) => {
+  const row = { user_id: userId, day, water: val(h.water), steps: val(h.steps), sleep: val(h.sleep), weight: val(h.weight) };
+  const r = await supabase.from("habits").upsert({ ...row, food: h.food && Object.keys(h.food).length ? h.food : null });
+  if (r.error && /food/i.test(r.error.message || "")) return must(await supabase.from("habits").upsert(row));
+  return must(r);
+};
 
 export const setMedia = (key, url, kind) => supabase.from("media").upsert({ key, url, kind, updated_at: new Date().toISOString() }).then(must);
 export const deleteMedia = (key) => supabase.from("media").delete().eq("key", key).then(must);
