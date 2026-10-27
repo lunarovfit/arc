@@ -2858,6 +2858,7 @@ const SHOP_TIPS = [
   ["Legumbres de bote", "Las del Mercadona son buenas: legumbre, agua y sal. Enjuágalas siempre."],
   ["Salsas", "Barbacoa, ketchup y teriyaki pueden ser un 30–50% azúcar. Usa poca o la versión zero."],
   ["Yogures", "Natural o proteico sin azúcares añadidos. Los «de sabor» y los «0%» a veces llevan bastante azúcar."],
+  ["Verduras congeladas", "Las bolsas de verduras congeladas (Mercadona y casi todos los súper tienen) suelen llevar solo verduras: mira que no tengan salsas ni aceite añadido. Cocina varias bolsas de golpe, guárdalas en tápers y luego solo montas el plato."],
   ["Carne picada y hamburguesas", "Truco: pídela magra en la carnicería, con poca grasa. Si la compras en el súper, que sea de buena calidad: mira los ingredientes, 90% de carne mínimo y sin rellenos. Si pone «preparado de carne», a la estantería."],
   ["Crema de cacahuete", "100% cacahuete. Si lleva aceite de palma o azúcar, a la estantería."],
   ["Pan «integral»", "Que el primer ingrediente sea harina integral, no harina de trigo con salvado."],
@@ -2972,6 +2973,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
                 <summary>Cómo se prepara</summary>
                 {m.recipe.steps ? <ol className="steps">{m.recipe.steps.map((st) => <li key={st}>{st}</li>)}</ol> : <p className="hint">{m.recipe.how}</p>}
                 {m.recipe.plate && <p className="plate">{m.recipe.plate}</p>}
+                {m.recipe.mode !== "sanji" && m.items.some((it) => it.food === "verduras") && <p className="plate">Truco: usa una bolsa de verduras congeladas. Hazlas al principio de la semana, guárdalas en tápers y así montas el plato en un momento.</p>}
               </details>
             </div>
           </div>
