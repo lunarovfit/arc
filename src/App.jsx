@@ -1262,6 +1262,12 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .pick.bread img,.pick.bread .pimg{outline:2px solid transparent;outline-offset:-2px;transition:outline-color .15s}
 .pick.bread.on img,.pick.bread.on .pimg{outline-color:var(--ac)}
 .pick.bread.on b{color:var(--ac)}
+.want-opts{display:flex;flex-direction:column;gap:10px}
+.want-opt{display:flex;flex-direction:column;gap:4px;text-align:left;padding:14px;border-radius:14px;background:var(--sf2);border:1.5px solid var(--ln);color:inherit;font:inherit;cursor:pointer}
+.want-opt b{font-size:15px}
+.want-opt span{font-size:12.5px;color:var(--dm);line-height:1.4}
+.want-opt.on{border-color:var(--ac)}
+.want-opt.on b{color:var(--ac)}
 .pimg{box-sizing:border-box;flex:none;width:120px;height:120px;border-radius:10px;background:var(--sf);border:1px solid var(--ln);display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;font-size:12px;font-weight:600;color:var(--dm)}
 .hist{display:flex;justify-content:space-between;font-size:14px;padding:10px 0;border-bottom:1px solid var(--ln)}
 .hist span:last-child{color:var(--dm)}
@@ -1679,17 +1685,31 @@ function Questionnaire({ initial, editing, onSave, onCancel }) {
   const num = (v) => (v === "" ? "" : Number(v));
   const tooMany = lifts.some((l) => q[l].reps > RULES.EPLEY_MAX_REPS);
   const ok = q.age && q.height && q.weight && !tooMany;
+  const simple = q.mode === "simple";
   return (
     <>
       <h1>{editing ? "Tus datos" : "Empecemos por ti"}</h1>
-      <p className="sub">{editing ? "Si cambias algo, tu plan de comidas se recalcula." : "Con esto calculamos tu nivel de partida y tu plan de comidas. Solo te lo preguntamos una vez."}</p>
+      <p className="sub">{editing ? "Si cambias algo, tu plan de comidas se recalcula." : (simple ? "Con esto preparamos tu rutina y tu plan de comidas. Solo te lo preguntamos una vez." : "Con esto calculamos tu nivel de partida y tu plan de comidas. Solo te lo preguntamos una vez.")}</p>
 
-      <div className="field"><label>¿Cómo quieres subir de nivel?</label>
-        <div className="chips">{[["otaku", "Modo otaku"], ["gymrat", "Modo gymrat"], ["simple", "Solo entrenar"]].map(([v, l]) => <button key={v} className={`chip ${(q.mode || "otaku") === v ? "on" : ""}`} onClick={() => set("mode", v)}>{l}</button>)}</div>
-        <div className="hint">{(q.mode || "otaku") === "gymrat" ? "Tu rata va de enclenque a mazada contigo." : q.mode === "simple" ? "Sin niveles ni personajes: registras tus entrenos, tus comidas y tus hábitos, y ya." : "Desbloqueas personajes de anime según tu fuerza real."}</div>
+      <div className="field"><label>¿Qué quieres de ARC?</label>
+        <div className="want-opts">
+          <button className={`want-opt ${simple ? "" : "on"}`} onClick={() => simple && set("mode", "otaku")}>
+            <b>Subir de nivel con personajes</b>
+            <span>Subes de nivel con tu fuerza real, tu constancia y tus hábitos, y vas desbloqueando personajes. Además de todo lo de entrenos y comidas.</span>
+          </button>
+          <button className={`want-opt ${simple ? "on" : ""}`} onClick={() => set("mode", "simple")}>
+            <b>Solo registrar entrenos y comidas</b>
+            <span>Sin niveles ni personajes: tu rutina, tus series, tus comidas y tus hábitos, y ya. Puedes cambiarlo cuando quieras.</span>
+          </button>
+        </div>
       </div>
-      <div className="field"><label>Rama del arco</label>
-        <div className="chips">{[["female", "Femenina"], ["male", "Masculina"]].map(([v, l]) => <button key={v} className={`chip ${q.branch === v ? "on" : ""}`} onClick={() => set("branch", v)}>{l}</button>)}</div>
+      {!simple && <div className="field"><label>¿Con qué personajes?</label>
+        <div className="chips">{[["otaku", "Modo otaku"], ["gymrat", "Modo gymrat"]].map(([v, l]) => <button key={v} className={`chip ${(q.mode || "otaku") === v ? "on" : ""}`} onClick={() => set("mode", v)}>{l}</button>)}</div>
+        <div className="hint">{q.mode === "gymrat" ? "Tu rata va de enclenque a mazada contigo." : "Desbloqueas personajes de anime según tu fuerza real."}</div>
+      </div>}
+      <div className="field"><label>{simple ? "Sexo" : "Rama del arco"}</label>
+        <div className="chips">{[["female", simple ? "Mujer" : "Femenina"], ["male", simple ? "Hombre" : "Masculina"]].map(([v, l]) => <button key={v} className={`chip ${q.branch === v ? "on" : ""}`} onClick={() => set("branch", v)}>{l}</button>)}</div>
+        {simple && <div className="hint">Para calcular tus calorías y tu rutina.</div>}
       </div>
       <div className="row">
         <div className="field" style={{ flex: 1 }}><label>Edad</label><input className="in" type="number" value={q.age} onChange={(e) => set("age", num(e.target.value))} /></div>
@@ -1756,7 +1776,7 @@ function Questionnaire({ initial, editing, onSave, onCancel }) {
       </div>
 
       <h2>Tus marcas</h2>
-      <p className="sub" style={{ marginBottom: 10 }}>Tu mejor serie reciente: peso y repeticiones (de 1 a 10).</p>
+      <p className="sub" style={{ marginBottom: 10 }}>Tu mejor serie reciente: peso y repeticiones (de 1 a 10).{simple ? " Así ves tu progreso desde el primer día." : ""}</p>
       {lifts.map((l) => (
         <div className="lift" key={l}>
           <span>{LN[l]}</span>
@@ -4483,7 +4503,40 @@ function Tour({ profile, ev, heroImg, perms, onFinish, media = {} }) {
       body: <FoodWall profile={profile} media={media} />,
     },
     {
-      title: "Hoy empieza tu arco",
+      title: "Tus entrenos",
+      body: (
+        <div className="tour-list">
+          <div><b>Tu rutina, hecha para ti</b><span>En Entrenos ves qué te toca hoy y tu semana. Puedes cambiar los días o apuntar tu propia rutina.</span></div>
+          <div><b>Apunta cada serie</b><span>Kilos, repeticiones y RIR (las que te quedaban en la recámara), con temporizador de descanso.</span></div>
+          <div><b>Te avisa cuando toca subir</b><span>Si te sobran repeticiones, ARC te dice que subas peso y te marca tus récords.</span></div>
+          <div><b>Técnica en vídeo</b><span>Toca un ejercicio para verlo grabado en el gym, con una explicación sencilla y un truquito.</span></div>
+        </div>
+      ),
+    },
+    {
+      title: "Tus comidas",
+      body: (
+        <div className="tour-list">
+          <div><b>Calorías y macros para ti</b><span>Arriba ves lo que te queda del día. Cambia entre día de entreno y de descanso.</span></div>
+          <div><b>Recetas a tu medida</b><span>Las cantidades ya están ajustadas. ¿No te apetece? Toca «Otra receta».</span></div>
+          <div><b>Apunta lo que comes</b><span>«Me la he comido» y, si comiste otra cantidad, «Cambiar cantidades». Los picoteos también cuentan: apúntalos en «Picoteos y extras».</span></div>
+          <div><b>Elige tu pan y tus productos</b><span>En las recetas con pan eliges cuál usas y se recalcula todo. Y tienes productos del Mercadona y consejos para hacer la compra.</span></div>
+        </div>
+      ),
+    },
+    {
+      title: "Hábitos y compartir",
+      body: (
+        <div className="tour-list">
+          <div><b>Pasos solos</b><span>Se leen del móvil (Salud en iPhone, Health Connect en Android). No se pueden escribir a mano.</span></div>
+          <div><b>Agua y sueño</b><span>Con 2 de los 3 hábitos cumplidos, el día cuenta para tu racha.</span></div>
+          <div><b>Presume tu progreso</b><span>Crea historias para Instagram con tus récords, tu entreno, tus pasos o tu día en cuatro fotos.</span></div>
+          <div><b>Recordatorios y ranking</b><span>Te avisamos para entrenar o presumir tu día, y cada semana hay ranking: gana la constancia, no los kilos.</span></div>
+        </div>
+      ),
+    },
+    {
+      title: profile.mode === "simple" ? "Hoy empiezas" : "Hoy empieza tu arco",
       body: <>
         <p className="tour-p">Tienes tu rutina en Entrenos, tus comidas ajustadas en Nutrición y un ranking semanal donde gana la constancia, no los kilos.</p>
         <p className="tour-p dim">El primer paso es el que más cuesta. Los demás ya vienen solos.</p>
@@ -4589,7 +4642,7 @@ function Reminders({ value, onChange }) {
   );
 }
 
-function Settings({ onClients, onPaywallPreview, videos, onFinishPreview, sub, email, isCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
+function Settings({ onTour, onClients, onPaywallPreview, videos, onFinishPreview, sub, email, isCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
   const [confirm, setConfirm] = useState(null); // "data" | "account"
   const [legal, setLegal] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -4600,6 +4653,7 @@ function Settings({ onClients, onPaywallPreview, videos, onFinishPreview, sub, e
       <h1>Ajustes</h1>
       <p className="sub">{email}</p>
       <button className="btn" onClick={onEdit}>Editar mis datos y preferencias</button>
+      {onTour && <button className="btn ghost" onClick={onTour}>Ver cómo funciona ARC</button>}
       {isCoach && (
         <>
           <h2>Modo coach</h2>
@@ -5486,7 +5540,7 @@ function ArcApp({ user }) {
 
   let body;
   if (showTour) {
-    body = <Tour media={media} profile={state.profile} ev={ev} heroImg={mediaOr(media, levelKey(state.profile.branch, state.profile.mode, ev.current)) || AVATAR[state.profile.branch]} perms={tourPerms} onFinish={() => { setProfile({ toured: true }); setTab("inicio"); if (!hasPremium) setPaywall(true); }} />;
+    body = <Tour media={media} profile={state.profile} ev={ev} heroImg={mediaOr(media, levelKey(state.profile.branch, state.profile.mode, ev.current)) || AVATAR[state.profile.branch]} perms={tourPerms} onFinish={() => { const again = state.profile?.retour; setProfile({ toured: true, retour: false }); setTab("inicio"); if (!hasPremium && !again) setPaywall(true); }} />;
   } else if (showQuestionnaire) {
     body = <Questionnaire initial={state.profile || DEFAULT_PROFILE} editing={state.onboarded} onSave={saveProfile} onCancel={() => setScreen("ajustes")} />;
   } else if (screen === "contenido" && isCoach) {
@@ -5496,7 +5550,7 @@ function ArcApp({ user }) {
   } else if (screen === "denuncias" && isCoach) {
     body = <Reports onClose={() => setScreen("ajustes")} />;
   } else if (screen === "ajustes") {
-    body = <Settings onClients={() => setScreen("asesoradas")} onPaywallPreview={() => setPaywall(true)} videos={{ on: !state.profile?.hideVideos, set: (on) => setProfile({ hideVideos: !on }) }} onFinishPreview={() => setDone({ dur: 3120, sets: 18, volume: 8450, xp: RULES.XP_PER_SESSION, prs: 2 })} sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
+    body = <Settings onTour={() => { setProfile({ toured: false, retour: true }); setScreen(null); }} onClients={() => setScreen("asesoradas")} onPaywallPreview={() => setPaywall(true)} videos={{ on: !state.profile?.hideVideos, set: (on) => setProfile({ hideVideos: !on }) }} onFinishPreview={() => setDone({ dur: 3120, sets: 18, volume: 8450, xp: RULES.XP_PER_SESSION, prs: 2 })} sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
       reminders={state.profile?.reminders} setReminders={(r) => setProfile({ reminders: r })}
       onEdit={() => setScreen("editar")}
       onContent={() => setScreen("contenido")}
