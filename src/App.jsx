@@ -481,6 +481,14 @@ let FOODS = {
   parrilladaVerduras: { n: "Parrillada de verduras congelada (Hacendado)", p: 2.2, c: 10, f: 0 },
   pimientoCongelado: { n: "Pimiento troceado congelado (Hacendado)", p: 0.9, c: 4.5, f: 0.4 },
   panSemillas: { n: "Pan de semillas (Hacendado)", p: 11, c: 43, f: 8 },
+  panCenteno: { n: "Pan de centeno 82% con masa madre (Hacendado)", p: 5.5, c: 41, f: 1.3 },
+  panIntegralHorno: { n: "Pan 100% integral (El Horno de Mercadona)", p: 9.1, c: 38, f: 2.5 },
+  panMasaMadre: { n: "Pan de masa madre integral o de centeno (panadería)", p: 9, c: 44, f: 1.5 },
+  tortitasLegumbres: { n: "Tortitas de legumbres (Hacendado)", p: 25, c: 55, f: 3.1 },
+  tomateUntar: { n: "Tomate para untar con AOVE (Hacendado)", p: 0.9, c: 3.7, f: 4.8 },
+  guisantes: { n: "Guisantes congelados (Hacendado)", p: 6, c: 11, f: 0.4 },
+  aguaCoco: { n: "Agua de coco (Hacendado)", p: 0, c: 5, f: 0 },
+  uvas: { n: "Uvas", p: 0.7, c: 17, f: 0.2 },
   kiwi: { n: "Kiwi", p: 1.1, c: 11, f: 0.4 },
   mermelada: { n: "Mermelada 0%", p: 0.6, c: 11.5, f: 0 },
   cottage: { n: "Queso cottage", p: 13, c: 1.6, f: 4 },
@@ -607,6 +615,7 @@ let RECIPES = [
   {"id": "rl15", "slot": "pre", "mode": "sencilla", "name": "Plátano y dátiles antes de entrenar", "items": [["platano", "c"], ["datiles", 20]], "how": "Un plátano y un par de dátiles 30–45 minutos antes de entrenar. Energía rápida y nada pesada."},
   {"id": "rl16", "slot": "desayuno", "mode": "sanji", "name": "Crepe proteica de frutos rojos", "items": [["avena", "c"], ["claras", "p"], ["proteina", 15], ["yogurProt", 100], ["frutosRojos", 80]], "steps": ["Tritura la avena con las claras, la proteína y unos cuantos frutos rojos hasta tener una masa líquida.", "Sartén antiadherente grande a fuego medio, vierte toda la masa y extiéndela como una crepe. Vuelta cuando se despegue.", "Cubre con el yogur, el resto de frutos rojos y un poco de proteína espolvoreada."]},
   {"id": "rl17", "slot": "desayuno", "mode": "sanji", "name": "Brunch completo de domingo", "items": [["huevo", 120], ["panIntegral", "c"], ["pollo", "p"], ["aguacate", "f"], ["yogurProt", 125], ["arandanos", 50]], "steps": ["Tuesta el pan y úntalo con el aguacate machacado con sal y pimienta.", "Pon por encima el pollo desmechado.", "Revuelve los huevos a fuego bajo para que queden jugosos.", "Al lado, yogur con arándanos y canela."], "plate": "Plato grande con el revuelto y la tostada, y el yogur en un bol aparte."},
+  {"id": "rl18", "slot": "desayuno", "mode": "sencilla", "name": "Tostadas de centeno con tomate y jamón", "items": [["panCenteno", "c"], ["tomateUntar", 30], ["jamon", 40], ["yogurProt", "p"], ["uvas", 80]], "how": "Tuesta el pan de centeno, unta el tomate (el de bote ya lleva su aceite) y pon el jamón encima. Quítale la grasa blanca si quieres. De postre, un puñado de uvas, y un yogur proteico al lado para llegar a tu proteína."},
 ];
 
 const SLOT_NAMES = { pre: "Pre-entreno", desayuno: "Desayuno", mediaManana: "Media mañana", comida: "Comida", merienda: "Merienda", cena: "Cena" };
@@ -622,11 +631,11 @@ let FOOD_TAGS = {
   lacteos: ["yogurProt", "quesoBatido", "quesoBurgos", "quesoCrema", "mozzarella", "lecheSemi", "proteina", "cottage"],
   huevo: ["huevo", "claras"],
   cerdo: ["jamon", "lomoCerdo"],
-  gluten: ["panIntegral", "panCristal", "panHamburguesa", "maxiTortilla", "tortillaIntegral", "basePizza", "pasta", "noquis", "avena", "muesli", "udon"],
+  gluten: ["panIntegral", "panCristal", "panSemillas", "panCenteno", "panIntegralHorno", "panMasaMadre", "panHamburguesa", "maxiTortilla", "tortillaIntegral", "basePizza", "pasta", "noquis", "avena", "muesli", "udon"],
 };
 const EXCLUDE_OPTS = [["pescado", "Pescado"], ["lacteos", "Lácteos"], ["huevo", "Huevo"], ["cerdo", "Cerdo"], ["gluten", "Gluten"]];
 // Fotos de platos que vienen dentro de la app (la coach puede cambiarlas desde Editar contenido)
-const REC_IMG = new Set(["r008", "r029", "rl01", "rl02", "rl03", "rl04", "rl05", "rl06", "rl07", "rl08", "rl09", "rl10", "rl11", "rl12", "rl13", "rl14", "rl15", "rl16", "rl17"]);
+const REC_IMG = new Set(["r008", "r029", "rl01", "rl02", "rl03", "rl04", "rl05", "rl06", "rl07", "rl08", "rl09", "rl10", "rl11", "rl12", "rl13", "rl14", "rl15", "rl16", "rl17", "rl18"]);
 const recImg = (media, id) => media[`rec:${id}`] || (REC_IMG.has(id) ? `/recetas/${id}.jpg` : null);
 let TUPPER = new Set(["Pollo con arroz y verduras", "Pasta boloñesa ligera", "Poke de salmón", "Ñoquis con atún y tomate", "Bol de yogur con muesli y kiwi", "Ensalada de legumbres con atún", "Wrap de pollo para llevar", "Arroz con ternera al curry", "Emperador con batata asada", "Batido de proteína y plátano", "Yogur proteico con plátano y frutos secos", "Tortitas de arroz con jamón", "Tortilla de patata fit", "Porridge proteico de cacao", "Tortitas con pavo y aguacate", "Overnight oats de tarta de queso", "Onigiris de atún", "Lasaña boloñesa fit", "Cheesecake en vaso", "Tacos de pollo con guacamole", "Bowl de salmón, lentejas y ñoquis", "Ensalada de pollo, garbanzos y rúcula", "Fusilli de lentejas con pollo", "Táper de cerdo con batata asada", "Pollo desmechado con salsa de yogur"]);
 // Iconos de los modos de cocina (línea fina, mismo estilo que el resto de la app)
@@ -666,8 +675,8 @@ const FOOD_PREFS = [
   ["arroz", "Arroz", ["arroz"]],
   ["pasta", "Pasta y ñoquis", ["pasta", "pastaLentejas", "noquis", "udon"]],
   ["patata", "Patata y batata", ["patata", "batata"]],
-  ["legumbres", "Legumbres", ["legumbres", "lentejas"]],
-  ["pan", "Pan y tortitas", ["panIntegral", "panCristal", "tortitasArroz", "tortillaIntegral", "tortillaMaiz", "maxiTortilla", "panHamburguesa", "basePizza"]],
+  ["legumbres", "Legumbres", ["legumbres", "lentejas", "guisantes"]],
+  ["pan", "Pan y tortitas", ["panIntegral", "panCristal", "panSemillas", "panCenteno", "panIntegralHorno", "panMasaMadre", "tortitasArroz", "tortitasLegumbres", "tortillaIntegral", "tortillaMaiz", "maxiTortilla", "panHamburguesa", "basePizza"]],
   ["aguacate", "Aguacate", ["aguacate", "guacamole"]],
   ["frutosRojos", "Frutos rojos", ["arandanos", "frutosRojos", "fresas"]],
   ["platano", "Plátano", ["platano", "datiles"]],
@@ -1249,6 +1258,11 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .pick img{width:120px;height:120px;object-fit:cover;border-radius:10px}
 .pick b{font-size:12px;line-height:1.25;margin-top:4px}
 .pick small{font-size:10.5px;color:var(--dm);line-height:1.3}
+.pick.bread{background:none;border:0;padding:0;text-align:left;color:inherit;font:inherit;cursor:pointer;justify-content:flex-start}
+.pick.bread img,.pick.bread .pimg{outline:2px solid transparent;outline-offset:-2px;transition:outline-color .15s}
+.pick.bread.on img,.pick.bread.on .pimg{outline-color:var(--ac)}
+.pick.bread.on b{color:var(--ac)}
+.pimg{box-sizing:border-box;flex:none;width:120px;height:120px;border-radius:10px;background:var(--sf);border:1px solid var(--ln);display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;font-size:12px;font-weight:600;color:var(--dm)}
 .hist{display:flex;justify-content:space-between;font-size:14px;padding:10px 0;border-bottom:1px solid var(--ln)}
 .hist span:last-child{color:var(--dm)}
 .tk-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -2887,7 +2901,9 @@ const SHOP_TIPS = [
   ["Verduras congeladas", "Las bolsas de verduras congeladas (Mercadona y casi todos los súper tienen) suelen llevar solo verduras: mira que no tengan salsas ni aceite añadido. Cocina varias bolsas de golpe, guárdalas en tápers y luego solo montas el plato."],
   ["Carne picada y hamburguesas", "Truco: pídela magra en la carnicería, con poca grasa. Si la compras en el súper, que sea de buena calidad: mira los ingredientes, 90% de carne mínimo y sin rellenos. Si pone «preparado de carne», a la estantería."],
   ["Crema de cacahuete", "100% cacahuete. Si lleva aceite de palma o azúcar, a la estantería."],
-  ["Pan «integral»", "Que el primer ingrediente sea harina integral, no harina de trigo con salvado."],
+  ["Pan «integral»", "Que el primer ingrediente sea harina integral (o de centeno), no harina de trigo con salvado. Y ojo: «elaborado con masa madre» no es lo mismo que «100% masa madre»."],
+  ["Pro tip: pan de panadería", "Mejor que mejor: pan de masa madre de una panadería de tu zona, tipo pan moreno, integral o de centeno. Pídelo cortado, congélalo en rebanadas y tuéstalo directamente del congelador: siempre tienes pan bueno y no se te pone duro. Al llevar más fibra sacia mucho más que el pan blanco, y como el pan denso pesa más, pésalo la primera vez para saber cuánto es una rebanada."],
+  ["Tomate para untar", "El de bote con AOVE es comodísimo y ya lleva el aceite: una cucharada (30 g) son unas 20 kcal. Así no hace falta echar más aceite a la tostada."],
 ];
 // Productos de ejemplo (fotos de Luna en el Mercadona)
 const SHOP_EXAMPLES = [
@@ -2896,17 +2912,58 @@ const SHOP_EXAMPLES = [
   ["parrillada", "Parrillada de verduras", "55 kcal por 100 g, 0 g de grasa. Solo verduras y patata asada."],
   ["pimiento", "Pimiento troceado", "28 kcal por 100 g. Solo pimiento: perfecto para revueltos y salteados."],
   ["pan-semillas", "Pan de semillas", "294 kcal y 11 g de proteína por 100 g. Viene en 2 panes de 85 g."],
+  ["pan-centeno", "Pan de centeno 82%", "Con masa madre. 118 kcal y 4,6 g de fibra la rebanada de 55 g."],
+  ["pan-integral", "Pan 100% integral (El Horno)", "223 kcal y 9 g de proteína por 100 g. Vienen 2 panes de 82 g."],
+  ["tomate-untar", "Tomate para untar", "64 kcal por 100 g, ya lleva su AOVE. Una cucharada son unas 20 kcal."],
+  ["jamon", "Jamón serrano", "33,5 g de proteína por 100 g. Lleva bastante sal: con 2–3 lonchas vale."],
+  ["yogur-prot", "Yogur +proteínas natural", "52 kcal y 10 g de proteína por 100 g. Solo leche desnatada y fermentos."],
+  ["queso-batido", "Queso fresco batido 0%", "46 kcal y 8 g de proteína por 100 g."],
+  ["tortitas-legumbres", "Tortitas de legumbres", "100 kcal y 6,8 g de proteína el paquetito de 27 g. Sin gluten."],
+  ["guisantes", "Guisantes congelados", "82 kcal, 6 g de proteína y 5 g de fibra por 100 g. Solo guisantes."],
+  ["agua-coco", "Agua de coco", "20 kcal por 100 ml, sin azúcar añadido. Para hidratarte antes o durante el entreno: un vaso (250 ml) son 50 kcal."],
 ];
 // Productos del súper que encajan con cada ingrediente de las recetas
 const SHOP_PICKS = {
   cremaVerduras: [["crema-lentejas", "Crema de lentejas", "70 kcal/100 g · la que más proteína tiene"], ["crema-calabaza", "Crema de calabaza y zanahoria", "48 kcal/100 g"]],
   verduras: [["parrillada", "Parrillada de verduras", "55 kcal/100 g · 0 g grasa"], ["pimiento", "Pimiento troceado", "28 kcal/100 g"]],
-  panIntegral: [["pan-semillas", "Pan de semillas", "294 kcal/100 g · 11 g prot. · 2 panes de 85 g"]],
-  panCristal: [["pan-semillas", "Pan de semillas", "294 kcal/100 g · 11 g prot. · 2 panes de 85 g"]],
+  tortitasArroz: [["tortitas-legumbres", "Tortitas de legumbres", "100 kcal y 6,8 g prot. el paquetito"]],
+  yogurProt: [["yogur-prot", "Yogur +proteínas natural", "52 kcal · 10 g prot./100 g"]],
+  quesoBatido: [["queso-batido", "Queso fresco batido 0%", "46 kcal · 8 g prot./100 g"]],
+  jamon: [["jamon", "Jamón serrano", "248 kcal · 33,5 g prot./100 g"]],
+  tomateUntar: [["tomate-untar", "Tomate para untar", "64 kcal/100 g · ya lleva AOVE"]],
+  guisantes: [["guisantes", "Guisantes congelados", "82 kcal · 6 g prot./100 g"]],
 };
-function ShopPicks({ items }) {
+// Panes: en cada receta con pan eliges cuál usas y se recalculan las cantidades
+const BREADS = [
+  ["panIntegral", "Pan integral", null, "Cualquier integral de verdad", 0, ""],
+  ["panCenteno", "Centeno 82%", "pan-centeno", "118 kcal la rebanada de 55 g", 55, "rebanada"],
+  ["panIntegralHorno", "100% integral", "pan-integral", "184 kcal el pan de 82 g", 82, "pan"],
+  ["panSemillas", "De semillas", "pan-semillas", "250 kcal el pan de 85 g", 85, "pan"],
+  ["panMasaMadre", "Masa madre de panadería", null, "Unas 95 kcal la rebanada de 40 g", 40, "rebanada"],
+];
+const BREAD_IDS = new Set(["panCristal", ...BREADS.map(([id]) => id)]);
+const breadUnits = (food, g) => {
+  const b = BREADS.find(([id]) => id === food); if (!b || !b[4] || !(g > 0)) return "";
+  const n = Math.max(0.5, Math.round((g / b[4]) * 2) / 2);
+  return ` · ${String(n).replace(".", ",")} ${b[5]}${n > 1 ? "s" : ""}`;
+};
+function BreadPick({ value, onPick }) {
+  return (
+    <div className="picks">
+      <div className="picks-t"><span className="mtag">Mercadona</span> Elige tu pan y se ajustan las cantidades</div>
+      <div className="picks-row">{BREADS.filter(([id]) => FOODS[id]).map(([id, n, img, d]) => (
+        <button className={`pick bread${value === id ? " on" : ""}`} key={id} onClick={() => onPick(id)} aria-pressed={value === id}>
+          {img ? <img src={`/compra/${img}.jpg`} alt="" loading="lazy" /> : <span className="pimg">{id === "panMasaMadre" ? "De tu panadería" : "El que tengas en casa"}</span>}
+          <b>{n}</b><small>{d}</small>
+        </button>
+      ))}</div>
+      <p className="hint" style={{ margin: "8px 0 0" }}>Pro tip: si puedes, compra pan de masa madre en tu panadería (moreno, integral o de centeno). Pídelo cortado, congélalo y tuesta las rebanadas directamente del congelador. Sacia muchísimo.</p>
+    </div>
+  );
+}
+function ShopPicks({ items, pre }) {
   const seen = new Set();
-  const picks = items.flatMap((it) => SHOP_PICKS[it.food] || []).filter(([img]) => !seen.has(img) && seen.add(img));
+  const picks = [...items.flatMap((it) => SHOP_PICKS[it.food] || []), ...(pre ? [["agua-coco", "Agua de coco", "Para antes o durante el entreno · 50 kcal el vaso"]] : [])].filter(([img]) => !seen.has(img) && seen.add(img));
   if (!picks.length) return null;
   return (
     <div className="picks">
@@ -2968,6 +3025,9 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
   const [editing, setEditing] = useState(null);
   const [rest, setRest] = useState(false);
   const [pick, setPick] = useState({});
+  const [bread, setBreadS] = useState(() => { try { return localStorage.getItem("arc-pan") || ""; } catch { return ""; } });
+  const setBread = (id) => { setBreadS(id); try { localStorage.setItem("arc-pan", id); } catch { /* sin almacenamiento */ } };
+  const withBread = (r) => (bread && FOODS[bread] && r.items.some(([f]) => BREAD_IDS.has(f)) ? { ...r, items: r.items.map(([f, q]) => [BREAD_IDS.has(f) ? bread : f, q]) } : r);
   const mode = profile.cook;
   const t = useMemo(() => macroTargets(profile, rest), [profile, rest]);
   const plan = { ...MEAL_PLANS[profile.meals] };
@@ -2984,7 +3044,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
     const k = `${id}-${mode}`;
     const recipe = opts[Math.min(pick[k] || 0, opts.length - 1)];
     const share = plan[id];
-    return { id, k, opts, recipe, ...solveRecipe(recipe, { p: t.p * share, c: t.c * share, f: t.f * share }, profile.veg) };
+    return { id, k, opts, recipe, ...solveRecipe(withBread(recipe), { p: t.p * share, c: t.c * share, f: t.f * share }, profile.veg) };
   });
   const eatenTot = Object.values(eaten).reduce((a, e) => ({ p: a.p + (e.tot?.p || 0), c: a.c + (e.tot?.c || 0), f: a.f + (e.tot?.f || 0), kcal: a.kcal + (e.tot?.kcal || 0) }), { p: 0, c: 0, f: 0, kcal: 0 });
   const anyEaten = Object.keys(eaten).length > 0;
@@ -3054,13 +3114,14 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
             <div className="mbody">
               {eaten[m.id] && editing === m.id
                 ? <div className="mfoods">{eaten[m.id].items.map((it) => <label className="food edit" key={it.food}><span>{FOODS[it.food]?.n || it.food}</span><span className="gin"><input className="in" type="number" inputMode="numeric" value={it.g} onChange={(e) => setGrams(m.id, it.food, e.target.value)} aria-label={`Gramos de ${FOODS[it.food]?.n || it.food}`} /> g</span></label>)}</div>
-                : <div className="mfoods">{(eaten[m.id]?.items || m.items).map((it) => <div className="food" key={it.food}><span>{FOODS[it.food]?.n || it.food}</span><em>{Math.round(it.g)} g</em></div>)}</div>}
+                : <div className="mfoods">{(eaten[m.id]?.items || m.items).map((it) => <div className="food" key={it.food}><span>{FOODS[it.food]?.n || it.food}</span><em>{Math.round(it.g)} g{breadUnits(it.food, it.g)}</em></div>)}</div>}
               <div className="meat">
                 <button className={`eatbtn${eaten[m.id] ? " on" : ""}`} onClick={() => markEaten(m)}>{eaten[m.id] ? "✓ Comida apuntada" : "Me la he comido"}</button>
                 {eaten[m.id] && <button className="eatedit" onClick={() => setEditing(editing === m.id ? null : m.id)}>{editing === m.id ? "Listo" : "Cambiar cantidades"}</button>}
               </div>
               {eaten[m.id] && <p className="hint" style={{ margin: "6px 0 0" }}>Has comido {r0(eaten[m.id].tot.kcal)} kcal · P {r0(eaten[m.id].tot.p)} · H {r0(eaten[m.id].tot.c)} · G {r0(eaten[m.id].tot.f)}</p>}
-              <ShopPicks items={eaten[m.id]?.items || m.items} />
+              {!eaten[m.id] && m.recipe.items.some(([f]) => BREAD_IDS.has(f)) && <BreadPick value={m.items.find((it) => BREAD_IDS.has(it.food))?.food} onPick={setBread} />}
+              <ShopPicks items={eaten[m.id]?.items || m.items} pre={m.id === "pre"} />
               <details className="mprep">
                 <summary>Cómo se prepara</summary>
                 {m.recipe.steps ? <ol className="steps">{m.recipe.steps.map((st) => <li key={st}>{st}</li>)}</ol> : <p className="hint">{m.recipe.how}</p>}
