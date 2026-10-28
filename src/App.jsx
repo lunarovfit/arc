@@ -194,7 +194,7 @@ const CLASSIC_LEVELS = Object.fromEntries(["female", "male"].map((b) => [b, LEVE
 const ANIME_SRC = new Set(["Attack on Titan","Demon Slayer","Fullmetal Alchemist","Hajime no Ippo","Jujutsu Kaisen","My Hero Academia","Naruto","Neon Genesis Evangelion","One Piece","Vinland Saga","Dragon Ball","Haikyuu","Bleach","Haikyuu!!","Gurren Lagann","One Punch Man","Fullmetal Alchemist: Brotherhood","Black Clover","Fairy Tail"]);
 // En modo sin personajes tampoco salen frases de anime
 const pickQuote = (mode) => { const mine = QUOTES.filter((q) => q[2] === "ARC"), top = mine.filter((q) => q[1] === "Luna"); const base = mode === "clasico" || mode === "simple" ? QUOTES.filter((q) => !ANIME_SRC.has(q[2]) && q[2] !== "ARC") : QUOTES.filter((q) => ANIME_SRC.has(q[2])); const pool = [...base, ...mine, ...top, ...top]; const l = pool.length ? pool : QUOTES; return l[Math.floor(Math.random() * l.length)]; };
-const levelsOf = (branch, mode) => (mode === "gymrat" ? RAT_LEVELS : mode === "clasico" || mode === "simple" ? CLASSIC_LEVELS : LEVELS)[branch] || LEVELS.female;
+const levelsOf = (branch, mode) => (mode === "clasico" || mode === "simple" ? CLASSIC_LEVELS : LEVELS)[branch] || LEVELS.female;
 // Imagen de un nivel: la que suba la coach o, en gymrat, la rata que viene con la app
 const EX_VIDS = ["ARC-001", "ARC-002", "ARC-004", "ARC-006", "ARC-007", "ARC-009", "ARC-011", "ARC-012", "ARC-013", "ARC-014", "ARC-015", "ARC-016", "ARC-019", "ARC-020", "ARC-022", "ARC-023", "ARC-026", "ARC-027", "ARC-028", "ARC-029", "ARC-036", "ARC-037", "ARC-041", "ARC-042", "ARC-043", "ARC-049", "ARC-050", "ARC-054", "ARC-055", "ARC-060", "ARC-067", "ARC-069", "ARC-070", "ARC-073", "ARC-075", "ARC-076", "ARC-077", "ARC-078", "ARC-079", "ARC-080", "ARC-081", "ARC-082", "ARC-083", "ARC-084", "ARC-085", "ARC-087", "ARC-088", "ARC-M01", "ARC-M02", "ARC-M03", "ARC-M04", "ARC-M06", "ARC-M07", "ARC-M08", "ARC-M09", "ARC-X01", "ARC-X03"];
 const BUNDLED_MEDIA = Object.fromEntries(EX_VIDS.map((id) => [`ex:${id}`, `/ejercicios/${id}.mp4`]));
@@ -202,7 +202,7 @@ const BUNDLED_MEDIA = Object.fromEntries(EX_VIDS.map((id) => [`ex:${id}`, `/ejer
 const BUNDLED_IMG = { "lvl:female:3": "/personajes/talia.jpg", "lvl:male:6": "/personajes/d.jpg", "lvl:female:7": null };
 const BUNDLED_SINCE = 1793011308383;
 const mediaOr = (media, key) => { if (key in BUNDLED_IMG) { const t = Number((/\/(\d{13})\.\w+$/.exec(media[key] || "") || [])[1]); if (!(t > BUNDLED_SINCE)) return BUNDLED_IMG[key]; } const m = /^rat:(female|male):(\d)$/.exec(key); return media[key] || (m ? `/ratas/${m[1]}/rat-${m[2]}.png` : null); };
-const levelKey = (branch, mode, i) => (mode === "gymrat" ? `rat:${branch === "male" ? "male" : "female"}:${i}` : mode === "clasico" ? `classic:${i}` : `lvl:${branch}:${i}`);
+const levelKey = (branch, mode, i) => (mode === "clasico" ? `classic:${i}` : `lvl:${branch}:${i}`);
 
 
 // [frase, quién, de dónde, explicación, tipo]
@@ -1695,7 +1695,7 @@ function Questionnaire({ initial, editing, onSave, onCancel }) {
         <div className="want-opts">
           <button className={`want-opt ${simple ? "" : "on"}`} onClick={() => simple && set("mode", "otaku")}>
             <b>Subir de nivel con personajes</b>
-            <span>Subes de nivel con tu fuerza real, tu constancia y tus hábitos, y vas desbloqueando personajes. Además de todo lo de entrenos y comidas.</span>
+            <span>Subes de nivel con tu fuerza real, tu constancia y tus hábitos, y vas desbloqueando personajes de anime. Además de todo lo de entrenos y comidas.</span>
           </button>
           <button className={`want-opt ${simple ? "on" : ""}`} onClick={() => set("mode", "simple")}>
             <b>Solo registrar entrenos y comidas</b>
@@ -1703,10 +1703,6 @@ function Questionnaire({ initial, editing, onSave, onCancel }) {
           </button>
         </div>
       </div>
-      {!simple && <div className="field"><label>¿Con qué personajes?</label>
-        <div className="chips">{[["otaku", "Modo otaku"], ["gymrat", "Modo gymrat"]].map(([v, l]) => <button key={v} className={`chip ${(q.mode || "otaku") === v ? "on" : ""}`} onClick={() => set("mode", v)}>{l}</button>)}</div>
-        <div className="hint">{q.mode === "gymrat" ? "Tu rata va de enclenque a mazada contigo." : "Desbloqueas personajes de anime según tu fuerza real."}</div>
-      </div>}
       <div className="field"><label>{simple ? "Sexo" : "Rama del arco"}</label>
         <div className="chips">{[["female", simple ? "Mujer" : "Femenina"], ["male", simple ? "Hombre" : "Masculina"]].map(([v, l]) => <button key={v} className={`chip ${q.branch === v ? "on" : ""}`} onClick={() => set("branch", v)}>{l}</button>)}</div>
         {simple && <div className="hint">Para calcular tus calorías y tu rutina.</div>}
@@ -2032,7 +2028,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
   const L = levelsOf(branch, mode);
   const lv = L[ev.current];
   const [err, setErr] = useState("");
-  const [vb, setVb] = useState(mode === "gymrat" ? (branch === "male" ? "ratM" : "ratF") : branch); // rama que se ve en "El arco completo" (la coach puede cambiarla)
+  const [vb, setVb] = useState(branch); // rama que se ve en "El arco completo" (la coach puede cambiarla)
   const ratioPoints = useMemo(() => {
     const pts = [{ x: new Date(state.profile.startDate).getTime(), y: ratioOf(branch, bestLifts({ ...state, sessions: [] }).best, Number(state.profile.weight)) }];
     [...state.sessions].sort((a, b) => a.date.localeCompare(b.date)).forEach((s) => {
@@ -2163,8 +2159,6 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
         <div className="seg">
           <button className={vb === "female" ? "on" : ""} onClick={() => setVb("female")}>Femenina</button>
           <button className={vb === "male" ? "on" : ""} onClick={() => setVb("male")}>Masculina</button>
-          <button className={vb === "ratF" ? "on" : ""} onClick={() => setVb("ratF")}>Gymrat chica</button>
-          <button className={vb === "ratM" ? "on" : ""} onClick={() => setVb("ratM")}>Gymrat chico</button>
         </div>
         <p className="hint" style={{ marginTop: -4 }}>Modo coach: sube una imagen para cada personaje. Mejor en vertical y con fondo oscuro.</p>
       </>}
@@ -4828,8 +4822,9 @@ export default function App() {
 const EMPTY = { onboarded: false, profile: null, sessions: [], habits: {}, xp: 0, gems: 0, active: null, role: "client" };
 
 function fromDb({ profile, sessions, habits, coach }) {
-  const forced = coach?.mode || "";
-  const base = profile.data ? { ...DEFAULT_PROFILE, ...profile.data, startDate: profile.start_date } : null;
+  const fix = (m) => (m === "gymrat" ? "otaku" : m); // el modo gymrat ya no existe
+  const forced = fix(coach?.mode || "");
+  const base = profile.data ? { ...DEFAULT_PROFILE, ...profile.data, mode: fix(profile.data.mode || DEFAULT_PROFILE.mode), startDate: profile.start_date } : null;
   return {
     onboarded: profile.onboarded,
     profile: base && forced ? { ...base, ownMode: base.mode, mode: forced } : base,
@@ -5194,7 +5189,7 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
       {tab === "rutina" && (
         <>
           <div className="field"><label>Modo de niveles</label>
-            <div className="chips">{[["", "Lo elige su usuari@"], ["otaku", "Personajes anime"], ["gymrat", "Gymrat"], ["clasico", "Sin personajes"], ["simple", "Sin niveles"]].map(([v, l]) => (
+            <div className="chips">{[["", "Lo elige su usuari@"], ["otaku", "Personajes anime"], ["clasico", "Sin personajes"], ["simple", "Sin niveles"]].map(([v, l]) => (
               <button key={v} className={`chip ${mode === v ? "on" : ""}`} disabled={busy} onClick={() => { setMode(v); save({ mode: v }, v === "clasico" ? "Le saldrán solo niveles con número, sin personajes." : v ? "Modo cambiado. Lo verá al abrir la app." : "Vuelve a elegirlo su usuari@."); }}>{l}</button>
             ))}</div>
           </div>
