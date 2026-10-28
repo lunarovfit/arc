@@ -53,6 +53,8 @@ if (fs.existsSync(manifest)) {
     fs.writeFileSync(manifest, m);
   }
   const appGradle = path.join(root, "android/app/build.gradle");
+  // En Google Play la app se llama com.arcworkoutapp (en iOS sigue siendo com.lunarovx.arc)
+  if (fs.existsSync(appGradle)) fs.writeFileSync(appGradle, fs.readFileSync(appGradle, "utf8").replace(/applicationId "[^"]+"/, 'applicationId "com.arcworkoutapp"'));
   if (fs.existsSync(appGradle)) {
     let g = fs.readFileSync(appGradle, "utf8");
     if (!g.includes("CM_KEYSTORE_PATH")) {

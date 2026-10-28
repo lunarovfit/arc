@@ -4,7 +4,7 @@ android {
     namespace = "com.lunarovx.arc"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.lunarovx.arc"
+        applicationId "com.arcworkoutapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode((System.getenv("ARC_VERSION_CODE") ?: "1") as int)
