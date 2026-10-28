@@ -45,6 +45,35 @@ if (fs.existsSync(manifest)) {
     v = v.replace(/minSdkVersion\s*=\s*(\d+)/, (all, n) => (Number(n) < 26 ? "minSdkVersion = 26" : all));
     fs.writeFileSync(vars, v);
   }
+  // Notificaciones (Android 13+) y firma con la llave de Codemagic
+  m = fs.readFileSync(manifest, "utf8");
+  if (!m.includes("POST_NOTIFICATIONS")) {
+    m = m.replace(/<uses-permission android:name="android.permission.INTERNET" \/>/, `<uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />`);
+    fs.writeFileSync(manifest, m);
+  }
+  const appGradle = path.join(root, "android/app/build.gradle");
+  if (fs.existsSync(appGradle)) {
+    let g = fs.readFileSync(appGradle, "utf8");
+    if (!g.includes("CM_KEYSTORE_PATH")) {
+      g = g.replace(/versionCode \d+/, 'versionCode((System.getenv("ARC_VERSION_CODE") ?: "1") as int)')
+           .replace(/versionName "[^"]*"/, 'versionName(System.getenv("ARC_VERSION_NAME") ?: "1.0")')
+           .replace(/    buildTypes \{\n        release \{/, `    signingConfigs {
+        release {
+            if (System.getenv("CM_KEYSTORE_PATH")) {
+                storeFile file(System.getenv("CM_KEYSTORE_PATH"))
+                storePassword System.getenv("CM_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("CM_KEY_ALIAS")
+                keyPassword System.getenv("CM_KEY_PASSWORD")
+            }
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release`);
+      fs.writeFileSync(appGradle, g);
+    }
+  }
   done.push("Android: permisos de pasos y Health Connect añadidos");
 }
 
