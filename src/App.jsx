@@ -318,6 +318,14 @@ const EX_DB = [
   ["ARC-093", "Abdomen", "Crunch abdominal en máquina", "Recto abdominal", "Máquina", "En la máquina, encoges el tronco llevando el pecho hacia la cadera y vuelves despacio.", "Flexiona la columna sin mover la cadera, aguanta 1 segundo abajo y controla la vuelta."],
   ["ARC-096", "Tríceps", "Extensión de tríceps en polea con barra V", "Tríceps", "Polea", "De pie frente a la polea alta con la barra en V, estiras los codos empujando hacia abajo y vuelves despacio.", "Inclínate un poco hacia delante, codos pegados al cuerpo, aguanta 1 segundo abajo y sube sin mover los codos."],
   ["ARC-097", "Hombro", "Elevaciones laterales con mancuernas", "Deltoide lateral", "Mancuernas", "De pie con una mancuerna en cada mano, subes los brazos hacia los lados hasta la altura de los hombros y bajas despacio.", "Lleva las manos un poco hacia delante, inclínate ligeramente, aguanta 1 segundo arriba y controla la bajada."],
+  ["ARC-098", "Espalda", "Jalón al pecho agarre neutro", "Dorsal ancho", "Polea", "Tiras del agarre neutro (palmas enfrentadas) desde arriba hacia el pecho, con las piernas ancladas.", "Primero lleva los hombros abajo y luego los codos hacia el suelo, sin echarte hacia atrás."],
+  ["ARC-099", "Cuádriceps", "Prensa 45º", "Cuádriceps, glúteo", "Máquina", "Con la espalda y el glúteo pegados al respaldo, bajas la plataforma doblando las rodillas y empujas hasta casi estirar las piernas.", "Baja en 2-3 segundos, pausa de 1 segundo abajo y empuja fuerte sin bloquear las rodillas ni despegar el glúteo."],
+  ["ARC-100", "Gemelo", "Gemelo sentado en máquina", "Sóleo, gemelo", "Máquina", "Con el peso sobre las rodillas y la punta de los pies en el borde, bajas los talones y subes de puntillas.", "Recorrido completo: estira bien abajo y aprieta 1 segundo arriba."],
+  ["ARC-101", "Pecho", "Press inclinado con mancuernas", "Pectoral superior, hombro anterior, tríceps", "Mancuernas + banco", "En un banco a 30-45º, bajas las mancuernas hacia la parte alta del pecho y empujas hacia arriba.", "Si inclinas más el banco trabaja más el hombro. Omóplatos juntos y bajada controlada."],
+  ["ARC-102", "Bíceps", "Curl de bíceps con mancuernas", "Bíceps braquial", "Mancuernas", "De pie con una mancuerna en cada mano, doblas los codos subiendo las mancuernas y bajas despacio.", "Codos pegados al cuerpo y sin balancearte; baja estirando del todo."],
+  ["ARC-103", "Hombro", "Pájaros con mancuernas", "Deltoide posterior, espalda alta", "Mancuernas", "Con el torso inclinado hacia delante y las mancuernas bajo los hombros, abres los brazos hacia los lados.", "Brazos casi estirados y piensa en alejar las manos, sin subir los hombros."],
+  ["ARC-104", "Abdomen", "Crunch en polea de rodillas", "Recto abdominal", "Polea", "De rodillas frente a la polea alta con la cuerda junto a la cabeza, encoges el tronco llevando los codos hacia las rodillas.", "El movimiento sale del abdomen, no de los brazos ni de la cadera. Aguanta 1 segundo abajo."],
+  ["ARC-105", "Abdomen", "Plancha", "Core, abdomen, hombro", "Peso corporal", "Apoyas antebrazos y puntas de los pies y mantienes el cuerpo recto, sin hundir la cadera.", "Glúteos y abdomen apretados, respira con normalidad."],
   ["CARDIO", "Cardio", "Cardio (cinta inclinada, bici o elíptica)", "Corazón y piernas", "Máquina", "Ritmo en el que puedas hablar pero te cueste un poco.", "Si vas con poco tiempo, mejor 20 minutos que nada."],
   ["MOVILIDAD", "Movilidad", "Movilidad y estiramientos", "Todo el cuerpo", "Peso corporal", "Cadera, tobillos, espalda alta y hombros, sin prisa.", "Respira lento y no fuerces el estiramiento."],
 ];
@@ -327,6 +335,7 @@ const EX_EXTRA = {
   "ARC-021": { lift: "deadlift" },
   "ARC-X04": { lift: "bench" },
   "ARC-007": { pull: true, note: "No te preocupes si aún no te sale: abajo tienes sus variantes (chin up y con banda elástica) para ir llegando." },
+  "ARC-105": { unit: "s" },
   "CARDIO": { unit: "min" },
   "MOVILIDAD": { unit: "min" },
 };
