@@ -789,9 +789,9 @@ const EX_IN_USE = new Set([...Object.values(DAY_TEMPLATES).flatMap((d) => d.ex.m
 
 const ACTIVITY = [
   { id: 1.3, label: "Poco movimiento", hint: "Casi todo el día sin moverte de la silla, menos de 5.000 pasos" },
-  { id: 1.45, label: "Algo activa", hint: "5.000–8.000 pasos y 2–3 entrenos" },
-  { id: 1.6, label: "Activa", hint: "8.000–12.000 pasos y 3–5 entrenos" },
-  { id: 1.75, label: "Muy activa", hint: "Trabajo físico o más de 12.000 pasos y 5+ entrenos" },
+  { id: 1.45, label: "Movimiento moderado", hint: "5.000–8.000 pasos y 2–3 entrenos" },
+  { id: 1.6, label: "Bastante movimiento", hint: "8.000–12.000 pasos y 3–5 entrenos" },
+  { id: 1.75, label: "Mucho movimiento", hint: "Trabajo físico o más de 12.000 pasos y 5+ entrenos" },
 ];
 const GOALS = [
   { id: "deficit", label: "Perder grasa", adj: -0.15 },
@@ -1289,6 +1289,7 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .pick.bread img,.pick.bread .pimg{outline:2px solid transparent;outline-offset:-2px;transition:outline-color .15s}
 .pick.bread.on img,.pick.bread.on .pimg{outline-color:var(--ac)}
 .pick.bread.on b{color:var(--ac)}
+.tour-nav{width:100%;display:flex;justify-content:space-between;align-items:center;margin-top:4px;min-height:24px}
 .want-opts{display:flex;flex-direction:column;gap:10px}
 .want-opt{display:flex;flex-direction:column;gap:4px;text-align:left;padding:14px;border-radius:14px;background:var(--sf2);border:1.5px solid var(--ln);color:inherit;font:inherit;cursor:pointer}
 .want-opt b{font-size:15px}
@@ -1756,7 +1757,7 @@ function Questionnaire({ initial, editing, onSave, onCancel }) {
       <div className="field"><label>Alimentación</label>
         <div className="chips">
           <button className={`chip ${!q.veg ? "on" : ""}`} onClick={() => set("veg", false)}>Como de todo</button>
-          <button className={`chip ${q.veg ? "on" : ""}`} onClick={() => set("veg", true)}>Vegetariana</button>
+          <button className={`chip ${q.veg ? "on" : ""}`} onClick={() => set("veg", true)}>Sin carne ni pescado</button>
         </div>
       </div>
 
@@ -4669,7 +4670,7 @@ function Tour({ profile, ev, heroImg, perms, onFinish, media = {} }) {
   const next = L[ev.current + 1];
   const slides = [
     {
-      title: `${male ? "Bienvenido" : "Bienvenida"} a tu arco`,
+      title: "Te damos la bienvenida a tu arco",
       body: <>
         <p className="tour-p">Aquí no subes de nivel por abrir la app.</p>
         <p className="tour-p">Subes por lo que levantas, por los meses que llevas sin parar y por no fallarte día tras día.</p>
@@ -4759,7 +4760,7 @@ function Tour({ profile, ev, heroImg, perms, onFinish, media = {} }) {
     ),
   });
   if (profile.mode === "simple") {
-    slides.splice(0, 3, { title: `${male ? "Bienvenido" : "Bienvenida"} a ARC`, body: <>
+    slides.splice(0, 3, { title: "Te damos la bienvenida a ARC", body: <>
       <p className="tour-p">Aquí tienes tu rutina, tu registro de series y tus comidas ajustadas.</p>
       <p className="tour-p dim">Sin niveles ni personajes: solo tú, tus entrenos y tu progreso.</p>
     </> });
@@ -4774,7 +4775,10 @@ function Tour({ profile, ev, heroImg, perms, onFinish, media = {} }) {
       {s.body}
       <div className="tour-actions">
         <button className="btn ac" onClick={() => (last ? onFinish() : setI(i + 1))}>{last ? "Empezar" : "Siguiente"}</button>
-        {!last && <button className="link" onClick={() => setI(slides.length - 1)}>Saltar</button>}
+        <div className="tour-nav">
+          {i > 0 ? <button className="link" onClick={() => setI(i - 1)}>‹ Atrás</button> : <span />}
+          {!last && <button className="link" onClick={() => setI(slides.length - 1)}>Saltar</button>}
+        </div>
       </div>
     </div>
   );
