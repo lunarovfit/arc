@@ -1250,6 +1250,11 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .xrow .eatbtn{flex:none;min-width:0;padding:11px 18px}
 .eatbtn:disabled{opacity:.4}
 .xdel{background:none;border:0;color:var(--dm);font:inherit;cursor:pointer;margin-left:6px}
+.gtabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:10px -16px 0;padding:0 16px}
+.gtabs .chip{flex:none}
+.gsrc{margin-top:10px;font-size:12px;color:var(--dm)}
+.gsrc summary{cursor:pointer}
+.gsrc li span{font-size:11.5px}
 .shop-ex-t{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);font-weight:800;margin:14px 0 8px}
 .shop-ex{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .shop-ex div{display:flex;flex-direction:column;gap:3px}
@@ -2922,7 +2927,6 @@ const SHOP_TIPS = [
   ["Carne picada y hamburguesas", "Truco: pídela magra en la carnicería, con poca grasa. Si la compras en el súper, que sea de buena calidad: mira los ingredientes, 90% de carne mínimo y sin rellenos. Si pone «preparado de carne», a la estantería."],
   ["Crema de cacahuete", "100% cacahuete. Si lleva aceite de palma o azúcar, a la estantería."],
   ["Pan «integral»", "Que el primer ingrediente sea harina integral (o de centeno), no harina de trigo con salvado. Y ojo: «elaborado con masa madre» no es lo mismo que «100% masa madre»."],
-  ["Pro tip: pan de panadería", "Mejor que mejor: pan de masa madre de una panadería de tu zona, tipo pan moreno, integral o de centeno. Pídelo cortado, congélalo en rebanadas y tuéstalo directamente del congelador: siempre tienes pan bueno y no se te pone duro. Al llevar más fibra sacia mucho más que el pan blanco, y como el pan denso pesa más, pésalo la primera vez para saber cuánto es una rebanada."],
   ["Tomate para untar", "El de bote con AOVE es comodísimo y ya lleva el aceite: una cucharada (30 g) son unas 20 kcal. Así no hace falta echar más aceite a la tostada."],
 ];
 // Productos de ejemplo (fotos de Luna en el Mercadona)
@@ -2992,20 +2996,75 @@ function ShopPicks({ items, pre }) {
     </div>
   );
 }
-function ShopTips() {
-  const [open, setOpen] = useState(false);
+// Guía de nutrición: pestañas con consejos (las fuentes, siempre al final)
+const GUIDE = [
+  { id: "compra", label: "Compra", intro: "Lo que más se cuela sin darte cuenta y cómo elegir bien en el súper." },
+  { id: "pan", label: "Pan", intro: "El pan no es el enemigo: lo que importa es cuál eliges y cuánto.", items: [
+    ["Mejor que mejor: de panadería", "Pan de masa madre de una panadería de tu zona, tipo pan moreno, integral o de centeno. Suele llevar menos ingredientes y una fermentación más larga."],
+    ["Pídelo cortado y congélalo", "Al llegar a casa, a rebanadas al congelador. Las tuestas directamente congeladas: siempre tienes pan bueno y no se te pone duro."],
+    ["Sacia más", "Al llevar más fibra que el pan blanco, llena más con la misma cantidad y te aguanta más hasta la siguiente comida."],
+    ["Pésalo la primera vez", "El pan denso pesa más de lo que parece. Pesa una rebanada una vez y ya sabes cuánto es en la app."],
+    ["Lee la etiqueta", "Que el primer ingrediente sea harina integral o de centeno. «Elaborado con masa madre» no es lo mismo que «100% masa madre»."],
+    ["En la app", "En cada receta con pan puedes elegir cuál usas y las cantidades se ajustan solas."],
+  ] },
+  { id: "agua", label: "Hidratación", intro: "Beber suficiente se nota en el entreno, en la piel y hasta en el hambre.", items: [
+    ["Cuánta agua", "Como referencia, unos 2 litros al día en mujeres y 2,5 en hombres contando lo que viene en la comida. Si entrenas, sudas mucho o hace calor, más."],
+    ["El truco del color", "Si tu pis es amarillo clarito, vas bien. Si es oscuro, te falta agua."],
+    ["Botella siempre a la vista", "Un vaso al levantarte, otro con cada comida y la botella en la mesa o en la mochila. Si la ves, bebes."],
+    ["Antes y durante el entreno", "Llega hidratada al gym y ve bebiendo a sorbos entre series. En entrenos largos o con mucho calor, el agua de coco es una buena opción: 20 kcal por 100 ml y lleva potasio."],
+    ["¿Sed o hambre?", "A veces confundimos sed con ganas de picar. Antes de picar entre horas, prueba con un vaso de agua."],
+    ["También cuentan", "Infusiones, agua con gas y bebidas 0% cuentan. Con moderación las que llevan edulcorante, si te ayudan a beber más."],
+  ] },
+  { id: "cafe", label: "Cafeína", intro: "Ayuda a rendir en el entreno, pero tiene su límite y su horario.", items: [
+    ["Cuánta es mucha", "En adultos sanos, hasta unos 400 mg al día se consideran seguros, y no más de 200 mg de golpe. En embarazo, máximo 200 mg al día. Si tienes menos de 18 años, el límite es más bajo: unos 3 mg por kilo al día."],
+    ["Para entrenar", "Lo que se usa en estudios son unos 3 mg por kilo de peso entre 30 y 60 minutos antes. Para 60 kg, unos 180 mg: dos cafés de filtro o un pre-entreno suave."],
+    ["Cuidado con el sueño", "La cafeína puede afectar al sueño hasta 6 horas después. Si entrenas por la tarde, mejor un pre-entreno sin cafeína o café solo por la mañana."],
+    ["Cuánta lleva cada cosa (aprox.)", "Espresso: 60–80 mg · Café de filtro (200 ml): 90 mg · Té negro (taza): 50 mg · Cola (lata): 32 mg · Red Bull (250 ml): 80 mg · Monster (500 ml): 160 mg · Pre-entreno: 150–300 mg por cacito (mira la etiqueta)."],
+    ["Ojo con sumarla", "Café por la mañana, bebida energética por la tarde y pre-entreno: se pasa de 400 mg sin darte cuenta."],
+    ["Si te sienta mal", "Nervios, taquicardia o ansiedad: baja la dosis. No a todo el mundo le sienta igual."],
+  ] },
+  { id: "prote", label: "Proteína", intro: "Es lo que más cuesta llegar y lo que más se nota para ganar músculo.", items: [
+    ["Cuánta", "Para ganar músculo o mantenerlo mientras pierdes grasa, entre 1,6 y 2,2 g por kilo de peso al día. La app ya te lo calcula."],
+    ["Repártela", "Mejor en 3–5 comidas con 20–40 g cada una que todo de golpe en la cena."],
+    ["Fuentes fáciles", "Pollo, pavo, huevos y claras, atún, yogur proteico, queso batido, legumbres y tofu. El batido de proteína es comida, no magia: solo te ayuda a llegar."],
+    ["Truco", "Empieza cada plato pensando en la proteína y luego monta el resto alrededor."],
+  ] },
+  { id: "fuera", label: "Comer fuera", intro: "Comer fuera no rompe tu plan si sabes elegir.", items: [
+    ["Pide a la plancha", "Carne o pescado a la plancha con ensalada o verduras es casi siempre la opción más fácil de cuadrar."],
+    ["Salsas aparte", "Pide la salsa y el aliño aparte y pon tú la cantidad."],
+    ["El táper, tu mejor amigo", "Cocina dos o tres raciones a la vez y llévatelas. En la app, si marcas que comes fuera, te salen primero las recetas que aguantan en táper."],
+    ["Un día no es la semana", "Si un día te pasas, no compenses sin comer al día siguiente. Vuelve a tu plan normal y ya está."],
+    ["Apúntalo igual", "Aunque sea aproximado, apúntalo en «Picoteos y extras». Lo que no se apunta, no existe… pero cuenta igual."],
+  ] },
+];
+const GUIDE_SOURCES = {
+  agua: ["EFSA (2010). Scientific Opinion on Dietary Reference Values for water."],
+  cafe: ["EFSA (2015). Scientific Opinion on the safety of caffeine.", "Guest NS et al. (2021). ISSN position stand: caffeine and exercise performance.", "Drake C et al. (2013). Caffeine effects on sleep taken 0, 3, or 6 hours before going to bed."],
+  prote: ["Morton RW et al. (2018). Meta-analysis of protein supplementation and resistance training.", "Jäger R et al. (2017). ISSN position stand: protein and exercise."],
+};
+function NutriGuide() {
+  const [tab, setTab] = useState(null);
+  const g = GUIDE.find((x) => x.id === tab);
   return (
     <div className="shop">
-      <button className="shop-hd" onClick={() => setOpen(!open)} aria-expanded={open}><b>Al hacer la compra</b><span>{open ? "Cerrar" : "Ver consejos"}</span></button>
-      {!open && <p className="hint" style={{ margin: "6px 0 0" }}>Fiambre al 90%, tortitas sin aditivos y cuidado con lo que va escondido.</p>}
-      {open && <ul>{SHOP_TIPS.map(([t, d]) => <li key={t}><b>{t}</b><span>{d}</span></li>)}</ul>}
-      {open && <>
-        <div className="shop-ex-t">Ejemplos que uso yo (Mercadona)</div>
-        <div className="shop-ex">{SHOP_EXAMPLES.map(([img, n, d]) => <div key={img}><img src={`/compra/${img}.jpg`} alt={n} loading="lazy" /><b>{n}</b><small>{d}</small></div>)}</div>
-        <p className="hint" style={{ margin: "8px 0 0" }}>En otros supermercados hay parecidos: mira que lleven solo verduras (o legumbre) y poco aceite. Todos están en la app para apuntarlos en «Picoteos y extras».</p>
-      </>}
+      <div className="shop-hd" style={{ cursor: "default" }}><b>Guía</b>{tab && <button className="link" onClick={() => setTab(null)}>Cerrar</button>}</div>
+      <div className="gtabs" role="tablist">{GUIDE.map((x) => <button key={x.id} role="tab" aria-selected={tab === x.id} className={`chip ${tab === x.id ? "on" : ""}`} onClick={() => setTab(tab === x.id ? null : x.id)}>{x.label}</button>)}</div>
+      {!g && <p className="hint" style={{ margin: "6px 0 0" }}>Compra, pan, agua, cafeína, proteína y comer fuera: toca una pestaña.</p>}
+      {g && <p className="hint" style={{ margin: "8px 0 0" }}>{g.intro}</p>}
+      {g?.id === "compra" && <ShopTips />}
+      {g?.items && <ul>{g.items.map(([t, d]) => <li key={t}><b>{t}</b><span>{d}</span></li>)}</ul>}
+      {g?.id === "pan" && <div className="shop-ex" style={{ marginTop: 10 }}>{SHOP_EXAMPLES.filter(([img]) => img.startsWith("pan-")).map(([img, n, d]) => <div key={img}><img src={`/compra/${img}.jpg`} alt={n} loading="lazy" /><b>{n}</b><small>{d}</small></div>)}</div>}
+      {g && GUIDE_SOURCES[g.id] && <details className="gsrc"><summary>Fuentes</summary><ul>{GUIDE_SOURCES[g.id].map((x) => <li key={x}><span>{x}</span></li>)}</ul></details>}
     </div>
   );
+}
+function ShopTips() {
+  return <>
+    <ul>{SHOP_TIPS.map(([t, d]) => <li key={t}><b>{t}</b><span>{d}</span></li>)}</ul>
+    <div className="shop-ex-t">Ejemplos que uso yo (Mercadona)</div>
+    <div className="shop-ex">{SHOP_EXAMPLES.map(([img, n, d]) => <div key={img}><img src={`/compra/${img}.jpg`} alt={n} loading="lazy" /><b>{n}</b><small>{d}</small></div>)}</div>
+    <p className="hint" style={{ margin: "8px 0 0" }}>En otros supermercados hay parecidos: mira que lleven solo verduras (o legumbre) y poco aceite. Todos están en la app para apuntarlos en «Picoteos y extras».</p>
+  </>;
 }
 
 // Picoteos y extras: lo que comes fuera del plan también cuenta
@@ -3105,7 +3164,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
         </div>
       </div>
 
-      <ShopTips />
+      <NutriGuide />
       <h2>Tus comidas</h2>
       <div className="seg">{COOK_OPTS.map(([v, l]) => <button key={v} className={mode === v ? "on" : ""} onClick={() => setCook(v)}>{l}</button>)}</div>
       {profile.eatOut && <p className="hint" style={{ marginTop: 0 }}>Primero te salen las que aguantan bien en táper.</p>}
