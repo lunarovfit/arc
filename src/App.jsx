@@ -3102,10 +3102,11 @@ function Extras({ eaten, setEaten, totOf }) {
 
 function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => {} }) {
   const [editing, setEditing] = useState(null);
+  const [draft, setDraft] = useState({}); // cantidades cambiadas antes de apuntar la comida
   const [rest, setRest] = useState(false);
   const [pick, setPick] = useState({});
   const [bread, setBreadS] = useState(() => { try { return localStorage.getItem("arc-pan") || ""; } catch { return ""; } });
-  const setBread = (id) => { setBreadS(id); try { localStorage.setItem("arc-pan", id); } catch { /* sin almacenamiento */ } };
+  const setBread = (id) => { setBreadS(id); setDraft({}); try { localStorage.setItem("arc-pan", id); } catch { /* sin almacenamiento */ } };
   const withBread = (r) => (bread && FOODS[bread] && r.items.some(([f]) => BREAD_IDS.has(f)) ? { ...r, items: r.items.map(([f, q]) => [BREAD_IDS.has(f) ? bread : f, q]) } : r);
   const mode = profile.cook;
   const t = useMemo(() => macroTargets(profile, rest), [profile, rest]);
@@ -3129,11 +3130,14 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
   const anyEaten = Object.keys(eaten).length > 0;
   const left = { kcal: t.kcal - eatenTot.kcal, p: t.p - eatenTot.p, c: t.c - eatenTot.c, f: t.f - eatenTot.f };
   const totOf = (items) => { const x = items.reduce((a, it) => ({ p: a.p + (FOODS[it.food]?.p || 0) * it.g / 100, c: a.c + (FOODS[it.food]?.c || 0) * it.g / 100, f: a.f + (FOODS[it.food]?.f || 0) * it.g / 100 }), { p: 0, c: 0, f: 0 }); x.kcal = x.p * 4 + x.c * 4 + x.f * 9; return x; };
+  const dkey = (m) => `${m.id}:${m.recipe.id || m.recipe.name}`;
+  const draftOf = (m) => draft[dkey(m)] || m.items.map((it) => ({ food: it.food, g: Math.round(it.g) }));
+  const setDraftG = (m, food, g) => setDraft({ ...draft, [dkey(m)]: draftOf(m).map((it) => (it.food === food ? { ...it, g: Math.max(0, Number(g) || 0) } : it)) });
   const markEaten = (m) => {
     const next = { ...eaten };
     if (next[m.id]) delete next[m.id];
-    else { const items = m.items.map((it) => ({ food: it.food, g: Math.round(it.g) })); next[m.id] = { name: m.recipe.name, items, tot: totOf(items) }; }
-    setEaten(next); if (!next[m.id]) setEditing(null);
+    else { const items = draftOf(m); next[m.id] = { name: m.recipe.name, items, tot: totOf(items) }; }
+    setEaten(next); setEditing(null);
   };
   const setGrams = (id, food, g) => {
     const e = eaten[id]; if (!e) return;
@@ -3191,13 +3195,16 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
               <button aria-label="Otra receta" onClick={() => go(1)}>Otra receta ›</button>
             </div>}
             <div className="mbody">
-              {eaten[m.id] && editing === m.id
+              {!eaten[m.id] && editing === m.id
+                ? <div className="mfoods">{draftOf(m).map((it) => <label className="food edit" key={it.food}><span>{FOODS[it.food]?.n || it.food}</span><span className="gin"><input className="in" type="number" inputMode="numeric" value={it.g} onChange={(e) => setDraftG(m, it.food, e.target.value)} aria-label={`Gramos de ${FOODS[it.food]?.n || it.food}`} /> g</span></label>)}</div>
+                : eaten[m.id] && editing === m.id
                 ? <div className="mfoods">{eaten[m.id].items.map((it) => <label className="food edit" key={it.food}><span>{FOODS[it.food]?.n || it.food}</span><span className="gin"><input className="in" type="number" inputMode="numeric" value={it.g} onChange={(e) => setGrams(m.id, it.food, e.target.value)} aria-label={`Gramos de ${FOODS[it.food]?.n || it.food}`} /> g</span></label>)}</div>
-                : <div className="mfoods">{(eaten[m.id]?.items || m.items).map((it) => <div className="food" key={it.food}><span>{FOODS[it.food]?.n || it.food}</span><em>{Math.round(it.g)} g{breadUnits(it.food, it.g)}</em></div>)}</div>}
+                : <div className="mfoods">{(eaten[m.id]?.items || (draft[dkey(m)] ? draftOf(m) : m.items)).map((it) => <div className="food" key={it.food}><span>{FOODS[it.food]?.n || it.food}</span><em>{Math.round(it.g)} g{breadUnits(it.food, it.g)}</em></div>)}</div>}
               <div className="meat">
                 <button className={`eatbtn${eaten[m.id] ? " on" : ""}`} onClick={() => markEaten(m)}>{eaten[m.id] ? "✓ Comida apuntada" : "Me la he comido"}</button>
-                {eaten[m.id] && <button className="eatedit" onClick={() => setEditing(editing === m.id ? null : m.id)}>{editing === m.id ? "Listo" : "Cambiar cantidades"}</button>}
+                <button className="eatedit" onClick={() => setEditing(editing === m.id ? null : m.id)}>{editing === m.id ? "Listo" : eaten[m.id] ? "Cambiar cantidades" : "Ajustar cantidades"}</button>
               </div>
+              {!eaten[m.id] && editing === m.id && (() => { const t2 = totOf(draftOf(m)); return <p className="hint" style={{ margin: "6px 0 0" }}>Con estas cantidades: {r0(t2.kcal)} kcal · P {r0(t2.p)} · H {r0(t2.c)} · G {r0(t2.f)}. Cuando lo tengas, toca «Me la he comido».</p>; })()}
               {eaten[m.id] && <p className="hint" style={{ margin: "6px 0 0" }}>Has comido {r0(eaten[m.id].tot.kcal)} kcal · P {r0(eaten[m.id].tot.p)} · H {r0(eaten[m.id].tot.c)} · G {r0(eaten[m.id].tot.f)}</p>}
               {!eaten[m.id] && m.recipe.items.some(([f]) => BREAD_IDS.has(f)) && <BreadPick value={m.items.find((it) => BREAD_IDS.has(it.food))?.food} onPick={setBread} />}
               <ShopPicks items={eaten[m.id]?.items || m.items} pre={m.id === "pre"} />
