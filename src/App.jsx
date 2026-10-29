@@ -2582,6 +2582,7 @@ function Tracker({ active, sessions, setActive, onFinish, onCancel, media, coach
   const [hist, setHist] = useState(null);
   const [tech, setTech] = useState(null);
   const [swap, setSwap] = useState(null);
+  const [adding, setAdding] = useState(false);
   const [msg, setMsg] = useState("");
   useEffect(() => { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, []);
   useEffect(() => { if (restEnd && now >= restEnd) setRestEndRaw(null); }, [now, restEnd]);
@@ -2663,6 +2664,9 @@ function Tracker({ active, sessions, setActive, onFinish, onCancel, media, coach
         );
       })}
 
+      <button className="btn ghost" style={{ marginTop: 6 }} onClick={() => setAdding(true)}>+ Añadir ejercicio</button>
+      <p className="hint" style={{ marginTop: -4, textAlign: "center" }}>Solo para el entreno de hoy: tu rutina no cambia.</p>
+
       {restEnd && (
         <div className="restbar"><div>
           <b>Descanso {mmss(Math.max(0, (restEnd - now) / 1000))}</b>
@@ -2673,6 +2677,7 @@ function Tracker({ active, sessions, setActive, onFinish, onCancel, media, coach
       )}
       {hist && <HistoryModal exId={hist} sessions={sessions} onClose={() => setHist(null)} />}
       {tech && <TechniqueModal exId={tech} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} onClose={() => setTech(null)} />}
+      {adding && <ExercisePicker onClose={() => setAdding(false)} onPick={(id) => { setActive({ ...active, exercises: [...active.exercises, sessionEx({ id, sets: 3, reps: EXERCISES[id].unit ? "30" : "8–12", rir: 2, rest: 90 }, sessions)] }); setAdding(false); setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }), 50); }} />}
       {swap !== null && <SwapModal exId={active.exercises[swap].exId} onClose={() => setSwap(null)} onPick={(id) => { upd(swap, (x) => ({ ...x, exId: id })); setSwap(null); }} />}
     </>
   );
