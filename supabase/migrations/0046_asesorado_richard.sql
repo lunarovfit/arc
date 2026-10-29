@@ -1,6 +1,13 @@
 -- ARC · Richard: ejercicios nuevos, alta, rutina y dieta (app gratis por ser asesorado)
 alter table public.coach_clients add column if not exists diet jsonb;
 
+-- (por si aún no has pegado el de Cynthia) ejercicios que también usa Richard
+insert into public.content_exercises (id, grp, name, muscle, equip, simple, tip, sort) values
+  ('ARC-091', 'Gemelo', 'Gemelo en máquina', 'Gemelo, sóleo', 'Máquina', 'Con la punta de los pies en el borde, bajas los talones todo lo que puedas y subes de puntillas.', 'Baja en 3 segundos, aguanta 2 abajo estirando, sube rápido y aprieta 1 segundo arriba.', 810),
+  ('ARC-096', 'Tríceps', 'Extensión de tríceps en polea con barra V', 'Tríceps', 'Polea', 'De pie frente a la polea alta con la barra en V, estiras los codos empujando hacia abajo y vuelves despacio.', 'Inclínate un poco hacia delante, codos pegados al cuerpo, aguanta 1 segundo abajo y sube sin mover los codos.', 811),
+  ('ARC-097', 'Hombro', 'Elevaciones laterales con mancuernas', 'Deltoide lateral', 'Mancuernas', 'De pie con una mancuerna en cada mano, subes los brazos hacia los lados hasta la altura de los hombros y bajas despacio.', 'Lleva las manos un poco hacia delante, inclínate ligeramente, aguanta 1 segundo arriba y controla la bajada.', 812)
+on conflict (id) do nothing;
+
 insert into public.content_exercises (id, grp, name, muscle, equip, simple, tip, unit, sort) values
   ('ARC-098', 'Espalda', 'Jalón al pecho agarre neutro', 'Dorsal ancho', 'Polea', 'Tiras del agarre neutro (palmas enfrentadas) desde arriba hacia el pecho, con las piernas ancladas.', 'Primero lleva los hombros abajo y luego los codos hacia el suelo, sin echarte hacia atrás.', '', 820),
   ('ARC-099', 'Cuádriceps', 'Prensa 45º', 'Cuádriceps, glúteo', 'Máquina', 'Con la espalda y el glúteo pegados al respaldo, bajas la plataforma doblando las rodillas y empujas hasta casi estirar las piernas.', 'Baja en 2-3 segundos, pausa de 1 segundo abajo y empuja fuerte sin bloquear las rodillas ni despegar el glúteo.', '', 821),
