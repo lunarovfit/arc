@@ -12,10 +12,11 @@ export async function loadAll(userId) {
     supabase.from("media").select("key, url"),
   ]);
   // Rutina que le ha puesto su coach (si la tabla aún no existe, se ignora)
-  let cr = await supabase.from("coach_clients").select("routine, mode, updated_at").eq("client_id", userId).order("updated_at", { ascending: false }).limit(1);
+  let cr = await supabase.from("coach_clients").select("routine, mode, diet, updated_at").eq("client_id", userId).order("updated_at", { ascending: false }).limit(1);
+  if (cr.error) cr = await supabase.from("coach_clients").select("routine, mode, updated_at").eq("client_id", userId).order("updated_at", { ascending: false }).limit(1);
   if (cr.error) cr = await supabase.from("coach_clients").select("routine, updated_at").eq("client_id", userId).order("updated_at", { ascending: false }).limit(1);
   const row = !cr.error ? cr.data?.[0] : null;
-  const coach = row ? { routine: row.routine?.length ? row.routine : null, mode: row.mode || "" } : null;
+  const coach = row ? { routine: row.routine?.length ? row.routine : null, mode: row.mode || "", diet: row.diet?.train?.length ? row.diet : null } : null;
   return { profile: must(profile), sessions: must(sessions), habits: must(habits), media: must(media), coach };
 }
 

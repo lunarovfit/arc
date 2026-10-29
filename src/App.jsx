@@ -3112,7 +3112,63 @@ function Extras({ eaten, setEaten, totOf }) {
   );
 }
 
-function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => {} }) {
+// Dieta pautada por la coach (sale en lugar de las recetas automáticas)
+const dietItemTot = (items) => items.reduce((a, it) => ({ p: a.p + it.p, c: a.c + it.c, f: a.f + it.f }), { p: 0, c: 0, f: 0 });
+function dietTargets(meals) {
+  const x = meals.reduce((a, m) => { const o = dietItemTot(m.options[0]?.items || []); return { p: a.p + o.p, c: a.c + o.c, f: a.f + o.f }; }, { p: 0, c: 0, f: 0 });
+  return { p: Math.round(x.p), c: Math.round(x.c), f: Math.round(x.f), kcal: Math.round(x.p * 4 + x.c * 4 + x.f * 9) };
+}
+const dietLog = (it) => ({ food: it.n, g: it.g, k: it.g ? { p: (it.p * 100) / it.g, c: (it.c * 100) / it.g, f: (it.f * 100) / it.g } : { p: 0, c: 0, f: 0 } });
+function CoachDiet({ meals, tips = [], eaten, setEaten, totOf }) {
+  const [pick, setPick] = useState({});
+  const [editing, setEditing] = useState(null);
+  const [draft, setDraft] = useState({});
+  const r0 = Math.round;
+  return (
+    <>
+      <h2>Tu dieta</h2>
+      <p className="hint" style={{ marginTop: -6 }}>Pautada por tu coach. En cada comida puedes elegir la opción que más te apetezca: todas cuadran con tu plan.</p>
+      <div className="mlist">
+        {meals.map((m, mi) => {
+          const id = `coach:${mi}`, n = m.options.length, oi = Math.min(pick[mi] || 0, n - 1), o = m.options[oi];
+          const dk = `${mi}:${oi}`, base = o.items.map(dietLog), items = draft[dk] || base;
+          const tot = totOf(items), done = eaten[id];
+          const setG = (food, g) => setDraft({ ...draft, [dk]: items.map((it) => (it.food === food ? { ...it, g: Math.max(0, Number(g) || 0) } : it)) });
+          const mark = () => { const next = { ...eaten }; if (next[id]) delete next[id]; else next[id] = { name: `${m.name} · ${o.name}`, items, tot: totOf(items) }; setEaten(next); setEditing(null); };
+          const shown = done ? done.items : items;
+          return (
+            <div className={`mcard${done ? " done" : ""}`} key={id}>
+              <div className="mhead"><div className="mhead-t">
+                <div className="mslot">{m.name} <span>· {r0(tot.kcal)} kcal</span></div>
+                <div className="mname">{o.name}</div>
+                <div className="mmac"><span><i style={{ background: "var(--ac)" }} />P {r0(tot.p)}</span><span><i style={{ background: "#EDE7E2" }} />H {r0(tot.c)}</span><span><i style={{ background: "#F5C76B" }} />G {r0(tot.f)}</span></div>
+              </div></div>
+              {n > 1 && <div className="mswap">
+                <button aria-label="Opción anterior" onClick={() => setPick({ ...pick, [mi]: (oi - 1 + n) % n })}>‹</button>
+                <span>Opción {oi + 1} de {n}</span>
+                <button aria-label="Otra opción" onClick={() => setPick({ ...pick, [mi]: (oi + 1) % n })}>Otra opción ›</button>
+              </div>}
+              <div className="mbody">
+                <div className="mfoods">{shown.map((it, k) => editing === id && !done
+                  ? <label className="food edit" key={it.food + k}><span>{it.food}</span><span className="gin"><input className="in" type="number" inputMode="numeric" value={it.g} onChange={(e) => setG(it.food, e.target.value)} aria-label={`Gramos de ${it.food}`} /> g</span></label>
+                  : <div className="food" key={it.food + k}><span>{it.food}{o.items[k]?.note && !done ? <small style={{ display: "block", color: "var(--dm)", fontSize: 12 }}>{o.items[k].note}</small> : null}</span><em>{r0(it.g)} g</em></div>)}</div>
+                <div className="meat">
+                  <button className={`eatbtn${done ? " on" : ""}`} onClick={mark}>{done ? "✓ Comida apuntada" : "Me la he comido"}</button>
+                  {!done && <button className="eatedit" onClick={() => setEditing(editing === id ? null : id)}>{editing === id ? "Listo" : "Ajustar cantidades"}</button>}
+                </div>
+                {done && <p className="hint" style={{ margin: "6px 0 0" }}>Has comido {r0(done.tot.kcal)} kcal · P {r0(done.tot.p)} · H {r0(done.tot.c)} · G {r0(done.tot.f)}</p>}
+                {o.note && <details className="mprep"><summary>Cómo se prepara</summary><p className="hint">{o.note}</p></details>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {tips?.length > 0 && <div className="shop" style={{ marginTop: 14 }}><b>Pautas de tu coach</b><ul>{tips.map((x) => <li key={x}><span>{x}</span></li>)}</ul></div>}
+    </>
+  );
+}
+
+function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => {}, coachDiet = null }) {
   const [editing, setEditing] = useState(null);
   const [draft, setDraft] = useState({}); // cantidades cambiadas antes de apuntar la comida
   const [rest, setRest] = useState(false);
@@ -3121,7 +3177,10 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
   const setBread = (id) => { setBreadS(id); setDraft({}); try { localStorage.setItem("arc-pan", id); } catch { /* sin almacenamiento */ } };
   const withBread = (r) => (bread && FOODS[bread] && r.items.some(([f]) => BREAD_IDS.has(f)) ? { ...r, items: r.items.map(([f, q]) => [BREAD_IDS.has(f) ? bread : f, q]) } : r);
   const mode = profile.cook;
-  const t = useMemo(() => macroTargets(profile, rest), [profile, rest]);
+  const cd = coachDiet?.train?.length ? coachDiet : null; // dieta pautada por la coach
+  const cdMeals = cd ? (rest && cd.rest?.length ? cd.rest : cd.train) : null;
+  const tAuto = useMemo(() => macroTargets(profile, rest), [profile, rest]);
+  const t = cdMeals ? dietTargets(cdMeals) : tAuto;
   const plan = { ...MEAL_PLANS[profile.meals] };
   if (profile.trainTime === "early" && !rest) { plan.pre = 0.08; plan.desayuno -= 0.08; }
   const order = ["pre", "desayuno", "mediaManana", "comida", "merienda", "cena"].filter((id) => plan[id]);
@@ -3141,7 +3200,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
   const eatenTot = Object.values(eaten).reduce((a, e) => ({ p: a.p + (e.tot?.p || 0), c: a.c + (e.tot?.c || 0), f: a.f + (e.tot?.f || 0), kcal: a.kcal + (e.tot?.kcal || 0) }), { p: 0, c: 0, f: 0, kcal: 0 });
   const anyEaten = Object.keys(eaten).length > 0;
   const left = { kcal: t.kcal - eatenTot.kcal, p: t.p - eatenTot.p, c: t.c - eatenTot.c, f: t.f - eatenTot.f };
-  const totOf = (items) => { const x = items.reduce((a, it) => ({ p: a.p + (FOODS[it.food]?.p || 0) * it.g / 100, c: a.c + (FOODS[it.food]?.c || 0) * it.g / 100, f: a.f + (FOODS[it.food]?.f || 0) * it.g / 100 }), { p: 0, c: 0, f: 0 }); x.kcal = x.p * 4 + x.c * 4 + x.f * 9; return x; };
+  const totOf = (items) => { const m = (it, k) => (FOODS[it.food]?.[k] ?? it.k?.[k] ?? 0) * it.g / 100; const x = items.reduce((a, it) => ({ p: a.p + m(it, "p"), c: a.c + m(it, "c"), f: a.f + m(it, "f") }), { p: 0, c: 0, f: 0 }); x.kcal = x.p * 4 + x.c * 4 + x.f * 9; return x; };
   const dkey = (m) => `${m.id}:${m.recipe.id || m.recipe.name}`;
   const draftOf = (m) => draft[dkey(m)] || m.items.map((it) => ({ food: it.food, g: Math.round(it.g) }));
   const setDraftG = (m, food, g) => setDraft({ ...draft, [dkey(m)]: draftOf(m).map((it) => (it.food === food ? { ...it, g: Math.max(0, Number(g) || 0) } : it)) });
@@ -3157,7 +3216,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
     setEaten({ ...eaten, [id]: { ...e, items, tot: totOf(items) } });
   };
   const r0 = (n) => Math.round(n);
-  const day = meals.filter((m) => !m.empty).reduce((a, m) => ({ p: a.p + m.tot.p, c: a.c + m.tot.c, f: a.f + m.tot.f, kcal: a.kcal + m.tot.kcal }), { p: 0, c: 0, f: 0, kcal: 0 });
+  const day = cd ? t : meals.filter((m) => !m.empty).reduce((a, m) => ({ p: a.p + m.tot.p, c: a.c + m.tot.c, f: a.f + m.tot.f, kcal: a.kcal + m.tot.kcal }), { p: 0, c: 0, f: 0, kcal: 0 });
   return (
     <>
       <h1>Nutrición</h1>
@@ -3181,6 +3240,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
       </div>
 
       <NutriGuide />
+      {cd ? <CoachDiet meals={cdMeals} tips={cd.tips} eaten={eaten} setEaten={setEaten} totOf={totOf} /> : <>
       <h2>Tus comidas</h2>
       <div className="seg">{COOK_OPTS.map(([v, l]) => <button key={v} className={mode === v ? "on" : ""} onClick={() => setCook(v)}>{l}</button>)}</div>
       {profile.eatOut && <p className="hint" style={{ marginTop: 0 }}>Primero te salen las que aguantan bien en táper.</p>}
@@ -3231,8 +3291,9 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
         );
       })())}
       </div>
+      </>}
       <Extras eaten={eaten} setEaten={setEaten} totOf={totOf} />
-      <div className="note">Total del día: {Math.round(day.kcal)} kcal, {Math.round(day.p)} g de proteína, {Math.round(day.c)} g de hidratos y {Math.round(day.f)} g de grasas. Pesos en crudo salvo patata, legumbres y cremas, que van ya cocinadas.</div>
+      <div className="note">{cd ? "Tu plan del día" : "Total del día"}: {Math.round(day.kcal)} kcal, {Math.round(day.p)} g de proteína, {Math.round(day.c)} g de hidratos y {Math.round(day.f)} g de grasas. Pesos en crudo salvo patata, legumbres y cremas, que van ya cocinadas.</div>
 
       <h2>Suplementación</h2>
       <p className="sub">Información general, no una recomendación personal. La creatina monohidrato es el suplemento con más evidencia para ganar fuerza; en los estudios se usan 3–5 g al día. Antes de tomar cualquier suplemento, consúltalo con tu médico o farmacéutico, sobre todo si tomas medicación o tienes alguna enfermedad.</p>
@@ -4968,6 +5029,7 @@ function fromDb({ profile, sessions, habits, coach }) {
     nickname: profile.nickname, rankOptIn: profile.rank_opt_in && !!profile.nickname, savedLevel: profile.level,
     avatar: profile.avatar_url || null, avatarPending: profile.avatar_pending || null, profilePublic: profile.profile_public !== false,
     coachRoutine: coach?.routine || null,
+    coachDiet: coach?.diet || null,
   };
 }
 
@@ -5494,7 +5556,7 @@ function ArcApp({ user }) {
 
   const isCoach = state.role === "coach" || state.role === "admin";
   // Sin clave de RevenueCat o fuera del iPhone no se bloquea nada
-  const hasPremium = isCoach || !purchases.enabled || premium === true;
+  const hasPremium = isCoach || state.hasCoach || !purchases.enabled || premium === true; // las asesoradas lo tienen gratis
   useEffect(() => {
     if (!loaded || !purchases.enabled) return;
     purchases.init(user.id).then(setPremium).catch(() => setPremium(false));
@@ -5698,7 +5760,7 @@ function ArcApp({ user }) {
   } else if (tab === "ranking") {
     body = <Ranking me={{ optIn: !!state.rankOptIn, nickname: state.nickname, avatar: state.avatar, pending: state.avatarPending, isPublic: state.profilePublic !== false }} state={{ ...state, savedLevel: ev?.current ?? state.savedLevel }} api={rankApi} media={media} coach={coach} setMedia={setMedia} blocked={state.profile?.blocked || []} onBlock={(n) => setProfile({ blocked: [...new Set([...(state.profile?.blocked || []), n])] })} onUnblockAll={() => setProfile({ blocked: [] })} />;
   } else if (tab === "nutricion") {
-    body = <Nutrition profile={state.profile} setCook={(c) => setProfile({ cook: c })} media={media} eaten={(state.habits[dkey()] || {}).food || {}} setEaten={(v) => setHabit("food", v)} />;
+    body = <Nutrition coachDiet={state.coachDiet} profile={state.profile} setCook={(c) => setProfile({ cook: c })} media={media} eaten={(state.habits[dkey()] || {}).food || {}} setEaten={(v) => setHabit("food", v)} />;
   } else {
     body = <>{<Habits state={state} setHabit={setHabit} adh={adh} steps={native.isNative ? {
       available: native.platform === "android" || stepsAvail,
