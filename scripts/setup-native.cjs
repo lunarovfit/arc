@@ -17,6 +17,12 @@ if (fs.existsSync(manifest)) {
 
     <application`);
   }
+  // El plugin de salud declara muchos permisos; ARC solo lee los pasos. Quitamos el resto para Google Play.
+  if (!m.includes('tools:node="remove"')) {
+    if (!m.includes("xmlns:tools")) m = m.replace('<manifest xmlns:android="http://schemas.android.com/apk/res/android"', '<manifest xmlns:android="http://schemas.android.com/apk/res/android"\n    xmlns:tools="http://schemas.android.com/tools"');
+    const extra = ["READ_EXERCISE", "READ_DISTANCE", "READ_ACTIVE_CALORIES_BURNED", "READ_TOTAL_CALORIES_BURNED", "READ_FLOORS_CLIMBED", "READ_HEART_RATE", "READ_EXERCISE_ROUTE", "READ_WEIGHT", "READ_HEIGHT", "READ_BODY_FAT", "READ_LEAN_BODY_MASS", "READ_NUTRITION"];
+    m = m.replace('<uses-permission android:name="android.permission.health.READ_STEPS" />', '<uses-permission android:name="android.permission.health.READ_STEPS" />\n' + extra.map((x) => `    <uses-permission android:name="android.permission.health.${x}" tools:node="remove" />`).join("\n"));
+  }
   if (!m.includes("PermissionsRationaleActivity")) {
     m = m.replace(/<\/application>/, `    <!-- Health Connect: pantalla de "por qué pedimos este permiso" -->
         <activity
