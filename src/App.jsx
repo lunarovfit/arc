@@ -1167,6 +1167,12 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .dgrid{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:3px;aspect-ratio:9/16;max-height:52vh;margin:0 auto;background:#000;border-radius:14px;overflow:hidden}
 .dslot .dex{font-style:normal;font-size:10.5px;line-height:1.3;color:var(--dm);text-align:center;padding:0 10px;opacity:.8}
 .dbadge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(10,10,12,.85);border-left:3px solid var(--ac);border-radius:8px;padding:6px 10px;pointer-events:none;white-space:nowrap}
+.dslot{position:relative}
+.dslot .dwk{position:absolute;left:0;right:0;bottom:18%;padding:22px 9px 8px;display:flex;flex-direction:column;gap:1px;text-align:left;background:linear-gradient(transparent,rgba(0,0,0,.85));pointer-events:none}
+.dslot .dwk{align-items:flex-start}
+.dslot .dwk small{font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#D48B92}
+.dslot .dwk b{font-size:13px;font-weight:800;color:#fff;line-height:1.15}
+.dslot .dwk em{font-style:normal;font-size:9.5px;color:rgba(255,255,255,.8)}
 .dbadge small{display:block;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--dm);font-weight:700}
 .dbadge b{font-size:20px;font-weight:800}
 .dbadge em{font-style:normal;font-size:11px;color:var(--dm);font-weight:600}
@@ -2088,7 +2094,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
 
       <DayStoryCard onOpen={() => setDayStory(true)} />
       {shareSteps && <StepsShareSheet habits={state.habits} nick={state.nickname} onClose={() => setShareSteps(false)} onDay={() => { setShareSteps(false); setDayStory(true); }} />}
-      {dayStory && <DayStorySheet habits={state.habits} onClose={() => setDayStory(false)} />}
+      {dayStory && <DayStorySheet habits={state.habits} sessions={state.sessions} onClose={() => setDayStory(false)} />}
       {ev.next ? (
         <details className="fold">
           <summary><span>¿Cómo subo de nivel?</span><i aria-hidden="true">+</i></summary>
@@ -3220,7 +3226,7 @@ function Habits({ state, setHabit, adh, steps }) {
         <StepsWeek habits={state.habits} />
         <DayStoryCard onOpen={() => setDayStory(true)} />
         {shareSteps && <StepsShareSheet habits={state.habits} nick={state.nickname} onClose={() => setShareSteps(false)} onDay={() => { setShareSteps(false); setDayStory(true); }} />}
-        {dayStory && <DayStorySheet habits={state.habits} onClose={() => setDayStory(false)} />}
+        {dayStory && <DayStorySheet habits={state.habits} sessions={state.sessions} onClose={() => setDayStory(false)} />}
         {steps && steps.source !== "Apple Salud" && steps.available && (steps.linked
           ? <div className="chips" style={{ marginTop: 10 }}>
               <button className="chip" disabled={steps.busy} onClick={steps.sync}>{steps.busy ? "Leyendo pasos…" : "Actualizar pasos del móvil"}</button>
@@ -4232,7 +4238,40 @@ async function drawStepsCard({ kind, steps, week, goal, photo, nick }) {
 }
 // Historia "Mi día": cuatro fotos en cuadrícula y los pasos del día en el centro
 const DAY_SLOTS = [["food", "Comida", "Tu desayuno, tu táper o esa receta nueva"], ["free", "Lo que quieras", "La serie que estás viendo, tu escritorio o tu outfit"], ["gym", "Gym / pump", "Foto del pump, tu máquina favorita o el espejo"], ["more", "Otra foto", "Otra comida, un paseo o tu rest day"]];
-async function drawDayStory({ photos, steps }) {
+// Entreno de hoy (el último que terminaste hoy) en versión mini para la historia
+function todayWorkout(sessions = []) {
+  const t = new Date().toDateString();
+  const s = [...sessions].reverse().find((x) => new Date(x.date).toDateString() === t);
+  if (!s) return null;
+  const groups = [...new Set((s.exercises || []).map((e) => EXERCISES[e.exId]?.group).filter(Boolean))].slice(0, 3);
+  const done = (s.exercises || []).reduce((a, e) => a + (e.sets || []).filter((x) => x.done !== false).length, 0);
+  return { name: s.dayName || "Entreno", groups, volume: Math.round(s.volume || 0), sets: s.sets || done, min: Math.round((s.dur || 0) / 60) };
+}
+function drawWorkoutTile(x, wk, px, py, cw, ch) {
+  // el bloque acaba por encima de la etiqueta de pasos del centro
+  const L = px + 40, maxW = cw - 80, end = py + ch - 140;
+  x.font = `800 48px ${SHARE_FONT}`;
+  const words = wk.name.split(" "), lines = [""];
+  for (const w of words) { const t = lines[lines.length - 1] ? lines[lines.length - 1] + " " + w : w; if (x.measureText(t).width <= maxW || !lines[lines.length - 1]) lines[lines.length - 1] = t; else lines.push(w); }
+  const nl = lines.slice(0, 2); if (lines.length > 2) nl[1] = nl[1] + "…";
+  const top = end - 66 - (wk.groups.length ? 44 : 0) - nl.length * 56 - 44;
+  const g = x.createLinearGradient(0, top - 120, 0, end + 40);
+  g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(0.35, "rgba(0,0,0,.6)"); g.addColorStop(1, "rgba(0,0,0,.9)");
+  x.fillStyle = g; x.fillRect(px, top - 120, cw, py + ch - (top - 120));
+  let y = top;
+  x.fillStyle = "#D48B92"; x.font = `800 24px ${SHARE_FONT}`; spaced(x, "ENTRENO DE HOY", L, y, 3);
+  x.fillStyle = "#fff"; x.font = `800 48px ${SHARE_FONT}`;
+  for (const ln of nl) { y += 56; x.fillText(ln, L, y); }
+  if (wk.groups.length) { y += 44; x.fillStyle = "rgba(255,255,255,.75)"; x.font = `600 26px ${SHARE_FONT}`; let gt = wk.groups.join(" · "); while (x.measureText(gt).width > maxW && gt.length > 4) gt = gt.slice(0, -2) + "…"; x.fillText(gt, L, y); }
+  y += 66; const stats = [[fmtN(wk.volume), "kg"], [String(wk.sets), "series"], ...(wk.min ? [[String(wk.min), "min"]] : [])];
+  let sx = L;
+  for (const [v, u] of stats) {
+    x.fillStyle = "#fff"; x.font = `800 42px ${SHARE_FONT}`; x.fillText(v, sx, y); const vw = x.measureText(v).width;
+    x.fillStyle = "rgba(255,255,255,.7)"; x.font = `600 22px ${SHARE_FONT}`; x.fillText(" " + u, sx + vw, y);
+    sx += vw + x.measureText(" " + u).width + 26;
+  }
+}
+async function drawDayStory({ photos, steps, workout }) {
   const W = 1080, H = 1920, gap = 6, cw = (W - gap) / 2, ch = (H - gap) / 2;
   try { await document.fonts?.load(`800 90px ${SHARE_FONT}`); } catch (e) { /* fuente del sistema */ }
   const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
@@ -4244,6 +4283,7 @@ async function drawDayStory({ photos, steps }) {
     x.fillStyle = "#111"; x.fillRect(px, py, cw, ch);
     const img = await loadImg(photos[k]);
     if (img) { const r = Math.max(cw / img.width, ch / img.height), w = img.width * r, h = img.height * r; x.drawImage(img, px + (cw - w) / 2, py + (ch - h) / 2, w, h); }
+    if (workout && k === "free") drawWorkoutTile(x, workout, px, py, cw, ch);
     x.restore();
   }
   // pasos en el centro, como la etiqueta de Salud
@@ -4317,27 +4357,42 @@ function StepsShareSheet({ habits, nick, onClose, onDay }) {
   );
 }
 
-function DayStorySheet({ habits, onClose }) {
+function DayStorySheet({ habits, sessions = [], onClose }) {
   const [photos, setPhotos] = useState({});
+  const wk = useMemo(() => todayWorkout(sessions), [sessions]);
+  const [withWk, setWithWk] = useState(!!wk);
+  const workout = withWk && wk ? wk : null;
   const [slot, setSlot] = useState(null);
   const [url, setUrl] = useState(null);
   const ref = useRef(null);
   const week = stepsWeekData(habits), steps = week[6].v;
   const ready = DAY_SLOTS.every(([k]) => photos[k]);
   const sh = useShareImg(url, "arc-mi-dia.png");
-  useEffect(() => { let on = true; setUrl(null); drawDayStory({ photos, steps }).then((u) => on && setUrl(u)); return () => { on = false; }; }, [photos]);
+  useEffect(() => { let on = true; setUrl(null); drawDayStory({ photos, steps, workout }).then((u) => on && setUrl(u)); return () => { on = false; }; }, [photos, withWk]);
   const pick = (k) => { setSlot(k); setTimeout(() => ref.current?.click(), 0); };
   return (
     <div className="modal shr" onClick={onClose}>
       <div className="box" onClick={(e) => e.stopPropagation()}>
         <h1 style={{ fontSize: 20 }}>Tu día en una historia</h1>
         <p className="sub" style={{ margin: "-4px 0 10px" }}>Toca cada hueco para poner tu foto. Tus pasos de hoy van en el centro.</p>
+        <div className="field" style={{ marginBottom: 10 }}><label>Arriba a la derecha</label>
+          <div className="chips">
+            <button className={`chip ${!workout ? "on" : ""}`} onClick={() => setWithWk(false)}>Foto libre</button>
+            <button className={`chip ${workout ? "on" : ""}`} disabled={!wk} onClick={() => setWithWk(true)}>Mi entreno de hoy</button>
+          </div>
+          {!wk && <div className="hint">Cuando termines un entreno hoy, podrás ponerlo aquí con su volumen y una foto.</div>}
+        </div>
         <div className="dgrid">
-          {DAY_SLOTS.map(([k, label, ex]) => (
-            <button key={k} className={`dslot ${photos[k] ? "has" : ""}`} onClick={() => pick(k)} aria-label={`Foto: ${label}`}>
-              {photos[k] ? <img src={photos[k]} alt="" /> : <span><b>+</b>{label}<em className="dex">{ex}</em></span>}
-            </button>
-          ))}
+          {DAY_SLOTS.map(([k, label, ex]) => {
+            const isWk = workout && k === "free";
+            const lb = isWk ? "Foto de tu entreno" : label, exT = ex;
+            return (
+              <button key={k} className={`dslot ${photos[k] ? "has" : ""}`} onClick={() => pick(k)} aria-label={`Foto: ${lb}`}>
+                {photos[k] ? <img src={photos[k]} alt="" /> : <span style={isWk ? { marginTop: "-40%" } : undefined}><b>+</b>{lb}{!isWk && <em className="dex">{exT}</em>}</span>}
+                {isWk && <span className="dwk"><small>Entreno de hoy</small><b>{workout.name}</b><em>{fmtN(workout.volume)} kg · {workout.sets} series{workout.min ? ` · ${workout.min} min` : ""}</em></span>}
+              </button>
+            );
+          })}
           <div className="dbadge" aria-hidden="true"><small>Pasos de hoy</small><b>{fmtN(steps)}<em> pasos</em></b></div>
         </div>
         <PhotoInput inputRef={ref} onPhoto={(u) => setPhotos((p) => ({ ...p, [slot]: u }))} onErr={sh.setErr} />
