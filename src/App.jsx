@@ -1289,6 +1289,13 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .pick.bread img,.pick.bread .pimg{outline:2px solid transparent;outline-offset:-2px;transition:outline-color .15s}
 .pick.bread.on img,.pick.bread.on .pimg{outline-color:var(--ac)}
 .pick.bread.on b{color:var(--ac)}
+.ttabs-wrap{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;margin-top:6px}
+.ttabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.tshot{width:min(72%,260px);aspect-ratio:600/750;border-radius:22px;overflow:hidden;border:6px solid #141415;outline:1px solid var(--ln);background:#000;box-shadow:0 18px 50px rgba(0,0,0,.6)}
+.tshot img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;animation:tfade .35s ease}
+.tshot-ic{display:grid;place-items:center;font-size:64px}
+.ttab-t{font-size:17px}
+@keyframes tfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .tour-nav{width:100%;display:flex;justify-content:space-between;align-items:center;margin-top:4px;min-height:24px}
 .want-opts{display:flex;flex-direction:column;gap:10px}
 .want-opt{display:flex;flex-direction:column;gap:4px;text-align:left;padding:14px;border-radius:14px;background:var(--sf2);border:1.5px solid var(--ln);color:inherit;font:inherit;cursor:pointer}
@@ -1560,8 +1567,8 @@ button.rkrow{width:100%;background:none;border:0;border-bottom:1px solid var(--l
 textarea.in{resize:vertical;line-height:1.5}
 .tour{min-height:calc(100vh - 120px);display:flex;flex-direction:column}
 .tour-dots{display:flex;gap:6px;margin-top:4px}
-.tour-dots i{height:4px;flex:1;border-radius:4px;background:var(--ln)}
-.tour-dots i.on{background:var(--ac)}
+.tour-dots button{height:16px;flex:1;border:0;padding:6px 0;border-radius:4px;background:var(--ln);background-clip:content-box;cursor:pointer}
+.tour-dots button.on{background:var(--ac);background-clip:content-box}
 .tour-h{font-size:30px;margin:28px 0 14px}
 .tour-p{font-size:17px;line-height:1.5;margin:0 0 12px}
 .tour-p.dim{color:var(--dm);font-size:15px}
@@ -4643,8 +4650,7 @@ function useLevelUp(profile, ev, media, setProfile) {
 // Muro de fotos de recetas que se mueve solo (tutorial)
 function FoodWall({ profile, media }) {
   const pics = byTaste(RECIPES, profile).map((r) => ({ src: recImg(media, r.id), name: r.name })).filter((x) => x.src);
-  const n = RECIPES.length;
-  if (!pics.length) return <p className="tour-p">Tienes {n} recetas que se ajustan solas a tus macros.</p>;
+  if (!pics.length) return <p className="tour-p">Recetas reales que se ajustan solas a tus macros.</p>;
   const rows = [0, 1, 2].map((k) => { const r = pics.filter((_, i) => i % 3 === k); return r.length ? r : pics; });
   return (
     <>
@@ -4655,9 +4661,24 @@ function FoodWall({ profile, media }) {
           </div>
         ))}
       </div>
-      <p className="tour-p">{n} recetas reales que se ajustan solas a tus macros: tú eliges si quieres algo de 5 minutos o cocinar con calma.</p>
+      <p className="tour-p">Recetas reales que se ajustan solas a tus macros: tú eliges si quieres algo de 5 minutos o cocinar con calma.</p>
       <p className="tour-p dim">{profile.likes?.length ? "Te saldrán primero las que llevan lo que más te gusta." : "Puedes cambiar de plato en cada comida con un toque."}</p>
     </>
+  );
+}
+
+// Pestañas del tutorial: cada una con su captura de la app
+function TourTabs({ tabs }) {
+  const [k, setK] = useState(0);
+  const t = tabs[k];
+  return (
+    <div className="ttabs-wrap">
+      <div className="ttabs" role="tablist">{tabs.map((x, i) => <button key={x.label} role="tab" aria-selected={i === k} className={`chip ${i === k ? "on" : ""}`} onClick={() => setK(i)}>{x.label}</button>)}</div>
+      {t.img ? <div className="tshot"><img src={t.img} alt="" /></div> : <div className="tshot tshot-ic" aria-hidden="true">🏆</div>}
+      <b className="ttab-t">{t.title}</b>
+      <p className="tour-p" style={{ marginTop: 4 }}>{t.text}</p>
+      {k < tabs.length - 1 && <button className="link" style={{ fontSize: 13 }} onClick={() => setK(k + 1)}>Ver {tabs[k + 1].label.toLowerCase()} ›</button>}
+    </div>
   );
 }
 
@@ -4702,36 +4723,27 @@ function Tour({ profile, ev, heroImg, perms, onFinish, media = {} }) {
     },
     {
       title: "Tus entrenos",
-      body: (
-        <div className="tour-list">
-          <div><b>Tu rutina, hecha para ti</b><span>En Entrenos ves qué te toca hoy y tu semana. Puedes cambiar los días o apuntar tu propia rutina.</span></div>
-          <div><b>Apunta cada serie</b><span>Kilos, repeticiones y RIR (las que te quedaban en la recámara), con temporizador de descanso.</span></div>
-          <div><b>Te avisa cuando toca subir</b><span>Si te sobran repeticiones, ARC te dice que subas peso y te marca tus récords.</span></div>
-          <div><b>Técnica en vídeo</b><span>Toca un ejercicio para verlo grabado en el gym, con una explicación sencilla y un truquito.</span></div>
-        </div>
-      ),
+      body: <TourTabs key="ent" tabs={[
+        { label: "Rutina", img: "/tour/rutina.jpg", title: "Tu rutina, hecha para ti", text: "En Entrenos ves qué te toca hoy y tu semana. Puedes cambiar los días o apuntar tu propia rutina." },
+        { label: "Series", img: "/tour/series.jpg", title: "Apunta cada serie", text: "Kilos, repeticiones y RIR, con temporizador de descanso. Si te sobran repeticiones, ARC te dice que subas peso." },
+        { label: "Técnica", img: "/tour/tecnica.jpg", title: "Técnica en vídeo", text: "Toca un ejercicio para verlo grabado en el gym, con una explicación sencilla y un truquito." },
+      ]} />,
     },
     {
       title: "Tus comidas",
-      body: (
-        <div className="tour-list">
-          <div><b>Calorías y macros para ti</b><span>Arriba ves lo que te queda del día. Cambia entre día de entreno y de descanso.</span></div>
-          <div><b>Recetas a tu medida</b><span>Las cantidades ya están ajustadas. ¿No te apetece? Toca «Otra receta».</span></div>
-          <div><b>Apunta lo que comes</b><span>«Me la he comido» y, si comiste otra cantidad, «Cambiar cantidades». Los picoteos también cuentan: apúntalos en «Picoteos y extras».</span></div>
-          <div><b>Elige tu pan y tus productos</b><span>En las recetas con pan eliges cuál usas y se recalcula todo. Y tienes productos del Mercadona y consejos para hacer la compra.</span></div>
-        </div>
-      ),
+      body: <TourTabs key="com" tabs={[
+        { label: "Macros", img: "/tour/macros.jpg", title: "Calorías y macros para ti", text: "Arriba ves lo que te queda del día. Apunta lo que comes con «Me la he comido», y también los picoteos." },
+        { label: "Recetas", img: "/tour/pan.jpg", title: "Recetas a tu medida", text: "Las cantidades ya están ajustadas. Cambia de receta, elige tu pan y ajusta los gramos antes de apuntarla." },
+        { label: "Guía", img: "/tour/guia.jpg", title: "Tu guía de nutrición", text: "Compra, pan, hidratación, cafeína, proteína y comer fuera, con productos reales del súper." },
+      ]} />,
     },
     {
       title: "Hábitos y compartir",
-      body: (
-        <div className="tour-list">
-          <div><b>Pasos solos</b><span>Se leen del móvil (Salud en iPhone, Health Connect en Android). No se pueden escribir a mano.</span></div>
-          <div><b>Agua y sueño</b><span>Con 2 de los 3 hábitos cumplidos, el día cuenta para tu racha.</span></div>
-          <div><b>Presume tu progreso</b><span>Crea historias para Instagram con tus récords, tu entreno, tus pasos o tu día en cuatro fotos.</span></div>
-          <div><b>Recordatorios y ranking</b><span>Te avisamos para entrenar o presumir tu día, y cada semana hay ranking: gana la constancia, no los kilos.</span></div>
-        </div>
-      ),
+      body: <TourTabs key="hab" tabs={[
+        { label: "Pasos", img: "/tour/pasos.jpg", title: "Pasos, agua y sueño", text: "Los pasos se leen solos del móvil. Con 2 de los 3 hábitos cumplidos, el día cuenta para tu racha." },
+        { label: "Historias", img: "/tour/historia.jpg", title: "Presume en Instagram", text: "Crea historias con tus récords, tu entreno, tus pasos o tu día en cuatro fotos." },
+        { label: "Ranking", img: null, title: "Recordatorios y ranking", text: "Te avisamos para entrenar o presumir tu día, y cada semana hay ranking: gana la constancia, no los kilos." },
+      ]} />,
     },
     {
       title: profile.mode === "simple" ? "Hoy empiezas" : "Hoy empieza tu arco",
@@ -4767,9 +4779,10 @@ function Tour({ profile, ev, heroImg, perms, onFinish, media = {} }) {
   }
   const s = slides[i];
   const last = i === slides.length - 1;
+  const touchX = useRef(null);
   return (
-    <div className="tour">
-      <div className="tour-dots" aria-hidden="true">{slides.map((_, k) => <i key={k} className={k === i ? "on" : ""} />)}</div>
+    <div className="tour" onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }} onTouchEnd={(e) => { const dx = e.changedTouches[0].clientX - (touchX.current ?? e.changedTouches[0].clientX); touchX.current = null; if (dx < -60 && !last) setI(i + 1); else if (dx > 60 && i > 0) setI(i - 1); }}>
+      <div className="tour-dots">{slides.map((_, k) => <button key={k} className={k === i ? "on" : ""} aria-label={`Ir a la pantalla ${k + 1}`} onClick={() => setI(k)} />)}</div>
       {s.img && <div className="hero" style={{ marginTop: 18, aspectRatio: "1/1" }}><img src={s.img} alt={lv.name} /></div>}
       <h1 className="tour-h">{s.title}</h1>
       {s.body}
