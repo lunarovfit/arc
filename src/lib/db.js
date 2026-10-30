@@ -103,6 +103,31 @@ export async function uploadAvatar(userId, blob) {
 export const clearAvatar = (nick) => supabase.rpc("clear_avatar", { nick }).then(must);
 export const avatarOf = (nick) => supabase.rpc("avatar_of", { nick }).then(must);
 
+// ---------- Amigos ----------
+const rpc = (fn, args) => supabase.rpc(fn, args).then(must);
+export const social = {
+  setNick: (nick) => rpc("set_my_nickname", { nick }),
+  search: (q) => rpc("search_people", { q }),
+  list: () => rpc("friends_list"),
+  request: (nick) => rpc("friend_request", { nick }),
+  respond: (nick, accept) => rpc("friend_respond", { nick, accept }),
+  remove: (nick) => rpc("friend_remove", { nick }),
+  block: (nick) => rpc("block_user", { nick }),
+  unblockAll: () => rpc("unblock_all"),
+  feed: (before) => rpc("friends_feed", { before: before || null, lim: 20 }),
+  like: (sid) => rpc("toggle_like", { sid }),
+  comments: (sid) => rpc("session_comments", { sid }),
+  comment: (sid, txt) => rpc("add_comment", { sid, txt }),
+  delComment: (cid) => rpc("delete_comment", { cid }),
+  reportComment: (cid, why) => rpc("report_comment", { cid, why }),
+  hideComment: (cid) => rpc("hide_comment", { cid }),
+  tag: (sid, nicks) => rpc("tag_session", { sid, nicks }),
+  notifs: () => rpc("my_notifications", { lim: 40 }),
+  unread: () => rpc("unread_notifications"),
+  markRead: () => rpc("mark_notifications_read"),
+  setShare: (userId, patch) => supabase.from("profiles").update(patch).eq("id", userId).then(must),
+};
+
 // ---------- Asesoradas (solo coach) ----------
 export const listClients = () => supabase.from("coach_clients").select("*").order("created_at", { ascending: true }).then(must);
 export const addClient = (name, email) => supabase.from("coach_clients").insert({ name, email }).select().single().then(must);

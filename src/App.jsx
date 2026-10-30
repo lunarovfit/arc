@@ -1653,6 +1653,67 @@ select.in{appearance:none}
 @keyframes burst{0%{transform:translate(-50%,-50%) scale(.2);opacity:0}25%{opacity:1}100%{transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1) rotate(90deg);opacity:0}}
 }
 @media (prefers-reduced-motion:reduce){.splash{display:none}.lvup-spark{display:none}}
+/* amigos */
+.fr-top{display:flex;gap:10px;align-items:center;margin:4px 0 6px}
+.fr-bell{position:relative;width:44px;height:44px;flex:none;border-radius:50%;background:var(--sf);border:1px solid var(--ln);color:var(--tx);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.fr-bell i{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;border-radius:9px;background:var(--ac);color:#000;font-style:normal;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.fr-hero{background:var(--sf);border:1px solid var(--ln);border-radius:20px;padding:22px 18px;text-align:center;margin:10px 0 16px}
+.fr-hero p{margin:12px 0 0;color:var(--dm)}
+.fr-hero-av{display:flex;justify-content:center}
+.fr-hero-av span{width:46px;height:46px;border-radius:50%;border:2px solid var(--bg);background:linear-gradient(135deg,var(--ac),#F5C76B);margin:0 -7px}
+.fr-hero-av span:nth-child(2){background:linear-gradient(135deg,#6EE7B7,#3B82F6);transform:translateY(-6px)}
+.fr-hero-av span:nth-child(3){background:linear-gradient(135deg,#F5B454,#D48B92)}
+.fr-req{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:12px 12px 4px;margin:10px 0}
+.fr-req .rkrow{border-bottom:0}
+.fr-row{display:flex;gap:14px;overflow-x:auto;padding:10px 2px 6px;margin:4px -2px 6px;scrollbar-width:none}
+.fr-row::-webkit-scrollbar{display:none}
+.fr-row button{background:none;border:0;color:var(--tx);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex:none;width:64px;font:inherit}
+.fr-row small{font-size:11.5px;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fr-row em{font-style:normal;font-size:10.5px;color:var(--dm)}
+.fr-card{background:var(--sf);border:1px solid var(--ln);border-radius:20px;padding:14px 14px 10px;margin:12px 0;animation:rise .35s ease-out both}
+.fr-card.sk{height:220px;opacity:.5;animation:none}
+.fr-card header{display:flex;align-items:center}
+.fr-who{display:flex;align-items:center;gap:10px;background:none;border:0;color:var(--tx);font:inherit;text-align:left;cursor:pointer;padding:0;min-width:0}
+.fr-who span{display:flex;flex-direction:column;min-width:0}
+.fr-who small{color:var(--dm);font-size:12px;font-weight:400}
+.fr-card h3{margin:12px 0 2px;font-size:18px}
+.fr-tags{margin:0 0 4px;font-size:13px;color:var(--dm)}
+.fr-at{color:var(--ac);font-weight:700}
+.fr-stats{display:flex;gap:8px;margin:10px 0}
+.fr-stats div{flex:1;background:var(--sf2);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column}
+.fr-stats b{font-size:17px}
+.fr-stats span{font-size:11px;color:var(--dm)}
+.fr-ex{list-style:none;margin:6px 0 4px;padding:0}
+.fr-ex li{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--ln);font-size:14px}
+.fr-ex li:last-child{border-bottom:0}
+.fr-ex small{color:var(--dm);text-align:right;flex:none}
+.fr-notes{margin-top:8px;border-left:2px solid var(--ac);padding-left:10px}
+.fr-notes p{margin:4px 0;font-size:13px;color:var(--dm)}
+.fr-card footer{display:flex;gap:6px;margin-top:8px;border-top:1px solid var(--ln);padding-top:8px}
+.fr-act{display:flex;align-items:center;gap:6px;background:none;border:0;color:var(--dm);font:inherit;font-size:14px;padding:6px 10px;border-radius:999px;cursor:pointer}
+.fr-act.on{color:#F5B454}
+.fr-act.pop svg{animation:frpop .5s cubic-bezier(.2,.9,.3,1.6)}
+@keyframes frpop{0%{transform:scale(1)}40%{transform:scale(1.5) rotate(-8deg)}100%{transform:scale(1)}}
+.fr-tagbtn{margin-left:auto;border:1px solid var(--ln)}
+.fr-tagpick{margin-top:8px}
+.fr-com .fr-clist{max-height:45vh;overflow:auto}
+.fr-c{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--ln)}
+.fr-c>div{flex:1;min-width:0;font-size:14px}
+.fr-c small{color:var(--dm);font-size:11.5px}
+.fr-c p{margin:3px 0 0;word-wrap:break-word}
+.fr-menu{background:var(--sf2);border:1px solid var(--ln);border-radius:14px;padding:12px;margin:10px 0}
+.fr-sugg{margin:8px 0 0}
+.fr-input{display:flex;gap:8px;margin-top:12px;background:var(--sf2);border:1px solid var(--ln);border-radius:999px;padding:4px 4px 4px 14px}
+.fr-input input{flex:1;min-width:0;background:none;border:0;color:var(--tx);font:inherit;font-size:15px;outline:none}
+.fr-input button{background:#fff;color:#000;border:0;border-radius:999px;font:inherit;font-weight:700;font-size:13px;padding:9px 14px;cursor:pointer}
+.fr-input button:disabled{opacity:.4}
+.fr-n{display:flex;gap:10px;align-items:flex-start;padding:10px 6px;border-bottom:1px solid var(--ln);font-size:14px;border-radius:10px}
+.fr-n.new{background:rgba(212,139,146,.08)}
+.fr-n p{margin:0}
+.fr-n small{color:var(--dm);font-size:11.5px}
+.fr-n .dm{color:var(--dm)}
+.fr-nb{color:var(--dm);font-size:13px;margin-top:3px!important}
+
 `;
 
 const LOGO_D = "M1292.5 1869.4C1169.3 1859.0 1054.2 1814.9 953.7 1739.6C905.0 1703.1 856.6 1654.0 818.8 1602.7C809.6 1590.2 787.9 1558.3 783.0 1550.1C781.5 1547.6 777.9 1541.7 775.0 1537.0C772.1 1532.3 768.4 1526.0 766.7 1523.0C765.1 1520.0 762.9 1516.4 762.0 1515.0C761.1 1513.6 757.5 1507.3 754.0 1501.0C750.5 1494.7 746.9 1488.2 746.0 1486.5C745.1 1484.8 742.4 1479.9 740.0 1475.5C737.7 1471.1 735.4 1467.0 735.0 1466.5C734.6 1466.0 732.7 1462.6 730.8 1459.0C721.7 1442.2 719.3 1438.0 714.7 1430.5C698.0 1403.7 685.1 1387.1 667.0 1368.9C650.0 1351.8 628.7 1335.3 608.5 1323.5C598.2 1317.5 574.9 1306.4 564.0 1302.3C561.0 1301.1 555.4 1299.0 551.5 1297.5C524.5 1287.1 477.9 1275.7 439.0 1270.0C435.4 1269.4 429.8 1268.6 426.5 1268.0C423.2 1267.5 415.1 1266.4 408.5 1265.5C401.9 1264.7 393.1 1263.5 389.0 1263.0C375.5 1261.3 350.3 1258.6 332.5 1257.0C325.9 1256.4 316.4 1255.5 311.5 1255.0C306.6 1254.5 296.2 1253.6 288.5 1253.0C265.3 1251.1 262.5 1250.7 262.5 1249.0C262.5 1247.3 265.0 1247.0 288.0 1245.0C295.4 1244.4 304.9 1243.5 309.0 1243.0C313.1 1242.5 321.7 1241.6 328.0 1241.0C334.3 1240.4 343.1 1239.5 347.5 1239.0C351.9 1238.5 360.0 1237.6 365.5 1237.0C394.5 1233.9 422.2 1229.3 457.5 1221.9C461.4 1221.1 463.3 1220.6 480.5 1216.0C496.7 1211.7 527.6 1200.8 541.0 1194.8C543.5 1193.7 547.5 1191.9 550.0 1190.8C552.5 1189.7 558.1 1187.0 562.5 1184.8C569.9 1181.1 573.5 1179.1 586.0 1172.2C593.5 1168.1 621.1 1149.6 627.5 1144.4C663.9 1114.9 697.7 1078.2 719.2 1045.0C727.9 1031.5 736.5 1017.8 739.0 1013.5C745.3 1002.6 774.1 958.7 788.2 938.5C802.4 918.1 833.8 877.9 846.0 864.5C908.6 795.7 955.1 757.1 1027.0 714.2C1060.2 694.4 1106.7 673.3 1147.5 659.3C1191.1 644.5 1240.0 633.7 1287.5 628.6C1390.4 617.4 1499.9 633.3 1596.0 673.4C1615.3 681.5 1640.2 693.3 1650.5 699.2C1653.8 701.1 1660.1 704.6 1664.5 707.0C1677.9 714.2 1705.6 732.3 1723.9 745.9C1753.9 768.1 1789.2 801.0 1813.8 829.5C1839.1 858.9 1864.0 894.8 1885.5 932.8C1890.0 940.8 1891.0 943.4 1890.1 944.3C1888.8 945.6 1887.4 944.2 1871.5 926.7C1862.3 916.4 1832.2 888.2 1820.5 878.8C1800.4 862.7 1776.4 846.1 1754.5 833.1C1742.7 826.0 1704.7 806.6 1694.0 802.1C1638.5 778.7 1600.9 768.8 1548.0 763.6C1513.1 760.1 1476.4 760.9 1441.5 765.9C1429.3 767.6 1409.4 771.4 1399.2 773.9C1396.9 774.5 1393.3 775.4 1391.2 775.9C1380.3 778.5 1356.6 785.7 1349.0 788.7C1348.2 789.0 1344.1 790.5 1340.0 792.0C1320.5 798.9 1277.6 819.4 1260.5 829.9C1256.7 832.3 1252.2 835.0 1250.5 836.0C1217.8 854.9 1178.9 885.8 1146.1 919.0C1105.5 960.0 1075.2 1001.9 1050.6 1051.0C1029.3 1093.6 1015.9 1132.3 1007.1 1176.5C997.8 1223.6 997.8 1276.7 1007.1 1325.0C1015.1 1366.6 1028.5 1406.1 1047.5 1444.2C1059.9 1469.0 1084.4 1507.2 1102.2 1529.6C1134.0 1569.7 1175.5 1608.2 1219.9 1639.0C1225.3 1642.8 1243.4 1654.1 1252.0 1659.1C1256.1 1661.5 1260.8 1664.2 1262.5 1665.2C1267.9 1668.3 1301.3 1684.5 1307.5 1687.0C1308.6 1687.4 1311.2 1688.6 1313.3 1689.5C1316.8 1691.0 1323.3 1693.5 1339.0 1699.2C1344.3 1701.1 1353.8 1704.1 1360.8 1706.1C1362.5 1706.6 1365.5 1707.4 1367.2 1707.9C1388.1 1713.9 1419.2 1720.0 1444.0 1722.9C1469.0 1725.9 1476.9 1726.3 1505.5 1726.3C1533.9 1726.3 1543.9 1725.7 1566.5 1722.9C1579.8 1721.2 1597.1 1718.5 1603.5 1717.0C1614.8 1714.5 1616.9 1714.0 1622.0 1712.9C1626.9 1711.8 1634.8 1709.8 1645.0 1707.0C1653.8 1704.5 1672.3 1698.7 1676.5 1697.0C1677.6 1696.6 1683.5 1694.3 1689.5 1691.9C1695.5 1689.6 1703.3 1686.4 1706.8 1684.8C1710.2 1683.3 1713.2 1682.0 1713.5 1682.0C1713.9 1682.0 1734.2 1672.4 1743.0 1668.1C1757.3 1660.9 1786.1 1644.0 1802.9 1632.7C1815.0 1624.7 1842.4 1604.3 1852.0 1596.1C1867.3 1583.2 1882.3 1569.7 1894.1 1558.3C1901.0 1551.5 1907.2 1546.0 1907.9 1546.0C1908.5 1546.0 1909.0 1546.8 1909.0 1547.8C1909.0 1552.1 1859.5 1622.3 1845.2 1638.2C1842.6 1641.1 1836.8 1647.8 1832.5 1653.0C1816.3 1672.3 1783.1 1704.4 1758.5 1724.6C1710.8 1763.6 1650.2 1798.3 1586.6 1822.9C1521.7 1848.0 1463.5 1862.3 1400.5 1868.6C1376.9 1870.9 1315.6 1871.4 1292.5 1869.4ZM1482.2 1560.8C1481.6 1560.1 1480.2 1552.5 1479.0 1544.0C1476.1 1522.4 1469.7 1490.9 1463.8 1469.1C1452.6 1427.3 1437.3 1394.1 1416.1 1365.0C1390.9 1330.5 1350.1 1301.1 1305.0 1285.2C1300.3 1283.5 1294.9 1281.7 1293.0 1281.1C1291.1 1280.5 1287.5 1279.4 1285.0 1278.6C1282.5 1277.8 1275.5 1276.0 1269.5 1274.6C1250.7 1270.1 1251.5 1270.2 1233.5 1267.0C1215.3 1263.7 1210.9 1263.1 1177.0 1259.0C1156.3 1256.5 1144.8 1255.2 1121.0 1253.0C1114.7 1252.4 1105.7 1251.5 1101.0 1251.0C1093.0 1250.1 1070.6 1248.2 1063.0 1247.7C1060.7 1247.6 1059.4 1247.0 1059.2 1245.9C1058.9 1244.1 1062.7 1243.4 1086.0 1241.0C1091.8 1240.4 1099.9 1239.5 1104.0 1239.0C1108.1 1238.5 1115.8 1237.6 1121.0 1237.0C1150.9 1233.5 1184.8 1228.7 1206.5 1224.9C1209.8 1224.3 1214.8 1223.4 1217.5 1223.0C1231.6 1220.5 1235.8 1219.7 1238.5 1218.9C1240.2 1218.4 1245.5 1217.1 1250.5 1216.0C1267.0 1212.2 1293.1 1203.8 1304.8 1198.4C1307.7 1197.1 1310.2 1196.0 1310.4 1196.0C1311.6 1196.0 1331.3 1186.3 1338.3 1182.3C1378.2 1159.5 1407.8 1130.9 1430.8 1093.0C1454.6 1053.7 1468.7 1011.0 1478.9 947.0C1481.2 932.3 1481.7 930.5 1483.5 930.5C1485.2 930.5 1485.7 932.1 1487.6 943.5C1499.8 1016.1 1522.0 1072.0 1556.1 1116.0C1573.9 1139.0 1603.2 1164.3 1627.0 1177.2C1646.6 1187.9 1657.0 1192.4 1675.5 1198.4C1691.7 1203.7 1700.8 1206.3 1713.5 1209.0C1715.7 1209.5 1719.5 1210.3 1722.0 1210.9C1737.9 1214.4 1767.3 1218.7 1789.5 1220.9C1819.2 1223.8 1840.0 1225.2 1881.5 1227.0C1894.7 1227.6 1915.4 1228.5 1927.5 1229.0C1939.6 1229.5 1960.8 1230.4 1974.5 1231.0C1988.2 1231.6 2009.0 1232.5 2020.5 1233.0C2032.0 1233.5 2052.8 1234.4 2066.5 1235.0C2153.1 1238.6 2244.7 1243.4 2245.7 1244.3C2247.5 1246.2 2242.4 1246.8 2221.8 1247.4C2209.0 1247.7 2185.7 1248.5 2170.0 1249.0C2154.3 1249.5 2122.2 1250.4 2098.5 1251.0C2074.8 1251.5 2037.0 1252.4 2014.5 1253.0C1992.0 1253.5 1953.5 1254.5 1929.0 1255.1C1820.0 1257.7 1783.2 1260.3 1734.5 1269.0C1694.7 1276.2 1669.3 1284.0 1640.1 1298.2C1585.9 1324.6 1549.7 1362.5 1522.8 1421.2C1508.2 1453.3 1498.5 1487.4 1489.5 1538.5C1485.9 1559.3 1484.5 1563.5 1482.2 1560.8Z";
@@ -3863,6 +3924,390 @@ function MyRankProfile({ me, api, media, state, onOpen }) {
   );
 }
 
+/* ============================ AMIGOS (mini red social) ============================ */
+
+const exName = (id) => EXERCISES[EX_REMAP[id] || id]?.n || "Ejercicio";
+const exUnit = (id) => EXERCISES[EX_REMAP[id] || id]?.unit || "";
+const ago = (d) => {
+  const m = Math.round((Date.now() - new Date(d).getTime()) / 6e4);
+  if (m < 1) return "ahora";
+  if (m < 60) return `hace ${m} min`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `hace ${h} h`;
+  return relDay(d).toLowerCase();
+};
+const NOTIF_TXT = {
+  friend_req: "quiere agregarte",
+  friend_ok: "ha aceptado tu solicitud",
+  like: "le ha dado fuego a tu entreno",
+  comment: "ha comentado tu entreno",
+  mention: "te ha mencionado en un comentario",
+  tag: "te ha etiquetado en su entreno",
+};
+const COMMENT_REPORT = ["Ofensivo o insultos", "Acoso", "Spam", "Otro motivo"];
+
+// Texto con @menciones resaltadas
+function MentionText({ text }) {
+  const parts = String(text).split(/(@[A-Za-z0-9_.ÁÉÍÓÚáéíóúÑñÜü]{3,20})/g);
+  return <>{parts.map((p, i) => (p.startsWith("@") ? <b key={i} className="fr-at">{p}</b> : p))}</>;
+}
+
+const Flame = ({ on }) => (
+  <svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3 0-3-1-6 1-9.5z" fill={on ? "#F5B454" : "none"} stroke={on ? "#F5B454" : "currentColor"} strokeWidth="1.8" strokeLinejoin="round" /></svg>
+);
+const Bubble = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /></svg>
+);
+const Bell = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /></svg>
+);
+
+function FeedCard({ s, media, social, onComments, onOpen, friends, onChanged }) {
+  const [liked, setLiked] = useState(s.liked);
+  const [likes, setLikes] = useState(s.likes);
+  const [pop, setPop] = useState(false);
+  const [all, setAll] = useState(false);
+  const [tagging, setTagging] = useState(false);
+  const [tags, setTags] = useState(s.tags || []);
+  const ex = s.exercises || [];
+  const shown = all ? ex : ex.slice(0, 4);
+  const notes = ex.filter((e) => e.note);
+  const like = async () => {
+    const was = liked;
+    setLiked(!was); setLikes((n) => n + (was ? -1 : 1)); if (!was) { setPop(true); setTimeout(() => setPop(false), 500); }
+    try { await social.like(s.id); } catch { setLiked(was); setLikes((n) => n + (was ? 1 : -1)); }
+  };
+  const saveTags = async (next) => { setTags(next); try { await social.tag(s.id, next); onChanged?.(); } catch {} };
+  const mins = Math.max(1, Math.round((s.duration_s || 0) / 60));
+  return (
+    <article className="fr-card">
+      <header>
+        <button className="fr-who" onClick={() => onOpen(s.nickname)}>
+          <Avatar r={s} media={media} size={40} />
+          <span><b>{s.nickname}{s.is_me && <small> (tú)</small>}</b><small>{[levelLabel(s.branch, s.level, s.mode), ago(s.performed_at)].filter(Boolean).join(" · ")}</small></span>
+        </button>
+      </header>
+      <h3>{s.day_name || "Entreno"}</h3>
+      {tags.length > 0 && <p className="fr-tags">con {tags.map((t, i) => <span key={t}>{i ? ", " : ""}<b className="fr-at">@{t}</b></span>)}</p>}
+      <div className="fr-stats">
+        <div><b>{mins}</b><span>min</span></div>
+        <div><b>{s.sets_done || 0}</b><span>series</span></div>
+        {s.volume_kg != null && <div><b>{fmtKg(Number(s.volume_kg) || 0)}</b><span>levantados</span></div>}
+      </div>
+      {shown.length > 0 && (
+        <ul className="fr-ex">
+          {shown.map((e, i) => {
+            const u = exUnit(e.exId);
+            const best = u ? (e.reps ? `${e.reps} ${u}` : "") : e.kg ? `${e.kg} kg × ${e.reps}` : e.reps ? `${e.reps} reps` : "";
+            return <li key={i}><span>{exName(e.exId)}</span><small>{e.n} {e.n === 1 ? "serie" : "series"}{best ? ` · mejor ${best}` : ""}</small></li>;
+          })}
+        </ul>
+      )}
+      {ex.length > 4 && <button className="inlink" onClick={() => setAll(!all)}>{all ? "Ver menos" : `Ver los ${ex.length} ejercicios`}</button>}
+      {notes.length > 0 && <div className="fr-notes">{notes.slice(0, 2).map((e, i) => <p key={i}><b>{exName(e.exId)}:</b> {e.note}</p>)}</div>}
+      <footer>
+        <button className={`fr-act${liked ? " on" : ""}${pop ? " pop" : ""}`} onClick={like} aria-label="Dar fuego"><Flame on={liked} />{likes > 0 && <span>{likes}</span>}</button>
+        <button className="fr-act" onClick={() => onComments(s)} aria-label="Comentarios"><Bubble />{s.comments > 0 && <span>{s.comments}</span>}</button>
+        {s.is_me && friends.length > 0 && <button className="fr-act fr-tagbtn" onClick={() => setTagging(!tagging)}>{tagging ? "Listo" : "Etiquetar"}</button>}
+      </footer>
+      {tagging && (
+        <div className="chips fr-tagpick">
+          {friends.map((f) => {
+            const on = tags.includes(f.nickname);
+            return <button key={f.nickname} className={`chip ${on ? "on" : ""}`} onClick={() => saveTags(on ? tags.filter((t) => t !== f.nickname) : [...tags, f.nickname])}>@{f.nickname}</button>;
+          })}
+        </div>
+      )}
+    </article>
+  );
+}
+
+function CommentsSheet({ s, media, social, friends, onClose, onCount, onBlocked }) {
+  const [list, setList] = useState(null);
+  const [txt, setTxt] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const [menu, setMenu] = useState(null);
+  const [sent, setSent] = useState("");
+  const load = () => social.comments(s.id).then((l) => { setList(l); onCount?.(l.length); }).catch(() => setErr("No se han podido cargar los comentarios."));
+  useEffect(() => { load(); }, [s.id]);
+  const at = (txt.match(/@([A-Za-z0-9_.ÁÉÍÓÚáéíóúÑñÜü]*)$/) || [])[1];
+  const sugg = at !== undefined ? friends.filter((f) => f.nickname.toLowerCase().startsWith(at.toLowerCase())).slice(0, 5) : [];
+  const send = async () => {
+    const t = txt.trim(); if (!t) return;
+    setBusy(true); setErr("");
+    try { await social.comment(s.id, t); setTxt(""); await load(); }
+    catch (e) { setErr(/apodo/i.test(e.message || "") ? "Ponte un apodo primero." : /rápido/i.test(e.message || "") ? "Vas muy rápido. Espera un momento." : "No se ha podido enviar."); }
+    finally { setBusy(false); }
+  };
+  return (
+    <div className="modal" onClick={onClose}>
+      <div className="box fr-com" onClick={(e) => e.stopPropagation()}>
+        <h1 style={{ fontSize: 20 }}>Comentarios</h1>
+        <p className="sub" style={{ marginTop: 0 }}>{s.day_name || "Entreno"} de {s.is_me ? "ti" : s.nickname}</p>
+        {err && <div className="err">{err}</div>}
+        {list === null && !err && <p className="hint">Cargando…</p>}
+        {list?.length === 0 && <div className="empty">Sé la primera persona en comentar.</div>}
+        <div className="fr-clist">
+          {list?.map((c) => (
+            <div key={c.id} className="fr-c">
+              <Avatar r={c} media={media} size={32} />
+              <div><b>{c.nickname}</b> <small>{ago(c.created_at)}</small><p><MentionText text={c.body} /></p></div>
+              <button className="dots" aria-label="Opciones" onClick={() => { setMenu(c); setSent(""); }}>⋮</button>
+            </div>
+          ))}
+        </div>
+        {menu && (
+          <div className="fr-menu">
+            {sent ? <p className="sub">{sent}</p> : <>
+              {menu.can_delete && <button className="btn ghost" onClick={async () => { try { await social.delComment(menu.id); setMenu(null); load(); } catch { setSent("No se ha podido borrar."); } }}>Borrar comentario</button>}
+              {!menu.is_me && <>
+                <button className="btn ghost" onClick={async () => { try { await social.block(menu.nickname); setSent(`Has bloqueado a ${menu.nickname}. Ya no verás nada suyo.`); onBlocked?.(); load(); } catch { setSent("No se ha podido bloquear."); } }}>Bloquear a {menu.nickname}</button>
+                <h2 style={{ marginTop: 12 }}>Denunciar comentario</h2>
+                {COMMENT_REPORT.map((r) => <button key={r} className="btn ghost" onClick={async () => { try { await social.reportComment(menu.id, r); setSent("Gracias. Lo revisará la coach en menos de 24 horas."); } catch { setSent("No se ha podido enviar."); } }}>{r}</button>)}
+              </>}
+            </>}
+            <button className="link" onClick={() => setMenu(null)}>Cerrar</button>
+          </div>
+        )}
+        {sugg.length > 0 && <div className="chips fr-sugg">{sugg.map((f) => <button key={f.nickname} className="chip" onClick={() => setTxt(txt.replace(/@[^@\s]*$/, `@${f.nickname} `))}>@{f.nickname}</button>)}</div>}
+        <div className="fr-input">
+          <input maxLength={500} placeholder="Escribe un comentario… usa @ para mencionar" value={txt} onChange={(e) => setTxt(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} />
+          <button disabled={busy || !txt.trim()} onClick={send}>Enviar</button>
+        </div>
+        <button className="btn" style={{ marginTop: 12 }} onClick={onClose}>Cerrar</button>
+      </div>
+    </div>
+  );
+}
+
+function NotifSheet({ social, media, onClose, onOpenSession, onRespond }) {
+  const [list, setList] = useState(null);
+  useEffect(() => { social.notifs().then(setList).catch(() => setList([])); social.markRead().catch(() => {}); }, []);
+  return (
+    <div className="modal" onClick={onClose}>
+      <div className="box" onClick={(e) => e.stopPropagation()}>
+        <h1 style={{ fontSize: 20 }}>Avisos</h1>
+        {list === null && <p className="hint">Cargando…</p>}
+        {list?.length === 0 && <div className="empty">Aquí verás quién te agrega, te da fuego o te comenta.</div>}
+        {list?.map((n) => (
+          <div key={n.id} className={`fr-n${n.read ? "" : " new"}`}>
+            <Avatar r={n} media={media} size={36} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p><b>{n.nickname || "Alguien"}</b> {NOTIF_TXT[n.kind]}{n.day_name ? <> · <span className="dm">{n.day_name}</span></> : null}</p>
+              {n.body && <p className="fr-nb">“<MentionText text={n.body} />”</p>}
+              <small>{ago(n.created_at)}</small>
+              {n.kind === "friend_req" && n.nickname && (
+                <div className="chips" style={{ marginTop: 6 }}>
+                  <button className="chip on" onClick={async () => { await onRespond(n.nickname, true); setList((l) => l.filter((x) => x.id !== n.id)); }}>Aceptar</button>
+                  <button className="chip" onClick={async () => { await onRespond(n.nickname, false); setList((l) => l.filter((x) => x.id !== n.id)); }}>Ahora no</button>
+                </div>
+              )}
+            </div>
+            {n.session_id && <button className="link" onClick={() => onOpenSession(n.session_id)}>Ver</button>}
+          </div>
+        ))}
+        <button className="btn" style={{ marginTop: 14 }} onClick={onClose}>Cerrar</button>
+      </div>
+    </div>
+  );
+}
+
+function Friends({ me, social, media, api, onOpenProfile }) {
+  const [nick, setNick] = useState("");
+  const [nickErr, setNickErr] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [friendsAll, setFriendsAll] = useState(null);
+  const [feed, setFeed] = useState(null);
+  const [more, setMore] = useState(true);
+  const [err, setErr] = useState("");
+  const [q, setQ] = useState("");
+  const [found, setFound] = useState(null);
+  const [com, setCom] = useState(null);
+  const [notif, setNotif] = useState(false);
+  const [unread, setUnread] = useState(0);
+  const [focus, setFocus] = useState(null);
+  const [privacy, setPrivacy] = useState(false);
+
+  const friends = (friendsAll || []).filter((f) => f.relation === "friend");
+  const incoming = (friendsAll || []).filter((f) => f.relation === "incoming");
+  const outgoing = (friendsAll || []).filter((f) => f.relation === "outgoing");
+
+  const loadAll = async () => {
+    setErr("");
+    try {
+      const [f, d, u] = await Promise.all([social.list(), social.feed(null), social.unread().catch(() => 0)]);
+      setFriendsAll(f); setFeed(d); setMore(d.length >= 20); setUnread(u || 0);
+    } catch (e) { setErr("No se ha podido cargar. Revisa tu conexión."); }
+  };
+  useEffect(() => { if (me.nickname) loadAll(); }, [me.nickname]);
+
+  useEffect(() => {
+    if (q.trim().length < 2) { setFound(null); return; }
+    const t = setTimeout(() => social.search(q.trim()).then(setFound).catch(() => setFound([])), 300);
+    return () => clearTimeout(t);
+  }, [q]);
+
+  const loadMore = async () => {
+    const last = feed[feed.length - 1];
+    try { const d = await social.feed(last.performed_at); setFeed([...feed, ...d]); setMore(d.length >= 20); } catch {}
+  };
+  const request = async (n) => {
+    try { const r = await social.request(n); setFound((l) => l?.map((x) => (x.nickname === n ? { ...x, relation: r } : x))); loadAll(); }
+    catch (e) { setErr(e.message || "No se ha podido enviar."); }
+  };
+  const respond = async (n, ok) => { try { await social.respond(n, ok); loadAll(); } catch {} };
+
+  if (!me.nickname) {
+    const save = async () => {
+      const e = checkNickname(nick); if (e) return setNickErr(e);
+      setBusy(true); setNickErr("");
+      try { await social.setNick(nick.trim()); }
+      catch (e) { setNickErr(/cogido|duplicate|unique/i.test(e.message || "") ? "Ese apodo ya lo tiene otra persona." : e.message || "No se ha podido guardar."); }
+      finally { setBusy(false); }
+    };
+    return (
+      <>
+        <div className="fr-hero">
+          <div className="fr-hero-av"><span /><span /><span /></div>
+          <p>Agrega a tu gente, mira sus entrenos y dales fuego.</p>
+        </div>
+        <div className="field"><label>Elige tu apodo</label>
+          <input className="in" maxLength={20} placeholder="Por ejemplo: luna_lifts" value={nick} onChange={(e) => { setNick(e.target.value); setNickErr(""); }} />
+          {nickErr && <div className="err">{nickErr}</div>}
+        </div>
+        <button className="btn ac" disabled={busy || !nick.trim()} onClick={save}>{busy ? "Un momento…" : "Empezar"}</button>
+        <div className="note">Solo tus amig@s verán tus entrenos: ejercicios, series y, si quieres, los kilos. Nunca tu peso, tus medidas ni tus fotos. No hace falta salir en el ranking.</div>
+      </>
+    );
+  }
+
+  const shownFeed = focus ? (feed || []).filter((s) => s.id === focus) : feed;
+
+  return (
+    <>
+      <div className="fr-top">
+        <div className="rk-search" style={{ flex: 1, marginTop: 0 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2.4" /><path d="M16.5 16.5L21 21" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" /></svg>
+          <input placeholder="Busca a tu gente por su apodo" value={q} onChange={(e) => setQ(e.target.value)} />
+          {q && <button aria-label="Borrar" onClick={() => setQ("")}>✕</button>}
+        </div>
+        <button className="fr-bell" aria-label="Avisos" onClick={() => { setNotif(true); setUnread(0); }}><Bell />{unread > 0 && <i>{unread > 9 ? "9+" : unread}</i>}</button>
+      </div>
+
+      {found && (
+        <div className="rk-found">
+          {found.length === 0 ? <p className="sub" style={{ margin: "8px 4px" }}>No hay nadie con ese apodo.</p> : found.map((r) => (
+            <div key={r.nickname} className="rkrow">
+              <button className="rk-open" onClick={() => onOpenProfile(r.nickname)}>
+                <Avatar r={r} media={media} size={36} />
+                <span className="who">{r.nickname}<small>{levelLabel(r.branch, r.level, r.mode)}</small></span>
+              </button>
+              {r.relation === "none" && <button className="chip on" onClick={() => request(r.nickname)}>Agregar</button>}
+              {r.relation === "outgoing" && <span className="chip">Pendiente</span>}
+              {r.relation === "incoming" && <button className="chip on" onClick={() => respond(r.nickname, true).then(() => setQ(""))}>Aceptar</button>}
+              {r.relation === "friend" && <span className="chip">Amig@s ✓</span>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!found && (
+        <>
+          {incoming.length > 0 && (
+            <div className="fr-req">
+              <h2 style={{ marginTop: 0 }}>Te quieren agregar</h2>
+              {incoming.map((r) => (
+                <div key={r.nickname} className="rkrow">
+                  <button className="rk-open" onClick={() => onOpenProfile(r.nickname)}><Avatar r={r} media={media} size={36} /><span className="who">{r.nickname}<small>{levelLabel(r.branch, r.level, r.mode)}</small></span></button>
+                  <button className="chip on" onClick={() => respond(r.nickname, true)}>Aceptar</button>
+                  <button className="chip" onClick={() => respond(r.nickname, false)}>✕</button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {friends.length > 0 && (
+            <div className="fr-row">
+              {friends.map((f) => (
+                <button key={f.nickname} onClick={() => onOpenProfile(f.nickname)}>
+                  <Avatar r={f} media={media} size={54} ring={f.week_days > 0} />
+                  <small>{f.nickname}</small>
+                  <em>{f.week_days ? `${f.week_days} ${f.week_days === 1 ? "día" : "días"}` : "—"}</em>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {err && <><div className="err">{err}</div><button className="btn ghost" onClick={loadAll}>Reintentar</button></>}
+          {feed === null && !err && <div className="fr-card sk" />}
+          {feed && friends.length === 0 && outgoing.length === 0 && incoming.length === 0 && (
+            <div className="empty">Aún no tienes amig@s. Busca su apodo arriba y agrégal@s: cuando acepten, verás aquí sus entrenos.</div>
+          )}
+          {outgoing.length > 0 && <p className="hint">Esperando a que acepten: {outgoing.map((o) => o.nickname).join(", ")}</p>}
+          {focus && <button className="link" onClick={() => setFocus(null)}>← Ver todos los entrenos</button>}
+          {shownFeed?.map((s) => (
+            <FeedCard key={s.id} s={s} media={media} social={social} friends={friends} onOpen={onOpenProfile} onComments={setCom} />
+          ))}
+          {feed?.length === 0 && friends.length > 0 && <div className="empty">Todavía no hay entrenos. ¡Estrena tú el feed!</div>}
+          {feed && more && !focus && feed.length > 0 && <button className="btn ghost" onClick={loadMore}>Ver más</button>}
+
+          <button className="link" style={{ marginTop: 18 }} onClick={() => setPrivacy(!privacy)}>Qué ven tus amig@s</button>
+          {privacy && (
+            <div className="note">
+              <div className="chips">
+                <button className={`chip ${me.shareFeed ? "on" : ""}`} onClick={() => social.setShare({ share_feed: !me.shareFeed })}>{me.shareFeed ? "Mis entrenos se ven" : "Mis entrenos están ocultos"}</button>
+                <button className={`chip ${me.showKg ? "on" : ""}`} onClick={() => social.setShare({ feed_show_kg: !me.showKg })}>{me.showKg ? "Se ven mis kilos" : "Kilos ocultos"}</button>
+              </div>
+              <p className="hint" style={{ marginBottom: 0 }}>Solo lo ven las personas que has aceptado. Nunca tu peso, tus medidas ni tus fotos de progreso. Tu apodo: <b>{me.nickname}</b></p>
+              <button className="link" onClick={() => social.unblockAll().then(loadAll)}>Desbloquear a todas las personas que bloqueé</button>
+            </div>
+          )}
+        </>
+      )}
+
+      {com && <CommentsSheet s={com} media={media} social={social} friends={friends} onClose={() => setCom(null)} onBlocked={loadAll}
+        onCount={(n) => setFeed((l) => l?.map((x) => (x.id === com.id ? { ...x, comments: n } : x)))} />}
+      {notif && <NotifSheet social={social} media={media} onClose={() => { setNotif(false); loadAll(); }} onRespond={respond}
+        onOpenSession={(id) => { setNotif(false); if (feed?.some((x) => x.id === id)) setFocus(id); else loadAll().then(() => setFocus(id)); }} />}
+    </>
+  );
+}
+
+// Pestaña "Social": amig@s y ranking
+function Social({ social, me, rankingEl, media, api, blocked }) {
+  const [view, setView] = useState(() => store.get("arc-social-view") || "amigos");
+  const [open, setOpen] = useState(null);
+  const [rep, setRep] = useState(null);
+  const [sent, setSent] = useState("");
+  const pick = (v) => { setView(v); store.set("arc-social-view", v); };
+  return (
+    <>
+      <h1>{view === "amigos" ? "Amigos" : "Ranking semanal"}</h1>
+      <div className="seg" style={{ marginTop: 6 }}>
+        <button className={view === "amigos" ? "on" : ""} onClick={() => pick("amigos")}>Amigos</button>
+        <button className={view === "ranking" ? "on" : ""} onClick={() => pick("ranking")}>Ranking</button>
+      </div>
+      {view === "amigos" ? <Friends me={me} social={social} media={media} api={api} onOpenProfile={setOpen} /> : rankingEl}
+      {open && <ProfileSheet nick={open} api={api} media={media} blocked={blocked.includes(open)} onClose={() => setOpen(null)}
+        onReport={(n) => { setOpen(null); setRep(n); setSent(""); }} />}
+      {rep && (
+        <div className="modal" onClick={() => setRep(null)}>
+          <div className="box" onClick={(e) => e.stopPropagation()}>
+            <h1 style={{ fontSize: 20 }}>{rep}</h1>
+            {sent ? <p className="sub">{sent}</p> : <>
+              <button className="btn ghost" onClick={async () => { try { await social.block(rep); setSent(`Has bloqueado a ${rep}. Ya no verás nada suyo ni podrá agregarte.`); } catch { setSent("No se ha podido bloquear."); } }}>Bloquear a {rep}</button>
+              <h2 style={{ marginTop: 14 }}>Denunciar</h2>
+              {REPORT_REASONS.map((reason) => <button key={reason} className="btn ghost" onClick={async () => { try { await api.report(rep, reason); setSent("Gracias. Lo revisará la coach en menos de 24 horas."); } catch { setSent("No se ha podido enviar."); } }}>{reason}</button>)}
+            </>}
+            <button className="btn" onClick={() => setRep(null)}>Cerrar</button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 // Premios y sorteos del ranking (los anuncia Luna en Instagram). Texto editable por la coach.
 const PRIZE_DEFAULT = "Las primeras del ranking entran en los premios y sorteos que anunciamos en Instagram. ¡Atenta a las historias!";
 function PrizeCard({ media, coach, setMedia, onRules }) {
@@ -3891,7 +4336,7 @@ function PrizeCard({ media, coach, setMedia, onRules }) {
   );
 }
 
-function Ranking({ me, state, api, media = {}, blocked = [], onBlock, onUnblockAll, coach = false, setMedia }) {
+function Ranking({ me, state, api, media = {}, blocked = [], onBlock, onUnblockAll, coach = false, setMedia, embedded = false }) {
   const [board, setBoard] = useState(null);
   const [last, setLast] = useState(null);
   const [err, setErr] = useState("");
@@ -3948,7 +4393,7 @@ function Ranking({ me, state, api, media = {}, blocked = [], onBlock, onUnblockA
 
   if (!me.optIn || editing) return (
     <>
-      <h1>Ranking semanal</h1>
+      {!embedded && <h1>Ranking semanal</h1>}
       <div className="rk-hero">
         <div className="rk-hero-pod"><span className="b2" /><span className="b1"><Crown size={30} /></span><span className="b3" /></div>
         <p>Cada lunes empieza de cero. Gana la constancia, no los kilos.</p>
@@ -3972,7 +4417,7 @@ function Ranking({ me, state, api, media = {}, blocked = [], onBlock, onUnblockA
   return (
     <>
       {party && <><Confetti /><div className="toast">{party}</div></>}
-      <h1>Ranking semanal</h1>
+      {!embedded && <h1>Ranking semanal</h1>}
       <p className="sub">Del {fmtDay(start)} al {fmtDay(end)} · se reinicia en {daysLeft} {daysLeft === 1 ? "día" : "días"}</p>
 
       <WeekCard state={state} rank={myRank} />
@@ -4976,7 +5421,7 @@ function Reports({ onClose }) {
   const act = async (fn) => { try { await fn(); load(); } catch (e) { setErr("No se ha podido completar."); } };
   return (
     <>
-      <h1>Moderación del ranking</h1>
+      <h1>Moderación</h1>
       <p className="sub">Si quitas a alguien, desaparece del ranking y pierde su apodo. Si solo es la foto, quítale la foto y sigue en el ranking.</p>
       {err && <div className="err">{err}</div>}
       <PendingAvatars />
@@ -4989,6 +5434,7 @@ function Reports({ onClose }) {
           <div className="chips" style={{ marginTop: 10 }}>
             <button className="chip" onClick={() => act(() => db.clearAvatar(r.nickname))}>Quitar su foto</button>
             <button className="chip" onClick={() => act(() => db.hideFromRanking(r.nickname))}>Quitar del ranking</button>
+            {/^\[comentario (\d+)\]/.test(r.reason) && <button className="chip" onClick={() => act(async () => { await db.social.hideComment(Number(r.reason.match(/^\[comentario (\d+)\]/)[1])); await db.dismissReport(r.id); })}>Borrar el comentario</button>}
             <button className="chip" onClick={() => act(() => db.dismissReport(r.id))}>Está bien, ignorar</button>
           </div>
         </div>
@@ -5056,7 +5502,7 @@ function fromDb({ profile, sessions, habits, coach }) {
     habits: Object.fromEntries(habits.map((h) => [h.day, { water: h.water ?? undefined, steps: h.steps ?? undefined, sleep: h.sleep != null ? Number(h.sleep) : undefined, weight: h.weight != null ? Number(h.weight) : undefined, food: h.food || undefined }])),
     xp: profile.xp, gems: profile.gems, active: profile.active_session, role: profile.role,
     nickname: profile.nickname, rankOptIn: profile.rank_opt_in && !!profile.nickname, savedLevel: profile.level,
-    avatar: profile.avatar_url || null, avatarPending: profile.avatar_pending || null, profilePublic: profile.profile_public !== false,
+    avatar: profile.avatar_url || null, avatarPending: profile.avatar_pending || null, profilePublic: profile.profile_public !== false, shareFeed: profile.share_feed !== false, showKg: profile.feed_show_kg !== false,
     coachRoutine: coach?.routine || null,
     coachDiet: coach?.diet || null,
   };
@@ -5334,6 +5780,80 @@ function clientSummary(raw, routineDays) {
   return { p, plan, weeks, adh, trainPct, last, w0: weights[0]?.[1].weight, w1: weights[weights.length - 1]?.[1].weight };
 }
 
+// Detalle de un entreno de la asesorada (todas las series y sus comentarios)
+function ClientSession({ s }) {
+  const [open, setOpen] = useState(false);
+  const notes = (s.exercises || []).filter((e) => e.note);
+  return (
+    <div className="cs">
+      <button className="cs-hd" onClick={() => setOpen(!open)}>
+        <span><b>{s.dayName || "Entreno"}</b><small>{new Date(s.date).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })} · {Math.max(1, Math.round((s.dur || 0) / 60))} min · {s.sets} series · {Number(s.volume || 0).toLocaleString("es-ES")} kg</small></span>
+        {notes.length > 0 && <em title="Tiene comentarios">💬 {notes.length}</em>}
+        <i>{open ? "–" : "+"}</i>
+      </button>
+      {!open && notes.length > 0 && <div className="cs-notes">{notes.map((e, i) => <p key={i}><b>{EXERCISES[EX_REMAP[e.exId] || e.exId]?.n || e.exId}:</b> {e.note}</p>)}</div>}
+      {open && (s.exercises || []).map((e, i) => {
+        const ex = EXERCISES[EX_REMAP[e.exId] || e.exId];
+        const u = ex?.unit;
+        return (
+          <div key={i} className="cs-ex">
+            <b>{ex?.n || e.exId}</b>
+            <div className="cs-sets">{(e.sets || []).map((st, k) => (
+              <span key={k} className={`${st.done ? "" : "no"}${st.type === "W" ? " w" : ""}`}>{st.type === "W" ? "W " : ""}{u ? `${st.reps || "—"} ${u}` : `${st.kg || 0}×${st.reps || "—"}`}</span>
+            ))}</div>
+            {e.note && <p className="cs-note">💬 {e.note}</p>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// Hábitos día a día de la asesorada
+function ClientHabits({ habits }) {
+  const days = Array.from({ length: 14 }, (_, i) => { const d = new Date(); d.setDate(d.getDate() - i); return dkey(d); });
+  const kcalOf = (h) => { const f = h?.food; if (!f) return null; const v = Object.values(f); return v.length ? v.reduce((a, m) => ({ kcal: a.kcal + (m.tot?.kcal || 0), p: a.p + (m.tot?.p || 0) }), { kcal: 0, p: 0 }) : null; };
+  const avg = (k, n = 7) => { const v = days.slice(0, n).map((d) => Number(habits[d]?.[k]) || 0).filter(Boolean); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+  const kc = days.slice(0, 7).map((d) => kcalOf(habits[d])).filter(Boolean);
+  const [day, setDay] = useState(null);
+  const fmt = (v, d = 0) => (v == null ? "—" : Number(v).toLocaleString("es-ES", { maximumFractionDigits: d }));
+  return (
+    <>
+      <h2>Media de los últimos 7 días</h2>
+      <div className="cl-kpis">
+        <div><b>{fmt(avg("steps"))}</b><span>Pasos</span></div>
+        <div><b>{avg("water") == null ? "—" : `${fmt(avg("water") * RULES.WATER_GLASS_ML / 1000, 1)} L`}</b><span>Agua</span></div>
+        <div><b>{avg("sleep") == null ? "—" : `${fmt(avg("sleep"), 1)} h`}</b><span>Sueño</span></div>
+      </div>
+      {kc.length > 0 && <div className="hist"><span>Comida registrada (media)</span><span>{fmt(kc.reduce((a, b) => a + b.kcal, 0) / kc.length)} kcal · {fmt(kc.reduce((a, b) => a + b.p, 0) / kc.length)} g prot.</span></div>}
+      <h2>Día a día</h2>
+      <div className="ch-tbl">
+        <div className="ch-row ch-h"><span>Día</span><span>Pasos</span><span>Agua</span><span>Sueño</span><span>Peso</span><span>Kcal</span></div>
+        {days.map((d) => {
+          const h = habits[d] || {}; const k = kcalOf(h);
+          return (
+            <button key={d} className={`ch-row${day === d ? " on" : ""}`} onClick={() => setDay(day === d ? null : d)} disabled={!h.food}>
+              <span>{new Date(d + "T12:00").toLocaleDateString("es-ES", { weekday: "short", day: "numeric" })}</span>
+              <span className={(h.steps || 0) >= RULES.STEPS_GOAL ? "ok" : ""}>{h.steps ? fmt(h.steps) : "—"}</span>
+              <span className={(h.water || 0) >= RULES.WATER_GOAL_GLASSES ? "ok" : ""}>{h.water ? `${fmt(h.water * RULES.WATER_GLASS_ML / 1000, 1)}L` : "—"}</span>
+              <span className={(h.sleep || 0) >= RULES.SLEEP_GOAL_H ? "ok" : ""}>{h.sleep ? `${fmt(h.sleep, 1)}h` : "—"}</span>
+              <span>{h.weight ? fmt(h.weight, 1) : "—"}</span>
+              <span>{k ? fmt(k.kcal) : "—"}</span>
+            </button>
+          );
+        })}
+      </div>
+      {day && habits[day]?.food && (
+        <div className="note">
+          <b>Lo que comió el {new Date(day + "T12:00").toLocaleDateString("es-ES", { weekday: "long", day: "numeric" })}</b>
+          {Object.values(habits[day].food).map((m, i) => <div key={i} className="hist"><span>{m.name}</span><span>{Math.round(m.tot?.kcal || 0)} kcal · {Math.round(m.tot?.p || 0)} g P</span></div>)}
+        </div>
+      )}
+      <p className="hint">En verde, los días que cumple el objetivo. Toca un día para ver qué comió.</p>
+    </>
+  );
+}
+
 function ClientDetail({ client, onBack, onSaved, onRemoved }) {
   const [data, setData] = useState(null);
   const [err, setErr] = useState("");
@@ -5369,8 +5889,10 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
       <button className="link" onClick={onBack}>← Asesorad@s</button>
       <h1 style={{ marginTop: 10 }}>{client.name || client.email}</h1>
       <p className="sub">{client.email}{!client.client_id && " · aún no se ha registrado"}</p>
-      <div className="seg">
-        <button className={tab === "cumple" ? "on" : ""} onClick={() => setTab("cumple")}>Cumplimiento</button>
+      <div className="seg seg-wrap">
+        <button className={tab === "cumple" ? "on" : ""} onClick={() => setTab("cumple")}>Resumen</button>
+        <button className={tab === "entrenos" ? "on" : ""} onClick={() => setTab("entrenos")}>Entrenos</button>
+        <button className={tab === "habitos" ? "on" : ""} onClick={() => setTab("habitos")}>Hábitos</button>
         <button className={tab === "rutina" ? "on" : ""} onClick={() => setTab("rutina")}>Rutina</button>
         <button className={tab === "revis" ? "on" : ""} onClick={() => setTab("revis")}>Revisiones</button>
         <button className={tab === "notas" ? "on" : ""} onClick={() => setTab("notas")}>Notas</button>
@@ -5406,6 +5928,29 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
             {sum.p.sessions.slice().reverse().slice(0, 8).map((s) => (
               <div className="hist" key={s.id}><span>{s.dayName || "Entreno"}</span><span>{fmtDate(s.date)} · {s.sets} series · {s.volume.toLocaleString("es-ES")} kg</span></div>
             ))}
+          </>
+        )
+      )}
+
+      {(tab === "entrenos" || tab === "habitos") && (
+        !client.client_id ? <div className="note">Cuando se registre en ARC con <b>{client.email}</b>, aquí verás sus entrenos, pasos, agua, sueño y comidas.</div>
+        : err ? <div className="err">{err}</div>
+        : !sum ? <p className="hint">Cargando…</p>
+        : tab === "habitos" ? <ClientHabits habits={sum.p.habits} />
+        : (
+          <>
+            {(() => {
+              const notes = sum.p.sessions.slice().reverse().flatMap((s) => (s.exercises || []).filter((e) => e.note).map((e) => ({ s, e }))).slice(0, 12);
+              return notes.length > 0 && (
+                <>
+                  <h2>Sus comentarios</h2>
+                  {notes.map(({ s, e }, i) => <div key={i} className="cs-cm"><small>{fmtDate(s.date)} · {EXERCISES[EX_REMAP[e.exId] || e.exId]?.n || e.exId}</small><p>{e.note}</p></div>)}
+                </>
+              );
+            })()}
+            <h2>Todos sus entrenos</h2>
+            {sum.p.sessions.length === 0 && <div className="empty">Todavía no ha registrado ningún entreno.</div>}
+            {sum.p.sessions.slice().reverse().map((s) => <ClientSession key={s.id} s={s} />)}
           </>
         )
       )}
@@ -5538,6 +6083,30 @@ const CLIENTS_CSS = `
 .cl-col{width:28px;height:90px;border-radius:8px;background:var(--ln);display:flex;align-items:flex-end;overflow:hidden}
 .cl-col i{display:block;width:100%;border-radius:8px}
 .cl-weeks b{font-size:13px}.cl-weeks span{font-size:11px;color:var(--dm)}
+.seg-wrap{flex-wrap:wrap;gap:2px}
+.seg-wrap button{flex:1 1 30%;padding:8px 4px}
+.cs{background:var(--sf);border:1px solid var(--ln);border-radius:14px;margin:8px 0;overflow:hidden}
+.cs-hd{width:100%;display:flex;align-items:center;gap:10px;background:none;border:0;color:var(--tx);font:inherit;text-align:left;padding:12px 14px;cursor:pointer}
+.cs-hd span{flex:1;display:flex;flex-direction:column;min-width:0}
+.cs-hd small{color:var(--dm);font-size:12px}
+.cs-hd em{font-style:normal;font-size:12px;color:var(--ac)}
+.cs-hd i{font-style:normal;color:var(--dm);font-size:18px;width:14px;text-align:center}
+.cs-notes{padding:0 14px 10px}
+.cs-notes p,.cs-note{margin:4px 0;font-size:13px;color:var(--dm)}
+.cs-ex{padding:8px 14px;border-top:1px solid var(--ln);font-size:14px}
+.cs-sets{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.cs-sets span{background:var(--sf2);border:1px solid var(--ln);border-radius:8px;padding:3px 7px;font-size:12.5px;font-variant-numeric:tabular-nums}
+.cs-sets span.w{color:var(--wu)}
+.cs-sets span.no{opacity:.4;text-decoration:line-through}
+.cs-cm{border-left:2px solid var(--ac);padding:2px 0 2px 10px;margin:8px 0}
+.cs-cm small{color:var(--dm);font-size:12px}
+.cs-cm p{margin:2px 0 0;font-size:14px}
+.ch-tbl{display:flex;flex-direction:column;font-size:13px;font-variant-numeric:tabular-nums}
+.ch-row{display:grid;grid-template-columns:1.3fr 1.1fr .8fr .8fr .8fr .9fr;gap:4px;padding:9px 4px;border:0;border-bottom:1px solid var(--ln);background:none;color:var(--tx);font:inherit;text-align:left;cursor:pointer}
+.ch-row:disabled{cursor:default;color:var(--tx)}
+.ch-row.on{background:var(--sf2);border-radius:8px}
+.ch-row span.ok{color:var(--okl);font-weight:700}
+.ch-h{color:var(--dm);font-size:11.5px;cursor:default}
 `;
 
 function ArcApp({ user }) {
@@ -5653,6 +6222,15 @@ function ArcApp({ user }) {
       setState((s) => ({ ...s, avatarPending: url }));
     },
     setPublic: async (v) => { await db.setProfilePublic(user.id, v); setState((s) => ({ ...s, profilePublic: v })); },
+  };
+
+  const socialApi = {
+    ...db.social,
+    setNick: async (nickname) => { await db.social.setNick(nickname); setState((s) => ({ ...s, nickname })); },
+    setShare: async (patch) => {
+      await db.social.setShare(user.id, patch);
+      setState((s) => ({ ...s, ...("share_feed" in patch ? { shareFeed: patch.share_feed } : {}), ...("feed_show_kg" in patch ? { showKg: patch.feed_show_kg } : {}) }));
+    },
   };
 
   // Pasos y recordatorios (solo en el móvil)
@@ -5787,7 +6365,9 @@ function ArcApp({ user }) {
   } else if (tab === "entrenos") {
     body = <Workouts state={state} routine={routine} onStart={(d) => setActive(newSession(d, state.sessions))} setDays={(d) => setProfile({ days: d })} setProfile={setProfile} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
   } else if (tab === "ranking") {
-    body = <Ranking me={{ optIn: !!state.rankOptIn, nickname: state.nickname, avatar: state.avatar, pending: state.avatarPending, isPublic: state.profilePublic !== false }} state={{ ...state, savedLevel: ev?.current ?? state.savedLevel }} api={rankApi} media={media} coach={coach} setMedia={setMedia} blocked={state.profile?.blocked || []} onBlock={(n) => setProfile({ blocked: [...new Set([...(state.profile?.blocked || []), n])] })} onUnblockAll={() => setProfile({ blocked: [] })} />;
+    body = <Social social={socialApi} api={rankApi} media={media} blocked={state.profile?.blocked || []}
+      me={{ nickname: state.nickname, shareFeed: state.shareFeed !== false, showKg: state.showKg !== false }}
+      rankingEl={<Ranking embedded me={{ optIn: !!state.rankOptIn, nickname: state.nickname, avatar: state.avatar, pending: state.avatarPending, isPublic: state.profilePublic !== false }} state={{ ...state, savedLevel: ev?.current ?? state.savedLevel }} api={rankApi} media={media} coach={coach} setMedia={setMedia} blocked={state.profile?.blocked || []} onBlock={(n) => setProfile({ blocked: [...new Set([...(state.profile?.blocked || []), n])] })} onUnblockAll={() => setProfile({ blocked: [] })} />} />;
   } else if (tab === "nutricion") {
     body = <Nutrition coachDiet={state.coachDiet} profile={state.profile} setCook={(c) => setProfile({ cook: c })} media={media} eaten={(state.habits[dkey()] || {}).food || {}} setEaten={(v) => setHabit("food", v)} />;
   } else {
@@ -5819,7 +6399,7 @@ function ArcApp({ user }) {
       </div>
       {!showQuestionnaire && !showTour && !inTracker && !screen && (
         <nav className="nav"><div>
-          {[["inicio", "Inicio"], ["entrenos", "Entrenos"], ["nutricion", "Nutrición"], ["habitos", "Hábitos"], ["ranking", "Ranking"]].map(([id, l]) => (
+          {[["inicio", "Inicio"], ["entrenos", "Entrenos"], ["nutricion", "Nutrición"], ["habitos", "Hábitos"], ["ranking", "Social"]].map(([id, l]) => (
             <button key={id} className={`tab ${tab === id ? "on" : ""}`} onClick={() => setTab(id)}>{l}{id === "entrenos" && state.active ? " ·" : ""}</button>
           ))}
         </div></nav>
