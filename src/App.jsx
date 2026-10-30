@@ -4726,6 +4726,8 @@ function Tour({ profile, ev, heroImg, perms, onFinish, media = {} }) {
       body: <TourTabs key="ent" tabs={[
         { label: "Rutina", img: "/tour/rutina.jpg", title: "Tu rutina, hecha para ti", text: "En Entrenos ves qué te toca hoy y tu semana. Puedes cambiar los días o apuntar tu propia rutina." },
         { label: "Series", img: "/tour/series.jpg", title: "Apunta cada serie", text: "Kilos, repeticiones y RIR, con temporizador de descanso. Si te sobran repeticiones, ARC te dice que subas peso." },
+        { label: "Progreso", img: "/tour/progreso.jpg", title: "Tu fuerza, en una gráfica", text: "En cada ejercicio ves tu historial y cómo sube tu carga semana a semana. Lo que no se mide no se puede mejorar." },
+        { label: "Músculos", img: "/tour/musculos.jpg", title: "Mira tus músculos", text: "Un mapa del cuerpo con las series que haces por músculo cada semana: sabes qué te falta y qué te sobra." },
         { label: "Técnica", img: "/tour/tecnica.jpg", title: "Técnica en vídeo", text: "Toca un ejercicio para verlo grabado en el gym, con una explicación sencilla y un truquito." },
       ]} />,
     },
@@ -4734,7 +4736,8 @@ function Tour({ profile, ev, heroImg, perms, onFinish, media = {} }) {
       body: <TourTabs key="com" tabs={[
         { label: "Macros", img: "/tour/macros.jpg", title: "Calorías y macros para ti", text: "Arriba ves lo que te queda del día. Apunta lo que comes con «Me la he comido», y también los picoteos." },
         { label: "Recetas", img: "/tour/pan.jpg", title: "Recetas a tu medida", text: "Las cantidades ya están ajustadas. Cambia de receta, elige tu pan y ajusta los gramos antes de apuntarla." },
-        { label: "Guía", img: "/tour/guia.jpg", title: "Tu guía de nutrición", text: "Compra, pan, hidratación, cafeína, proteína y comer fuera, con productos reales del súper." },
+        { label: "Súper", img: "/tour/super.jpg", title: "Productos reales del súper", text: "Te enseño los productos que uso yo, con foto y sus calorías, dentro de cada receta. Y consejos para elegir bien en cualquier supermercado." },
+        { label: "Guía", img: "/tour/guia.jpg", title: "Tu guía de nutrición", text: "Pan, hidratación, cafeína, proteína y comer fuera, con sus fuentes al final." },
       ]} />,
     },
     {
