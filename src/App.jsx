@@ -3105,6 +3105,16 @@ const GUIDE = [
     ["¿Sed o hambre?", "A veces confundimos sed con ganas de picar. Antes de picar entre horas, prueba con un vaso de agua."],
     ["También cuentan", "Infusiones, agua con gas y bebidas 0% cuentan. Con moderación las que llevan edulcorante, si te ayudan a beber más."],
   ] },
+  { id: "pre", label: "Pre-entreno", intro: "Qué comer antes de entrenar depende de tu contexto. Pero si entrenas con regularidad y con intensidad, un poco de hidrato rápido antes suele sumar.", items: [
+    ["Depende de ti", "Cuánto hace que comiste, a qué hora entrenas, cuánto dura y lo duro que es tu entreno. No hay una única respuesta buena para todo el mundo."],
+    ["Cuándo más ayuda", "Si entrenas a primera hora sin desayunar, si llevas más de 3-4 horas sin comer o si tu sesión es larga (más de 45-60 min) y con muchas series. Ahí el hidrato rápido te da energía para las últimas series y hace que el esfuerzo se sienta menos duro."],
+    ["Sí, azúcar también vale", "Antes de entrenar no hace falta que sea integral: los hidratos rápidos e incluso los azúcares simples se digieren antes y no pesan. Plátano, dátiles, tortitas de arroz con miel o mermelada, un zumo, pan blanco o unas gominolas."],
+    ["Cuánto y cuándo", "Algo pequeño, unos 20-40 g de hidrato, entre 20 y 60 minutos antes. Por ejemplo: 1 plátano, 3-4 dátiles, 2 tortitas de arroz con miel o un vaso de zumo. Si comes 2-3 horas antes, que sea una comida normal con hidrato y proteína."],
+    ["Lo que mejor evitar justo antes", "Mucha grasa, mucha fibra o comidas grandes: tardan en digerirse y pueden sentarte pesado o darte flato entrenando."],
+    ["Si no comes nada, tampoco pasa nada", "Si tu entreno es corto, te encuentras bien y comiste hace poco, puedes entrenar sin pre-entreno. Lo que de verdad cuenta es lo que comes en todo el día."],
+    ["Proteína", "Si llevas muchas horas sin comer, añade algo de proteína (un yogur proteico o un vaso de leche) o haz una buena comida con proteína después."],
+    ["Durante el entreno", "En sesiones de más de una hora o con mucho calor: agua a sorbos, y si quieres, agua de coco o una bebida con algo de azúcar."],
+  ] },
   { id: "cafe", label: "Cafeína", intro: "Ayuda a rendir en el entreno, pero tiene su límite y su horario.", items: [
     ["Cuánta es mucha", "En adultos sanos, hasta unos 400 mg al día se consideran seguros, y no más de 200 mg de golpe. En embarazo, máximo 200 mg al día. Si tienes menos de 18 años, el límite es más bajo: unos 3 mg por kilo al día."],
     ["Para entrenar", "Lo que se usa en estudios son unos 3 mg por kilo de peso entre 30 y 60 minutos antes. Para 60 kg, unos 180 mg: dos cafés de filtro o un pre-entreno suave."],
@@ -3129,6 +3139,7 @@ const GUIDE = [
 ];
 const GUIDE_SOURCES = {
   agua: ["EFSA (2010). Scientific Opinion on Dietary Reference Values for water."],
+  pre: ["Kerksick CM et al. (2017). ISSN position stand: nutrient timing.", "Thomas DT, Erdman KA, Burke LM (2016). ACSM/AND/DC: Nutrition and athletic performance.", "Henselmans M et al. (2022). The effect of carbohydrate intake on strength and resistance training performance: a systematic review. Nutrients."],
   cafe: ["EFSA (2015). Scientific Opinion on the safety of caffeine.", "Guest NS et al. (2021). ISSN position stand: caffeine and exercise performance.", "Drake C et al. (2013). Caffeine effects on sleep taken 0, 3, or 6 hours before going to bed."],
   prote: ["Morton RW et al. (2018). Meta-analysis of protein supplementation and resistance training.", "Jäger R et al. (2017). ISSN position stand: protein and exercise."],
 };
@@ -3139,7 +3150,7 @@ function NutriGuide() {
     <div className="shop">
       <div className="shop-hd" style={{ cursor: "default" }}><b>Guía</b>{tab && <button className="link" onClick={() => setTab(null)}>Cerrar</button>}</div>
       <div className="gtabs" role="tablist">{GUIDE.map((x) => <button key={x.id} role="tab" aria-selected={tab === x.id} className={`chip ${tab === x.id ? "on" : ""}`} onClick={() => setTab(tab === x.id ? null : x.id)}>{x.label}</button>)}</div>
-      {!g && <p className="hint" style={{ margin: "6px 0 0" }}>Compra, pan, agua, cafeína, proteína y comer fuera: toca una pestaña.</p>}
+      {!g && <p className="hint" style={{ margin: "6px 0 0" }}>Compra, pan, agua, pre-entreno, cafeína, proteína y comer fuera: toca una pestaña.</p>}
       {g && <p className="hint" style={{ margin: "8px 0 0" }}>{g.intro}</p>}
       {g?.id === "compra" && <ShopTips />}
       {g?.items && <ul>{g.items.map(([t, d]) => <li key={t}><b>{t}</b><span>{d}</span></li>)}</ul>}
