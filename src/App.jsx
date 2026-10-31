@@ -1714,6 +1714,60 @@ select.in{appearance:none}
 .fr-n .dm{color:var(--dm)}
 .fr-nb{color:var(--dm);font-size:13px;margin-top:3px!important}
 
+/* guía interactiva */
+.gintro{font-size:14px;color:var(--dm);margin:10px 0 0}
+.gcards{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:8px -16px 0;padding:2px 16px 6px;scrollbar-width:none}
+.gcards::-webkit-scrollbar{display:none}
+.gcard{flex:none;width:72%;max-width:260px;scroll-snap-align:start;background:var(--sf2);border:1px solid var(--ln);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px;text-align:left;color:var(--tx);font:inherit;cursor:pointer;align-self:flex-start}
+.gcard .gc-ic{width:40px;height:40px;border-radius:12px;background:#000;display:flex;align-items:center;justify-content:center;font-size:21px}
+.gcard b{font-size:15px;line-height:1.25}
+.gcard .gc-tx{font-size:13.5px;color:var(--dm);line-height:1.4}
+.gcard em{font-style:normal;font-size:12px;color:var(--ac);font-weight:700}
+.gcard.on{border-color:var(--ac)}
+.gtool{background:#000;border:1px solid var(--ln);border-radius:16px;padding:14px;margin-top:12px}
+.gtool-t{font-weight:800;font-size:16px;margin-bottom:8px}
+.gtool-s{font-size:13px;color:var(--dm);margin:12px 0 6px}
+.gpick{margin-top:8px}
+.gpick small,.gslider small{display:block;font-size:12px;color:var(--dm);margin-bottom:5px}
+.gres{margin-top:12px;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:3px;animation:rise .3s ease-out both}
+.gres b{font-size:18px}
+.gres span{font-size:13.5px;color:var(--dm)}
+.gres.yes{background:rgba(110,231,183,.12);border:1px solid rgba(110,231,183,.35)}.gres.yes b{color:var(--okl)}
+.gres.ok{background:rgba(245,180,84,.1);border:1px solid rgba(245,180,84,.35)}.gres.ok b{color:#F5B454}
+.gres.no{background:var(--sf2);border:1px solid var(--ln)}
+.gfoods{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.gfoods div{background:var(--sf2);border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px}
+.gfoods span{font-size:24px}
+.gfoods b{font-size:12px;line-height:1.2;font-weight:600}
+.gfoods small{font-size:12px;color:var(--ac);font-weight:700}
+.gslider{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:10px}
+.gslider small{grid-column:1/-1}
+.gslider input{width:100%;accent-color:var(--ac)}
+.gslider b{font-variant-numeric:tabular-nums;min-width:56px;text-align:right}
+.gbig{display:flex;align-items:baseline;gap:10px;margin-top:12px;flex-wrap:wrap}
+.gbig b{font-size:34px;font-weight:800;letter-spacing:-.02em}
+.gbig span{color:var(--dm);font-size:13px}
+.gglass{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.gglass i{width:16px;height:22px;border:2px solid #7DD3FC;border-top:0;border-radius:0 0 5px 5px;background:linear-gradient(to top,rgba(125,211,252,.55) 70%,transparent 70%);animation:rise .3s ease-out both}
+.gcaf{display:flex;flex-direction:column}
+.gcaf>div{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--ln)}
+.gcaf>div>span{font-size:20px;width:26px;text-align:center}
+.gcaf b{flex:1;font-size:14px;font-weight:600;display:flex;flex-direction:column}
+.gcaf b small{font-weight:400;color:var(--dm);font-size:12px}
+.gstep{display:flex;align-items:center;gap:8px}
+.gstep button{width:30px;height:30px;border-radius:50%;border:1px solid var(--ln);background:var(--sf2);color:var(--tx);font-size:17px;cursor:pointer}
+.gstep em{font-style:normal;min-width:14px;text-align:center;font-variant-numeric:tabular-nums}
+.gbar{height:10px;border-radius:5px;background:var(--sf2);margin-top:12px;overflow:hidden}
+.gbar i{display:block;height:100%;border-radius:5px;transition:width .4s ease,background .3s}
+.gbar-l{display:flex;justify-content:space-between;align-items:baseline;margin-top:6px}
+.gbar-l b{font-size:20px}
+.gbar-l span{font-size:12.5px;color:var(--dm)}
+.gswap{display:flex;flex-direction:column;gap:8px}
+.gswap button{display:flex;justify-content:space-between;align-items:center;background:var(--sf2);border:1px solid var(--ln);border-radius:12px;padding:12px 14px;color:var(--tx);font:inherit;font-size:14.5px;cursor:pointer;text-align:left;transition:background .2s,border-color .2s}
+.gswap button em{font-style:normal;color:var(--dm)}
+.gswap button.on{background:rgba(110,231,183,.1);border-color:rgba(110,231,183,.4)}
+.gswap button.on em{color:var(--okl)}
+
 `;
 
 const LOGO_D = "M1292.5 1869.4C1169.3 1859.0 1054.2 1814.9 953.7 1739.6C905.0 1703.1 856.6 1654.0 818.8 1602.7C809.6 1590.2 787.9 1558.3 783.0 1550.1C781.5 1547.6 777.9 1541.7 775.0 1537.0C772.1 1532.3 768.4 1526.0 766.7 1523.0C765.1 1520.0 762.9 1516.4 762.0 1515.0C761.1 1513.6 757.5 1507.3 754.0 1501.0C750.5 1494.7 746.9 1488.2 746.0 1486.5C745.1 1484.8 742.4 1479.9 740.0 1475.5C737.7 1471.1 735.4 1467.0 735.0 1466.5C734.6 1466.0 732.7 1462.6 730.8 1459.0C721.7 1442.2 719.3 1438.0 714.7 1430.5C698.0 1403.7 685.1 1387.1 667.0 1368.9C650.0 1351.8 628.7 1335.3 608.5 1323.5C598.2 1317.5 574.9 1306.4 564.0 1302.3C561.0 1301.1 555.4 1299.0 551.5 1297.5C524.5 1287.1 477.9 1275.7 439.0 1270.0C435.4 1269.4 429.8 1268.6 426.5 1268.0C423.2 1267.5 415.1 1266.4 408.5 1265.5C401.9 1264.7 393.1 1263.5 389.0 1263.0C375.5 1261.3 350.3 1258.6 332.5 1257.0C325.9 1256.4 316.4 1255.5 311.5 1255.0C306.6 1254.5 296.2 1253.6 288.5 1253.0C265.3 1251.1 262.5 1250.7 262.5 1249.0C262.5 1247.3 265.0 1247.0 288.0 1245.0C295.4 1244.4 304.9 1243.5 309.0 1243.0C313.1 1242.5 321.7 1241.6 328.0 1241.0C334.3 1240.4 343.1 1239.5 347.5 1239.0C351.9 1238.5 360.0 1237.6 365.5 1237.0C394.5 1233.9 422.2 1229.3 457.5 1221.9C461.4 1221.1 463.3 1220.6 480.5 1216.0C496.7 1211.7 527.6 1200.8 541.0 1194.8C543.5 1193.7 547.5 1191.9 550.0 1190.8C552.5 1189.7 558.1 1187.0 562.5 1184.8C569.9 1181.1 573.5 1179.1 586.0 1172.2C593.5 1168.1 621.1 1149.6 627.5 1144.4C663.9 1114.9 697.7 1078.2 719.2 1045.0C727.9 1031.5 736.5 1017.8 739.0 1013.5C745.3 1002.6 774.1 958.7 788.2 938.5C802.4 918.1 833.8 877.9 846.0 864.5C908.6 795.7 955.1 757.1 1027.0 714.2C1060.2 694.4 1106.7 673.3 1147.5 659.3C1191.1 644.5 1240.0 633.7 1287.5 628.6C1390.4 617.4 1499.9 633.3 1596.0 673.4C1615.3 681.5 1640.2 693.3 1650.5 699.2C1653.8 701.1 1660.1 704.6 1664.5 707.0C1677.9 714.2 1705.6 732.3 1723.9 745.9C1753.9 768.1 1789.2 801.0 1813.8 829.5C1839.1 858.9 1864.0 894.8 1885.5 932.8C1890.0 940.8 1891.0 943.4 1890.1 944.3C1888.8 945.6 1887.4 944.2 1871.5 926.7C1862.3 916.4 1832.2 888.2 1820.5 878.8C1800.4 862.7 1776.4 846.1 1754.5 833.1C1742.7 826.0 1704.7 806.6 1694.0 802.1C1638.5 778.7 1600.9 768.8 1548.0 763.6C1513.1 760.1 1476.4 760.9 1441.5 765.9C1429.3 767.6 1409.4 771.4 1399.2 773.9C1396.9 774.5 1393.3 775.4 1391.2 775.9C1380.3 778.5 1356.6 785.7 1349.0 788.7C1348.2 789.0 1344.1 790.5 1340.0 792.0C1320.5 798.9 1277.6 819.4 1260.5 829.9C1256.7 832.3 1252.2 835.0 1250.5 836.0C1217.8 854.9 1178.9 885.8 1146.1 919.0C1105.5 960.0 1075.2 1001.9 1050.6 1051.0C1029.3 1093.6 1015.9 1132.3 1007.1 1176.5C997.8 1223.6 997.8 1276.7 1007.1 1325.0C1015.1 1366.6 1028.5 1406.1 1047.5 1444.2C1059.9 1469.0 1084.4 1507.2 1102.2 1529.6C1134.0 1569.7 1175.5 1608.2 1219.9 1639.0C1225.3 1642.8 1243.4 1654.1 1252.0 1659.1C1256.1 1661.5 1260.8 1664.2 1262.5 1665.2C1267.9 1668.3 1301.3 1684.5 1307.5 1687.0C1308.6 1687.4 1311.2 1688.6 1313.3 1689.5C1316.8 1691.0 1323.3 1693.5 1339.0 1699.2C1344.3 1701.1 1353.8 1704.1 1360.8 1706.1C1362.5 1706.6 1365.5 1707.4 1367.2 1707.9C1388.1 1713.9 1419.2 1720.0 1444.0 1722.9C1469.0 1725.9 1476.9 1726.3 1505.5 1726.3C1533.9 1726.3 1543.9 1725.7 1566.5 1722.9C1579.8 1721.2 1597.1 1718.5 1603.5 1717.0C1614.8 1714.5 1616.9 1714.0 1622.0 1712.9C1626.9 1711.8 1634.8 1709.8 1645.0 1707.0C1653.8 1704.5 1672.3 1698.7 1676.5 1697.0C1677.6 1696.6 1683.5 1694.3 1689.5 1691.9C1695.5 1689.6 1703.3 1686.4 1706.8 1684.8C1710.2 1683.3 1713.2 1682.0 1713.5 1682.0C1713.9 1682.0 1734.2 1672.4 1743.0 1668.1C1757.3 1660.9 1786.1 1644.0 1802.9 1632.7C1815.0 1624.7 1842.4 1604.3 1852.0 1596.1C1867.3 1583.2 1882.3 1569.7 1894.1 1558.3C1901.0 1551.5 1907.2 1546.0 1907.9 1546.0C1908.5 1546.0 1909.0 1546.8 1909.0 1547.8C1909.0 1552.1 1859.5 1622.3 1845.2 1638.2C1842.6 1641.1 1836.8 1647.8 1832.5 1653.0C1816.3 1672.3 1783.1 1704.4 1758.5 1724.6C1710.8 1763.6 1650.2 1798.3 1586.6 1822.9C1521.7 1848.0 1463.5 1862.3 1400.5 1868.6C1376.9 1870.9 1315.6 1871.4 1292.5 1869.4ZM1482.2 1560.8C1481.6 1560.1 1480.2 1552.5 1479.0 1544.0C1476.1 1522.4 1469.7 1490.9 1463.8 1469.1C1452.6 1427.3 1437.3 1394.1 1416.1 1365.0C1390.9 1330.5 1350.1 1301.1 1305.0 1285.2C1300.3 1283.5 1294.9 1281.7 1293.0 1281.1C1291.1 1280.5 1287.5 1279.4 1285.0 1278.6C1282.5 1277.8 1275.5 1276.0 1269.5 1274.6C1250.7 1270.1 1251.5 1270.2 1233.5 1267.0C1215.3 1263.7 1210.9 1263.1 1177.0 1259.0C1156.3 1256.5 1144.8 1255.2 1121.0 1253.0C1114.7 1252.4 1105.7 1251.5 1101.0 1251.0C1093.0 1250.1 1070.6 1248.2 1063.0 1247.7C1060.7 1247.6 1059.4 1247.0 1059.2 1245.9C1058.9 1244.1 1062.7 1243.4 1086.0 1241.0C1091.8 1240.4 1099.9 1239.5 1104.0 1239.0C1108.1 1238.5 1115.8 1237.6 1121.0 1237.0C1150.9 1233.5 1184.8 1228.7 1206.5 1224.9C1209.8 1224.3 1214.8 1223.4 1217.5 1223.0C1231.6 1220.5 1235.8 1219.7 1238.5 1218.9C1240.2 1218.4 1245.5 1217.1 1250.5 1216.0C1267.0 1212.2 1293.1 1203.8 1304.8 1198.4C1307.7 1197.1 1310.2 1196.0 1310.4 1196.0C1311.6 1196.0 1331.3 1186.3 1338.3 1182.3C1378.2 1159.5 1407.8 1130.9 1430.8 1093.0C1454.6 1053.7 1468.7 1011.0 1478.9 947.0C1481.2 932.3 1481.7 930.5 1483.5 930.5C1485.2 930.5 1485.7 932.1 1487.6 943.5C1499.8 1016.1 1522.0 1072.0 1556.1 1116.0C1573.9 1139.0 1603.2 1164.3 1627.0 1177.2C1646.6 1187.9 1657.0 1192.4 1675.5 1198.4C1691.7 1203.7 1700.8 1206.3 1713.5 1209.0C1715.7 1209.5 1719.5 1210.3 1722.0 1210.9C1737.9 1214.4 1767.3 1218.7 1789.5 1220.9C1819.2 1223.8 1840.0 1225.2 1881.5 1227.0C1894.7 1227.6 1915.4 1228.5 1927.5 1229.0C1939.6 1229.5 1960.8 1230.4 1974.5 1231.0C1988.2 1231.6 2009.0 1232.5 2020.5 1233.0C2032.0 1233.5 2052.8 1234.4 2066.5 1235.0C2153.1 1238.6 2244.7 1243.4 2245.7 1244.3C2247.5 1246.2 2242.4 1246.8 2221.8 1247.4C2209.0 1247.7 2185.7 1248.5 2170.0 1249.0C2154.3 1249.5 2122.2 1250.4 2098.5 1251.0C2074.8 1251.5 2037.0 1252.4 2014.5 1253.0C1992.0 1253.5 1953.5 1254.5 1929.0 1255.1C1820.0 1257.7 1783.2 1260.3 1734.5 1269.0C1694.7 1276.2 1669.3 1284.0 1640.1 1298.2C1585.9 1324.6 1549.7 1362.5 1522.8 1421.2C1508.2 1453.3 1498.5 1487.4 1489.5 1538.5C1485.9 1559.3 1484.5 1563.5 1482.2 1560.8Z";
@@ -3143,22 +3197,161 @@ const GUIDE_SOURCES = {
   cafe: ["EFSA (2015). Scientific Opinion on the safety of caffeine.", "Guest NS et al. (2021). ISSN position stand: caffeine and exercise performance.", "Drake C et al. (2013). Caffeine effects on sleep taken 0, 3, or 6 hours before going to bed."],
   prote: ["Morton RW et al. (2018). Meta-analysis of protein supplementation and resistance training.", "Jäger R et al. (2017). ISSN position stand: protein and exercise."],
 };
-function NutriGuide() {
+// ---------- Guía interactiva: tarjetas cortas + herramientas ----------
+const GUIDE_ICONS = {
+  "Mejor que mejor: de panadería": "🥖", "Pídelo cortado y congélalo": "❄️", "Sacia más": "🙌", "Pésalo la primera vez": "⚖️", "Lee la etiqueta": "🔎", "En la app": "📱",
+  "Cuánta agua": "💧", "El truco del color": "🟡", "Botella siempre a la vista": "🧴", "Antes y durante el entreno": "🥥", "¿Sed o hambre?": "🤔", "También cuentan": "🍋",
+  "Depende de ti": "🧭", "Cuándo más ayuda": "⚡", "Sí, azúcar también vale": "🍯", "Cuánto y cuándo": "⏱️", "Lo que mejor evitar justo antes": "🚫", "Si no comes nada, tampoco pasa nada": "😌", "Proteína": "🥛", "Durante el entreno": "🥥",
+  "Cuánta es mucha": "📏", "Para entrenar": "🏋️", "Cuidado con el sueño": "😴", "Cuánta lleva cada cosa (aprox.)": "☕", "Ojo con sumarla": "➕", "Si te sienta mal": "💓",
+  "Cuánta": "📏", "Repártela": "🍽️", "Fuentes fáciles": "🍗", "Truco": "💡",
+  "Pide a la plancha": "🔥", "Salsas aparte": "🥣", "El táper, tu mejor amigo": "🥡", "Un día no es la semana": "📅", "Apúntalo igual": "✍️",
+  "Fiambre de pavo o pollo": "🥓", "Tortitas de arroz o maíz": "🍘", "Legumbres de bote": "🫘", "Salsas": "🥫", "Yogures": "🥛", "Verduras congeladas": "🥦", "Carne picada y hamburguesas": "🍔", "Crema de cacahuete": "🥜", "Pan «integral»": "🍞", "Tomate para untar": "🍅",
+};
+const firstSentence = (t) => { const m = t.match(/^.+?[.!?](\s|$)/); return m && m[0].length < t.length ? m[0].trim() : t; };
+
+function GuideCards({ items }) {
+  const [open, setOpen] = useState(null);
+  return (
+    <div className="gcards">
+      {items.map(([t, d]) => {
+        const short = firstSentence(d), more = short !== d, on = open === t;
+        return (
+          <button key={t} className={`gcard${on ? " on" : ""}`} onClick={() => more && setOpen(on ? null : t)}>
+            <span className="gc-ic">{GUIDE_ICONS[t] || "✦"}</span>
+            <b>{t}</b>
+            <span className="gc-tx">{on ? d : short}</span>
+            {more && <em>{on ? "Menos" : "Ver más"}</em>}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+const Pick = ({ label, opts, val, set }) => (
+  <div className="gpick"><small>{label}</small><div className="chips">{opts.map(([v, l]) => <button key={v} className={`chip ${val === v ? "on" : ""}`} onClick={() => set(v)}>{l}</button>)}</div></div>
+);
+
+const PRE_FOODS = [["🍌", "1 plátano", "≈ 25 g"], ["🌴", "3-4 dátiles", "≈ 25 g"], ["🍘", "2 tortitas de arroz + miel", "≈ 25 g"], ["🧃", "1 vaso de zumo", "≈ 25 g"], ["🍬", "Un puñado de gominolas (30 g)", "≈ 23 g"], ["🍞", "Pan blanco con mermelada", "≈ 30 g"]];
+function PreTool() {
+  const [last, setLast] = useState("ayunas");
+  const [len, setLen] = useState("normal");
+  const r = (() => {
+    if (last === "ayunas") return len === "corto" ? ["Algo pequeño", "15-25 g de hidrato rápido unos 20 min antes. Si te sienta mal comer, también puedes entrenar así.", "ok"]
+      : ["Sí, tómalo", "20-40 g de hidrato rápido 20-30 min antes. Aquí es donde más se nota en las últimas series.", "yes"];
+    if (last === "reciente") return len === "largo" ? ["Un extra pequeño", "Ya comiste: con 15-25 g antes o durante el entreno vas sobrada.", "ok"]
+      : ["No hace falta", "Con la comida de hace 1-2 h tienes energía de sobra. Agua y a entrenar.", "no"];
+    return len === "corto" ? ["Opcional", "Si te notas floja, algo pequeño (15-25 g). Si no, puedes entrenar así.", "ok"]
+      : ["Sí, tómalo", "20-40 g de hidrato rápido 20-60 min antes y, si puedes, algo de proteína (un yogur proteico).", "yes"];
+  })();
+  return (
+    <div className="gtool">
+      <div className="gtool-t">¿Qué tomo antes de entrenar?</div>
+      <Pick label="Última comida" val={last} set={setLast} opts={[["ayunas", "En ayunas"], ["reciente", "Hace 1-2 h"], ["lejos", "Hace +3 h"]]} />
+      <Pick label="Tu entreno" val={len} set={setLen} opts={[["corto", "Corto (<45 min)"], ["normal", "Normal"], ["largo", "Largo (+75 min)"]]} />
+      <div className={`gres ${r[2]}`}><b>{r[0]}</b><span>{r[1]}</span></div>
+      {r[2] !== "no" && <div className="gfoods">{PRE_FOODS.map(([i, n, g]) => <div key={n}><span>{i}</span><b>{n}</b><small>{g}</small></div>)}</div>}
+      {len === "largo" && <p className="hint" style={{ margin: "8px 0 0" }}>Durante: agua a sorbos y, si quieres, agua de coco o una bebida con algo de azúcar.</p>}
+    </div>
+  );
+}
+
+function WaterTool({ weight }) {
+  const [kg, setKg] = useState(Math.round(weight) || 60);
+  const [train, setTrain] = useState(true);
+  const l = Math.round((kg * 0.03 + (train ? 0.5 : 0)) * 10) / 10;
+  const glasses = Math.round((l * 1000) / 250);
+  return (
+    <div className="gtool">
+      <div className="gtool-t">¿Cuánta agua necesito?</div>
+      <div className="gslider"><small>Tu peso</small><input type="range" min="40" max="130" value={kg} onChange={(e) => setKg(Number(e.target.value))} /><b>{kg} kg</b></div>
+      <Pick label="Hoy" val={train} set={setTrain} opts={[[true, "Entreno"], [false, "Descanso"]]} />
+      <div className="gbig"><b>{l.toLocaleString("es-ES")} L</b><span>≈ {glasses} vasos</span></div>
+      <div className="gglass">{Array.from({ length: glasses }, (_, i) => <i key={i} style={{ animationDelay: `${i * 0.03}s` }} />)}</div>
+      <p className="hint" style={{ margin: "6px 0 0" }}>Referencia aproximada para lo que bebes: unos 30 ml por kilo, y medio litro más si entrenas. Con calor o mucho sudor, más.</p>
+    </div>
+  );
+}
+
+const CAF_DRINKS = [["☕", "Espresso", 70], ["☕", "Café de filtro", 90], ["🍵", "Té negro", 50], ["🥤", "Cola (lata)", 32], ["⚡", "Red Bull 250 ml", 80], ["⚡", "Monster 500 ml", 160], ["🧪", "Pre-entreno (cacito)", 200]];
+function CafTool({ weight }) {
+  const [n, setN] = useState({});
+  const tot = CAF_DRINKS.reduce((a, [, k, mg]) => a + (n[k] || 0) * mg, 0);
+  const dose = Math.round((weight || 60) * 3);
+  const pct = Math.min(1, tot / 400);
+  return (
+    <div className="gtool">
+      <div className="gtool-t">Suma tu cafeína de hoy</div>
+      <div className="gcaf">{CAF_DRINKS.map(([i, k, mg]) => (
+        <div key={k}><span>{i}</span><b>{k}<small>{mg} mg</small></b>
+          <div className="gstep"><button onClick={() => setN({ ...n, [k]: Math.max(0, (n[k] || 0) - 1) })} aria-label={`Quitar ${k}`}>−</button><em>{n[k] || 0}</em><button onClick={() => setN({ ...n, [k]: (n[k] || 0) + 1 })} aria-label={`Añadir ${k}`}>+</button></div>
+        </div>
+      ))}</div>
+      <div className="gbar"><i style={{ width: `${pct * 100}%`, background: tot > 400 ? "#F87171" : tot > 300 ? "#F5B454" : "var(--okl)" }} /></div>
+      <div className="gbar-l"><b>{tot} mg</b><span>{tot > 400 ? "Te pasas del límite diario (400 mg)" : `de 400 mg al día`}</span></div>
+      <p className="hint" style={{ margin: "6px 0 0" }}>Para rendir en el entreno te bastan unos <b>{dose} mg</b> (3 mg por kilo) 30-60 min antes. Último café antes de las 15-16 h.</p>
+    </div>
+  );
+}
+
+const PROT_FOODS = [["🍗", "Pechuga de pollo", 23], ["🐟", "Atún al natural", 24], ["🥚", "Claras de huevo", 11], ["🥛", "Yogur proteico", 10], ["🧀", "Queso batido 0%", 8], ["🫘", "Lentejas cocidas", 9], ["🥢", "Tofu firme", 13]];
+function ProtTool({ weight }) {
+  const [kg, setKg] = useState(Math.round(weight) || 60);
+  const lo = Math.round(kg * 1.6), hi = Math.round(kg * 2.2);
+  return (
+    <div className="gtool">
+      <div className="gtool-t">Tu proteína al día</div>
+      <div className="gslider"><small>Tu peso</small><input type="range" min="40" max="130" value={kg} onChange={(e) => setKg(Number(e.target.value))} /><b>{kg} kg</b></div>
+      <div className="gbig"><b>{lo}–{hi} g</b><span>≈ {Math.round(lo / 4)}–{Math.round(hi / 4)} g en cada una de 4 comidas</span></div>
+      <div className="gtool-s">Para 30 g de proteína necesitas…</div>
+      <div className="gfoods">{PROT_FOODS.map(([i, n, p]) => <div key={n}><span>{i}</span><b>{n}</b><small>{Math.round((30 / p) * 100 / 5) * 5} g</small></div>)}</div>
+    </div>
+  );
+}
+
+const FUERA_SWAP = [["Pollo empanado", "Pollo a la plancha"], ["Patatas fritas", "Ensalada o patata asada"], ["Salsa por encima", "Salsa aparte"], ["Refresco normal", "Refresco 0% o agua"], ["Postre + café con azúcar", "Café solo o fruta"]];
+function FueraTool() {
+  const [flip, setFlip] = useState({});
+  return (
+    <div className="gtool">
+      <div className="gtool-t">Cambia esto por esto</div>
+      <div className="gswap">{FUERA_SWAP.map(([a, b], i) => (
+        <button key={a} className={flip[i] ? "on" : ""} onClick={() => setFlip({ ...flip, [i]: !flip[i] })}>
+          <span>{flip[i] ? b : a}</span><em>{flip[i] ? "✓" : "↻"}</em>
+        </button>
+      ))}</div>
+      <p className="hint" style={{ margin: "6px 0 0" }}>Toca cada uno para darle la vuelta.</p>
+    </div>
+  );
+}
+
+function NutriGuide({ weight = 60 }) {
   const [tab, setTab] = useState(null);
   const g = GUIDE.find((x) => x.id === tab);
   return (
     <div className="shop">
       <div className="shop-hd" style={{ cursor: "default" }}><b>Guía</b>{tab && <button className="link" onClick={() => setTab(null)}>Cerrar</button>}</div>
       <div className="gtabs" role="tablist">{GUIDE.map((x) => <button key={x.id} role="tab" aria-selected={tab === x.id} className={`chip ${tab === x.id ? "on" : ""}`} onClick={() => setTab(tab === x.id ? null : x.id)}>{x.label}</button>)}</div>
-      {!g && <p className="hint" style={{ margin: "6px 0 0" }}>Compra, pan, agua, pre-entreno, cafeína, proteína y comer fuera: toca una pestaña.</p>}
-      {g && <p className="hint" style={{ margin: "8px 0 0" }}>{g.intro}</p>}
-      {g?.id === "compra" && <ShopTips />}
-      {g?.items && <ul>{g.items.map(([t, d]) => <li key={t}><b>{t}</b><span>{d}</span></li>)}</ul>}
+      {!g && <p className="hint" style={{ margin: "6px 0 0" }}>Calculadoras y trucos rápidos: toca una pestaña.</p>}
+      {g && <p className="gintro">{g.intro}</p>}
+      {g?.id === "pre" && <PreTool />}
+      {g?.id === "agua" && <WaterTool weight={weight} />}
+      {g?.id === "cafe" && <CafTool weight={weight} />}
+      {g?.id === "prote" && <ProtTool weight={weight} />}
+      {g?.id === "fuera" && <FueraTool />}
       {g?.id === "pan" && <div className="shop-ex" style={{ marginTop: 10 }}>{SHOP_EXAMPLES.filter(([img]) => img.startsWith("pan-")).map(([img, n, d]) => <div key={img}><img src={`/compra/${img}.jpg`} alt={n} loading="lazy" /><b>{n}</b><small>{d}</small></div>)}</div>}
+      {g?.id === "compra" && <>
+        <div className="shop-ex-t">Ejemplos que uso yo (Mercadona)</div>
+        <div className="shop-ex">{SHOP_EXAMPLES.map(([img, n, d]) => <div key={img}><img src={`/compra/${img}.jpg`} alt={n} loading="lazy" /><b>{n}</b><small>{d}</small></div>)}</div>
+        <div className="shop-ex-t">Qué mirar en la etiqueta</div>
+        <GuideCards items={SHOP_TIPS} />
+      </>}
+      {g?.items && <><div className="shop-ex-t">{g.id === "pan" ? "Trucos" : "Lo importante"}</div><GuideCards items={g.items} /></>}
       {g && GUIDE_SOURCES[g.id] && <details className="gsrc"><summary>Fuentes</summary><ul>{GUIDE_SOURCES[g.id].map((x) => <li key={x}><span>{x}</span></li>)}</ul></details>}
     </div>
   );
 }
+
 function ShopTips() {
   return <>
     <ul>{SHOP_TIPS.map(([t, d]) => <li key={t}><b>{t}</b><span>{d}</span></li>)}</ul>
@@ -3328,7 +3521,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
         </div>
       </div>
 
-      <NutriGuide />
+      <NutriGuide weight={Number(profile?.weight) || 60} />
       {cd ? <CoachDiet meals={cdMeals} tips={cd.tips} eaten={eaten} setEaten={setEaten} totOf={totOf} /> : <>
       <h2>Tus comidas</h2>
       <div className="seg">{COOK_OPTS.map(([v, l]) => <button key={v} className={mode === v ? "on" : ""} onClick={() => setCook(v)}>{l}</button>)}</div>
