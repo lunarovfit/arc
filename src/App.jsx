@@ -1753,7 +1753,7 @@ select.in{appearance:none}
 .gglass i{width:16px;height:22px;border:2px solid #7DD3FC;border-top:0;border-radius:0 0 5px 5px;background:linear-gradient(to top,rgba(125,211,252,.55) 70%,transparent 70%);animation:rise .3s ease-out both}
 .gcaf{display:flex;flex-direction:column}
 .gcaf>div{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--ln)}
-.gcaf>div>span{font-size:20px;width:26px;text-align:center}
+.gcaf>div>span{font-size:20px;width:34px;text-align:center;flex:none}
 .gcaf b{flex:1;font-size:14px;font-weight:600;display:flex;flex-direction:column}
 .gcaf b small{font-weight:400;color:var(--dm);font-size:12px}
 .gstep{display:flex;align-items:center;gap:8px}
@@ -1771,7 +1771,7 @@ select.in{appearance:none}
 .gswap button.on em{color:var(--okl)}
 
 .gthumb{width:44px;height:44px;border-radius:12px;object-fit:cover;flex:none}
-.gcaf .gthumb{width:34px;height:34px;border-radius:9px}
+.gcaf .gthumb{width:34px;height:34px;border-radius:0;object-fit:contain}
 .ghero{position:relative;margin:12px 0 0;border-radius:16px;overflow:hidden;aspect-ratio:16/10;animation:rise .35s ease-out both}
 .ghero img{width:100%;height:100%;object-fit:cover;display:block}
 .ghero figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 14px 11px;background:linear-gradient(transparent,rgba(0,0,0,.75));font-size:13px;font-weight:600}
@@ -3241,7 +3241,7 @@ const Pick = ({ label, opts, val, set }) => (
 );
 
 const GIc = ({ i }) => (i.startsWith("/") ? <img className="gthumb" src={i} alt="" loading="lazy" /> : <span>{i}</span>);
-const GUIDE_HERO = { pre: ["/guia/pre.jpg", "Mi pre-entreno de siempre: plátano y dátiles"], cafe: ["/guia/cafe.jpg", "Mi café de las mañanas"] };
+const GUIDE_HERO = { pre: ["/guia/pre.jpg", "Mi pre-entreno de siempre: plátano y dátiles"] };
 const PRE_FOODS = [["/guia/t-platano.jpg", "1 plátano", "≈ 25 g"], ["/guia/t-datiles.jpg", "2 dátiles Medjoul", "≈ 30 g"], ["🍘", "2 tortitas de arroz + miel", "≈ 25 g"], ["🧃", "1 vaso de zumo", "≈ 25 g"], ["🍬", "Un puñado de gominolas (30 g)", "≈ 23 g"], ["🍞", "Pan blanco con mermelada", "≈ 30 g"]];
 function PreTool() {
   const [last, setLast] = useState("ayunas");
@@ -3283,7 +3283,7 @@ function WaterTool({ weight }) {
   );
 }
 
-const CAF_DRINKS = [["/guia/t-cafe.jpg", "Café con leche", 70], ["☕", "Café de filtro", 90], ["🍵", "Té negro", 50], ["🥤", "Cola (lata)", 32], ["⚡", "Red Bull 250 ml", 80], ["/guia/t-monster-ultra.jpg", "Monster Ultra 500 ml", 160], ["/guia/t-monster-fresa.jpg", "Monster Ultra Strawberry", 160], ["🧪", "Pre-entreno (cacito)", 200]];
+const CAF_DRINKS = [["/guia/t-cafe.png", "Café", 80], ["🍵", "Té negro", 50], ["🥤", "Cola (lata)", 32], ["⚡", "Red Bull 250 ml", 80], ["/guia/t-monster.png", "Monster 0 (500 ml)", 160], ["🧪", "Pre-entreno (cacito)", 200]];
 function CafTool({ weight }) {
   const [n, setN] = useState({});
   const tot = CAF_DRINKS.reduce((a, [, k, mg]) => a + (n[k] || 0) * mg, 0);
