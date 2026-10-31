@@ -447,6 +447,7 @@ let FOODS = {
   maxiTortilla: { n: "Maxi tortilla de trigo", p: 8.4, c: 50, f: 5.8 },
   basePizza: { n: "Base de pizza", p: 6.5, c: 53.4, f: 4.4 },
   avena: { n: "Avena", p: 12.2, c: 59.9, f: 7.1 },
+  zanahoria: { n: "Zanahoria", p: 0.9, c: 7.6, f: 0.2 },
   arroz: { n: "Arroz", p: 5.8, c: 82.2, f: 0.8 },
   pasta: { n: "Pasta", p: 13, c: 71, f: 1.5 },
   patata: { n: "Patata cocida", p: 1.7, c: 15.7, f: 0.1 },
@@ -533,7 +534,7 @@ const LIMITS = { chia: 15, salsaBBQ: 20, aove: 20, cremaCacahuete: 30, frutosSec
 
 // items: [alimento, "p"|"c"|"f" (se ajusta) o gramos fijos]
 let RECIPES = [
-  { slot: "desayuno", mode: "sencilla", name: "Tostadas de pavo y tomate", items: [["panIntegral", "c"], ["pavo", "p"], ["verduras", 50], ["aove", "f"]], how: "Tuesta el pan, ralla tomate por encima, un chorrito de aceite y el pavo. El pavo, con un 90% de carne como mínimo." },
+  { slot: "desayuno", mode: "sencilla", name: "Tostadas de pavo y tomate", items: [["panIntegral", "c"], ["pavo", "p"], ["verduras", 50], ["aove", "f"], ["arandanos", 60]], how: "Tuesta el pan, ralla tomate por encima, un chorrito de aceite y el pavo. El pavo, con un 90% de carne como mínimo. Un puñado de arándanos al lado." },
   { slot: "desayuno", mode: "sencilla", name: "Porridge proteico de cacao", items: [["avena", "c"], ["lecheSemi", 200], ["proteina", "p"], ["cremaCacahuete", "f"]], how: "Avena con la leche 2 minutos al micro, mezcla la proteína de chocolate (te da el sabor sin tener que añadir cacao) y pon la crema de cacahuete encima." },
   { slot: "desayuno", mode: "sanji", name: "Tortitas de avena con arándanos", off: true, items: [["avena", "c"], ["claras", "p"], ["platano", 40], ["arandanos", 50], ["cremaCacahuete", "f"]],
     steps: ["Tritura la avena con las claras y el plátano hasta tener una masa lisa.", "Sartén antiadherente a fuego medio, vierte cucharones pequeños y dales la vuelta cuando salgan burbujas.", "Apila, cubre con los arándanos y termina con la crema de cacahuete un poco templada."] },
@@ -632,6 +633,7 @@ let RECIPES = [
   {"id": "rl16", "slot": "desayuno", "mode": "sanji", "name": "Crepe proteica de frutos rojos", "items": [["avena", "c"], ["claras", "p"], ["proteina", 15], ["yogurProt", 100], ["frutosRojos", 80]], "steps": ["Tritura la avena con las claras, la proteína y unos cuantos frutos rojos hasta tener una masa líquida.", "Sartén antiadherente grande a fuego medio, vierte toda la masa y extiéndela como una crepe. Vuelta cuando se despegue.", "Cubre con el yogur, el resto de frutos rojos y un poco de proteína espolvoreada."]},
   {"id": "rl17", "slot": "desayuno", "mode": "sanji", "name": "Brunch completo de domingo", "items": [["huevo", 120], ["panIntegral", "c"], ["pollo", "p"], ["aguacate", "f"], ["yogurProt", 125], ["arandanos", 50]], "steps": ["Tuesta el pan y úntalo con el aguacate machacado con sal y pimienta.", "Pon por encima el pollo desmechado.", "Revuelve los huevos a fuego bajo para que queden jugosos.", "Al lado, yogur con arándanos y canela."], "plate": "Plato grande con el revuelto y la tostada, y el yogur en un bol aparte."},
   {"id": "rl18", "slot": "desayuno", "mode": "sencilla", "name": "Tostadas de centeno con tomate y jamón", "items": [["panCenteno", "c"], ["tomateUntar", 30], ["jamon", 40], ["yogurProt", "p"], ["uvas", 80]], "how": "Tuesta el pan de centeno, unta el tomate (el de bote ya lleva su aceite) y pon el jamón encima. Quítale la grasa blanca si quieres. De postre, un puñado de uvas, y un yogur proteico al lado para llegar a tu proteína."},
+  {"id": "rl19", "slot": "desayuno", "mode": "sencilla", "name": "Tortitas proteicas de avena y zanahoria", "items": [["avena", "c"], ["proteina", 20], ["claras", "p"], ["huevo", 60], ["zanahoria", 60], ["quesoBatido", 100], ["mermelada", 20], ["arandanos", 40]], "how": "Tritura o mezcla la avena, la proteína, las claras, el huevo y la zanahoria rallada fina con canela y una pizca de levadura. Deja reposar 5 min y haz tortitas pequeñas a fuego medio-bajo. Encima, queso batido con canela, mermelada y arándanos. Sin zanahoria: pon 15-20 g más de avena o harina de avena.", "steps": ["Ralla la zanahoria muy fina y apriétala con las manos para quitarle el agua.", "Mezcla la avena (o harina de avena), la proteína, las claras, el huevo, la zanahoria, canela, una pizca de sal y media cucharadita de levadura química. Si no quieres zanahoria, pon 15-20 g más de avena.", "Deja reposar la masa 5 minutos: la avena absorbe líquido y las tortitas no se rompen. Tiene que quedar espesa, como un yogur. Si está muy líquida, una cucharada más de avena.", "Sartén antiadherente a fuego medio-bajo, untada con unas gotas de aceite con una servilleta. Echa un cucharón pequeño por tortita y tapa la sartén.", "Dales la vuelta cuando salgan burbujas y los bordes estén secos (2-3 min). Si se pegan, la sartén estaba fría o la diste la vuelta antes de tiempo.", "Monta con el queso batido con canela, la mermelada y los arándanos por encima."]},
 ];
 
 const SLOT_NAMES = { pre: "Pre-entreno", desayuno: "Desayuno", mediaManana: "Media mañana", comida: "Comida", merienda: "Merienda", cena: "Cena" };
@@ -651,7 +653,7 @@ let FOOD_TAGS = {
 };
 const EXCLUDE_OPTS = [["pescado", "Pescado"], ["lacteos", "Lácteos"], ["huevo", "Huevo"], ["cerdo", "Cerdo"], ["gluten", "Gluten"]];
 // Fotos de platos que vienen dentro de la app (la coach puede cambiarlas desde Editar contenido)
-const REC_IMG = new Set(["r008", "r029", "rl01", "rl02", "rl03", "rl04", "rl05", "rl06", "rl07", "rl08", "rl09", "rl10", "rl11", "rl12", "rl13", "rl14", "rl15", "rl16", "rl17", "rl18"]);
+const REC_IMG = new Set(["r001", "r008", "r029", "rl01", "rl02", "rl03", "rl04", "rl05", "rl06", "rl07", "rl08", "rl09", "rl10", "rl11", "rl12", "rl13", "rl14", "rl15", "rl16", "rl17", "rl18", "rl19"]);
 const recImg = (media, id) => media[`rec:${id}`] || (REC_IMG.has(id) ? `/recetas/${id}.jpg` : null);
 let TUPPER = new Set(["Pollo con arroz y verduras", "Pasta boloñesa ligera", "Poke de salmón", "Ñoquis con atún y tomate", "Bol de yogur con muesli y kiwi", "Ensalada de legumbres con atún", "Wrap de pollo para llevar", "Arroz con ternera al curry", "Emperador con batata asada", "Batido de proteína y plátano", "Yogur proteico con plátano y frutos secos", "Tortitas de arroz con jamón", "Tortilla de patata fit", "Porridge proteico de cacao", "Tortitas con pavo y aguacate", "Overnight oats de tarta de queso", "Onigiris de atún", "Lasaña boloñesa fit", "Cheesecake en vaso", "Tacos de pollo con guacamole", "Bowl de salmón, lentejas y ñoquis", "Ensalada de pollo, garbanzos y rúcula", "Fusilli de lentejas con pollo", "Táper de cerdo con batata asada", "Pollo desmechado con salsa de yogur"]);
 // Iconos de los modos de cocina (línea fina, mismo estilo que el resto de la app)
@@ -1767,6 +1769,12 @@ select.in{appearance:none}
 .gswap button em{font-style:normal;color:var(--dm)}
 .gswap button.on{background:rgba(110,231,183,.1);border-color:rgba(110,231,183,.4)}
 .gswap button.on em{color:var(--okl)}
+
+.gthumb{width:44px;height:44px;border-radius:12px;object-fit:cover;flex:none}
+.gcaf .gthumb{width:34px;height:34px;border-radius:9px}
+.ghero{position:relative;margin:12px 0 0;border-radius:16px;overflow:hidden;aspect-ratio:16/10;animation:rise .35s ease-out both}
+.ghero img{width:100%;height:100%;object-fit:cover;display:block}
+.ghero figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 14px 11px;background:linear-gradient(transparent,rgba(0,0,0,.75));font-size:13px;font-weight:600}
 
 `;
 
@@ -3232,7 +3240,9 @@ const Pick = ({ label, opts, val, set }) => (
   <div className="gpick"><small>{label}</small><div className="chips">{opts.map(([v, l]) => <button key={v} className={`chip ${val === v ? "on" : ""}`} onClick={() => set(v)}>{l}</button>)}</div></div>
 );
 
-const PRE_FOODS = [["🍌", "1 plátano", "≈ 25 g"], ["🌴", "3-4 dátiles", "≈ 25 g"], ["🍘", "2 tortitas de arroz + miel", "≈ 25 g"], ["🧃", "1 vaso de zumo", "≈ 25 g"], ["🍬", "Un puñado de gominolas (30 g)", "≈ 23 g"], ["🍞", "Pan blanco con mermelada", "≈ 30 g"]];
+const GIc = ({ i }) => (i.startsWith("/") ? <img className="gthumb" src={i} alt="" loading="lazy" /> : <span>{i}</span>);
+const GUIDE_HERO = { pre: ["/guia/pre.jpg", "Mi pre-entreno de siempre: plátano y dátiles"], cafe: ["/guia/cafe.jpg", "Mi café de las mañanas"] };
+const PRE_FOODS = [["/guia/t-platano.jpg", "1 plátano", "≈ 25 g"], ["/guia/t-datiles.jpg", "2 dátiles Medjoul", "≈ 30 g"], ["🍘", "2 tortitas de arroz + miel", "≈ 25 g"], ["🧃", "1 vaso de zumo", "≈ 25 g"], ["🍬", "Un puñado de gominolas (30 g)", "≈ 23 g"], ["🍞", "Pan blanco con mermelada", "≈ 30 g"]];
 function PreTool() {
   const [last, setLast] = useState("ayunas");
   const [len, setLen] = useState("normal");
@@ -3250,7 +3260,7 @@ function PreTool() {
       <Pick label="Última comida" val={last} set={setLast} opts={[["ayunas", "En ayunas"], ["reciente", "Hace 1-2 h"], ["lejos", "Hace +3 h"]]} />
       <Pick label="Tu entreno" val={len} set={setLen} opts={[["corto", "Corto (<45 min)"], ["normal", "Normal"], ["largo", "Largo (+75 min)"]]} />
       <div className={`gres ${r[2]}`}><b>{r[0]}</b><span>{r[1]}</span></div>
-      {r[2] !== "no" && <div className="gfoods">{PRE_FOODS.map(([i, n, g]) => <div key={n}><span>{i}</span><b>{n}</b><small>{g}</small></div>)}</div>}
+      {r[2] !== "no" && <div className="gfoods">{PRE_FOODS.map(([i, n, g]) => <div key={n}><GIc i={i} /><b>{n}</b><small>{g}</small></div>)}</div>}
       {len === "largo" && <p className="hint" style={{ margin: "8px 0 0" }}>Durante: agua a sorbos y, si quieres, agua de coco o una bebida con algo de azúcar.</p>}
     </div>
   );
@@ -3273,7 +3283,7 @@ function WaterTool({ weight }) {
   );
 }
 
-const CAF_DRINKS = [["☕", "Espresso", 70], ["☕", "Café de filtro", 90], ["🍵", "Té negro", 50], ["🥤", "Cola (lata)", 32], ["⚡", "Red Bull 250 ml", 80], ["⚡", "Monster 500 ml", 160], ["🧪", "Pre-entreno (cacito)", 200]];
+const CAF_DRINKS = [["/guia/t-cafe.jpg", "Café con leche", 70], ["☕", "Café de filtro", 90], ["🍵", "Té negro", 50], ["🥤", "Cola (lata)", 32], ["⚡", "Red Bull 250 ml", 80], ["/guia/t-monster-ultra.jpg", "Monster Ultra 500 ml", 160], ["/guia/t-monster-fresa.jpg", "Monster Ultra Strawberry", 160], ["🧪", "Pre-entreno (cacito)", 200]];
 function CafTool({ weight }) {
   const [n, setN] = useState({});
   const tot = CAF_DRINKS.reduce((a, [, k, mg]) => a + (n[k] || 0) * mg, 0);
@@ -3283,7 +3293,7 @@ function CafTool({ weight }) {
     <div className="gtool">
       <div className="gtool-t">Suma tu cafeína de hoy</div>
       <div className="gcaf">{CAF_DRINKS.map(([i, k, mg]) => (
-        <div key={k}><span>{i}</span><b>{k}<small>{mg} mg</small></b>
+        <div key={k}><GIc i={i} /><b>{k}<small>{mg} mg</small></b>
           <div className="gstep"><button onClick={() => setN({ ...n, [k]: Math.max(0, (n[k] || 0) - 1) })} aria-label={`Quitar ${k}`}>−</button><em>{n[k] || 0}</em><button onClick={() => setN({ ...n, [k]: (n[k] || 0) + 1 })} aria-label={`Añadir ${k}`}>+</button></div>
         </div>
       ))}</div>
@@ -3333,6 +3343,7 @@ function NutriGuide({ weight = 60 }) {
       <div className="shop-hd" style={{ cursor: "default" }}><b>Guía</b>{tab && <button className="link" onClick={() => setTab(null)}>Cerrar</button>}</div>
       <div className="gtabs" role="tablist">{GUIDE.map((x) => <button key={x.id} role="tab" aria-selected={tab === x.id} className={`chip ${tab === x.id ? "on" : ""}`} onClick={() => setTab(tab === x.id ? null : x.id)}>{x.label}</button>)}</div>
       {!g && <p className="hint" style={{ margin: "6px 0 0" }}>Calculadoras y trucos rápidos: toca una pestaña.</p>}
+      {g && GUIDE_HERO[g.id] && <figure className="ghero"><img src={GUIDE_HERO[g.id][0]} alt="" /><figcaption>{GUIDE_HERO[g.id][1]}</figcaption></figure>}
       {g && <p className="gintro">{g.intro}</p>}
       {g?.id === "pre" && <PreTool />}
       {g?.id === "agua" && <WaterTool weight={weight} />}
