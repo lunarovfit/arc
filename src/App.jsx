@@ -6659,7 +6659,7 @@ const CHECKIN_CSS = `
 .ck2-sec{margin-top:14px}
 .ck2-st{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);margin-bottom:6px}
 .ck2-qa{background:#000;border-radius:12px;padding:10px 12px;margin-bottom:6px}
-.ck2-qa small{display:block;font-size:12px;color:var(--dm);line-height:1.35}
+.ck2-qa small{display:block;font-size:12px;color:var(--dm);line-height:1.35;padding-right:34px}
 .ck2-qa p{margin:5px 0 0;font-size:15px;line-height:1.4;white-space:pre-wrap}
 .ck2-qa{position:relative}
 .ck2-story{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:none;border:1px solid var(--ln);color:var(--dm);font-size:14px;cursor:pointer;padding:0}
