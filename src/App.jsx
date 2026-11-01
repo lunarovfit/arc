@@ -199,7 +199,7 @@ const levelsOf = (branch, mode) => (mode === "clasico" || mode === "simple" ? CL
 const EX_VIDS = ["ARC-001", "ARC-002", "ARC-004", "ARC-006", "ARC-007", "ARC-009", "ARC-011", "ARC-012", "ARC-013", "ARC-014", "ARC-015", "ARC-016", "ARC-019", "ARC-020", "ARC-022", "ARC-023", "ARC-026", "ARC-027", "ARC-028", "ARC-029", "ARC-036", "ARC-037", "ARC-041", "ARC-042", "ARC-043", "ARC-049", "ARC-050", "ARC-054", "ARC-055", "ARC-060", "ARC-067", "ARC-069", "ARC-070", "ARC-073", "ARC-075", "ARC-076", "ARC-077", "ARC-078", "ARC-079", "ARC-080", "ARC-081", "ARC-082", "ARC-083", "ARC-084", "ARC-085", "ARC-087", "ARC-088", "ARC-M01", "ARC-M02", "ARC-M03", "ARC-M04", "ARC-M06", "ARC-M07", "ARC-M08", "ARC-M09", "ARC-X01", "ARC-X03"];
 const BUNDLED_MEDIA = Object.fromEntries(EX_VIDS.map((id) => [`ex:${id}`, `/ejercicios/${id}.mp4`]));
 // Imágenes que vienen dentro de la app; una foto subida después desde el panel las sustituye
-const BUNDLED_IMG = { "lvl:female:3": "/personajes/talia.jpg", "lvl:male:6": "/personajes/d.jpg", "lvl:female:7": null };
+const BUNDLED_IMG = { "lvl:female:3": "/personajes/talia.jpg", "lvl:male:6": "/personajes/d.jpg", "lvl:female:7": "/personajes/mitsuri.jpg" };
 const BUNDLED_SINCE = 1793011308383;
 const mediaOr = (media, key) => { if (key in BUNDLED_IMG) { const t = Number((/\/(\d{13})\.\w+$/.exec(media[key] || "") || [])[1]); if (!(t > BUNDLED_SINCE)) return BUNDLED_IMG[key]; } const m = /^rat:(female|male):(\d)$/.exec(key); return media[key] || (m ? `/ratas/${m[1]}/rat-${m[2]}.png` : null); };
 const levelKey = (branch, mode, i) => (mode === "clasico" ? `classic:${i}` : `lvl:${branch}:${i}`);
@@ -374,6 +374,16 @@ const DAY_TEMPLATES = {
   gluteoC: { name: "Glúteo C", ex: [["ARC-054", 3, "12–15", 1, 90], ["ARC-078", 3, "10 por pierna", 2, 90], ["ARC-051", 3, "10–12", 1, 90], ["ARC-060", 3, "15–20", 1, 60], ["ARC-X03", 3, "12–15 por pierna", 1, 60], ["ARC-081", 3, "12–15", 1, 60, "abs"]] },
   superiorA: { name: "Espalda y hombro", ex: [["ARC-009", 3, "8–10", 2, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-022", 3, "8–10", 2, 90], ["ARC-026", 3, "12–15", 1, 60], ["ARC-019", 3, "12–15", 1, 60], ["ARC-036", 2, "10–12", 1, 60], ["ARC-029", 2, "10–12", 1, 60]] },
   superiorB: { name: "Hombro, espalda y brazos", ex: [["ARC-011", 3, "10–12 por brazo", 1, 90], ["ARC-015", 3, "10–12", 1, 90], ["ARC-022", 3, "8–10", 2, 90], ["ARC-027", 3, "12–15", 1, 60], ["ARC-001", 2, "máx.", 1, 60], ["ARC-029", 3, "10–12", 1, 60], ["ARC-036", 3, "10–12", 1, 60]] },
+  tfEspalda: { name: "Espalda", ex: [["ARC-009", 4, "8–10", 2, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-015", 3, "10–12 por brazo", 1, 90], ["ARC-020", 3, "12–15", 1, 60], ["ARC-019", 3, "12–15", 1, 60], ["ARC-102", 3, "10–12", 1, 60]] },
+  tfHombro: { name: "Hombro y pecho", ex: [["ARC-022", 4, "8–10", 2, 120], ["ARC-101", 3, "8–10", 2, 120], ["ARC-026", 4, "12–15", 1, 60], ["ARC-027", 3, "12–15 por brazo", 1, 60], ["ARC-103", 3, "12–15", 1, 60], ["ARC-096", 3, "10–12", 1, 60]] },
+  tfPierna: { name: "Pierna", ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-051", 3, "8–10", 2, 120], ["ARC-099", 3, "10–12", 1, 120], ["ARC-049", 3, "10–12", 1, 90], ["ARC-091", 3, "12–15", 1, 60]] },
+  fzA: { name: "Fuerza A · sentadilla y banca", ex: [["ARC-042", 5, "5", 2, 180], ["ARC-X04", 5, "5", 2, 180], ["ARC-016", 4, "6–8", 2, 120], ["ARC-077", 3, "30–45", 0, 60]] },
+  fzB: { name: "Fuerza B · peso muerto y press", ex: [["ARC-021", 4, "4–5", 2, 210], ["ARC-022", 4, "6", 2, 150], ["ARC-007", 4, "máx.", 1, 120], ["ARC-054", 3, "8", 1, 90]] },
+  fzC: { name: "Fuerza C · volumen", ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-X04", 4, "6–8", 2, 150], ["ARC-009", 3, "8–10", 2, 90], ["ARC-051", 3, "8–10", 2, 120], ["ARC-081", 3, "12–15", 1, 60, "abs"]] },
+  inA: { name: "Inicio A", ex: [["ARC-099", 3, "10–12", 2, 90], ["ARC-009", 3, "10–12", 2, 90], ["ARC-004", 3, "10–12", 2, 90], ["ARC-050", 3, "10–12", 2, 60], ["ARC-026", 2, "12–15", 2, 60], ["ARC-105", 3, "20–30", 0, 45]] },
+  inB: { name: "Inicio B", ex: [["ARC-054", 3, "10–12", 2, 90], ["ARC-013", 3, "10–12", 2, 90], ["ARC-023", 3, "10–12", 2, 90], ["ARC-041", 3, "12–15", 2, 60], ["ARC-060", 3, "12–15", 2, 60], ["ARC-081", 3, "12–15", 1, 45]] },
+  inC: { name: "Inicio C", ex: [["ARC-043", 3, "10–12", 2, 90], ["ARC-070", 3, "10–12 por brazo", 2, 90], ["ARC-085", 3, "8–12", 2, 90], ["ARC-049", 3, "10–12", 2, 60], ["ARC-029", 2, "10–12", 2, 60], ["ARC-096", 2, "10–12", 2, 60]] },
+  inA2: { name: "Inicio D", ex: [["ARC-099", 3, "12–15", 2, 90], ["ARC-011", 3, "10–12 por brazo", 2, 90], ["ARC-101", 3, "10–12", 2, 90], ["ARC-054", 3, "12–15", 2, 60], ["ARC-019", 2, "12–15", 2, 60], ["ARC-105", 3, "20–30", 0, 45]] },
 };
 const SPLITS_GLUTE = {
   2: ["fullGA", "fullGB"],
@@ -412,17 +422,37 @@ const FOCUS = [
 ];
 const focusOf = (p) => p?.focus || (p?.branch === "male" ? "equilibrado" : "gluteo");
 const UPPER_DAYS = ["superiorA", "superiorB", "espaldaBiceps", "empuje", "torsoA", "torsoB", "hombroBrazo", "calistenia", "fullA", "fullB", "fullGA", "fullGB", "fullMA", "fullMB", "fullMC"];
+// ---------- Programas ARC: rutinas prediseñadas por objetivo (3, 4 o 5 días) ----------
+const PROGRAMS = [
+  { id: "gluteo", icon: "🍑", name: "Glúteo y pierna", who: "Para priorizar glúteo y pierna sin olvidar espalda y hombro.", days: {
+    3: ["gluteoA", "superiorA", "gluteoB"], 4: ["gluteoA", "superiorA", "piernaQ", "gluteoB"], 5: ["gluteoA", "superiorA", "piernaQ", "gluteoB", "superiorB"] } },
+  { id: "musculo", icon: "💪", name: "Ganar músculo", who: "Cuerpo entero equilibrado: lo clásico para crecer en todo.", days: {
+    3: ["fullMA", "fullMB", "fullMC"], 4: ["torsoA", "piernaA", "torsoB", "piernaB"], 5: ["torsoA", "piernaA", "torsoB", "piernaB", "hombroBrazo"] } },
+  { id: "torso", icon: "🦅", name: "Torso fuerte", who: "Espalda ancha y hombros redondos, con pierna para mantener.", days: {
+    3: ["tfEspalda", "tfPierna", "tfHombro"], 4: ["tfEspalda", "tfPierna", "tfHombro", "torsoB"], 5: ["tfEspalda", "tfPierna", "tfHombro", "torsoB", "hombroBrazo"] } },
+  { id: "fuerza", icon: "🏋️", name: "Fuerza básica", who: "Sentadilla, peso muerto, banca y press: mover más kilos.", days: {
+    3: ["fzA", "fzB", "fzC"], 4: ["fzA", "fzB", "fzC", "hombroBrazo"], 5: ["fzA", "fzB", "fzC", "hombroBrazo", "piernaB"] } },
+  { id: "grasa", icon: "🔥", name: "Perder grasa", who: "Mantener el músculo mientras bajas grasa: pesas y algo de cardio.", days: {
+    3: ["fullA+", "fullB+", "fullMC+"], 4: ["torsoA+", "piernaA", "torsoB+", "piernaB"], 5: ["torsoA+", "piernaA", "torsoB+", "piernaB", "cardioAbs"] } },
+  { id: "cero", icon: "🌱", name: "Empezar desde cero", who: "Máquinas guiadas y ejercicios sencillos para aprender la técnica.", days: {
+    3: ["inA", "inB", "inC"], 4: ["inA", "inB", "inC", "cardioAbs"], 5: ["inA", "inB", "inC", "inA2", "cardioAbs"] } },
+];
+const PROGRAM_DAYS = [3, 4, 5];
+const progDays = (d) => (d <= 3 ? 3 : d >= 5 ? 5 : 4);
+function defaultProgram(profile = {}, branch) {
+  if (profile.goal === "deficit") return "grasa";
+  const f = focusOf({ ...profile, branch });
+  return f === "gluteo" ? "gluteo" : f === "superior" ? "torso" : "musculo";
+}
+const programOf = (profile = {}, branch) => PROGRAMS.find((p) => p.id === profile.program) || PROGRAMS.find((p) => p.id === defaultProgram(profile, branch));
+
 function buildRoutine(days, branch, profile = {}) {
-  const focus = focusOf({ ...profile, branch });
-  const S = focus === "gluteo" ? SPLITS_GLUTE : focus === "superior" || branch === "male" ? SPLITS_MALE : SPLITS;
-  const keys = S[days] || S[3];
-  const plan = keys.map((k) => ({ key: k, ex: [...DAY_TEMPLATES[k].ex] }));
-  const lifts = branch === "male" && focus !== "gluteo" ? ["squat", "deadlift", "bench"] : ["squat", "deadlift"];
-  // En déficit: 15-20 min de cardio al final de dos días de tren superior (o de los dos primeros)
-  if (profile.goal === "deficit") {
-    const ups = plan.filter((d) => UPPER_DAYS.includes(d.key) && !d.ex.some(([id]) => id === "CARDIO"));
-    (ups.length ? ups : plan).slice(0, 2).forEach((d) => d.ex.push(["CARDIO", 1, "15–20", 0, 60]));
-  }
+  const prog = programOf(profile, branch);
+  const keys = prog.days[progDays(days)];
+  // "clave+" = ese día con 15-20 min de cardio al final
+  const plan = keys.map((k0) => { const k = k0.replace("+", ""); const ex = [...DAY_TEMPLATES[k].ex]; if (k0.endsWith("+")) ex.push(["CARDIO", 1, "15–20", 0, 60]); return { key: k, ex }; });
+  const lifts = branch === "male" && prog.id !== "gluteo" ? ["squat", "deadlift", "bench"] : ["squat", "deadlift"];
+  if (prog.id === "cero") lifts.length = 0; // al empezar, primero la técnica
   for (const l of lifts) {
     const has = plan.some((d) => d.ex.some(([id]) => EXERCISES[id].lift === l));
     if (has) continue;
@@ -1801,9 +1831,115 @@ select.in{appearance:none}
 .fin-exn{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .fin-exn b{font-size:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .fin-exn small{font-size:12px;color:var(--dm)}
-.fin-prb{font-size:10px;font-weight:800;color:#000;background:#F5C76B;border-radius:999px;padding:2px 7px}
+.fin-prb{font-size:10px;font-weight:800;font-style:normal;color:#000;background:#F5C76B;border-radius:999px;padding:2px 7px}
 .fin-arrow{width:16px;text-align:center}
 .fin-note{font-size:11.5px;color:var(--dm);margin:8px 2px 0}
+
+/* programas, análisis y progreso */
+.prog-card{width:100%;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(212,139,146,.16),var(--sf));border:1px solid rgba(212,139,146,.4);border-radius:18px;padding:14px;margin:4px 0 10px;color:var(--tx);font:inherit;text-align:left;cursor:pointer}
+.prog-card.coach{background:linear-gradient(135deg,rgba(245,199,107,.15),var(--sf));border-color:rgba(245,199,107,.4);cursor:default}
+.prog-card>div{flex:1;min-width:0}
+.prog-card small{font-size:11.5px;color:var(--dm);text-transform:uppercase;letter-spacing:.06em}
+.prog-card b{display:block;font-size:18px;margin:2px 0}
+.prog-card p{margin:0;font-size:13px;color:var(--dm)}
+.prog-card em{font-style:normal;font-size:12.5px;font-weight:700;color:var(--ac);flex:none}
+.pp-ic{width:46px;height:46px;flex:none;border-radius:14px;background:#000;display:flex;align-items:center;justify-content:center;font-size:24px}
+.pp-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.pp-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:5px;text-align:left;background:var(--sf2);border:1px solid var(--ln);border-radius:16px;padding:12px;color:var(--tx);font:inherit;cursor:pointer;transition:border-color .2s,transform .15s}
+.pp-card .pp-ic{width:38px;height:38px;font-size:20px;border-radius:11px}
+.pp-card b{font-size:14.5px}
+.pp-card small{font-size:12px;color:var(--dm);line-height:1.35}
+.pp-card em{position:absolute;top:8px;right:8px;font-style:normal;font-size:10px;font-weight:800;background:#fff;color:#000;border-radius:999px;padding:2px 7px}
+.pp-card.on{border-color:var(--ac);background:rgba(212,139,146,.1);transform:scale(1.01)}
+.pp-days{display:flex;flex-direction:column;gap:6px;margin:4px 0 12px}
+.pp-days div{display:grid;grid-template-columns:26px 1fr;column-gap:10px;align-items:center;background:var(--sf2);border-radius:12px;padding:8px 10px}
+.pp-days span{grid-row:span 2;width:26px;height:26px;border-radius:8px;background:#000;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.pp-days b{font-size:14px}
+.pp-days small{font-size:12px;color:var(--dm)}
+.ra{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:14px;margin:6px 0 12px}
+.fold .ra{border:0;background:none;padding:4px 0 0}
+.ra-kpis{display:flex;gap:6px}
+.ra-kpis div{flex:1;background:var(--sf2);border-radius:12px;padding:8px;display:flex;flex-direction:column;text-align:center}
+.ra-kpis b{font-size:17px}
+.ra-kpis span{font-size:10.5px;color:var(--dm)}
+.ra-t{font-weight:800;font-size:14px;margin:14px 0 8px}
+.ra-row{display:grid;grid-template-columns:96px 1fr 26px;align-items:center;gap:8px;margin:5px 0;font-size:12.5px}
+.ra-row b{text-align:right;font-variant-numeric:tabular-nums}
+.ra-bar{position:relative;height:9px;border-radius:5px;background:var(--sf2);overflow:hidden}
+.ra-bar em{position:absolute;top:0;bottom:0;background:rgba(110,231,183,.15)}
+.ra-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:var(--okl);animation:growX .6s ease-out both;transform-origin:left}
+.ra-row.low .ra-bar i{background:#F5B454}.ra-row.high .ra-bar i{background:#F87171}.ra-row.zero span{color:var(--dm)}
+@keyframes growX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.ra-leg{font-size:11px;color:var(--dm);margin:6px 0 0;display:flex;align-items:center;gap:6px}
+.ra-leg em{width:16px;height:8px;border-radius:3px;background:rgba(110,231,183,.25)}
+.ra-bal{display:grid;grid-template-columns:52px 1fr 52px;align-items:center;gap:8px;font-size:12px;color:var(--dm);margin:6px 0}
+.ra-bal span:last-child{text-align:right}
+.ra-bal div{height:10px;border-radius:5px;background:#7DD3FC;overflow:hidden}
+.ra-bal i{display:block;height:100%;background:var(--ac)}
+.ra-tips{margin-top:10px}
+.ra-tips p{margin:5px 0;font-size:13px;line-height:1.35;padding:8px 10px;border-radius:10px;background:var(--sf2)}
+.ra-tips p.ok{color:var(--okl)}.ra-tips p.warn{color:#F5B454}.ra-tips p.info{color:#7DD3FC}
+.tsum{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:12px 14px;margin:6px 0 12px}
+.tsum-h{display:flex;flex-direction:column;gap:2px;margin:6px 0 10px}
+.tsum-h b{font-size:17px}.tsum-h small{color:var(--dm);font-size:12px}
+.tsum-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tsum-g div{background:var(--sf2);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.tsum-g b{font-size:22px;font-weight:800}
+.tsum-g span{font-size:11.5px;color:var(--dm)}
+.tsum-g em{font-style:normal;font-size:12px;font-weight:700;color:var(--dm)}
+.tsum-g em.up{color:var(--okl)}.tsum-g em.down{color:#F87171}
+.tsum-t{font-weight:800;font-size:14px;margin:14px 0 8px}
+.tsum-bars{display:flex;align-items:flex-end;gap:6px;height:110px}
+.tsum-bars div{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px}
+.tsum-bars i{width:100%;max-width:26px;border-radius:6px 6px 2px 2px;background:var(--ln);transform-origin:bottom;animation:barUp .5s ease-out both}
+.tsum-bars .me i{background:var(--ac)}
+.tsum-bars small{font-size:10px;color:var(--dm)}
+.tsum-bars small.d{color:var(--tx);font-weight:700;min-height:12px}
+.xp-list{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:2px 12px;margin:6px 0 8px}
+.xp-row{width:100%;display:flex;align-items:center;gap:10px;padding:11px 0;border:0;border-bottom:1px solid var(--ln);background:none;color:var(--tx);font:inherit;text-align:left;cursor:pointer}
+.xp-row:last-child{border-bottom:0}
+.xp-n{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.xp-n b{font-size:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.xp-n small{font-size:12px;color:var(--dm)}
+.xp-d{width:44px;text-align:right;font-weight:800;font-size:13px;color:var(--dm)}
+.xp-d.up{color:var(--okl)}.xp-d.down{color:#F87171}
+.hm-k{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:4px 0 12px}
+.hm-k div{background:var(--sf2);border-radius:12px;padding:9px;display:flex;flex-direction:column;text-align:center}
+.hm-k b{font-size:17px}.hm-k b.up{color:var(--okl)}
+.hm-k span{font-size:10.5px;color:var(--dm)}
+
+/* social: retos, perfil, feed */
+.ch{background:linear-gradient(160deg,rgba(245,199,107,.12),var(--sf) 55%);border:1px solid rgba(245,199,107,.3);border-radius:18px;padding:12px;margin:10px 0}
+.ch-hd{display:flex;gap:10px;align-items:center;margin-bottom:6px}
+.ch-hd b{display:block;font-size:16px}
+.ch-hd small{color:var(--dm);font-size:12px}
+.ch-ic{width:38px;height:38px;border-radius:12px;background:#000;display:flex;align-items:center;justify-content:center;font-size:20px;flex:none}
+.ch-row{width:100%;display:grid;grid-template-columns:22px 30px minmax(0,90px) 1fr 34px;align-items:center;gap:8px;padding:7px 4px;border:0;background:none;color:var(--tx);font:inherit;font-size:13.5px;text-align:left;cursor:pointer;border-radius:10px;animation:rise .35s ease-out both}
+.ch-row.me{background:rgba(212,139,146,.1)}
+.ch-pos{font-weight:800;color:var(--dm);text-align:center}
+.ch-row.done .ch-pos{color:var(--okl)}
+.ch-n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ch-bar{height:8px;border-radius:4px;background:var(--sf2);overflow:hidden}
+.ch-bar i{display:block;height:100%;border-radius:4px;background:var(--ac);transform-origin:left;animation:growX .7s ease-out both}
+.ch-row.done .ch-bar i{background:var(--okl)}
+.ch-row b{text-align:right;font-variant-numeric:tabular-nums}
+.fr-card{position:relative;overflow:hidden}
+.fr-card::before{content:"";position:absolute;inset:0 0 auto 0;height:90px;background:linear-gradient(180deg,rgba(212,139,146,.12),transparent);pointer-events:none}
+.fr-card.mine::before{background:linear-gradient(180deg,rgba(110,231,183,.1),transparent)}
+.fr-card>*{position:relative}
+.fr-card .av{box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--ac)}
+.fr-card h3{font-size:20px;letter-spacing:-.01em}
+.fr-mus{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 2px}
+.fr-mus span{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--sf2);border:1px solid var(--ln);color:var(--dm)}
+.fr-stats div{background:#000}
+.fr-stats b{font-size:19px}
+.pf-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.pf-tags span{font-size:12.5px;padding:5px 10px;border-radius:999px;background:var(--sf2);border:1px solid var(--ln)}
+.pf-rec{display:flex;flex-direction:column;gap:6px}
+.pf-rec div{display:grid;grid-template-columns:30px 1fr;column-gap:8px;align-items:center;background:var(--sf2);border-radius:12px;padding:9px 10px}
+.pf-medal{grid-row:span 2;font-size:22px;text-align:center}
+.pf-rec b{font-size:14px}
+.pf-rec small{font-size:12px;color:var(--dm)}
 
 `;
 
@@ -2426,20 +2562,29 @@ function AbsPicker({ active, ei, sessions, setActive }) {
 
 function HistoryModal({ exId, sessions, onClose }) {
   const [range, setRange] = useState(90);
-  const pts = sessions.filter((s) => range === 0 || Date.now() - new Date(s.date) <= range * 864e5).map((s) => {
-    const e = s.exercises.find((x) => x.exId === exId);
-    if (!e) return null;
-    const best = Math.max(0, ...e.sets.filter((x) => x.done && x.type !== "W").map((x) => epley(x.kg, x.reps) || 0));
-    return best ? { x: new Date(s.date).getTime(), y: Math.round(best * 10) / 10, date: s.date } : null;
-  }).filter(Boolean);
+  const h = exHistory(sessions.filter((s) => range === 0 || Date.now() - new Date(s.date) <= range * 864e5), exId);
+  const all = exHistory(sessions, exId);
+  let run = 0;
+  const prs = new Set(all.filter((p) => { const r = p.v > run; run = Math.max(run, p.v); return r; }).map((p) => p.date));
+  const pts = h.map((p) => ({ x: new Date(p.date).getTime(), y: Math.round(p.v * 10) / 10, date: p.date }));
+  const best = all.reduce((b, p) => (!b || p.v > b.v ? p : b), null);
+  const heavy = all.reduce((b, p) => (!b || p.kg > b.kg ? p : b), null);
+  const first = h[0], last = h[h.length - 1];
   return (
     <div className="modal" onClick={onClose}>
       <div className="box" onClick={(e) => e.stopPropagation()}>
         <h1 style={{ fontSize: 20 }}>{EXERCISES[exId].n}</h1>
-        <p className="sub">1RM estimado por sesión (series de 10 reps o menos).</p>
+        {best && <div className="hm-k">
+          <div><b>{Math.round(best.v)} kg</b><span>1RM estimado</span></div>
+          <div><b>{heavy.kg} kg</b><span>Más peso movido</span></div>
+          <div><b className={last && first && last.v > first.v ? "up" : ""}>{first && last && first !== last ? `${last.v >= first.v ? "+" : ""}${Math.round(last.v - first.v)} kg` : "—"}</b><span>En este periodo</span></div>
+        </div>}
         <div className="seg">{[[30, "1 mes"], [90, "3 meses"], [180, "6 meses"], [0, "Todo"]].map(([v, l]) => <button key={v} className={range === v ? "on" : ""} onClick={() => setRange(v)}>{l}</button>)}</div>
         <div className="chart"><LineChart points={pts} empty="Aún no hay suficientes sesiones en este periodo." /></div>
-        {pts.slice().reverse().map((p) => <div className="hist" key={p.date}><span>{new Date(p.date).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}</span><span>{p.y} kg</span></div>)}
+        <p className="hint" style={{ margin: "4px 0 8px" }}>Línea: tu 1RM estimado de cada día (la mejor serie de 10 reps o menos).</p>
+        {h.slice().reverse().map((p) => (
+          <div className="hist" key={p.date}><span>{new Date(p.date).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}{prs.has(p.date) && <em className="fin-prb" style={{ marginLeft: 6 }}>Récord</em>}</span><span>{p.kg ? `${p.kg} kg × ${p.reps}` : `${p.reps} reps`} · {Math.round(p.v)} kg</span></div>
+        ))}
         <button className="btn" onClick={onClose}>Cerrar</button>
       </div>
     </div>
@@ -2987,12 +3132,209 @@ function WeekStrip({ sessions, goal }) {
   );
 }
 
+// ---------- Análisis de una rutina: series por músculo, equilibrio y avisos ----------
+const ANALYSIS_GROUPS = [["Pecho", 10, 20], ["Espalda", 10, 20], ["Hombro", 8, 18], ["Bíceps", 6, 14], ["Tríceps", 6, 14], ["Cuádriceps", 8, 18], ["Femoral", 6, 14], ["Glúteo y cadera", 8, 20], ["Abdomen", 4, 12], ["Gemelo", 0, 12]];
+function analyzeRoutine(routine) {
+  const sets = {};
+  let total = 0, cardio = 0, min = 0;
+  routine.forEach((d) => {
+    min += dayInfo(d).min;
+    d.ex.forEach((e) => {
+      if (e.id === "CARDIO") { cardio += parseInt(e.reps) || 20; return; }
+      const g = e.pick === "abs" ? "Abdomen" : EXERCISES[e.id]?.group;
+      if (!g || g === "Movilidad") return;
+      const n = Number(e.sets) || 3; sets[g] = (sets[g] || 0) + n; total += n;
+    });
+  });
+  const push = (sets["Pecho"] || 0) + (sets["Hombro"] || 0) * 0.5 + (sets["Tríceps"] || 0) * 0.5;
+  const pull = (sets["Espalda"] || 0) + (sets["Bíceps"] || 0) * 0.5 + (sets["Hombro"] || 0) * 0.2;
+  const legs = (sets["Cuádriceps"] || 0) + (sets["Femoral"] || 0) + (sets["Glúteo y cadera"] || 0);
+  const upper = push + pull;
+  const tips = [];
+  ANALYSIS_GROUPS.forEach(([g, lo]) => {
+    if (lo > 0 && !(sets[g] > 0) && !["Bíceps", "Tríceps", "Gemelo", "Abdomen"].includes(g))
+      tips.push(g === "Pecho" && legs > upper ? ["info", "Sin pecho: es normal si priorizas glúteo y pierna. Si quieres algo, añade flexiones o press en máquina."] : ["warn", `No hay nada de ${g.toLowerCase()} en la semana.`]);
+  });
+  if (pull > 0 && push / pull > 1.5) tips.push(["warn", "Mucho más empuje que tirón: añade remo o jalón para cuidar los hombros."]);
+  if (push > 0 && pull / push > 2.2 && (sets["Pecho"] || 0) > 0) tips.push(["info", "Más tirón que empuje: perfecto para la postura."]);
+  ANALYSIS_GROUPS.forEach(([g, , hi]) => { if ((sets[g] || 0) > hi + 4) tips.push(["warn", `${g}: ${sets[g]} series a la semana es mucho; con ${hi} vas sobrad@.`]); });
+  if ((sets["Femoral"] || 0) === 0 && (sets["Cuádriceps"] || 0) > 6) tips.push(["warn", "Trabajas cuádriceps pero no femoral: añade un curl femoral o un peso muerto rumano."]);
+  if (!tips.some(([k]) => k === "warn")) tips.unshift(["ok", "Rutina equilibrada: todos los grupos grandes tienen su trabajo."]);
+  return { sets, total, cardio, min, push, pull, legs, upper, tips };
+}
+
+function RoutineAnalysis({ routine, compact = false }) {
+  const a = useMemo(() => analyzeRoutine(routine), [routine]);
+  const max = Math.max(20, ...Object.values(a.sets));
+  const pp = a.push + a.pull || 1, ul = a.upper + a.legs || 1;
+  return (
+    <div className="ra">
+      <div className="ra-kpis">
+        <div><b>{routine.length}</b><span>días</span></div>
+        <div><b>{a.total}</b><span>series/semana</span></div>
+        <div><b>~{Math.round(a.min / Math.max(1, routine.length))}′</b><span>por sesión</span></div>
+        {a.cardio > 0 && <div><b>{a.cardio}′</b><span>cardio</span></div>}
+      </div>
+      <div className="ra-t">Series por músculo a la semana</div>
+      {ANALYSIS_GROUPS.filter(([g]) => a.sets[g] || !["Gemelo"].includes(g)).map(([g, lo, hi]) => {
+        const n = a.sets[g] || 0, st = n === 0 ? "zero" : n < lo ? "low" : n > hi ? "high" : "ok";
+        return (
+          <div key={g} className={`ra-row ${st}`}>
+            <span>{g}</span>
+            <div className="ra-bar"><em style={{ left: `${(lo / max) * 100}%`, width: `${((hi - lo) / max) * 100}%` }} /><i style={{ width: `${(n / max) * 100}%` }} /></div>
+            <b>{n}</b>
+          </div>
+        );
+      })}
+      <p className="ra-leg"><em /> zona recomendada para crecer</p>
+      {!compact && <>
+        <div className="ra-t">Equilibrio</div>
+        <div className="ra-bal"><span>Empuje</span><div><i style={{ width: `${(a.push / pp) * 100}%` }} /></div><span>Tirón</span></div>
+        <div className="ra-bal"><span>Torso</span><div><i style={{ width: `${(a.upper / ul) * 100}%` }} /></div><span>Pierna</span></div>
+      </>}
+      <div className="ra-tips">{a.tips.slice(0, 4).map(([k, t], i) => <p key={i} className={k}>{k === "ok" ? "✓" : k === "info" ? "ℹ" : "!"} {t}</p>)}</div>
+    </div>
+  );
+}
+
+// ---------- Elegir programa ----------
+function ProgramPicker({ profile, branch, onPick, onClose }) {
+  const cur = programOf(profile, branch).id;
+  const [sel, setSel] = useState(cur);
+  const [days, setDays] = useState(progDays(profile.days || 3));
+  const prev = useMemo(() => buildRoutine(days, branch, { ...profile, program: sel }), [sel, days]);
+  const p = PROGRAMS.find((x) => x.id === sel);
+  return (
+    <div className="modal" onClick={onClose}>
+      <div className="box pp" onClick={(e) => e.stopPropagation()}>
+        <h1 style={{ fontSize: 22 }}>Elige tu programa</h1>
+        <p className="sub" style={{ marginTop: 0 }}>Rutinas diseñadas por objetivo. Puedes cambiar cuando quieras: tu historial se queda.</p>
+        <div className="pp-grid">{PROGRAMS.map((x) => (
+          <button key={x.id} className={`pp-card${sel === x.id ? " on" : ""}`} onClick={() => setSel(x.id)}>
+            <span className="pp-ic">{x.icon}</span><b>{x.name}</b><small>{x.who}</small>
+            {x.id === cur && <em>Actual</em>}
+          </button>
+        ))}</div>
+        <div className="field" style={{ marginTop: 14 }}><label>Días por semana</label>
+          <div className="chips">{PROGRAM_DAYS.map((d) => <button key={d} className={`chip ${days === d ? "on" : ""}`} onClick={() => setDays(d)}>{d} días</button>)}</div>
+        </div>
+        <div className="pp-days">{prev.map((d) => <div key={d.id}><span>{d.id}</span><b>{d.name}</b><small>{dayInfo(d).groups.slice(0, 3).join(" · ")}</small></div>)}</div>
+        <RoutineAnalysis routine={prev} compact />
+        <button className="btn ac" onClick={() => onPick(sel, days)}>Empezar {p.name.toLowerCase()} · {days} días</button>
+        <button className="btn ghost" onClick={onClose}>Cancelar</button>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Resumen semanal / mensual ----------
+function periodStats(sessions, from, to) {
+  const ss = sessions.filter((s) => { const t = new Date(s.date); return t >= from && t < to; });
+  return {
+    n: ss.length, days: new Set(ss.map((s) => new Date(s.date).toDateString())).size,
+    kg: ss.reduce((a, s) => a + (Number(s.volume) || 0), 0), sets: ss.reduce((a, s) => a + (Number(s.sets) || 0), 0),
+    min: Math.round(ss.reduce((a, s) => a + (Number(s.dur) || 0), 0) / 60),
+  };
+}
+function TrainSummary({ sessions }) {
+  const [per, setPer] = useState("semana");
+  const now = new Date();
+  const [cur, prev, label, prevLabel] = (() => {
+    if (per === "semana") {
+      const ws = weekStart(), pws = new Date(ws); pws.setDate(ws.getDate() - 7);
+      const pEnd = new Date(pws.getTime() + (now - ws)); // misma altura de la semana pasada
+      return [periodStats(sessions, ws, new Date(now.getTime() + 1)), periodStats(sessions, pws, pEnd), "Esta semana", "la semana pasada a estas alturas"];
+    }
+    const ms = new Date(now.getFullYear(), now.getMonth(), 1), pms = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const pEnd = new Date(pms.getFullYear(), pms.getMonth(), Math.min(now.getDate(), new Date(now.getFullYear(), now.getMonth(), 0).getDate()) + 1);
+    return [periodStats(sessions, ms, new Date(now.getTime() + 1)), periodStats(sessions, pms, pEnd), now.toLocaleDateString("es-ES", { month: "long" }).replace(/^./, (c) => c.toUpperCase()), "el mes pasado a estas alturas"];
+  })();
+  const pct = (a, b) => (b ? Math.round(((a - b) / b) * 100) : a ? 100 : 0);
+  const Cell = ({ v, p, l, fmt = (x) => x }) => {
+    const d = pct(v, p);
+    return <div><b>{fmt(v)}</b><span>{l}</span><em className={d > 0 ? "up" : d < 0 ? "down" : ""}>{p === 0 && v === 0 ? "—" : d === 0 ? "= igual" : `${d > 0 ? "▲" : "▼"} ${Math.abs(d)}%`}</em></div>;
+  };
+  // últimas 8 semanas: días entrenados y kg
+  const weeks = Array.from({ length: 8 }, (_, i) => { const ws = weekStart(); const a = new Date(ws); a.setDate(ws.getDate() - 7 * (7 - i)); const b = new Date(a); b.setDate(a.getDate() + 7); return { a, ...periodStats(sessions, a, b) }; });
+  const maxKg = Math.max(1, ...weeks.map((w) => w.kg));
+  return (
+    <div className="tsum">
+      <div className="seg"><button className={per === "semana" ? "on" : ""} onClick={() => setPer("semana")}>Semana</button><button className={per === "mes" ? "on" : ""} onClick={() => setPer("mes")}>Mes</button></div>
+      <div className="tsum-h"><b>{label}</b><small>frente a {prevLabel}</small></div>
+      <div className="tsum-g">
+        <Cell v={cur.days} p={prev.days} l="días entrenados" />
+        <Cell v={cur.kg} p={prev.kg} l="kg movidos" fmt={(x) => fmtKg(x)} />
+        <Cell v={cur.sets} p={prev.sets} l="series" />
+        <Cell v={cur.min} p={prev.min} l="minutos" />
+      </div>
+      <div className="tsum-t">Tus últimas 8 semanas</div>
+      <div className="tsum-bars">{weeks.map((w, i) => (
+        <div key={i} className={i === 7 ? "me" : ""}>
+          <small className="d">{w.days || ""}</small>
+          <i style={{ height: `${Math.max(4, (w.kg / maxKg) * 100)}%`, animationDelay: `${i * 0.05}s` }} />
+          <small>{w.a.getDate()}/{w.a.getMonth() + 1}</small>
+        </div>
+      ))}</div>
+      <p className="hint" style={{ margin: "6px 0 0" }}>Barras: kg movidos por semana. Número de arriba: días entrenados.</p>
+    </div>
+  );
+}
+
+// ---------- Progreso por ejercicio ----------
+function bestOf(e) {
+  const done = (e?.sets || []).filter((x) => x.done && x.type !== "W" && Number(x.reps) > 0);
+  if (!done.length) return null;
+  let b = null;
+  done.forEach((x) => { const v = epley(x.kg, x.reps) || Number(x.kg) || 0; if (!b || v > b.v) b = { v, kg: Number(x.kg) || 0, reps: Number(x.reps) }; });
+  return b;
+}
+function exHistory(sessions, exId) {
+  return sessions.map((s) => { const b = bestOf(s.exercises.find((x) => x.exId === exId)); return b ? { date: s.date, ...b } : null; }).filter(Boolean);
+}
+function Spark({ vals, w = 70, h = 24 }) {
+  if (vals.length < 2) return <svg width={w} height={h} />;
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+  const pts = vals.map((v, i) => `${(i / (vals.length - 1)) * w},${hi === lo ? h / 2 : h - 2 - ((v - lo) / (hi - lo)) * (h - 4)}`).join(" ");
+  const up = vals[vals.length - 1] >= vals[0];
+  return <svg width={w} height={h} aria-hidden="true"><polyline points={pts} fill="none" stroke={up ? "var(--okl)" : "#F87171"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+}
+function ExerciseProgress({ sessions }) {
+  const [open, setOpen] = useState(null);
+  const [all, setAll] = useState(false);
+  const rows = useMemo(() => {
+    const count = {};
+    sessions.forEach((s) => s.exercises.forEach((e) => { const ex = EXERCISES[e.exId]; if (ex && !ex.unit && bestOf(e)) count[e.exId] = (count[e.exId] || 0) + 1; }));
+    return Object.entries(count).sort((a, b) => b[1] - a[1]).map(([id, n]) => {
+      const h = exHistory(sessions, id), last = h[h.length - 1];
+      const old = h.find((p) => Date.now() - new Date(p.date) <= 35 * 864e5) || h[0];
+      const max = Math.max(...h.map((p) => p.v));
+      return { id, n, h, last, delta: old && old !== last ? Math.round(((last.v - old.v) / old.v) * 100) : null, pr: last.v >= max && h.length > 1 };
+    });
+  }, [sessions]);
+  if (!rows.length) return <div className="empty">Cuando registres entrenos con peso, aquí verás cómo sube cada ejercicio.</div>;
+  return (
+    <>
+      <div className="xp-list">{(all ? rows : rows.slice(0, 6)).map((r) => (
+        <button key={r.id} className="xp-row" onClick={() => setOpen(r.id)}>
+          <span className="xp-n"><b>{EXERCISES[r.id].n}{r.pr && <em className="fin-prb">Récord</em>}</b><small>Último: {r.last.kg ? `${r.last.kg} kg × ${r.last.reps}` : `${r.last.reps} reps`} · {r.n} {r.n === 1 ? "sesión" : "sesiones"}</small></span>
+          <Spark vals={r.h.slice(-8).map((p) => p.v)} />
+          <span className={`xp-d ${r.delta > 0 ? "up" : r.delta < 0 ? "down" : ""}`}>{r.delta == null ? "" : `${r.delta > 0 ? "+" : ""}${r.delta}%`}</span>
+        </button>
+      ))}</div>
+      {rows.length > 6 && <button className="link" onClick={() => setAll(!all)}>{all ? "Ver menos" : `Ver los ${rows.length} ejercicios`}</button>}
+      <p className="hint" style={{ margin: "6px 0 0" }}>% = cambio de tu mejor serie (1RM estimado) en el último mes. Toca uno para ver su gráfica.</p>
+      {open && <HistoryModal exId={open} sessions={sessions} onClose={() => setOpen(null)} />}
+    </>
+  );
+}
+
 function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, setMedia, uploadMedia }) {
   const [shareS, setShareS] = useState(null);
   const fromCoach = !!state.coachRoutine?.length;
   const mode = fromCoach ? "coach" : state.profile.routineMode || "auto";
   const custom = state.profile.customRoutine || [];
   const [editing, setEditing] = useState(false);
+  const [picking, setPicking] = useState(false);
   const autoDays = () => buildRoutine(state.profile.days || 3, state.profile.branch, state.profile).map((d) => ({ name: d.name, ex: d.ex.map(({ id, sets, reps, rir, rest, pick }) => ({ id, sets, reps, rir, rest, ...(pick ? { pick } : {}) })) }));
   const [tech, setTech] = useState(null);
   const [q, setQ] = useState("");
@@ -3024,28 +3366,32 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
         </div>
       )}
       <WarmUp media={media} onTech={setTech} />
+      {fromCoach && <div className="prog-card coach"><span className="pp-ic">⭐</span><div><small>Tu rutina</small><b>Hecha por tu coach</b><p>Te la ha preparado a medida. Si quieres cambiar algo, díselo.</p></div></div>}
       {!fromCoach && <div className="seg">
-        <button className={mode === "auto" ? "on" : ""} onClick={() => { setProfile({ routineMode: "auto" }); setEditing(false); }}>Según mis objetivos</button>
+        <button className={mode === "auto" ? "on" : ""} onClick={() => { setProfile({ routineMode: "auto" }); setEditing(false); }}>Programas ARC</button>
         <button className={mode === "custom" ? "on" : ""} onClick={() => setProfile({ routineMode: "custom" })}>Mi propia rutina</button>
       </div>}
-      {mode === "auto" && (
-        <div className="field"><label>Días por semana</label>
-          <div className="chips">{[2, 3, 4, 5, 6, 7].map((d) => <button key={d} className={`chip ${state.profile.days === d ? "on" : ""}`} onClick={() => setDays(d)}>{d}</button>)}</div>
-          <label style={{ marginTop: 14 }}>Prioridad</label>
-          <div className="chips">{FOCUS.map((f) => <button key={f.id} className={`chip ${focusOf(state.profile) === f.id ? "on" : ""}`} onClick={() => setProfile({ focus: f.id })}>{f.label}</button>)}</div>
-        </div>
-      )}
+      {mode === "auto" && (() => { const pg = programOf(state.profile, state.profile.branch); return (
+        <button className="prog-card" onClick={() => setPicking(true)}>
+          <span className="pp-ic">{pg.icon}</span>
+          <div><small>Tu programa · {progDays(state.profile.days || 3)} días</small><b>{pg.name}</b><p>{pg.who}</p></div>
+          <em>Cambiar</em>
+        </button>
+      ); })()}
+      {picking && <ProgramPicker profile={state.profile} branch={state.profile.branch} onClose={() => setPicking(false)} onPick={(id, d) => { setProfile({ program: id, days: d, routineMode: "auto" }); setPicking(false); }} />}
       {mode === "custom" && custom.length === 0 && (
         <div className="note">
           <b>Monta tu rutina</b>
           <p className="sub" style={{ margin: "6px 0 0" }}>Si ya tienes una rutina, apúntala aquí y la app te registra las series, te avisa de cuándo subir peso y te pinta los músculos que trabajas.</p>
-          <button className="btn" onClick={() => { setProfile({ customRoutine: autoDays() }); setEditing(true); }}>Empezar desde la automática</button>
+          <button className="btn" onClick={() => { setProfile({ customRoutine: autoDays() }); setEditing(true); }}>Empezar desde mi programa ARC</button>
           <button className="btn ghost" onClick={() => { setProfile({ customRoutine: [{ name: "Día A", ex: [] }] }); setEditing(true); }}>Empezar de cero</button>
         </div>
       )}
       {mode === "custom" && custom.length > 0 && editing && (
         <>
           <RoutineEditor days={custom} onChange={(d) => setProfile({ customRoutine: d })} onDone={() => setEditing(false)} />
+          <h2>Análisis de tu rutina</h2>
+          <RoutineAnalysis routine={routine} />
           <h2>Así queda tu semana</h2>
           <MuscleWeek sessions={state.sessions} routine={routine} initial="plan" />
         </>
@@ -3064,7 +3410,12 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
       ))}
       <p className="hint">{coach ? "Modo coach: toca cualquier ejercicio para subir su vídeo o pegar el enlace." : "Toca un ejercicio para ver cómo se hace y su truquito."}</p>
       {!(mode === "custom" && editing) && <><h2>Tus músculos</h2>
-      <MuscleWeek sessions={state.sessions} routine={routine} /></>}
+      <MuscleWeek sessions={state.sessions} routine={routine} />
+      <details className="fold"><summary><span>Análisis de tu rutina</span><i aria-hidden="true">+</i></summary><RoutineAnalysis routine={routine} /></details>
+      <h2>Tu resumen</h2>
+      <TrainSummary sessions={state.sessions} />
+      <h2>Progreso por ejercicio</h2>
+      <ExerciseProgress sessions={state.sessions} /></>}
       <h2>Biblioteca de ejercicios</h2>
       <input className="in" placeholder="Buscar: hip thrust, polea, glúteo…" value={q} onChange={(e) => setQ(e.target.value)} />
       <div className="chips" style={{ margin: "10px 0" }}>{GROUPS.map((g) => <button key={g} className={`chip ${grp === g ? "on" : ""}`} onClick={() => setGrp(grp === g ? null : g)}>{g}</button>)}</div>
@@ -4118,6 +4469,27 @@ function ProfileSheet({ nick, api, media, onClose, onReport, blocked }) {
               <h1>{p.nickname}{p.is_me && <small> (tú)</small>}</h1>
               {levelLabel(p.branch, p.level, p.mode) && <span className="lvtag">{levelLabel(p.branch, p.level, p.mode)}</span>}
             </div>
+            {!p.private && (() => {
+              const prog = PROGRAMS.find((x) => x.id === p.program);
+              const g = p.goal_days || 3; let streak = 0;
+              const wk = (p.weeks || []).slice(0, -1).reverse(); for (const n of wk) { if (n >= g) streak++; else break; }
+              if ((p.weeks || []).slice(-1)[0] >= g) streak++;
+              return (
+                <>
+                  <div className="pf-tags">
+                    {prog && <span>{prog.icon} {prog.name}</span>}
+                    <span>🎯 {g} días/semana</span>
+                    <span>🔥 {streak} {streak === 1 ? "semana" : "semanas"} cumpliendo</span>
+                  </div>
+                  {p.records?.length > 0 && <>
+                    <h2>Mejores marcas</h2>
+                    <div className="pf-rec">{p.records.map((r, i) => (
+                      <div key={r.exId}><span className="pf-medal">{["🥇", "🥈", "🥉"][i]}</span><b>{EXERCISES[EX_REMAP[r.exId] || r.exId]?.n || "Ejercicio"}</b><small>{r.kg} kg × {r.reps} · 1RM ≈ {r.e1} kg</small></div>
+                    ))}</div>
+                  </>}
+                </>
+              );
+            })()}
             {p.private ? <div className="empty" style={{ marginTop: 16 }}>Este perfil es privado. Solo se ve su nivel y su puesto en el ranking.</div> : (
               <>
                 <div className="mycard" style={{ marginTop: 16 }}>
@@ -4224,7 +4596,7 @@ function FeedCard({ s, media, social, onComments, onOpen, friends, onChanged }) 
   const saveTags = async (next) => { setTags(next); try { await social.tag(s.id, next); onChanged?.(); } catch {} };
   const mins = Math.max(1, Math.round((s.duration_s || 0) / 60));
   return (
-    <article className="fr-card">
+    <article className={`fr-card${s.is_me ? " mine" : ""}`}>
       <header>
         <button className="fr-who" onClick={() => onOpen(s.nickname)}>
           <Avatar r={s} media={media} size={40} />
@@ -4232,6 +4604,7 @@ function FeedCard({ s, media, social, onComments, onOpen, friends, onChanged }) 
         </button>
       </header>
       <h3>{s.day_name || "Entreno"}</h3>
+      {(() => { const gs = [...new Set(ex.map((e) => EXERCISES[EX_REMAP[e.exId] || e.exId]?.group).filter((g) => g && g !== "Movilidad"))].slice(0, 4); return gs.length > 0 && <div className="fr-mus">{gs.map((g) => <span key={g}>{g}</span>)}</div>; })()}
       {tags.length > 0 && <p className="fr-tags">con {tags.map((t, i) => <span key={t}>{i ? ", " : ""}<b className="fr-at">@{t}</b></span>)}</p>}
       <div className="fr-stats">
         <div><b>{mins}</b><span>min</span></div>
@@ -4357,6 +4730,31 @@ function NotifSheet({ social, media, onClose, onOpenSession, onRespond }) {
   );
 }
 
+
+// Reto de la semana: cada un@ con sus días objetivo
+function WeekChallenge({ me, friends, media, onOpen }) {
+  const rows = [{ nickname: me.nickname, is_me: true, week_days: me.weekDays || 0, goal_days: me.goal || 3, branch: me.branch, mode: me.mode, level: me.level, avatar_url: me.avatar },
+    ...friends.map((f) => ({ ...f, goal_days: f.goal_days || 3 }))]
+    .map((r) => ({ ...r, pct: Math.min(1, r.week_days / r.goal_days) }))
+    .sort((a, b) => b.pct - a.pct || b.week_days - a.week_days);
+  const done = rows.filter((r) => r.pct >= 1).length;
+  const left = 7 - ((new Date().getDay() + 6) % 7);
+  return (
+    <div className="ch">
+      <div className="ch-hd"><span className="ch-ic">🏆</span><div><b>Reto de la semana</b><small>Cumplir tus días · quedan {left} {left === 1 ? "día" : "días"} · {done} de {rows.length} lo {done === 1 ? "ha" : "han"} conseguido</small></div></div>
+      {rows.map((r, i) => (
+        <button key={r.nickname} className={`ch-row${r.is_me ? " me" : ""}${r.pct >= 1 ? " done" : ""}`} onClick={() => !r.is_me && onOpen(r.nickname)} style={{ animationDelay: `${i * 0.05}s` }}>
+          <span className="ch-pos">{r.pct >= 1 ? "✓" : i + 1}</span>
+          <Avatar r={r} media={media} size={30} />
+          <span className="ch-n">{r.is_me ? "Tú" : r.nickname}</span>
+          <span className="ch-bar"><i style={{ width: `${r.pct * 100}%` }} /></span>
+          <b>{r.week_days}/{r.goal_days}</b>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function Friends({ me, social, media, api, onOpenProfile }) {
   const [nick, setNick] = useState("");
   const [nickErr, setNickErr] = useState("");
@@ -4471,6 +4869,7 @@ function Friends({ me, social, media, api, onOpenProfile }) {
             </div>
           )}
 
+          {friends.length > 0 && <WeekChallenge me={me} friends={friends} media={media} onOpen={onOpenProfile} />}
           {friends.length > 0 && (
             <div className="fr-row">
               {friends.map((f) => (
@@ -6661,7 +7060,8 @@ function ArcApp({ user }) {
     body = <Workouts state={state} routine={routine} onStart={(d) => setActive(newSession(d, state.sessions))} setDays={(d) => setProfile({ days: d })} setProfile={setProfile} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
   } else if (tab === "ranking") {
     body = <Social social={socialApi} api={rankApi} media={media} blocked={state.profile?.blocked || []}
-      me={{ nickname: state.nickname, shareFeed: state.shareFeed !== false, showKg: state.showKg !== false }}
+      me={{ nickname: state.nickname, shareFeed: state.shareFeed !== false, showKg: state.showKg !== false, goal: state.profile?.days || 3, avatar: state.avatar, branch: state.profile?.branch, mode: state.profile?.mode, level: ev?.current || 0,
+        weekDays: new Set(state.sessions.filter((s) => new Date(s.date) >= weekStart()).map((s) => new Date(s.date).toDateString())).size }}
       rankingEl={<Ranking embedded me={{ optIn: !!state.rankOptIn, nickname: state.nickname, avatar: state.avatar, pending: state.avatarPending, isPublic: state.profilePublic !== false }} state={{ ...state, savedLevel: ev?.current ?? state.savedLevel }} api={rankApi} media={media} coach={coach} setMedia={setMedia} blocked={state.profile?.blocked || []} onBlock={(n) => setProfile({ blocked: [...new Set([...(state.profile?.blocked || []), n])] })} onUnblockAll={() => setProfile({ blocked: [] })} />} />;
   } else if (tab === "nutricion") {
     body = <Nutrition coachDiet={state.coachDiet} profile={state.profile} setCook={(c) => setProfile({ cook: c })} media={media} eaten={(state.habits[dkey()] || {}).food || {}} setEaten={(v) => setHabit("food", v)} />;
