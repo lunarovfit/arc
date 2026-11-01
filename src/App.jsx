@@ -6360,9 +6360,22 @@ const PAYWALL_CSS = `
 
 /* ============================ REVISIONES ============================ */
 
+// Preguntas de la revisión semanal (las de Luna)
+const CK_MEASURES = [["weight", "Peso (kg)"], ["waist", "Cintura"], ["hip", "Cadera"], ["arm", "Brazo"], ["thigh", "Muslo"], ["shoulders", "Hombros"], ["chest", "Pecho"]];
+const CK_SECTIONS = [
+  ["Comida", [["plan", "¿Qué tal el plan?"], ["cuesta", "¿Algo que te cueste o te aburra?"], ["hambre", "¿Has pasado hambre?"], ["compra", "¿Has encontrado todo en la compra o hay algo que no te ha cuadrado?"], ["nueva", "¿Te gustaría meter alguna comida nueva? Dime cosas que te gusten y te las encajo con tus cantidades."], ["cocinar", "¿Cómo lo haces mejor: cocinar cada día o dejarlo hecho para varios días?"]]],
+  ["Sensaciones", [["cuerpo", "¿Cómo te has sentido esta semana en el cuerpo, con el sueño y con la recuperación?"], ["molestia", "¿Alguna molestia fuera del gym?"]]],
+  ["La semana que viene", [["cambiar", "¿Qué cambiarías para la semana que viene?"]]],
+  ["Sobre mí", [["ayuda", "¿Qué es lo que más te ayuda de cómo trabajamos? ¿Qué te está gustando?"], ["mejorar", "¿Algo que pueda mejorar?"], ["frase", "Si tuvieras que decirle a alguien que duda en empezar conmigo, ¿qué le dirías en una frase?"]]],
+];
+const CK_Q = Object.fromEntries(CK_SECTIONS.flatMap(([, qs]) => qs));
+const CK_SHARE = ["Sí con nombre", "Sí sin nombre", "Mejor no"];
+const ckMeasure = (c, k) => (c[k] != null ? Number(c[k]) : null);
+
 function CheckinList({ items }) {
   const [urls, setUrls] = useState({});
   const [big, setBig] = useState(null);
+  const [open, setOpen] = useState(items[0]?.id || null);
   useEffect(() => {
     const paths = items.flatMap((c) => c.photos || []).filter((p) => !urls[p]);
     if (paths.length) db.checkinUrls(paths).then((u) => setUrls((x) => ({ ...x, ...u }))).catch(() => {});
@@ -6370,29 +6383,47 @@ function CheckinList({ items }) {
   if (!items.length) return <div className="empty">Todavía no hay revisiones.</div>;
   return (
     <>
-      {items.map((c) => (
-        <div className="ck" key={c.id}>
-          <div className="ck-hd"><b>{new Date(c.created_at).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })}</b>
-            <span>{[c.weight && `${c.weight} kg`, c.waist && `cintura ${c.waist}`, c.hip && `cadera ${c.hip}`].filter(Boolean).join(" · ")}</span></div>
-          {c.photos?.length > 0 && <div className="ck-photos">{c.photos.map((p) => <button key={p} onClick={() => urls[p] && setBig(urls[p])}>{urls[p] ? <img src={urls[p]} alt="" /> : <span>…</span>}</button>)}</div>}
-          {c.feeling && <p className="ck-txt">{c.feeling}</p>}
-        </div>
-      ))}
+      {items.map((c, idx) => {
+        const prev = items[idx + 1];
+        const ms = CK_MEASURES.map(([k, l]) => [k, l, ckMeasure(c, k), prev ? ckMeasure(prev, k) : null]).filter(([, , v]) => v != null);
+        const on = open === c.id;
+        return (
+          <div className="ck" key={c.id}>
+            <button className="ck-hd ck-tg" onClick={() => setOpen(on ? null : c.id)}><b>{new Date(c.created_at).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })}{c.photos?.length ? " · 📸" : ""}</b>
+              <span>{[c.weight && `${c.weight} kg`, c.steps && `${Number(c.steps).toLocaleString("es-ES")} pasos`].filter(Boolean).join(" · ")} {on ? "–" : "+"}</span></button>
+            {on && <>
+              {ms.length > 0 && <div className="ck-ms">{ms.map(([k, l, v, p]) => { const d = p != null ? Math.round((v - p) * 10) / 10 : null; return <div key={k}><small>{l}</small><b>{v}</b>{d ? <em className={d > 0 ? "up" : "down"}>{d > 0 ? "+" : ""}{d}</em> : null}</div>; })}</div>}
+              {c.photos?.length > 0 && <div className="ck-photos">{c.photos.map((p) => <button key={p} onClick={() => urls[p] && setBig(urls[p])}>{urls[p] ? <img src={urls[p]} alt="" /> : <span>…</span>}</button>)}</div>}
+              {c.answers && Object.entries(c.answers).filter(([, v]) => v).map(([k, v]) => <div key={k} className="ck-qa"><small>{CK_Q[k] || k}</small><p>{v}</p></div>)}
+              {c.share && <div className="ck-qa"><small>¿Se puede compartir en stories?</small><p>{c.share}</p></div>}
+              {c.feeling && <p className="ck-txt">{c.feeling}</p>}
+            </>}
+          </div>
+        );
+      })}
       {big && <div className="ck-big" onClick={() => setBig(null)}><img src={big} alt="" /></div>}
     </>
   );
 }
 
-// Lo que ve la asesorada: mandar su revisión a la coach
-function CheckinCard({ userId }) {
+// Lo que ve la asesorada: su revisión semanal con la coach
+function CheckinCard({ userId, habits = {}, startDate }) {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState(null);
-  const [f, setF] = useState({ weight: "", waist: "", hip: "", feeling: "" });
+  const [m, setM] = useState({});
+  const [a, setA] = useState({});
+  const [share, setShare] = useState("");
   const [files, setFiles] = useState([]);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
   const ref = useRef(null);
-  useEffect(() => { if (open && items === null) db.listCheckins(userId).then(setItems).catch(() => setItems([])); }, [open]);
+  useEffect(() => { db.listCheckins(userId).then(setItems).catch(() => setItems([])); }, []);
+  const steps = (() => { const v = Array.from({ length: 7 }, (_, i) => { const d = new Date(); d.setDate(d.getDate() - i); return Number(habits[dkey(d)]?.steps) || 0; }).filter(Boolean); return v.length ? Math.round(v.reduce((x, y) => x + y, 0) / v.length) : null; })();
+  const lastPhotos = (items || []).find((c) => c.photos?.length);
+  const since = (d) => (Date.now() - new Date(d).getTime()) / 864e5;
+  const photosDue = items !== null && (lastPhotos ? since(lastPhotos.created_at) >= 26 : since(startDate || items[items.length - 1]?.created_at || Date.now()) >= 26);
+  const lastCk = items?.[0];
+  const doneThisWeek = !!lastCk && new Date(lastCk.created_at) >= weekStart();
   const pick = async (list) => {
     const out = [];
     for (const file of [...list].slice(0, 3 - files.length)) {
@@ -6401,33 +6432,49 @@ function CheckinCard({ userId }) {
     }
     setFiles((x) => [...x, ...out].slice(0, 3));
   };
+  const filled = Object.values(a).some((v) => v && v.trim()) || Object.values(m).some(Boolean);
   const send = async () => {
+    if (photosDue && files.length < 3) { setMsg("Esta semana tocan las fotos del mes: frente, perfil y espalda."); return; }
     setBusy(true); setMsg("");
     try {
-      const row = await db.addCheckin(userId, { ...f, files: files.map((x) => x.blob) });
-      setItems((x) => [row, ...(x || [])]); setF({ weight: "", waist: "", hip: "", feeling: "" }); setFiles([]);
-      setMsg("Revisión enviada. Tu entrenadora ya la puede ver.");
+      const row = await db.addCheckin(userId, { measures: m, answers: a, share, steps, files: files.map((x) => x.blob) });
+      setItems((x) => [row, ...(x || [])]); setM({}); setA({}); setShare(""); setFiles([]);
+      setMsg("¡Revisión enviada! Tu entrenadora ya la puede ver. Si tienes más dudas o cualquier cosa, escríbele por WhatsApp.");
     } catch { setMsg("No se ha podido enviar. Revisa tu conexión e inténtalo otra vez."); }
     finally { setBusy(false); }
   };
   return (
     <div className="ckcard">
-      <div className="ck-hd"><b>Revisión con tu entrenadora</b><button className="link" onClick={() => setOpen(!open)}>{open ? "Cerrar" : "Abrir"}</button></div>
-      {!open && <p className="hint" style={{ margin: "6px 0 0" }}>Fotos de progreso, peso, medidas y cómo te ha ido. Solo las ve ella.</p>}
+      <div className="ck-hd"><b>Revisión semanal</b><button className="link" onClick={() => setOpen(!open)}>{open ? "Cerrar" : doneThisWeek ? "Ver" : "Hacer revisión"}</button></div>
+      {!open && <p className="hint" style={{ margin: "6px 0 0" }}>{doneThisWeek ? "✓ Ya has enviado la revisión de esta semana." : photosDue ? "Esta semana tocan también las fotos del mes 📸" : "Medidas, cómo te ha ido y tus preguntas. Solo lo ve tu entrenadora."}</p>}
       {open && (
         <>
+          <h2 style={{ marginTop: 14 }}>1. Medidas <small className="ck-opt">(cm, opcional)</small></h2>
+          <div className="ck-mgrid">{CK_MEASURES.map(([k, l]) => (
+            <label key={k}><span>{l}</span><input className="in" inputMode="decimal" value={m[k] || ""} placeholder={lastCk?.[k] ? String(lastCk[k]) : ""} onChange={(e) => setM({ ...m, [k]: e.target.value })} /></label>
+          ))}</div>
+
+          <h2>2. Fotos {photosDue ? <small className="ck-req">obligatorias este mes</small> : <small className="ck-opt">(opcional · cada 4 semanas)</small>}</h2>
           <div className="ck-photos ck-new">
             {files.map((x, i) => <button key={i} onClick={() => setFiles(files.filter((_, j) => j !== i))} aria-label="Quitar foto"><img src={x.preview} alt="" /><i>✕</i></button>)}
             {files.length < 3 && <button className="ck-add" onClick={() => ref.current?.click()}>+<small>{["Frente", "Perfil", "Espalda"][files.length]}</small></button>}
             <input ref={ref} type="file" accept="image/*" multiple hidden onChange={(e) => { pick(e.target.files); e.target.value = ""; }} />
           </div>
-          <div className="row">
-            {[["weight", "Peso (kg)"], ["waist", "Cintura (cm)"], ["hip", "Cadera (cm)"]].map(([k, l]) => (
-              <div key={k} className="field" style={{ flex: 1 }}><label>{l}</label><input className="in" inputMode="decimal" value={f[k]} onChange={(e) => setF({ ...f, [k]: e.target.value })} /></div>
-            ))}
+
+          <h2>3. Pasos</h2>
+          <p className="hint" style={{ margin: 0 }}>{steps ? <>Tu media de los últimos 7 días: <b>{steps.toLocaleString("es-ES")} pasos</b>. Se manda sola con la revisión.</> : "Apunta tus pasos en Hábitos (o conecta Salud) y se mandan solos con la revisión."}</p>
+
+          {CK_SECTIONS.map(([title, qs], si) => (
+            <div key={title}>
+              <h2>{si + 4}. {title}</h2>
+              {qs.map(([k, q]) => <div key={k} className="field"><label>{q}</label><textarea className="in" rows={2} value={a[k] || ""} onChange={(e) => setA({ ...a, [k]: e.target.value })} /></div>)}
+            </div>
+          ))}
+          <div className="field"><label>¿Me dejas compartir alguna de tus respuestas en mis stories?</label>
+            <div className="chips">{CK_SHARE.map((x) => <button key={x} className={`chip ${share === x ? "on" : ""}`} onClick={() => setShare(share === x ? "" : x)}>{x}</button>)}</div>
           </div>
-          <div className="field"><label>¿Cómo ha ido la semana?</label><textarea className="in" rows={3} value={f.feeling} placeholder="Energía, hambre, sueño, entrenos, molestias…" onChange={(e) => setF({ ...f, feeling: e.target.value })} /></div>
-          <button className="btn ac" disabled={busy || (!files.length && !f.weight && !f.feeling)} onClick={send}>{busy ? "Enviando…" : "Enviar revisión"}</button>
+          <button className="btn ac" disabled={busy || (!filled && !files.length)} onClick={send}>{busy ? "Enviando…" : "Enviar revisión"}</button>
+          <p className="ck-wa">💬 Si tienes más dudas o cualquier cosa que comentarme, escríbeme por WhatsApp.</p>
           {msg && <div className="note">{msg}</div>}
           <h2>Tus revisiones</h2>
           {items === null ? <p className="hint">Cargando…</p> : <CheckinList items={items} />}
@@ -6451,6 +6498,20 @@ const CHECKIN_CSS = `
 .ck-txt{font-size:14px;color:var(--dm);margin:8px 0 0;white-space:pre-wrap}
 .ck-big{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;padding:20px}
 .ck-big img{max-width:100%;max-height:100%;border-radius:14px}
+.ck-tg{width:100%;background:none;border:0;color:var(--tx);font:inherit;text-align:left;padding:0;cursor:pointer}
+.ck-opt{font-size:12px;font-weight:400;color:var(--dm)}
+.ck-req{font-size:11px;font-weight:800;color:#000;background:#F5C76B;border-radius:999px;padding:2px 8px;margin-left:4px;vertical-align:middle}
+.ck-mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ck-mgrid label{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--dm)}
+.ck-mgrid .in{padding:9px 8px;text-align:center}
+.ck-ms{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.ck-ms div{background:var(--sf2);border-radius:10px;padding:7px;display:flex;flex-direction:column;text-align:center}
+.ck-ms small{font-size:10.5px;color:var(--dm)}
+.ck-ms em{font-style:normal;font-size:11px;font-weight:700;color:var(--dm)}
+.ck-qa{margin-top:10px}
+.ck-qa small{display:block;font-size:12px;color:var(--dm)}
+.ck-qa p{margin:3px 0 0;font-size:14px;white-space:pre-wrap}
+.ck-wa{font-size:13px;color:var(--dm);text-align:center;margin:12px 0 0}
 `;
 
 /* ============================ ASESORADAS (COACH) ============================ */
@@ -7072,7 +7133,7 @@ function ArcApp({ user }) {
       label: native.platform === "android" && !stepsAvail ? "Instalar Health Connect para leer tus pasos" : `Conectar con ${native.platform === "ios" ? "Apple Salud" : "Health Connect"}`,
       source: native.platform === "ios" ? "Apple Salud" : "Health Connect",
       busy: stepsBusy, error: stepsErr, connect: connectSteps, sync: syncSteps,
-    } : null} />}{state.hasCoach && <CheckinCard userId={user.id} />}</>;
+    } : null} />}{state.hasCoach && <CheckinCard userId={user.id} habits={state.habits} startDate={state.profile?.startDate} />}</>;
   }
 
   return (

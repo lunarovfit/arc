@@ -145,15 +145,19 @@ export async function clientData(clientId) {
 
 // ---------- Revisiones ----------
 export const listCheckins = (clientId) => supabase.from("client_checkins").select("*").eq("client_id", clientId).order("created_at", { ascending: false }).then(must);
-export async function addCheckin(userId, { weight, waist, hip, feeling, files }) {
+export async function addCheckin(userId, { measures = {}, feeling, answers, share, steps, files }) {
   const photos = [];
   for (let i = 0; i < files.length; i++) {
     const path = `${userId}/${Date.now()}_${i}.jpg`;
     must(await supabase.storage.from("checkins").upload(path, files[i], { contentType: "image/jpeg" }));
     photos.push(path);
   }
-  const num = (v) => (v === "" || v == null ? null : Number(String(v).replace(",", ".")));
-  return supabase.from("client_checkins").insert({ weight: num(weight), waist: num(waist), hip: num(hip), feeling: feeling || null, photos }).select().single().then(must);
+  const num = (v) => (v === "" || v == null ? null : Number(String(v).replace(",", ".")) || null);
+  const base = { weight: num(measures.weight), waist: num(measures.waist), hip: num(measures.hip), feeling: feeling || null, photos };
+  const full = { ...base, arm: num(measures.arm), thigh: num(measures.thigh), shoulders: num(measures.shoulders), chest: num(measures.chest), steps: steps || null, answers: answers || null, share: share || null };
+  const r = await supabase.from("client_checkins").insert(full).select().single();
+  if (r.error && /column/i.test(r.error.message || "")) return supabase.from("client_checkins").insert(base).select().single().then(must);
+  return must(r);
 }
 export async function checkinUrls(paths) {
   if (!paths.length) return {};
