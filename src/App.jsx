@@ -3537,15 +3537,52 @@ const SHOP_EXAMPLES = [
   ["tortitas-legumbres", "Tortitas de legumbres", "100 kcal y 6,8 g de proteína el paquetito de 27 g. Sin gluten."],
   ["guisantes", "Guisantes congelados", "82 kcal, 6 g de proteína y 5 g de fibra por 100 g. Solo guisantes."],
   ["agua-coco", "Agua de coco", "20 kcal por 100 ml, sin azúcar añadido. Para hidratarte antes o durante el entreno: un vaso (250 ml) son 50 kcal."],
+  ["pavo-92", "Pechuga de pavo 92%", "89 kcal y 19,5 g de proteína por 100 g. El fiambre con más carne."],
+  ["pollo-92", "Pechuga de pollo 92%", "89 kcal y 18 g de proteína por 100 g. Para tostadas y bocadillos."],
+  ["tiras-pollo", "Tiras de pollo 99%", "Pollo ya cocinado: abres y listo para ensaladas, wraps o arroz."],
+  ["pollo-relleno", "Pollo asado La Carloteña", "97% pollo y alto en proteína. Para bocadillos y tostadas."],
+  ["jamon-duroc", "Jamón serrano en lonchas", "Mucha proteína; lleva sal, así que con 2–3 lonchas vale."],
+  ["salmon-lata", "Salmón al natural en lata", "Proteína y omega 3 sin cocinar nada. Para ensaladas, arroz o tostadas."],
+  ["atun-girasol", "Atún claro en aceite", "Escúrrelo bien. Si quieres menos grasa, el de al natural."],
+  ["arandanos", "Arándanos congelados", "Para bowls, yogur y tortitas. Déjalos 5 min fuera para que suelten jugo."],
+  ["pan-hogaza", "Hogaza integral", "Pídela cortada y congélala por rebanadas: siempre tienes pan bueno."],
+  ["panecillos", "Panecillos integrales", "Ya vienen en ración: uno es tu bocadillo."],
+  ["cristal-redondo", "Pan de cristal redondo", "Ligero y crujiente. Ideal para tostar."],
+  ["cristal-integral", "Pan de cristal 100% integral", "La versión integral: más fibra y también para tostar."],
+  ["arroz-verduras", "Arroz con verduras congelado", "8 minutos en la sartén: le sumas tu proteína y comida lista."],
+  ["patatas-cocidas", "Patatas cocidas en bote", "Ya cocidas: a la sartén o la airfryer y en 10 minutos las tienes."],
 ];
+const SHOP_CATS = [["prote", "Proteína", ["pavo-92", "pollo-92", "tiras-pollo", "pollo-relleno", "jamon", "jamon-duroc", "salmon-lata", "atun-girasol", "yogur-prot", "queso-batido"]],
+  ["pan", "Pan", ["pan-semillas", "pan-centeno", "pan-integral", "pan-hogaza", "panecillos", "cristal-redondo", "cristal-integral", "tomate-untar"]],
+  ["verdura", "Verdura y legumbre", ["crema-lentejas", "crema-calabaza", "parrillada", "pimiento", "guisantes", "tortitas-legumbres"]],
+  ["rapido", "Hidratos y rápido", ["arroz-verduras", "patatas-cocidas", "arandanos", "agua-coco"]]];
+function ShopGallery() {
+  const [cat, setCat] = useState("prote");
+  const ids = SHOP_CATS.find(([c]) => c === cat)[2];
+  const list = ids.map((id) => SHOP_EXAMPLES.find(([img]) => img === id)).filter(Boolean);
+  return <>
+    <div className="chips" style={{ margin: "8px 0 10px" }}>{SHOP_CATS.map(([c, l]) => <button key={c} className={`chip ${cat === c ? "on" : ""}`} onClick={() => setCat(c)}>{l}</button>)}</div>
+    <div className="shop-ex">{list.map(([img, n, d]) => <div key={img}><img src={`/compra/${img}.jpg`} alt={n} loading="lazy" /><b>{n}</b><small>{d}</small></div>)}</div>
+  </>;
+}
 // Productos del súper que encajan con cada ingrediente de las recetas
 const SHOP_PICKS = {
+  pavo: [["pavo-92", "Pechuga de pavo 92%", "89 kcal · 19,5 g prot./100 g"]],
+  pollo: [["tiras-pollo", "Tiras de pollo 99%", "Ya cocinado"], ["pollo-92", "Pechuga de pollo 92% (fiambre)", "89 kcal · 18 g prot./100 g"]],
+  tirasPollo: [["tiras-pollo", "Tiras de pollo 99%", "Ya cocinado"]],
+  salmon: [["salmon-lata", "Salmón al natural en lata", "Sin cocinar"]],
+  atun: [["atun-girasol", "Atún claro (escúrrelo)", "O el de al natural"]],
+  arandanos: [["arandanos", "Arándanos congelados", "Para bowls y tortitas"]],
+  panCristal: [["cristal-redondo", "Pan de cristal redondo", "Para tostar"], ["cristal-integral", "Pan de cristal integral", "Más fibra"]],
+  panIntegral: [["pan-hogaza", "Hogaza integral", "Congélala por rebanadas"], ["panecillos", "Panecillos integrales", "Uno = un bocadillo"]],
+  arroz: [["arroz-verduras", "Arroz con verduras congelado", "Listo en 8 min"]],
+  patata: [["patatas-cocidas", "Patatas cocidas en bote", "Listas en 10 min"]],
   cremaVerduras: [["crema-lentejas", "Crema de lentejas", "70 kcal/100 g · la que más proteína tiene"], ["crema-calabaza", "Crema de calabaza y zanahoria", "48 kcal/100 g"]],
   verduras: [["parrillada", "Parrillada de verduras", "55 kcal/100 g · 0 g grasa"], ["pimiento", "Pimiento troceado", "28 kcal/100 g"]],
   tortitasArroz: [["tortitas-legumbres", "Tortitas de legumbres", "100 kcal y 6,8 g prot. el paquetito"]],
   yogurProt: [["yogur-prot", "Yogur +proteínas natural", "52 kcal · 10 g prot./100 g"]],
   quesoBatido: [["queso-batido", "Queso fresco batido 0%", "46 kcal · 8 g prot./100 g"]],
-  jamon: [["jamon", "Jamón serrano", "248 kcal · 33,5 g prot./100 g"]],
+  jamon: [["jamon", "Jamón serrano", "248 kcal · 33,5 g prot./100 g"], ["jamon-duroc", "Jamón serrano en lonchas", "2–3 lonchas"]],
   tomateUntar: [["tomate-untar", "Tomate para untar", "64 kcal/100 g · ya lleva AOVE"]],
   guisantes: [["guisantes", "Guisantes congelados", "82 kcal · 6 g prot./100 g"]],
 };
@@ -3792,8 +3829,8 @@ function NutriGuide({ weight = 60 }) {
       {g?.id === "fuera" && <FueraTool />}
       {g?.id === "pan" && <div className="shop-ex" style={{ marginTop: 10 }}>{SHOP_EXAMPLES.filter(([img]) => img.startsWith("pan-")).map(([img, n, d]) => <div key={img}><img src={`/compra/${img}.jpg`} alt={n} loading="lazy" /><b>{n}</b><small>{d}</small></div>)}</div>}
       {g?.id === "compra" && <>
-        <div className="shop-ex-t">Ejemplos que uso yo (Mercadona)</div>
-        <div className="shop-ex">{SHOP_EXAMPLES.map(([img, n, d]) => <div key={img}><img src={`/compra/${img}.jpg`} alt={n} loading="lazy" /><b>{n}</b><small>{d}</small></div>)}</div>
+        <div className="shop-ex-t">Lo que compro yo (Mercadona)</div>
+        <ShopGallery />
         <div className="shop-ex-t">Qué mirar en la etiqueta</div>
         <GuideCards items={SHOP_TIPS} />
       </>}
