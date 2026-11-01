@@ -6372,14 +6372,54 @@ const CK_Q = Object.fromEntries(CK_SECTIONS.flatMap(([, qs]) => qs));
 const CK_SHARE = ["Sí con nombre", "Sí sin nombre", "Mejor no"];
 const ckMeasure = (c, k) => (c[k] != null ? Number(c[k]) : null);
 
-function CheckinList({ items }) {
+// Tarjeta 1080×1920 para stories con una respuesta de la revisión
+async function drawTestimonial({ text, who, kind }) {
+  await document.fonts?.ready;
+  const W = 1080, H = 1920, c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d");
+  x.fillStyle = "#000"; x.fillRect(0, 0, W, H);
+  const g = x.createRadialGradient(W * 0.8, H * 0.18, 40, W * 0.8, H * 0.18, 900); g.addColorStop(0, "rgba(212,139,146,.45)"); g.addColorStop(1, "rgba(212,139,146,0)");
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  const g2 = x.createRadialGradient(W * 0.1, H * 0.92, 40, W * 0.1, H * 0.92, 700); g2.addColorStop(0, "rgba(212,139,146,.22)"); g2.addColorStop(1, "rgba(212,139,146,0)");
+  x.fillStyle = g2; x.fillRect(0, 0, W, H);
+  const F = SHARE_FONT;
+  x.fillStyle = "#D48B92"; x.font = `800 34px ${F}`; x.textBaseline = "alphabetic";
+  x.fillText(kind.toUpperCase(), 96, 330);
+  x.fillStyle = "rgba(212,139,146,.9)"; x.font = `700 320px Georgia, "Times New Roman", serif`; x.fillText("“", 80, 640);
+  // texto envuelto, tamaño según longitud
+  const size = text.length > 220 ? 52 : text.length > 140 ? 60 : text.length > 70 ? 72 : 86;
+  x.font = `700 ${size}px ${F}`; x.fillStyle = "#fff";
+  const words = text.trim().split(/\s+/), lines = []; let line = "";
+  words.forEach((w) => { const t = line ? `${line} ${w}` : w; if (x.measureText(t).width > W - 192 && line) { lines.push(line); line = w; } else line = t; });
+  if (line) lines.push(line);
+  const lh = size * 1.25; let y = 700;
+  lines.slice(0, 14).forEach((l) => { x.fillText(l, 96, y); y += lh; });
+  x.fillStyle = "rgba(255,255,255,.65)"; x.font = `600 40px ${F}`; x.fillText(`— ${who}`, 96, y + 50);
+  const logo = await loadImg("/logo-mark.png");
+  if (logo) x.drawImage(logo, 96, H - 300, 96, 96 * (logo.height / logo.width));
+  x.fillStyle = "#fff"; x.font = `800 52px ${F}`; x.fillText("ARC", 212, H - 238);
+  x.fillStyle = "rgba(255,255,255,.6)"; x.font = `500 32px ${F}`; x.fillText("Asesoría 1:1 · entrena conmigo · @lunarovx", 96, H - 150);
+  return c.toDataURL("image/png");
+}
+
+const CK_STORY = { frase: "Lo que diría a quien duda", ayuda: "Lo que más le ayuda", cuerpo: "Cómo se siente", plan: "Sobre su plan" };
+
+function CheckinList({ items, coach = false, clientName = "" }) {
   const [urls, setUrls] = useState({});
   const [big, setBig] = useState(null);
   const [open, setOpen] = useState(items[0]?.id || null);
+  const [story, setStory] = useState(null);
+  const [err, setErr] = useState("");
   useEffect(() => {
     const paths = items.flatMap((c) => c.photos || []).filter((p) => !urls[p]);
     if (paths.length) db.checkinUrls(paths).then((u) => setUrls((x) => ({ ...x, ...u }))).catch(() => {});
   }, [items]);
+  const makeStory = async (c, k) => {
+    setErr("");
+    const first = (clientName || "").trim().split(/\s+/)[0];
+    const who = c.share === "Sí con nombre" && first ? `${first}, en asesoría con Luna` : "En asesoría con Luna";
+    try { setStory({ url: await drawTestimonial({ text: c.answers[k], who, kind: CK_STORY[k] || "Revisión semanal" }), name: `arc-revision-${k}.png` }); } catch { setErr("No se ha podido crear la imagen."); }
+  };
   if (!items.length) return <div className="empty">Todavía no hay revisiones.</div>;
   return (
     <>
@@ -6387,21 +6427,52 @@ function CheckinList({ items }) {
         const prev = items[idx + 1];
         const ms = CK_MEASURES.map(([k, l]) => [k, l, ckMeasure(c, k), prev ? ckMeasure(prev, k) : null]).filter(([, , v]) => v != null);
         const on = open === c.id;
+        const ans = c.answers || {};
+        const canShare = c.share && c.share !== "Mejor no";
         return (
-          <div className="ck" key={c.id}>
-            <button className="ck-hd ck-tg" onClick={() => setOpen(on ? null : c.id)}><b>{new Date(c.created_at).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })}{c.photos?.length ? " · 📸" : ""}</b>
-              <span>{[c.weight && `${c.weight} kg`, c.steps && `${Number(c.steps).toLocaleString("es-ES")} pasos`].filter(Boolean).join(" · ")} {on ? "–" : "+"}</span></button>
-            {on && <>
-              {ms.length > 0 && <div className="ck-ms">{ms.map(([k, l, v, p]) => { const d = p != null ? Math.round((v - p) * 10) / 10 : null; return <div key={k}><small>{l}</small><b>{v}</b>{d ? <em className={d > 0 ? "up" : "down"}>{d > 0 ? "+" : ""}{d}</em> : null}</div>; })}</div>}
+          <div className={`ck2${on ? " on" : ""}`} key={c.id}>
+            <button className="ck2-hd" onClick={() => setOpen(on ? null : c.id)}>
+              <span className="ck2-date"><b>{new Date(c.created_at).getDate()}</b><small>{new Date(c.created_at).toLocaleDateString("es-ES", { month: "short" }).replace(".", "")}</small></span>
+              <span className="ck2-t"><b>Revisión{c.photos?.length ? " del mes" : ""}</b><small>{[c.weight && `${String(c.weight).replace(".", ",")} kg`, c.steps && `${Number(c.steps).toLocaleString("es-ES")} pasos`, c.photos?.length && "📸 fotos"].filter(Boolean).join(" · ") || "Sin medidas"}</small></span>
+              <i>{on ? "–" : "+"}</i>
+            </button>
+            {on && <div className="ck2-body">
+              {ms.length > 0 && <div className="ck-ms">{ms.map(([k, l, v, p]) => { const d = p != null ? Math.round((v - p) * 10) / 10 : null; return <div key={k}><small>{l}</small><b>{String(v).replace(".", ",")}</b>{d ? <em className={d > 0 ? "up" : "down"}>{d > 0 ? "+" : ""}{String(d).replace(".", ",")}</em> : <em>&nbsp;</em>}</div>; })}</div>}
               {c.photos?.length > 0 && <div className="ck-photos">{c.photos.map((p) => <button key={p} onClick={() => urls[p] && setBig(urls[p])}>{urls[p] ? <img src={urls[p]} alt="" /> : <span>…</span>}</button>)}</div>}
-              {c.answers && Object.entries(c.answers).filter(([, v]) => v).map(([k, v]) => <div key={k} className="ck-qa"><small>{CK_Q[k] || k}</small><p>{v}</p></div>)}
-              {c.share && <div className="ck-qa"><small>¿Se puede compartir en stories?</small><p>{c.share}</p></div>}
+              {CK_SECTIONS.map(([title, qs]) => {
+                const got = qs.filter(([k]) => ans[k]);
+                if (!got.length) return null;
+                return (
+                  <div key={title} className="ck2-sec">
+                    <div className="ck2-st">{title}</div>
+                    {got.map(([k, q]) => (
+                      <div key={k} className="ck2-qa">
+                        <small>{q}</small>
+                        <p>{ans[k]}</p>
+                        {coach && canShare && CK_STORY[k] && <button className="ck2-story" onClick={() => makeStory(c, k)}>Crear historia</button>}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+              {c.share && <div className={`ck2-share ${c.share === "Mejor no" ? "no" : ""}`}>{c.share === "Mejor no" ? "🚫 Prefiere que no compartas sus respuestas" : `✓ Puedes compartir sus respuestas · ${c.share.toLowerCase()}`}</div>}
               {c.feeling && <p className="ck-txt">{c.feeling}</p>}
-            </>}
+            </div>}
           </div>
         );
       })}
+      {err && <div className="err">{err}</div>}
       {big && <div className="ck-big" onClick={() => setBig(null)}><img src={big} alt="" /></div>}
+      {story && (
+        <div className="modal" onClick={() => setStory(null)}>
+          <div className="box" onClick={(e) => e.stopPropagation()}>
+            <h1 style={{ fontSize: 20 }}>Para tus stories</h1>
+            <img src={story.url} alt="" style={{ width: "100%", borderRadius: 16, border: "1px solid var(--ln)" }} />
+            <button className="btn ac" onClick={() => SHARE_IMPL(story.url, story.name).catch(() => {})}>Compartir o guardar</button>
+            <button className="btn ghost" onClick={() => setStory(null)}>Cerrar</button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
@@ -6512,6 +6583,27 @@ const CHECKIN_CSS = `
 .ck-qa small{display:block;font-size:12px;color:var(--dm)}
 .ck-qa p{margin:3px 0 0;font-size:14px;white-space:pre-wrap}
 .ck-wa{font-size:13px;color:var(--dm);text-align:center;margin:12px 0 0}
+.ck2{background:var(--sf2);border:1px solid var(--ln);border-radius:16px;margin:10px 0;overflow:hidden}
+.ck2.on{border-color:rgba(212,139,146,.45)}
+.ck2-hd{width:100%;display:flex;align-items:center;gap:12px;background:none;border:0;color:var(--tx);font:inherit;text-align:left;padding:12px;cursor:pointer}
+.ck2-date{width:46px;height:50px;flex:none;border-radius:12px;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.ck2-date b{font-size:20px}.ck2-date small{font-size:11px;color:var(--ac);text-transform:uppercase;font-weight:700;margin-top:3px}
+.ck2-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ck2-t b{font-size:15px}.ck2-t small{font-size:12.5px;color:var(--dm)}
+.ck2-hd i{font-style:normal;color:var(--dm);font-size:18px}
+.ck2-body{padding:0 12px 14px}
+.ck2-body .ck-ms{margin-top:0}
+.ck2-body .ck-ms div{background:#000}
+.ck-ms b{font-size:17px}
+.ck-ms em.up{color:#F5B454}.ck-ms em.down{color:var(--okl)}
+.ck2-sec{margin-top:14px}
+.ck2-st{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);margin-bottom:6px}
+.ck2-qa{background:#000;border-radius:12px;padding:10px 12px;margin-bottom:6px}
+.ck2-qa small{display:block;font-size:12px;color:var(--dm);line-height:1.35}
+.ck2-qa p{margin:5px 0 0;font-size:15px;line-height:1.4;white-space:pre-wrap}
+.ck2-story{margin-top:8px;background:none;border:1px solid rgba(212,139,146,.5);color:var(--ac);font:inherit;font-size:12.5px;font-weight:700;border-radius:999px;padding:6px 12px;cursor:pointer}
+.ck2-share{margin-top:12px;font-size:12.5px;color:var(--okl);background:rgba(110,231,183,.08);border-radius:10px;padding:8px 10px}
+.ck2-share.no{color:var(--dm);background:#000}
 `;
 
 /* ============================ ASESORADAS (COACH) ============================ */
@@ -6746,7 +6838,7 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
 
       {tab === "revis" && (
         !client.client_id ? <div className="note">Cuando se registre, aquí verás sus fotos de progreso, peso, medidas y cómo le ha ido cada semana. Las manda desde su pestaña de Hábitos.</div>
-        : checkins === null ? <p className="hint">Cargando…</p> : <CheckinList items={checkins} />
+        : checkins === null ? <p className="hint">Cargando…</p> : <CheckinList items={checkins} coach clientName={client.name || ""} />
       )}
 
       {tab === "notas" && (
