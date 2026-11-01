@@ -68,7 +68,7 @@ workflows:
       android_signing:
         - arc_keystore
       vars:
-        ARC_VERSION_NAME: "1.0"
+        ARC_VERSION_NAME: "1.0.2"
       node: 22
       java: 21
     scripts:
