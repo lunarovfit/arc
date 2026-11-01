@@ -143,6 +143,11 @@ export async function clientData(clientId) {
   return { profile: must(profile), sessions: must(sessions), habits: must(habits) };
 }
 
+// ---------- Opiniones (Coaching con Luna) ----------
+export const listTestimonials = () => supabase.from("testimonials").select("*").eq("active", true).order("created_at", { ascending: false }).then(must);
+export const addTestimonial = (row) => supabase.from("testimonials").insert(row).select().single().then(must);
+export const removeTestimonial = (id) => supabase.from("testimonials").delete().eq("id", id).then(must);
+
 // ---------- Revisiones ----------
 export const listCheckins = (clientId) => supabase.from("client_checkins").select("*").eq("client_id", clientId).order("created_at", { ascending: false }).then(must);
 export async function addCheckin(userId, { measures = {}, feeling, answers, share, steps, files }) {

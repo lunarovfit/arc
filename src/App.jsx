@@ -1941,6 +1941,29 @@ select.in{appearance:none}
 .pf-rec b{font-size:14px}
 .pf-rec small{font-size:12px;color:var(--dm)}
 
+/* coaching con luna */
+.cc{background:linear-gradient(160deg,rgba(212,139,146,.18),var(--sf) 60%);border:1px solid rgba(212,139,146,.4);border-radius:20px;padding:16px;margin:22px 0 10px}
+.cc-hd small{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ac)}
+.cc-hd b{display:block;font-size:21px;margin:3px 0}
+.cc-hd p{margin:0;color:var(--dm);font-size:14px}
+.cc-slides{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:14px -16px 0;padding:0 16px 4px;scrollbar-width:none}
+.cc-slides::-webkit-scrollbar{display:none}
+.cc-q{position:relative;flex:none;width:86%;scroll-snap-align:center;margin:0;background:radial-gradient(120% 90% at 85% 0%,rgba(212,139,146,.35),#000 60%);border:1px solid var(--ln);border-radius:18px;padding:18px 18px 16px;min-height:170px;display:flex;flex-direction:column}
+.cc-q small{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ac)}
+.cc-mark{font-family:Georgia,"Times New Roman",serif;font-size:64px;line-height:.7;color:rgba(212,139,146,.9);margin-top:10px;height:30px}
+.cc-q blockquote{margin:8px 0 0;font-size:17px;font-weight:700;line-height:1.35;flex:1}
+.cc-q figcaption{margin-top:12px;font-size:13px;color:var(--dm)}
+.cc-del{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:50%;border:1px solid var(--ln);background:#000;color:var(--dm);cursor:pointer}
+.cc-dots{display:flex;justify-content:center;gap:5px;margin-top:8px}
+.cc-dots i{width:6px;height:6px;border-radius:3px;background:var(--ln);transition:width .2s,background .2s}
+.cc-dots i.on{width:16px;background:var(--ac)}
+.cc-perks{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.cc-perks>div{display:flex;gap:10px;align-items:center;background:#000;border-radius:12px;padding:9px 11px}
+.cc-perks span{font-size:20px}
+.cc-perks b{display:block;font-size:14px}.cc-perks small{font-size:12.5px;color:var(--dm)}
+.cc-go{display:block;text-align:center;text-decoration:none;margin-top:14px}
+.cc-more{display:block;margin:10px auto 0}
+
 `;
 
 const LOGO_D = "M1292.5 1869.4C1169.3 1859.0 1054.2 1814.9 953.7 1739.6C905.0 1703.1 856.6 1654.0 818.8 1602.7C809.6 1590.2 787.9 1558.3 783.0 1550.1C781.5 1547.6 777.9 1541.7 775.0 1537.0C772.1 1532.3 768.4 1526.0 766.7 1523.0C765.1 1520.0 762.9 1516.4 762.0 1515.0C761.1 1513.6 757.5 1507.3 754.0 1501.0C750.5 1494.7 746.9 1488.2 746.0 1486.5C745.1 1484.8 742.4 1479.9 740.0 1475.5C737.7 1471.1 735.4 1467.0 735.0 1466.5C734.6 1466.0 732.7 1462.6 730.8 1459.0C721.7 1442.2 719.3 1438.0 714.7 1430.5C698.0 1403.7 685.1 1387.1 667.0 1368.9C650.0 1351.8 628.7 1335.3 608.5 1323.5C598.2 1317.5 574.9 1306.4 564.0 1302.3C561.0 1301.1 555.4 1299.0 551.5 1297.5C524.5 1287.1 477.9 1275.7 439.0 1270.0C435.4 1269.4 429.8 1268.6 426.5 1268.0C423.2 1267.5 415.1 1266.4 408.5 1265.5C401.9 1264.7 393.1 1263.5 389.0 1263.0C375.5 1261.3 350.3 1258.6 332.5 1257.0C325.9 1256.4 316.4 1255.5 311.5 1255.0C306.6 1254.5 296.2 1253.6 288.5 1253.0C265.3 1251.1 262.5 1250.7 262.5 1249.0C262.5 1247.3 265.0 1247.0 288.0 1245.0C295.4 1244.4 304.9 1243.5 309.0 1243.0C313.1 1242.5 321.7 1241.6 328.0 1241.0C334.3 1240.4 343.1 1239.5 347.5 1239.0C351.9 1238.5 360.0 1237.6 365.5 1237.0C394.5 1233.9 422.2 1229.3 457.5 1221.9C461.4 1221.1 463.3 1220.6 480.5 1216.0C496.7 1211.7 527.6 1200.8 541.0 1194.8C543.5 1193.7 547.5 1191.9 550.0 1190.8C552.5 1189.7 558.1 1187.0 562.5 1184.8C569.9 1181.1 573.5 1179.1 586.0 1172.2C593.5 1168.1 621.1 1149.6 627.5 1144.4C663.9 1114.9 697.7 1078.2 719.2 1045.0C727.9 1031.5 736.5 1017.8 739.0 1013.5C745.3 1002.6 774.1 958.7 788.2 938.5C802.4 918.1 833.8 877.9 846.0 864.5C908.6 795.7 955.1 757.1 1027.0 714.2C1060.2 694.4 1106.7 673.3 1147.5 659.3C1191.1 644.5 1240.0 633.7 1287.5 628.6C1390.4 617.4 1499.9 633.3 1596.0 673.4C1615.3 681.5 1640.2 693.3 1650.5 699.2C1653.8 701.1 1660.1 704.6 1664.5 707.0C1677.9 714.2 1705.6 732.3 1723.9 745.9C1753.9 768.1 1789.2 801.0 1813.8 829.5C1839.1 858.9 1864.0 894.8 1885.5 932.8C1890.0 940.8 1891.0 943.4 1890.1 944.3C1888.8 945.6 1887.4 944.2 1871.5 926.7C1862.3 916.4 1832.2 888.2 1820.5 878.8C1800.4 862.7 1776.4 846.1 1754.5 833.1C1742.7 826.0 1704.7 806.6 1694.0 802.1C1638.5 778.7 1600.9 768.8 1548.0 763.6C1513.1 760.1 1476.4 760.9 1441.5 765.9C1429.3 767.6 1409.4 771.4 1399.2 773.9C1396.9 774.5 1393.3 775.4 1391.2 775.9C1380.3 778.5 1356.6 785.7 1349.0 788.7C1348.2 789.0 1344.1 790.5 1340.0 792.0C1320.5 798.9 1277.6 819.4 1260.5 829.9C1256.7 832.3 1252.2 835.0 1250.5 836.0C1217.8 854.9 1178.9 885.8 1146.1 919.0C1105.5 960.0 1075.2 1001.9 1050.6 1051.0C1029.3 1093.6 1015.9 1132.3 1007.1 1176.5C997.8 1223.6 997.8 1276.7 1007.1 1325.0C1015.1 1366.6 1028.5 1406.1 1047.5 1444.2C1059.9 1469.0 1084.4 1507.2 1102.2 1529.6C1134.0 1569.7 1175.5 1608.2 1219.9 1639.0C1225.3 1642.8 1243.4 1654.1 1252.0 1659.1C1256.1 1661.5 1260.8 1664.2 1262.5 1665.2C1267.9 1668.3 1301.3 1684.5 1307.5 1687.0C1308.6 1687.4 1311.2 1688.6 1313.3 1689.5C1316.8 1691.0 1323.3 1693.5 1339.0 1699.2C1344.3 1701.1 1353.8 1704.1 1360.8 1706.1C1362.5 1706.6 1365.5 1707.4 1367.2 1707.9C1388.1 1713.9 1419.2 1720.0 1444.0 1722.9C1469.0 1725.9 1476.9 1726.3 1505.5 1726.3C1533.9 1726.3 1543.9 1725.7 1566.5 1722.9C1579.8 1721.2 1597.1 1718.5 1603.5 1717.0C1614.8 1714.5 1616.9 1714.0 1622.0 1712.9C1626.9 1711.8 1634.8 1709.8 1645.0 1707.0C1653.8 1704.5 1672.3 1698.7 1676.5 1697.0C1677.6 1696.6 1683.5 1694.3 1689.5 1691.9C1695.5 1689.6 1703.3 1686.4 1706.8 1684.8C1710.2 1683.3 1713.2 1682.0 1713.5 1682.0C1713.9 1682.0 1734.2 1672.4 1743.0 1668.1C1757.3 1660.9 1786.1 1644.0 1802.9 1632.7C1815.0 1624.7 1842.4 1604.3 1852.0 1596.1C1867.3 1583.2 1882.3 1569.7 1894.1 1558.3C1901.0 1551.5 1907.2 1546.0 1907.9 1546.0C1908.5 1546.0 1909.0 1546.8 1909.0 1547.8C1909.0 1552.1 1859.5 1622.3 1845.2 1638.2C1842.6 1641.1 1836.8 1647.8 1832.5 1653.0C1816.3 1672.3 1783.1 1704.4 1758.5 1724.6C1710.8 1763.6 1650.2 1798.3 1586.6 1822.9C1521.7 1848.0 1463.5 1862.3 1400.5 1868.6C1376.9 1870.9 1315.6 1871.4 1292.5 1869.4ZM1482.2 1560.8C1481.6 1560.1 1480.2 1552.5 1479.0 1544.0C1476.1 1522.4 1469.7 1490.9 1463.8 1469.1C1452.6 1427.3 1437.3 1394.1 1416.1 1365.0C1390.9 1330.5 1350.1 1301.1 1305.0 1285.2C1300.3 1283.5 1294.9 1281.7 1293.0 1281.1C1291.1 1280.5 1287.5 1279.4 1285.0 1278.6C1282.5 1277.8 1275.5 1276.0 1269.5 1274.6C1250.7 1270.1 1251.5 1270.2 1233.5 1267.0C1215.3 1263.7 1210.9 1263.1 1177.0 1259.0C1156.3 1256.5 1144.8 1255.2 1121.0 1253.0C1114.7 1252.4 1105.7 1251.5 1101.0 1251.0C1093.0 1250.1 1070.6 1248.2 1063.0 1247.7C1060.7 1247.6 1059.4 1247.0 1059.2 1245.9C1058.9 1244.1 1062.7 1243.4 1086.0 1241.0C1091.8 1240.4 1099.9 1239.5 1104.0 1239.0C1108.1 1238.5 1115.8 1237.6 1121.0 1237.0C1150.9 1233.5 1184.8 1228.7 1206.5 1224.9C1209.8 1224.3 1214.8 1223.4 1217.5 1223.0C1231.6 1220.5 1235.8 1219.7 1238.5 1218.9C1240.2 1218.4 1245.5 1217.1 1250.5 1216.0C1267.0 1212.2 1293.1 1203.8 1304.8 1198.4C1307.7 1197.1 1310.2 1196.0 1310.4 1196.0C1311.6 1196.0 1331.3 1186.3 1338.3 1182.3C1378.2 1159.5 1407.8 1130.9 1430.8 1093.0C1454.6 1053.7 1468.7 1011.0 1478.9 947.0C1481.2 932.3 1481.7 930.5 1483.5 930.5C1485.2 930.5 1485.7 932.1 1487.6 943.5C1499.8 1016.1 1522.0 1072.0 1556.1 1116.0C1573.9 1139.0 1603.2 1164.3 1627.0 1177.2C1646.6 1187.9 1657.0 1192.4 1675.5 1198.4C1691.7 1203.7 1700.8 1206.3 1713.5 1209.0C1715.7 1209.5 1719.5 1210.3 1722.0 1210.9C1737.9 1214.4 1767.3 1218.7 1789.5 1220.9C1819.2 1223.8 1840.0 1225.2 1881.5 1227.0C1894.7 1227.6 1915.4 1228.5 1927.5 1229.0C1939.6 1229.5 1960.8 1230.4 1974.5 1231.0C1988.2 1231.6 2009.0 1232.5 2020.5 1233.0C2032.0 1233.5 2052.8 1234.4 2066.5 1235.0C2153.1 1238.6 2244.7 1243.4 2245.7 1244.3C2247.5 1246.2 2242.4 1246.8 2221.8 1247.4C2209.0 1247.7 2185.7 1248.5 2170.0 1249.0C2154.3 1249.5 2122.2 1250.4 2098.5 1251.0C2074.8 1251.5 2037.0 1252.4 2014.5 1253.0C1992.0 1253.5 1953.5 1254.5 1929.0 1255.1C1820.0 1257.7 1783.2 1260.3 1734.5 1269.0C1694.7 1276.2 1669.3 1284.0 1640.1 1298.2C1585.9 1324.6 1549.7 1362.5 1522.8 1421.2C1508.2 1453.3 1498.5 1487.4 1489.5 1538.5C1485.9 1559.3 1484.5 1563.5 1482.2 1560.8Z";
@@ -2342,7 +2365,43 @@ function HomeSimple({ state, stats, quote, ratioPoints, weightPoints }) {
   );
 }
 
-function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) {
+// ---------- Coaching 1:1 con Luna (con opiniones de asesorad@s) ----------
+const COACH_URL = "https://d360.pro/@lunarovx";
+const COACH_PERKS = [["🎯", "Tu plan, hecho para ti", "Entreno y comidas según tu objetivo, tus horarios y lo que te gusta."], ["📱", "Dentro de ARC", "Te pongo tu rutina y tu dieta en la app, con tus cantidades."], ["📈", "Veo cómo vas", "Sigo tus series, tus pesos y tus hábitos y ajusto el plan."], ["🗓️", "Revisión cada semana", "Repasamos cómo ha ido y qué cambiamos."], ["💬", "Contacto directo conmigo", "Para dudas, técnica o lo que necesites."]];
+function CoachingCard({ testimonials = [], coach = false, onRemove }) {
+  const [open, setOpen] = useState(false);
+  const [i, setI] = useState(0);
+  const ref = useRef(null);
+  const onScroll = () => { const el = ref.current; if (el) setI(Math.round(el.scrollLeft / (el.clientWidth * 0.86))); };
+  return (
+    <div className="cc">
+      <div className="cc-hd">
+        <div><small>Asesoría 1:1</small><b>Coaching con Luna</b><p>¿Quieres que te lleve yo? Plan a medida, revisión cada semana y contacto directo.</p></div>
+      </div>
+      {testimonials.length > 0 && (
+        <>
+          <div className="cc-slides" ref={ref} onScroll={onScroll}>
+            {testimonials.map((t) => (
+              <figure key={t.id} className="cc-q">
+                {t.kind && <small>{t.kind}</small>}
+                <span className="cc-mark">“</span>
+                <blockquote>{t.text}</blockquote>
+                <figcaption>— {t.who}</figcaption>
+                {coach && <button className="cc-del" onClick={() => onRemove?.(t.id)} aria-label="Quitar opinión">✕</button>}
+              </figure>
+            ))}
+          </div>
+          {testimonials.length > 1 && <div className="cc-dots">{testimonials.map((t, k) => <i key={t.id} className={k === i ? "on" : ""} />)}</div>}
+        </>
+      )}
+      {open && <div className="cc-perks">{COACH_PERKS.map(([ic, t, d]) => <div key={t}><span>{ic}</span><div><b>{t}</b><small>{d}</small></div></div>)}</div>}
+      <a className="btn ac cc-go" href={COACH_URL} target="_blank" rel="noopener noreferrer">Quiero que me lleves</a>
+      <button className="link cc-more" onClick={() => setOpen(!open)}>{open ? "Ver menos" : "¿Qué incluye?"}</button>
+    </div>
+  );
+}
+
+function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia, testimonials, showCoaching = true, onRemoveTestimonial }) {
   const [shareSteps, setShareSteps] = useState(false);
   const [dayStory, setDayStory] = useState(false);
   useEffect(() => { const h = () => setDayStory(true); window.addEventListener("arc-story", h); return () => window.removeEventListener("arc-story", h); }, []);
@@ -2362,7 +2421,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
   const weightPoints = Object.keys(state.habits).filter((k) => state.habits[k].weight).sort().map((k) => ({ x: new Date(k).getTime(), y: Number(state.habits[k].weight) }));
   const [qq, who, from, why, kind] = quote;
   const heroImg = mediaOr(media, levelKey(branch, mode, ev.current)) || AVATAR[branch];
-  if (mode === "simple") return <HomeSimple state={state} stats={stats} quote={quote} ratioPoints={ratioPoints} weightPoints={weightPoints} />;
+  if (mode === "simple") return <><HomeSimple state={state} stats={stats} quote={quote} ratioPoints={ratioPoints} weightPoints={weightPoints} />{showCoaching && <CoachingCard testimonials={testimonials} coach={coach} onRemove={onRemoveTestimonial} />}</>;
   const ws = weekStart().toISOString().slice(0, 10);
   const weekN = state.sessions.filter((s) => s.date.slice(0, 10) >= ws).length;
   const goalDays = state.profile.days || 3;
@@ -2506,6 +2565,7 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia }) 
       })}
       </details>
 
+      {showCoaching && <CoachingCard testimonials={testimonials} coach={coach} onRemove={onRemoveTestimonial} />}
       <SocialLinks />
       <SocialFooter />
     </>
@@ -6372,53 +6432,24 @@ const CK_Q = Object.fromEntries(CK_SECTIONS.flatMap(([, qs]) => qs));
 const CK_SHARE = ["Sí con nombre", "Sí sin nombre", "Mejor no"];
 const ckMeasure = (c, k) => (c[k] != null ? Number(c[k]) : null);
 
-// Tarjeta 1080×1920 para stories con una respuesta de la revisión
-async function drawTestimonial({ text, who, kind }) {
-  await document.fonts?.ready;
-  const W = 1080, H = 1920, c = document.createElement("canvas"); c.width = W; c.height = H;
-  const x = c.getContext("2d");
-  x.fillStyle = "#000"; x.fillRect(0, 0, W, H);
-  const g = x.createRadialGradient(W * 0.8, H * 0.18, 40, W * 0.8, H * 0.18, 900); g.addColorStop(0, "rgba(212,139,146,.45)"); g.addColorStop(1, "rgba(212,139,146,0)");
-  x.fillStyle = g; x.fillRect(0, 0, W, H);
-  const g2 = x.createRadialGradient(W * 0.1, H * 0.92, 40, W * 0.1, H * 0.92, 700); g2.addColorStop(0, "rgba(212,139,146,.22)"); g2.addColorStop(1, "rgba(212,139,146,0)");
-  x.fillStyle = g2; x.fillRect(0, 0, W, H);
-  const F = SHARE_FONT;
-  x.fillStyle = "#D48B92"; x.font = `800 34px ${F}`; x.textBaseline = "alphabetic";
-  x.fillText(kind.toUpperCase(), 96, 330);
-  x.fillStyle = "rgba(212,139,146,.9)"; x.font = `700 320px Georgia, "Times New Roman", serif`; x.fillText("“", 80, 640);
-  // texto envuelto, tamaño según longitud
-  const size = text.length > 220 ? 52 : text.length > 140 ? 60 : text.length > 70 ? 72 : 86;
-  x.font = `700 ${size}px ${F}`; x.fillStyle = "#fff";
-  const words = text.trim().split(/\s+/), lines = []; let line = "";
-  words.forEach((w) => { const t = line ? `${line} ${w}` : w; if (x.measureText(t).width > W - 192 && line) { lines.push(line); line = w; } else line = t; });
-  if (line) lines.push(line);
-  const lh = size * 1.25; let y = 700;
-  lines.slice(0, 14).forEach((l) => { x.fillText(l, 96, y); y += lh; });
-  x.fillStyle = "rgba(255,255,255,.65)"; x.font = `600 40px ${F}`; x.fillText(`— ${who}`, 96, y + 50);
-  const logo = await loadImg("/logo-mark.png");
-  if (logo) x.drawImage(logo, 96, H - 300, 96, 96 * (logo.height / logo.width));
-  x.fillStyle = "#fff"; x.font = `800 52px ${F}`; x.fillText("ARC", 212, H - 238);
-  x.fillStyle = "rgba(255,255,255,.6)"; x.font = `500 32px ${F}`; x.fillText("Asesoría 1:1 · entrena conmigo · @lunarovx", 96, H - 150);
-  return c.toDataURL("image/png");
-}
-
-const CK_STORY = { frase: "Lo que diría a quien duda", ayuda: "Lo que más le ayuda", cuerpo: "Cómo se siente", plan: "Sobre su plan" };
+const CK_STORY = { frase: "Lo que diría a quien duda", ayuda: "Lo que más le ayuda", cuerpo: "Cómo se siente", plan: "Sobre su plan", mejorar: "Lo que mejoraría" };
 
 function CheckinList({ items, coach = false, clientName = "" }) {
   const [urls, setUrls] = useState({});
   const [big, setBig] = useState(null);
   const [open, setOpen] = useState(items[0]?.id || null);
-  const [story, setStory] = useState(null);
+  const [added, setAdded] = useState({});
   const [err, setErr] = useState("");
   useEffect(() => {
     const paths = items.flatMap((c) => c.photos || []).filter((p) => !urls[p]);
     if (paths.length) db.checkinUrls(paths).then((u) => setUrls((x) => ({ ...x, ...u }))).catch(() => {});
   }, [items]);
-  const makeStory = async (c, k) => {
+  const addOpinion = async (c, k) => {
     setErr("");
     const first = (clientName || "").trim().split(/\s+/)[0];
     const who = c.share === "Sí con nombre" && first ? `${first}, en asesoría con Luna` : "En asesoría con Luna";
-    try { setStory({ url: await drawTestimonial({ text: c.answers[k], who, kind: CK_STORY[k] || "Revisión semanal" }), name: `arc-revision-${k}.png` }); } catch { setErr("No se ha podido crear la imagen."); }
+    try { await db.addTestimonial({ text: c.answers[k], who, kind: CK_STORY[k] || null }); setAdded((x) => ({ ...x, [`${c.id}:${k}`]: true })); }
+    catch { setErr("No se ha podido añadir. ¿Has pegado el SQL de opiniones en Supabase?"); }
   };
   if (!items.length) return <div className="empty">Todavía no hay revisiones.</div>;
   return (
@@ -6433,7 +6464,7 @@ function CheckinList({ items, coach = false, clientName = "" }) {
           <div className={`ck2${on ? " on" : ""}`} key={c.id}>
             <button className="ck2-hd" onClick={() => setOpen(on ? null : c.id)}>
               <span className="ck2-date"><b>{new Date(c.created_at).getDate()}</b><small>{new Date(c.created_at).toLocaleDateString("es-ES", { month: "short" }).replace(".", "")}</small></span>
-              <span className="ck2-t"><b>Revisión{c.photos?.length ? " del mes" : ""}</b><small>{[c.weight && `${String(c.weight).replace(".", ",")} kg`, c.steps && `${Number(c.steps).toLocaleString("es-ES")} pasos`, c.photos?.length && "📸 fotos"].filter(Boolean).join(" · ") || "Sin medidas"}</small></span>
+              <span className="ck2-t"><b>Revisión{c.photos?.length ? " del mes" : ""}</b><small>{[c.weight && `${String(c.weight).replace(".", ",")} kg`, c.steps && `${Number(c.steps).toLocaleString("es-ES")} pasos`, c.photos?.length && "con fotos"].filter(Boolean).join(" · ") || "Sin medidas"}</small></span>
               <i>{on ? "–" : "+"}</i>
             </button>
             {on && <div className="ck2-body">
@@ -6449,13 +6480,15 @@ function CheckinList({ items, coach = false, clientName = "" }) {
                       <div key={k} className="ck2-qa">
                         <small>{q}</small>
                         <p>{ans[k]}</p>
-                        {coach && canShare && CK_STORY[k] && <button className="ck2-story" onClick={() => makeStory(c, k)}>Crear historia</button>}
+                        {coach && canShare && CK_STORY[k] && (added[`${c.id}:${k}`]
+                          ? <span className="ck2-added">✓ En opiniones</span>
+                          : <button className="ck2-story" aria-label="Añadir a opiniones" title="Añadir a las opiniones de Coaching con Luna" onClick={() => addOpinion(c, k)}>☆</button>)}
                       </div>
                     ))}
                   </div>
                 );
               })}
-              {c.share && <div className={`ck2-share ${c.share === "Mejor no" ? "no" : ""}`}>{c.share === "Mejor no" ? "🚫 Prefiere que no compartas sus respuestas" : `✓ Puedes compartir sus respuestas · ${c.share.toLowerCase()}`}</div>}
+              {c.share && <div className={`ck2-share ${c.share === "Mejor no" ? "no" : ""}`}>{c.share === "Mejor no" ? "Prefiere que no compartas sus respuestas" : `Puedes compartir sus respuestas · ${c.share.toLowerCase()}`}</div>}
               {c.feeling && <p className="ck-txt">{c.feeling}</p>}
             </div>}
           </div>
@@ -6463,16 +6496,6 @@ function CheckinList({ items, coach = false, clientName = "" }) {
       })}
       {err && <div className="err">{err}</div>}
       {big && <div className="ck-big" onClick={() => setBig(null)}><img src={big} alt="" /></div>}
-      {story && (
-        <div className="modal" onClick={() => setStory(null)}>
-          <div className="box" onClick={(e) => e.stopPropagation()}>
-            <h1 style={{ fontSize: 20 }}>Para tus stories</h1>
-            <img src={story.url} alt="" style={{ width: "100%", borderRadius: 16, border: "1px solid var(--ln)" }} />
-            <button className="btn ac" onClick={() => SHARE_IMPL(story.url, story.name).catch(() => {})}>Compartir o guardar</button>
-            <button className="btn ghost" onClick={() => setStory(null)}>Cerrar</button>
-          </div>
-        </div>
-      )}
     </>
   );
 }
@@ -6510,14 +6533,14 @@ function CheckinCard({ userId, habits = {}, startDate }) {
     try {
       const row = await db.addCheckin(userId, { measures: m, answers: a, share, steps, files: files.map((x) => x.blob) });
       setItems((x) => [row, ...(x || [])]); setM({}); setA({}); setShare(""); setFiles([]);
-      setMsg("¡Revisión enviada! Tu entrenadora ya la puede ver. Si tienes más dudas o cualquier cosa, escríbele por WhatsApp.");
+      setMsg("Revisión enviada. Tu entrenadora ya la puede ver. Si tienes más dudas o cualquier cosa, escríbele por WhatsApp.");
     } catch { setMsg("No se ha podido enviar. Revisa tu conexión e inténtalo otra vez."); }
     finally { setBusy(false); }
   };
   return (
     <div className="ckcard">
       <div className="ck-hd"><b>Revisión semanal</b><button className="link" onClick={() => setOpen(!open)}>{open ? "Cerrar" : doneThisWeek ? "Ver" : "Hacer revisión"}</button></div>
-      {!open && <p className="hint" style={{ margin: "6px 0 0" }}>{doneThisWeek ? "✓ Ya has enviado la revisión de esta semana." : photosDue ? "Esta semana tocan también las fotos del mes 📸" : "Medidas, cómo te ha ido y tus preguntas. Solo lo ve tu entrenadora."}</p>}
+      {!open && <p className="hint" style={{ margin: "6px 0 0" }}>{doneThisWeek ? "Ya has enviado la revisión de esta semana." : photosDue ? "Esta semana tocan también las fotos del mes." : "Medidas, cómo te ha ido y tus preguntas. Solo lo ve tu entrenadora."}</p>}
       {open && (
         <>
           <h2 style={{ marginTop: 14 }}>1. Medidas <small className="ck-opt">(cm, opcional)</small></h2>
@@ -6545,7 +6568,7 @@ function CheckinCard({ userId, habits = {}, startDate }) {
             <div className="chips">{CK_SHARE.map((x) => <button key={x} className={`chip ${share === x ? "on" : ""}`} onClick={() => setShare(share === x ? "" : x)}>{x}</button>)}</div>
           </div>
           <button className="btn ac" disabled={busy || (!filled && !files.length)} onClick={send}>{busy ? "Enviando…" : "Enviar revisión"}</button>
-          <p className="ck-wa">💬 Si tienes más dudas o cualquier cosa que comentarme, escríbeme por WhatsApp.</p>
+          <p className="ck-wa">Si tienes más dudas o cualquier cosa que comentarme, escríbeme por WhatsApp.</p>
           {msg && <div className="note">{msg}</div>}
           <h2>Tus revisiones</h2>
           {items === null ? <p className="hint">Cargando…</p> : <CheckinList items={items} />}
@@ -6601,7 +6624,9 @@ const CHECKIN_CSS = `
 .ck2-qa{background:#000;border-radius:12px;padding:10px 12px;margin-bottom:6px}
 .ck2-qa small{display:block;font-size:12px;color:var(--dm);line-height:1.35}
 .ck2-qa p{margin:5px 0 0;font-size:15px;line-height:1.4;white-space:pre-wrap}
-.ck2-story{margin-top:8px;background:none;border:1px solid rgba(212,139,146,.5);color:var(--ac);font:inherit;font-size:12.5px;font-weight:700;border-radius:999px;padding:6px 12px;cursor:pointer}
+.ck2-qa{position:relative}
+.ck2-story{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:none;border:1px solid var(--ln);color:var(--dm);font-size:14px;cursor:pointer;padding:0}
+.ck2-added{display:inline-block;margin-top:6px;font-size:11.5px;color:var(--okl)}
 .ck2-share{margin-top:12px;font-size:12.5px;color:var(--okl);background:rgba(110,231,183,.08);border-radius:10px;padding:8px 10px}
 .ck2-share.no{color:var(--dm);background:#000}
 `;
@@ -7071,6 +7096,8 @@ function ArcApp({ user }) {
     setPublic: async (v) => { await db.setProfilePublic(user.id, v); setState((s) => ({ ...s, profilePublic: v })); },
   };
 
+  const [testimonials, setTestimonials] = useState([]);
+  useEffect(() => { db.listTestimonials().then(setTestimonials).catch(() => {}); }, []);
   const socialApi = {
     ...db.social,
     setNick: async (nickname) => { await db.social.setNick(nickname); setState((s) => ({ ...s, nickname })); },
@@ -7208,7 +7235,7 @@ function ArcApp({ user }) {
   } else if (["entrenos", "nutricion", "ranking"].includes(tab) && !hasPremium) {
     body = <Locked tab={tab} onOpen={() => setPaywall(true)} />;
   } else if (tab === "inicio") {
-    body = <Home state={state} stats={stats} ev={ev} quote={quote} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
+    body = <Home state={state} stats={stats} ev={ev} quote={quote} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} testimonials={testimonials} showCoaching={!state.hasCoach || isCoach} onRemoveTestimonial={(id) => db.removeTestimonial(id).then(() => setTestimonials((l) => l.filter((x) => x.id !== id))).catch(() => {})} />;
   } else if (tab === "entrenos") {
     body = <Workouts state={state} routine={routine} onStart={(d) => setActive(newSession(d, state.sessions))} setDays={(d) => setProfile({ days: d })} setProfile={setProfile} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
   } else if (tab === "ranking") {
