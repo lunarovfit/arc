@@ -422,19 +422,95 @@ const FOCUS = [
 ];
 const focusOf = (p) => p?.focus || (p?.branch === "male" ? "equilibrado" : "gluteo");
 const UPPER_DAYS = ["superiorA", "superiorB", "espaldaBiceps", "empuje", "torsoA", "torsoB", "hombroBrazo", "calistenia", "fullA", "fullB", "fullGA", "fullGB", "fullMA", "fullMB", "fullMC"];
+// ---------- Iconos de línea con los colores de ARC (sustituyen a los emojis) ----------
+const IC = {
+  run: "M13 4a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0M7 21l3-6 3 2v5M10 15l1-6 4 3 3-1M6 11l3-2 2 0",
+  bike: "M5.5 18a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM18.5 18a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM5.5 14.5 9 8h6l3.5 6.5M12 14.5 9 8M15 5h2l-2 3",
+  wave: "M2 16c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2M2 20c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2M15 5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0M8 12l4-4 4 3",
+  walk: "M12 4a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0M9 21l2-6 3 2v4M11 15l1-6 3 3h3M12 9l-3 3",
+  mountain: "M3 20 9 9l4 6 3-4 5 9zM3 20h18",
+  orbit: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+  row: "M3 17h18M6 17l3-6h6l3 6M9 11l3-5 3 5",
+  rope: "M6 3v6M18 3v6M6 9c0 7 2 11 6 11s6-4 6-11",
+  glove: "M7 10V6a3 3 0 0 1 6 0v1h1a3 3 0 0 1 3 3v4a6 6 0 0 1-6 6H9a2 2 0 0 1-2-2zM7 13H5a2 2 0 0 1 0-4h2",
+  ball: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7l4 3-1.5 4.5h-5L8 10zM12 3v4M16 10l4.5-1.5M14.5 14.5l2.5 4M9.5 14.5 7 18.5M8 10 3.5 8.5",
+  racket: "M14 3a6 6 0 0 1 4.2 10.2c-2.3 2.3-6 2.3-8.4 0A6 6 0 0 1 14 3zM9.8 13.2 3 20",
+  music: "M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM21 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z",
+  bread: "M5 11a4 4 0 0 1 2-7.5c1.5 0 2.6.7 3.2 1.6A5 5 0 0 1 14 3.5c2.6 0 5 1.8 5 4.5 0 1.3-.6 2.3-1.5 3V19a1 1 0 0 1-1 1h-10a1 1 0 0 1-1-1z",
+  snow: "M12 2v20M4.9 6.5l14.2 11M19.1 6.5 4.9 17.5M9 4l3 2 3-2M9 20l3-2 3 2",
+  smile: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8.5 14.5s1.2 2 3.5 2 3.5-2 3.5-2M9 9.5h.01M15 9.5h.01",
+  scale: "M12 3v18M7 21h10M5 7h14M5 7l-3 6a3 3 0 0 0 6 0zM19 7l-3 6a3 3 0 0 0 6 0z",
+  search: "M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3",
+  phone: "M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM11 18h2",
+  drop: "M12 2.7s7 7.3 7 12.3a7 7 0 1 1-14 0c0-5 7-12.3 7-12.3z",
+  sun: "M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zM12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4",
+  bottle: "M10 2h4v3l2 3v12a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V8l2-3zM8 12h8",
+  help: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01",
+  citrus: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 7v10M7 12h10",
+  compass: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM16.2 7.8l-2.1 6.3-6.3 2.1 2.1-6.3z",
+  zap: "M13 2 4 14h7l-1 8 9-12h-7z",
+  jar: "M8 3h8M7 6h10l-1 2v11a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V8zM9 13h6",
+  clock: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2",
+  ban: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM5.6 5.6l12.8 12.8",
+  glass: "M6 3h12l-1.5 17a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1zM6.5 9h11",
+  cup: "M17 8h1a3 3 0 0 1 0 6h-1M3 8h14v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5zM7 2v2M11 2v2",
+  dumbbell: "M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11",
+  moon: "M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z",
+  plus: "M12 5v14M5 12h14",
+  heart: "M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z",
+  ruler: "M3 17 17 3l4 4L7 21zM7 13l2 2M10 10l2 2M13 7l2 2",
+  plate: "M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+  drum: "M15.5 4.5a5 5 0 0 1 0 7.1l-3 3-3.6-3.6 3-3a5 5 0 0 1 3.6-3.5zM8.9 11l-3.4 3.4M5.5 14.4a1.8 1.8 0 1 0-2.5 2.5 1.8 1.8 0 1 0 2.5 2.5",
+  bulb: "M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z",
+  flame: "M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3 0-3-1-6 1-9.5z",
+  bowl: "M3 11h18a9 9 0 0 1-18 0zM8 7c0-2 2-2 2-4M13 7c0-2 2-2 2-4",
+  box: "M3 8l9-5 9 5v8l-9 5-9-5zM3 8l9 5 9-5M12 13v8",
+  calendar: "M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM16 2v4M8 2v4M3 10h18",
+  pencil: "M17 3l4 4L8 20H4v-4z",
+  slice: "M4 15c0-6 5-11 11-11 2.8 0 5 2.2 5 5 0 6-5 11-11 11-2.8 0-5-2.2-5-5zM9 12c1-2 2-3 4-4",
+  disc: "M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM9 9h.01M14 8h.01M15 13h.01M10 14h.01M12 11h.01",
+  bean: "M7 5c3-3 9-2 11 2s-1 6-3 7-2 4-6 4-6-4-5-7 0-4 3-6z",
+  can: "M5 6c0-1.7 3.1-3 7-3s7 1.3 7 3v12c0 1.7-3.1 3-7 3s-7-1.3-7-3zM5 6c0 1.7 3.1 3 7 3s7-1.3 7-3M5 11c0 1.7 3.1 3 7 3s7-1.3 7-3",
+  leaf: "M11 20A7 7 0 0 1 4 13c0-6 6-10 16-10 0 10-4 16-10 16zM4 21c3-5 7-9 11-11",
+  burger: "M4 10a8 6 0 0 1 16 0zM3 14h18M4 18h16a1 1 0 0 1-1 2H5a1 1 0 0 1-1-2z",
+  nut: "M12 3c4 0 7 3 7 8 0 6-4 10-7 10s-7-4-7-10c0-5 3-8 7-8zM12 7v10",
+  tomato: "M12 21a8 8 0 0 0 8-8c0-3-2-6-8-6s-8 3-8 6a8 8 0 0 0 8 8zM12 7V3M9 5l3 2 3-2",
+  peach: "M12 21c-4.4 0-8-3.4-8-8 0-4 3-7 6-7 1 0 1.5.3 2 .7.5-.4 1-.7 2-.7 3 0 6 3 6 7 0 4.6-3.6 8-8 8zM12 6.7v8M12 6c0-2 1-3 3-4",
+  wings: "M12 7v13M12 7c-2-3-6-4-9-3 0 4 3 7 9 8M12 7c2-3 6-4 9-3 0 4-3 7-9 8M9 20h6",
+  sprout: "M12 21v-9M12 12c0-4-3-7-8-7 0 4 3 7 8 7zM12 10c0-3 2-6 7-6 0 4-3 6-7 6",
+  star: "M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z",
+  target: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zM12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z",
+  chart: "M3 3v18h18M7 15l4-4 3 3 6-7",
+  chat: "M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2-5.5A8.4 8.4 0 1 1 21 11.5z",
+  trophy: "M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4",
+  fish: "M2 12s4-6 11-6c4 0 7 3 9 6-2 3-5 6-9 6-7 0-11-6-11-6zM2 12l-1-3M2 12l-1 3M16 10h.01",
+  egg: "M12 22c-4 0-7-3-7-8 0-5 3.5-12 7-12s7 7 7 12c0 5-3 8-7 8z",
+  cheese: "M3 18l18-8-6-6L3 12zM3 12v6M9 14h.01M15 12h.01",
+  tofu: "M4 8l8-4 8 4v8l-8 4-8-4zM4 8l8 4 8-4M12 12v8",
+  tea: "M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM17 10h1.5a2.5 2.5 0 0 1 0 5H17M9 2v4M12 4v2",
+  flask: "M9 2h6M10 2v6L4.5 18.5A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.8-2.5L14 8V2M7 15h10",
+  candy: "M8 12a4 4 0 1 0 8 0 4 4 0 0 0-8 0zM8 12 3 9l1 6zM16 12l5-3-1 6z",
+  juice: "M7 6h10l-1 15H8zM9 6l1-4h4M7 11h10",
+  ricecake: "M12 18c5 0 9-2 9-5s-4-5-9-5-9 2-9 5 4 5 9 5zM3 13v2c0 3 4 5 9 5s9-2 9-5v-2M9 12h.01M13 11h.01M15 13h.01",
+};
+function Ic({ n, size = 22, color = "var(--ac)", sw = 1.8 }) {
+  const d = IC[n] || IC.star;
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={d} /></svg>;
+}
+
 // ---------- Programas ARC: rutinas prediseñadas por objetivo (3, 4 o 5 días) ----------
 const PROGRAMS = [
-  { id: "gluteo", icon: "🍑", name: "Glúteo y pierna", who: "Para priorizar glúteo y pierna sin olvidar espalda y hombro.", days: {
+  { id: "gluteo", icon: "peach", name: "Glúteo y pierna", who: "Para priorizar glúteo y pierna sin olvidar espalda y hombro.", days: {
     3: ["gluteoA", "superiorA", "gluteoB"], 4: ["gluteoA", "superiorA", "piernaQ", "gluteoB"], 5: ["gluteoA", "superiorA", "piernaQ", "gluteoB", "superiorB"] } },
-  { id: "musculo", icon: "💪", name: "Ganar músculo", who: "Cuerpo entero equilibrado: lo clásico para crecer en todo.", days: {
+  { id: "musculo", icon: "dumbbell", name: "Ganar músculo", who: "Cuerpo entero equilibrado: lo clásico para crecer en todo.", days: {
     3: ["fullMA", "fullMB", "fullMC"], 4: ["torsoA", "piernaA", "torsoB", "piernaB"], 5: ["torsoA", "piernaA", "torsoB", "piernaB", "hombroBrazo"] } },
-  { id: "torso", icon: "🦅", name: "Torso fuerte", who: "Espalda ancha y hombros redondos, con pierna para mantener.", days: {
+  { id: "torso", icon: "wings", name: "Torso fuerte", who: "Espalda ancha y hombros redondos, con pierna para mantener.", days: {
     3: ["tfEspalda", "tfPierna", "tfHombro"], 4: ["tfEspalda", "tfPierna", "tfHombro", "torsoB"], 5: ["tfEspalda", "tfPierna", "tfHombro", "torsoB", "hombroBrazo"] } },
-  { id: "fuerza", icon: "🏋️", name: "Fuerza básica", who: "Sentadilla, peso muerto, banca y press: mover más kilos.", days: {
+  { id: "fuerza", icon: "zap", name: "Fuerza básica", who: "Sentadilla, peso muerto, banca y press: mover más kilos.", days: {
     3: ["fzA", "fzB", "fzC"], 4: ["fzA", "fzB", "fzC", "hombroBrazo"], 5: ["fzA", "fzB", "fzC", "hombroBrazo", "piernaB"] } },
-  { id: "grasa", icon: "🔥", name: "Perder grasa", who: "Mantener el músculo mientras bajas grasa: pesas y algo de cardio.", days: {
+  { id: "grasa", icon: "flame", name: "Perder grasa", who: "Mantener el músculo mientras bajas grasa: pesas y algo de cardio.", days: {
     3: ["fullA+", "fullB+", "fullMC+"], 4: ["torsoA+", "piernaA", "torsoB+", "piernaB"], 5: ["torsoA+", "piernaA", "torsoB+", "piernaB", "cardioAbs"] } },
-  { id: "cero", icon: "🌱", name: "Empezar desde cero", who: "Máquinas guiadas y ejercicios sencillos para aprender la técnica.", days: {
+  { id: "cero", icon: "sprout", name: "Empezar desde cero", who: "Máquinas guiadas y ejercicios sencillos para aprender la técnica.", days: {
     3: ["inA", "inB", "inC"], 4: ["inA", "inB", "inC", "cardioAbs"], 5: ["inA", "inB", "inC", "inA2", "cardioAbs"] } },
 ];
 const PROGRAM_DAYS = [3, 4, 5];
@@ -1964,6 +2040,62 @@ select.in{appearance:none}
 .cc-go{display:block;text-align:center;text-decoration:none;margin-top:14px}
 .cc-more{display:block;margin:10px auto 0}
 
+.gc-ic svg{display:block}
+.gic{width:44px;height:44px;border-radius:12px;background:rgba(212,139,146,.12);display:flex;align-items:center;justify-content:center;flex:none}
+.gcaf .gic{width:34px;height:34px;border-radius:10px}
+.cc-ic{width:36px;height:36px;border-radius:11px;background:rgba(212,139,146,.12);display:flex;align-items:center;justify-content:center;flex:none}
+.pf-tags span{display:inline-flex;align-items:center;gap:5px}
+.pf-medal{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px!important;font-weight:800;color:#000}
+.pf-medal.m0{background:#F5C76B}.pf-medal.m1{background:#D7D7DE}.pf-medal.m2{background:#D48B92}
+
+/* retos de personaje */
+.rc{position:relative;overflow:hidden;border-radius:22px;border:1px solid rgba(212,139,146,.45);background:#000;margin:4px 0 14px;min-height:260px}
+.rc-img{position:absolute;right:-10px;top:0;height:100%;width:62%;object-fit:cover;object-position:top;opacity:.55;-webkit-mask-image:linear-gradient(90deg,transparent,#000 45%);mask-image:linear-gradient(90deg,transparent,#000 45%)}
+.rc-in{position:relative;padding:16px;display:flex;flex-direction:column;gap:6px;background:linear-gradient(90deg,rgba(0,0,0,.92) 40%,rgba(0,0,0,.35))}
+.rc-in>small{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ac)}
+.rc-in>b{font-size:22px;line-height:1.15;max-width:75%}
+.rc-tag{align-self:flex-start;font-size:12px;font-weight:800;color:#000;background:var(--ac);border-radius:999px;padding:3px 10px}
+.rc-in p{margin:2px 0 0;font-size:13px;color:var(--dm);max-width:78%}
+.rc-mus{display:flex;flex-wrap:wrap;gap:5px}
+.rc-mus span{font-size:11.5px;padding:3px 9px;border-radius:999px;border:1px solid var(--ln);background:rgba(0,0,0,.6)}
+.rc-ex{display:flex;flex-direction:column;gap:2px;margin:4px 0 6px;font-size:12.5px;max-width:80%}
+.rc-ex em{font-style:normal;color:var(--dm)}
+.rc .today-go{margin-top:4px}
+.rc-ok{font-weight:800;color:var(--okl);background:rgba(110,231,183,.1);border-radius:12px;padding:10px;text-align:center}
+.rc.done{border-color:rgba(110,231,183,.45)}
+.rc-in>small.rc-lock{font-size:11.5px;color:var(--dm);text-transform:none;letter-spacing:0;font-weight:400}
+
+/* cardio */
+.cl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0 14px}
+.cl-t{display:flex;flex-direction:column;align-items:center;gap:5px;background:var(--sf2);border:1px solid var(--ln);border-radius:14px;padding:10px 4px;color:var(--tx);font:inherit;font-size:11.5px;cursor:pointer;text-align:center;line-height:1.15}
+.cl-t.on{background:var(--ac);border-color:var(--ac);color:#000;font-weight:700}
+.cl-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.cl-row label,.cl-lab{font-weight:700;font-size:14px}.cl-row small{color:var(--dm);font-weight:400}
+.cl-lab{display:block;margin-top:14px}
+.cl-step{display:flex;align-items:center;gap:12px}
+.cl-step button{width:36px;height:36px;border-radius:50%;border:1px solid var(--ln);background:var(--sf2);color:var(--tx);font-size:18px;cursor:pointer}
+.cl-step b{font-size:26px;min-width:76px;text-align:center;font-variant-numeric:tabular-nums}.cl-step small{font-size:13px;color:var(--dm);font-weight:500}
+.cl-range{width:100%;accent-color:var(--ac);margin-top:6px}
+.cl-km{display:flex;align-items:center;gap:8px}.cl-km .in{width:90px;text-align:center}.cl-km span{color:var(--dm)}
+.cl-int{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.cl-int button{background:var(--sf2);border:1px solid var(--ln);border-radius:12px;padding:9px 6px;color:var(--tx);font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.cl-int button b{font-size:13.5px}.cl-int button small{font-size:10.5px;color:var(--dm);line-height:1.2}
+.cl-int button.on{border-color:var(--ac);background:rgba(212,139,146,.14)}
+.cl-sum{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.cl-sum div{background:#000;border:1px solid var(--ln);border-radius:14px;padding:10px;text-align:center;display:flex;flex-direction:column}
+.cl-sum b{font-size:22px;color:var(--ac)}.cl-sum span{font-size:11px;color:var(--dm)}
+.cw{background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:14px;margin:4px 0 14px}
+.cw-hd{display:flex;justify-content:space-between;align-items:center}
+.cw-hd b{display:block;font-size:17px}.cw-hd small{color:var(--dm);font-size:12.5px}
+.cw-k{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0 4px}
+.cw-k div{background:var(--sf2);border-radius:12px;padding:8px;text-align:center;display:flex;flex-direction:column}
+.cw-k b{font-size:18px}.cw-k span{font-size:10.5px;color:var(--dm)}
+.cw-r{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--ln);margin-top:6px}
+.cw-r .gic{width:36px;height:36px;border-radius:11px}
+.cw-r>div{flex:1;min-width:0;display:flex;flex-direction:column}
+.cw-r b{font-size:14px}.cw-r small{font-size:12px;color:var(--dm)}
+.cw-r em{font-style:normal;font-size:12.5px;color:var(--dm)}
+
 `;
 
 const LOGO_D = "M1292.5 1869.4C1169.3 1859.0 1054.2 1814.9 953.7 1739.6C905.0 1703.1 856.6 1654.0 818.8 1602.7C809.6 1590.2 787.9 1558.3 783.0 1550.1C781.5 1547.6 777.9 1541.7 775.0 1537.0C772.1 1532.3 768.4 1526.0 766.7 1523.0C765.1 1520.0 762.9 1516.4 762.0 1515.0C761.1 1513.6 757.5 1507.3 754.0 1501.0C750.5 1494.7 746.9 1488.2 746.0 1486.5C745.1 1484.8 742.4 1479.9 740.0 1475.5C737.7 1471.1 735.4 1467.0 735.0 1466.5C734.6 1466.0 732.7 1462.6 730.8 1459.0C721.7 1442.2 719.3 1438.0 714.7 1430.5C698.0 1403.7 685.1 1387.1 667.0 1368.9C650.0 1351.8 628.7 1335.3 608.5 1323.5C598.2 1317.5 574.9 1306.4 564.0 1302.3C561.0 1301.1 555.4 1299.0 551.5 1297.5C524.5 1287.1 477.9 1275.7 439.0 1270.0C435.4 1269.4 429.8 1268.6 426.5 1268.0C423.2 1267.5 415.1 1266.4 408.5 1265.5C401.9 1264.7 393.1 1263.5 389.0 1263.0C375.5 1261.3 350.3 1258.6 332.5 1257.0C325.9 1256.4 316.4 1255.5 311.5 1255.0C306.6 1254.5 296.2 1253.6 288.5 1253.0C265.3 1251.1 262.5 1250.7 262.5 1249.0C262.5 1247.3 265.0 1247.0 288.0 1245.0C295.4 1244.4 304.9 1243.5 309.0 1243.0C313.1 1242.5 321.7 1241.6 328.0 1241.0C334.3 1240.4 343.1 1239.5 347.5 1239.0C351.9 1238.5 360.0 1237.6 365.5 1237.0C394.5 1233.9 422.2 1229.3 457.5 1221.9C461.4 1221.1 463.3 1220.6 480.5 1216.0C496.7 1211.7 527.6 1200.8 541.0 1194.8C543.5 1193.7 547.5 1191.9 550.0 1190.8C552.5 1189.7 558.1 1187.0 562.5 1184.8C569.9 1181.1 573.5 1179.1 586.0 1172.2C593.5 1168.1 621.1 1149.6 627.5 1144.4C663.9 1114.9 697.7 1078.2 719.2 1045.0C727.9 1031.5 736.5 1017.8 739.0 1013.5C745.3 1002.6 774.1 958.7 788.2 938.5C802.4 918.1 833.8 877.9 846.0 864.5C908.6 795.7 955.1 757.1 1027.0 714.2C1060.2 694.4 1106.7 673.3 1147.5 659.3C1191.1 644.5 1240.0 633.7 1287.5 628.6C1390.4 617.4 1499.9 633.3 1596.0 673.4C1615.3 681.5 1640.2 693.3 1650.5 699.2C1653.8 701.1 1660.1 704.6 1664.5 707.0C1677.9 714.2 1705.6 732.3 1723.9 745.9C1753.9 768.1 1789.2 801.0 1813.8 829.5C1839.1 858.9 1864.0 894.8 1885.5 932.8C1890.0 940.8 1891.0 943.4 1890.1 944.3C1888.8 945.6 1887.4 944.2 1871.5 926.7C1862.3 916.4 1832.2 888.2 1820.5 878.8C1800.4 862.7 1776.4 846.1 1754.5 833.1C1742.7 826.0 1704.7 806.6 1694.0 802.1C1638.5 778.7 1600.9 768.8 1548.0 763.6C1513.1 760.1 1476.4 760.9 1441.5 765.9C1429.3 767.6 1409.4 771.4 1399.2 773.9C1396.9 774.5 1393.3 775.4 1391.2 775.9C1380.3 778.5 1356.6 785.7 1349.0 788.7C1348.2 789.0 1344.1 790.5 1340.0 792.0C1320.5 798.9 1277.6 819.4 1260.5 829.9C1256.7 832.3 1252.2 835.0 1250.5 836.0C1217.8 854.9 1178.9 885.8 1146.1 919.0C1105.5 960.0 1075.2 1001.9 1050.6 1051.0C1029.3 1093.6 1015.9 1132.3 1007.1 1176.5C997.8 1223.6 997.8 1276.7 1007.1 1325.0C1015.1 1366.6 1028.5 1406.1 1047.5 1444.2C1059.9 1469.0 1084.4 1507.2 1102.2 1529.6C1134.0 1569.7 1175.5 1608.2 1219.9 1639.0C1225.3 1642.8 1243.4 1654.1 1252.0 1659.1C1256.1 1661.5 1260.8 1664.2 1262.5 1665.2C1267.9 1668.3 1301.3 1684.5 1307.5 1687.0C1308.6 1687.4 1311.2 1688.6 1313.3 1689.5C1316.8 1691.0 1323.3 1693.5 1339.0 1699.2C1344.3 1701.1 1353.8 1704.1 1360.8 1706.1C1362.5 1706.6 1365.5 1707.4 1367.2 1707.9C1388.1 1713.9 1419.2 1720.0 1444.0 1722.9C1469.0 1725.9 1476.9 1726.3 1505.5 1726.3C1533.9 1726.3 1543.9 1725.7 1566.5 1722.9C1579.8 1721.2 1597.1 1718.5 1603.5 1717.0C1614.8 1714.5 1616.9 1714.0 1622.0 1712.9C1626.9 1711.8 1634.8 1709.8 1645.0 1707.0C1653.8 1704.5 1672.3 1698.7 1676.5 1697.0C1677.6 1696.6 1683.5 1694.3 1689.5 1691.9C1695.5 1689.6 1703.3 1686.4 1706.8 1684.8C1710.2 1683.3 1713.2 1682.0 1713.5 1682.0C1713.9 1682.0 1734.2 1672.4 1743.0 1668.1C1757.3 1660.9 1786.1 1644.0 1802.9 1632.7C1815.0 1624.7 1842.4 1604.3 1852.0 1596.1C1867.3 1583.2 1882.3 1569.7 1894.1 1558.3C1901.0 1551.5 1907.2 1546.0 1907.9 1546.0C1908.5 1546.0 1909.0 1546.8 1909.0 1547.8C1909.0 1552.1 1859.5 1622.3 1845.2 1638.2C1842.6 1641.1 1836.8 1647.8 1832.5 1653.0C1816.3 1672.3 1783.1 1704.4 1758.5 1724.6C1710.8 1763.6 1650.2 1798.3 1586.6 1822.9C1521.7 1848.0 1463.5 1862.3 1400.5 1868.6C1376.9 1870.9 1315.6 1871.4 1292.5 1869.4ZM1482.2 1560.8C1481.6 1560.1 1480.2 1552.5 1479.0 1544.0C1476.1 1522.4 1469.7 1490.9 1463.8 1469.1C1452.6 1427.3 1437.3 1394.1 1416.1 1365.0C1390.9 1330.5 1350.1 1301.1 1305.0 1285.2C1300.3 1283.5 1294.9 1281.7 1293.0 1281.1C1291.1 1280.5 1287.5 1279.4 1285.0 1278.6C1282.5 1277.8 1275.5 1276.0 1269.5 1274.6C1250.7 1270.1 1251.5 1270.2 1233.5 1267.0C1215.3 1263.7 1210.9 1263.1 1177.0 1259.0C1156.3 1256.5 1144.8 1255.2 1121.0 1253.0C1114.7 1252.4 1105.7 1251.5 1101.0 1251.0C1093.0 1250.1 1070.6 1248.2 1063.0 1247.7C1060.7 1247.6 1059.4 1247.0 1059.2 1245.9C1058.9 1244.1 1062.7 1243.4 1086.0 1241.0C1091.8 1240.4 1099.9 1239.5 1104.0 1239.0C1108.1 1238.5 1115.8 1237.6 1121.0 1237.0C1150.9 1233.5 1184.8 1228.7 1206.5 1224.9C1209.8 1224.3 1214.8 1223.4 1217.5 1223.0C1231.6 1220.5 1235.8 1219.7 1238.5 1218.9C1240.2 1218.4 1245.5 1217.1 1250.5 1216.0C1267.0 1212.2 1293.1 1203.8 1304.8 1198.4C1307.7 1197.1 1310.2 1196.0 1310.4 1196.0C1311.6 1196.0 1331.3 1186.3 1338.3 1182.3C1378.2 1159.5 1407.8 1130.9 1430.8 1093.0C1454.6 1053.7 1468.7 1011.0 1478.9 947.0C1481.2 932.3 1481.7 930.5 1483.5 930.5C1485.2 930.5 1485.7 932.1 1487.6 943.5C1499.8 1016.1 1522.0 1072.0 1556.1 1116.0C1573.9 1139.0 1603.2 1164.3 1627.0 1177.2C1646.6 1187.9 1657.0 1192.4 1675.5 1198.4C1691.7 1203.7 1700.8 1206.3 1713.5 1209.0C1715.7 1209.5 1719.5 1210.3 1722.0 1210.9C1737.9 1214.4 1767.3 1218.7 1789.5 1220.9C1819.2 1223.8 1840.0 1225.2 1881.5 1227.0C1894.7 1227.6 1915.4 1228.5 1927.5 1229.0C1939.6 1229.5 1960.8 1230.4 1974.5 1231.0C1988.2 1231.6 2009.0 1232.5 2020.5 1233.0C2032.0 1233.5 2052.8 1234.4 2066.5 1235.0C2153.1 1238.6 2244.7 1243.4 2245.7 1244.3C2247.5 1246.2 2242.4 1246.8 2221.8 1247.4C2209.0 1247.7 2185.7 1248.5 2170.0 1249.0C2154.3 1249.5 2122.2 1250.4 2098.5 1251.0C2074.8 1251.5 2037.0 1252.4 2014.5 1253.0C1992.0 1253.5 1953.5 1254.5 1929.0 1255.1C1820.0 1257.7 1783.2 1260.3 1734.5 1269.0C1694.7 1276.2 1669.3 1284.0 1640.1 1298.2C1585.9 1324.6 1549.7 1362.5 1522.8 1421.2C1508.2 1453.3 1498.5 1487.4 1489.5 1538.5C1485.9 1559.3 1484.5 1563.5 1482.2 1560.8Z";
@@ -2367,7 +2499,7 @@ function HomeSimple({ state, stats, quote, ratioPoints, weightPoints }) {
 
 // ---------- Coaching 1:1 con Luna (con opiniones de asesorad@s) ----------
 const COACH_URL = "https://d360.pro/@lunarovx";
-const COACH_PERKS = [["🎯", "Tu plan, hecho para ti", "Entreno y comidas según tu objetivo, tus horarios y lo que te gusta."], ["📱", "Dentro de ARC", "Te pongo tu rutina y tu dieta en la app, con tus cantidades."], ["📈", "Veo cómo vas", "Sigo tus series, tus pesos y tus hábitos y ajusto el plan."], ["🗓️", "Revisión cada semana", "Repasamos cómo ha ido y qué cambiamos."], ["💬", "Contacto directo conmigo", "Para dudas, técnica o lo que necesites."]];
+const COACH_PERKS = [["target", "Tu plan, hecho para ti", "Entreno y comidas según tu objetivo, tus horarios y lo que te gusta."], ["phone", "Dentro de ARC", "Te pongo tu rutina y tu dieta en la app, con tus cantidades."], ["chart", "Veo cómo vas", "Sigo tus series, tus pesos y tus hábitos y ajusto el plan."], ["calendar", "Revisión cada semana", "Repasamos cómo ha ido y qué cambiamos."], ["chat", "Contacto directo conmigo", "Para dudas, técnica o lo que necesites."]];
 function CoachingCard({ testimonials = [], coach = false, onRemove }) {
   const [open, setOpen] = useState(false);
   const [i, setI] = useState(0);
@@ -2394,7 +2526,7 @@ function CoachingCard({ testimonials = [], coach = false, onRemove }) {
           {testimonials.length > 1 && <div className="cc-dots">{testimonials.map((t, k) => <i key={t.id} className={k === i ? "on" : ""} />)}</div>}
         </>
       )}
-      {open && <div className="cc-perks">{COACH_PERKS.map(([ic, t, d]) => <div key={t}><span>{ic}</span><div><b>{t}</b><small>{d}</small></div></div>)}</div>}
+      {open && <div className="cc-perks">{COACH_PERKS.map(([ic, t, d]) => <div key={t}><span className="cc-ic"><Ic n={ic} /></span><div><b>{t}</b><small>{d}</small></div></div>)}</div>}
       <a className="btn ac cc-go" href={COACH_URL} target="_blank" rel="noopener noreferrer">Quiero que me lleves</a>
       <button className="link cc-more" onClick={() => setOpen(!open)}>{open ? "Ver menos" : "¿Qué incluye?"}</button>
     </div>
@@ -3271,7 +3403,7 @@ function ProgramPicker({ profile, branch, onPick, onClose }) {
         <p className="sub" style={{ marginTop: 0 }}>Rutinas diseñadas por objetivo. Puedes cambiar cuando quieras: tu historial se queda.</p>
         <div className="pp-grid">{PROGRAMS.map((x) => (
           <button key={x.id} className={`pp-card${sel === x.id ? " on" : ""}`} onClick={() => setSel(x.id)}>
-            <span className="pp-ic">{x.icon}</span><b>{x.name}</b><small>{x.who}</small>
+            <span className="pp-ic"><Ic n={x.icon} /></span><b>{x.name}</b><small>{x.who}</small>
             {x.id === cur && <em>Actual</em>}
           </button>
         ))}</div>
@@ -3388,7 +3520,149 @@ function ExerciseProgress({ sessions }) {
   );
 }
 
-function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, setMedia, uploadMedia }) {
+// ---------- Retos de personaje (modo anime): una sesión especial que cambia cada semana ----------
+// Cada personaje, según los músculos que más tiene desarrollados
+const CHAR_CHALLENGES = [
+  { who: "Maki Zenin", b: "female", i: 11, tag: "Espalda y glúteo de acero", focus: ["Espalda", "Glúteo", "Core"], why: "Maneja armas enormes sin energía maldita: espalda fuerte y cadera explosiva.",
+    ex: [["ARC-021", 4, "5", 2, 180], ["ARC-009", 4, "8–10", 1, 120], ["ARC-054", 3, "10", 1, 90], ["ARC-015", 3, "10 por brazo", 1, 90], ["ARC-077", 3, "45", 0, 60]] },
+  { who: "Toji Fushiguro", b: "male", i: 11, tag: "Torso de Toji", focus: ["Espalda", "Pecho", "Hombro"], why: "Espalda ancha, pecho y hombros: el físico que todos quieren.",
+    ex: [["ARC-007", 4, "máx.", 1, 120], ["ARC-X04", 4, "6–8", 2, 150], ["ARC-016", 4, "8", 2, 120], ["ARC-022", 3, "8–10", 1, 90], ["ARC-026", 3, "15", 0, 60]] },
+  { who: "Mirko", b: "female", i: 8, tag: "Piernas de conejo", focus: ["Cuádriceps", "Glúteo", "Gemelo"], why: "Pelea solo con patadas: piernas potentes y gemelos de acero.",
+    ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-078", 3, "10 por pierna", 1, 90], ["ARC-054", 3, "10", 1, 90], ["ARC-041", 3, "15", 0, 60], ["ARC-091", 4, "15", 0, 45]] },
+  { who: "Levi Ackerman", b: "male", i: 8, tag: "Core de Levi", focus: ["Espalda", "Abdomen"], why: "Gira en el aire con el equipo de maniobras: core y espalda de acero.",
+    ex: [["ARC-007", 4, "máx.", 1, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-079", 3, "10", 1, 60], ["ARC-067", 3, "12", 1, 60], ["ARC-077", 3, "45", 0, 60]] },
+  { who: "Mikasa Ackerman", b: "female", i: 9, tag: "Fuerza Ackerman", focus: ["Espalda", "Abdomen", "Pierna"], why: "Espalda marcada y abdomen fuerte: la más fuerte de su promoción.",
+    ex: [["ARC-009", 4, "8–10", 1, 120], ["ARC-072", 3, "8", 2, 120], ["ARC-015", 3, "10 por brazo", 1, 90], ["ARC-X01", 3, "8 por pierna", 1, 90], ["ARC-079", 3, "10", 1, 60]] },
+  { who: "Ippo Makunouchi", b: "male", i: 4, tag: "Puños de Ippo", focus: ["Hombro", "Espalda", "Cardio"], why: "El Dempsey Roll sale de hombros, espalda y mucho fondo.",
+    ex: [["ARC-022", 4, "8–10", 1, 90], ["ARC-016", 3, "8–10", 1, 90], ["ARC-001", 3, "máx.", 1, 60], ["ARC-083", 3, "30", 1, 45], ["CARDIO", 1, "15", 0, 60]] },
+  { who: "Annie Leonhart", b: "female", i: 6, tag: "La patada de Annie", focus: ["Glúteo", "Femoral", "Cuádriceps"], why: "Su patada tumba titanes: glúteo y femoral a tope.",
+    ex: [["ARC-054", 4, "8–10", 1, 120], ["ARC-072", 3, "8–10", 2, 120], ["ARC-X03", 3, "12 por pierna", 1, 60], ["ARC-049", 3, "10–12", 1, 60], ["ARC-060", 3, "15", 0, 45]] },
+  { who: "Roronoa Zoro", b: "male", i: 9, tag: "Entreno de Zoro", focus: ["Hombro", "Brazos", "Espalda"], why: "Tres espadas piden hombros, brazos y espalda de hierro.",
+    ex: [["ARC-023", 4, "8–10", 1, 90], ["ARC-009", 3, "8–10", 1, 90], ["ARC-102", 3, "10–12", 1, 60], ["ARC-096", 3, "10–12", 1, 60], ["ARC-027", 3, "12–15 por brazo", 0, 45]] },
+  { who: "Nobara Kugisaki", b: "female", i: 4, tag: "Martillazo de Nobara", focus: ["Hombro", "Brazos", "Core"], why: "Martillo en mano: hombros y brazos que no se cansan.",
+    ex: [["ARC-022", 4, "8–10", 1, 90], ["ARC-026", 4, "12–15", 0, 60], ["ARC-102", 3, "10–12", 1, 60], ["ARC-096", 3, "10–12", 1, 60], ["ARC-077", 3, "45", 0, 45]] },
+  { who: "Yuji Itadori", b: "male", i: 7, tag: "Cuerpo de Itadori", focus: ["Pierna", "Pecho", "Espalda"], why: "Velocidad y fuerza bruta: cuerpo entero sin descanso.",
+    ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-X04", 3, "8", 2, 120], ["ARC-007", 3, "máx.", 1, 90], ["ARC-078", 3, "10 por pierna", 1, 60], ["ARC-083", 3, "30", 1, 45]] },
+  { who: "Mitsuri Kanroji", b: "female", i: 7, tag: "Fuerza de Mitsuri", focus: ["Pierna", "Glúteo", "Core"], why: "Ocho veces más fuerte de lo normal: pierna y core sin miedo.",
+    ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-054", 4, "8–10", 1, 90], ["ARC-051", 3, "10", 1, 90], ["ARC-060", 3, "15", 0, 45], ["ARC-067", 3, "12", 1, 45]] },
+  { who: "Sung Jinwoo", b: "male", i: 10, tag: "Daily quest de Jinwoo", focus: ["Pecho", "Abdomen", "Pierna", "Cardio"], why: "El entreno diario que lo cambió todo, versión gym.",
+    ex: [["ARC-001", 4, "máx.", 1, 60], ["ARC-081", 4, "20", 1, 45], ["ARC-080", 4, "20", 1, 45], ["ARC-042", 3, "8–10", 2, 120], ["CARDIO", 1, "15", 0, 60]] },
+];
+const isoWeek = (d = new Date()) => { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const n = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - n); const y = new Date(Date.UTC(t.getUTCFullYear(), 0, 1)); return Math.ceil(((t - y) / 864e5 + 1) / 7); };
+function weekChallenge(branch, d = new Date()) {
+  const mine = CHAR_CHALLENGES.filter((c) => c.b === branch);
+  const list = mine.length ? [...mine, ...CHAR_CHALLENGES.filter((c) => c.b !== branch)] : CHAR_CHALLENGES;
+  const c = list[isoWeek(d) % Math.min(list.length, mine.length || list.length)];
+  return { ...c, key: `R:${c.who.split(" ")[0].toLowerCase()}`, day: { id: `R:${c.who.split(" ")[0].toLowerCase()}`, name: `Reto · ${c.tag}`, ex: c.ex.filter(([id]) => EXERCISES[id]).map(([id, sets, reps, rir, rest]) => ({ id, sets, reps, rir, rest })) } };
+}
+const CHALLENGE_XP = 60;
+
+function ChallengeCard({ state, media, onStart }) {
+  const c = weekChallenge(state.profile.branch);
+  const img = mediaOr(media, levelKey(c.b, state.profile.mode || "otaku", c.i));
+  const done = state.sessions.some((s) => s.dayId === c.key && new Date(s.date) >= weekStart());
+  const unlocked = (state.savedLevel ?? 0) >= c.i;
+  const end = new Date(weekStart()); end.setDate(end.getDate() + 7);
+  const left = Math.max(1, Math.ceil((end - Date.now()) / 864e5));
+  return (
+    <div className={`rc${done ? " done" : ""}`}>
+      {img && <img className="rc-img" src={img} alt="" />}
+      <div className="rc-in">
+        <small>Reto de la semana · {done ? "completado" : left === 1 ? "último día" : `quedan ${left} días`}</small>
+        <b>Entrena como {c.who}</b>
+        <span className="rc-tag">{c.tag}</span>
+        <p>{c.why}</p>
+        <div className="rc-mus">{c.focus.map((f) => <span key={f}>{f}</span>)}</div>
+        <div className="rc-ex">{c.day.ex.map((e) => <span key={e.id}>{EXERCISES[e.id]?.n} <em>{e.sets}×{e.reps}</em></span>)}</div>
+        {done ? <div className="rc-ok">Reto superado · +{CHALLENGE_XP} XP extra</div>
+          : <button className="today-go" onClick={() => onStart(c.day)}>Aceptar el reto · +{CHALLENGE_XP} XP</button>}
+        {!unlocked && !done && <small className="rc-lock">Aún no has desbloqueado a {c.who.split(" ")[0]}: supera el reto y sigue subiendo de nivel.</small>}
+      </div>
+    </div>
+  );
+}
+
+// ---------- Registrar cardio (correr, bici, nadar…) ----------
+const CARDIO_TYPES = [
+  ["correr", "Correr", "run", 9.8, true], ["bici", "Bici", "bike", 7.5, true], ["nadar", "Nadar", "wave", 7, true], ["caminar", "Caminar rápido", "walk", 3.8, true],
+  ["cinta", "Cinta inclinada", "mountain", 6, false], ["eliptica", "Elíptica", "orbit", 5, false], ["remo", "Remo", "row", 7, false], ["comba", "Comba", "rope", 11, false],
+  ["hiit", "HIIT", "zap", 8, false], ["boxeo", "Boxeo", "glove", 7.8, false], ["futbol", "Fútbol", "ball", 7, false], ["padel", "Pádel", "racket", 6, false],
+  ["baile", "Baile", "music", 5.5, false], ["otro", "Otro", "heart", 5, false],
+];
+const CARDIO_INT = [["suave", "Suave", 0.8, "Puedes hablar sin problema"], ["moderado", "Moderado", 1, "Hablas con frases cortas"], ["intenso", "Intenso", 1.25, "Casi no puedes hablar"]];
+const cardioOf = (s) => s.exercises?.[0]?.cardio || null;
+const pace = (min, km) => { if (!km) return null; const p = min / km; return `${Math.floor(p)}:${String(Math.round((p % 1) * 60)).padStart(2, "0")} min/km`; };
+
+function CardioLog({ weight = 65, sessions, onSave, onClose }) {
+  const [type, setType] = useState("correr");
+  const [min, setMin] = useState(30);
+  const [km, setKm] = useState("");
+  const [int, setInt] = useState("moderado");
+  const [note, setNote] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const t = CARDIO_TYPES.find((x) => x[0] === type);
+  const mult = CARDIO_INT.find((x) => x[0] === int)[2];
+  const kcal = Math.round(t[3] * mult * (Number(weight) || 65) * (min / 60));
+  const kmN = Number(String(km).replace(",", ".")) || 0;
+  const speed = kmN && min ? (kmN / (min / 60)).toFixed(1).replace(".", ",") : null;
+  const save = async () => {
+    setBusy(true); setErr("");
+    try { await onSave({ type, label: t[1], min, km: kmN || null, int, kcal, note: note.trim() || null }); onClose(); }
+    catch { setErr("No se ha podido guardar. Revisa tu conexión."); }
+    finally { setBusy(false); }
+  };
+  return (
+    <div className="modal" onClick={onClose}>
+      <div className="box cl" onClick={(e) => e.stopPropagation()}>
+        <h1 style={{ fontSize: 22 }}>Registrar cardio</h1>
+        <div className="cl-grid">{CARDIO_TYPES.map(([id, l, ic]) => (
+          <button key={id} className={`cl-t${type === id ? " on" : ""}`} onClick={() => setType(id)}><Ic n={ic} size={22} color={type === id ? "#000" : "var(--ac)"} /><span>{l}</span></button>
+        ))}</div>
+        <div className="cl-row"><label>Duración</label>
+          <div className="cl-step"><button onClick={() => setMin(Math.max(5, min - 5))}>−</button><b>{min}<small> min</small></b><button onClick={() => setMin(Math.min(300, min + 5))}>+</button></div>
+        </div>
+        <input className="cl-range" type="range" min="5" max="180" step="5" value={min} onChange={(e) => setMin(Number(e.target.value))} />
+        {t[4] && <div className="cl-row"><label>Distancia <small>(opcional)</small></label>
+          <div className="cl-km"><input className="in" inputMode="decimal" placeholder="0" value={km} onChange={(e) => setKm(e.target.value)} /><span>km</span></div>
+        </div>}
+        <label className="cl-lab">Intensidad</label>
+        <div className="cl-int">{CARDIO_INT.map(([id, l, , d]) => <button key={id} className={int === id ? "on" : ""} onClick={() => setInt(id)}><b>{l}</b><small>{d}</small></button>)}</div>
+        <div className="cl-sum">
+          <div><b>{kcal}</b><span>kcal aprox.</span></div>
+          {kmN > 0 && type === "correr" || kmN > 0 && type === "caminar" ? <div><b>{pace(min, kmN)}</b><span>ritmo</span></div> : speed ? <div><b>{speed}</b><span>km/h</span></div> : <div><b>{min}</b><span>minutos</span></div>}
+        </div>
+        <input className="in" placeholder="Nota (opcional): ruta, sensaciones…" value={note} onChange={(e) => setNote(e.target.value)} style={{ marginTop: 10 }} />
+        {err && <div className="err">{err}</div>}
+        <button className="btn ac" disabled={busy} onClick={save}>{busy ? "Guardando…" : "Guardar cardio"}</button>
+        <p className="hint" style={{ textAlign: "center", margin: "6px 0 0" }}>Cuenta como día entrenado en tu semana y en el ranking.</p>
+      </div>
+    </div>
+  );
+}
+
+function CardioWeek({ sessions, onLog }) {
+  const ws = weekStart();
+  const list = sessions.filter((s) => cardioOf(s)).slice().reverse();
+  const week = list.filter((s) => new Date(s.date) >= ws).map(cardioOf);
+  const sum = week.reduce((a, c) => ({ min: a.min + (c.min || 0), km: a.km + (c.km || 0), kcal: a.kcal + (c.kcal || 0) }), { min: 0, km: 0, kcal: 0 });
+  return (
+    <div className="cw">
+      <div className="cw-hd"><div><b>Cardio</b><small>Correr, bici, nadar, clases…</small></div><button className="sbtn" onClick={onLog}>+ Registrar</button></div>
+      <div className="cw-k">
+        <div><b>{sum.min}</b><span>min esta semana</span></div>
+        <div><b>{sum.km ? sum.km.toFixed(1).replace(".", ",") : "—"}</b><span>km</span></div>
+        <div><b>{sum.kcal || "—"}</b><span>kcal aprox.</span></div>
+      </div>
+      {list.slice(0, 4).map((s) => { const c = cardioOf(s); const t = CARDIO_TYPES.find((x) => x[0] === c.type) || CARDIO_TYPES[CARDIO_TYPES.length - 1]; return (
+        <div key={s.id} className="cw-r"><span className="gic"><Ic n={t[2]} size={18} /></span><div><b>{c.label}{c.km ? ` · ${String(c.km).replace(".", ",")} km` : ""}</b><small>{relDay(s.date)} · {c.min} min · {CARDIO_INT.find((x) => x[0] === c.int)?.[1].toLowerCase()}{c.km && (c.type === "correr" || c.type === "caminar") ? ` · ${pace(c.min, c.km)}` : ""}</small></div><em>{c.kcal} kcal</em></div>
+      ); })}
+    </div>
+  );
+}
+
+function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, setMedia, uploadMedia, onCardio }) {
+  const [cardioOpen, setCardioOpen] = useState(false);
   const [shareS, setShareS] = useState(null);
   const fromCoach = !!state.coachRoutine?.length;
   const mode = fromCoach ? "coach" : state.profile.routineMode || "auto";
@@ -3425,15 +3699,18 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
           <div className="today-xp">+{RULES.XP_PER_SESSION} XP · +{RULES.GEMS_PER_SESSION} gemas al terminar</div>
         </div>
       )}
+      {state.profile.mode !== "simple" && state.profile.mode !== "clasico" && <ChallengeCard state={state} media={media} onStart={onStart} />}
+      {onCardio && <CardioWeek sessions={state.sessions} onLog={() => setCardioOpen(true)} />}
+      {cardioOpen && <CardioLog weight={currentWeight(state)} sessions={state.sessions} onSave={onCardio} onClose={() => setCardioOpen(false)} />}
       <WarmUp media={media} onTech={setTech} />
-      {fromCoach && <div className="prog-card coach"><span className="pp-ic">⭐</span><div><small>Tu rutina</small><b>Hecha por tu coach</b><p>Te la ha preparado a medida. Si quieres cambiar algo, díselo.</p></div></div>}
+      {fromCoach && <div className="prog-card coach"><span className="pp-ic"><Ic n="star" color="#F5C76B" /></span><div><small>Tu rutina</small><b>Hecha por tu coach</b><p>Te la ha preparado a medida. Si quieres cambiar algo, díselo.</p></div></div>}
       {!fromCoach && <div className="seg">
         <button className={mode === "auto" ? "on" : ""} onClick={() => { setProfile({ routineMode: "auto" }); setEditing(false); }}>Programas ARC</button>
         <button className={mode === "custom" ? "on" : ""} onClick={() => setProfile({ routineMode: "custom" })}>Mi propia rutina</button>
       </div>}
       {mode === "auto" && (() => { const pg = programOf(state.profile, state.profile.branch); return (
         <button className="prog-card" onClick={() => setPicking(true)}>
-          <span className="pp-ic">{pg.icon}</span>
+          <span className="pp-ic"><Ic n={pg.icon} size={24} /></span>
           <div><small>Tu programa · {progDays(state.profile.days || 3)} días</small><b>{pg.name}</b><p>{pg.who}</p></div>
           <em>Cambiar</em>
         </button>
@@ -3684,13 +3961,13 @@ const GUIDE_SOURCES = {
 };
 // ---------- Guía interactiva: tarjetas cortas + herramientas ----------
 const GUIDE_ICONS = {
-  "Mejor que mejor: de panadería": "🥖", "Pídelo cortado y congélalo": "❄️", "Sacia más": "🙌", "Pésalo la primera vez": "⚖️", "Lee la etiqueta": "🔎", "En la app": "📱",
-  "Cuánta agua": "💧", "El truco del color": "🟡", "Botella siempre a la vista": "🧴", "Antes y durante el entreno": "🥥", "¿Sed o hambre?": "🤔", "También cuentan": "🍋",
-  "Depende de ti": "🧭", "Cuándo más ayuda": "⚡", "Sí, azúcar también vale": "🍯", "Cuánto y cuándo": "⏱️", "Lo que mejor evitar justo antes": "🚫", "Si no comes nada, tampoco pasa nada": "😌", "Proteína": "🥛", "Durante el entreno": "🥥",
-  "Cuánta es mucha": "📏", "Para entrenar": "🏋️", "Cuidado con el sueño": "😴", "Cuánta lleva cada cosa (aprox.)": "☕", "Ojo con sumarla": "➕", "Si te sienta mal": "💓",
-  "Cuánta": "📏", "Repártela": "🍽️", "Fuentes fáciles": "🍗", "Truco": "💡",
-  "Pide a la plancha": "🔥", "Salsas aparte": "🥣", "El táper, tu mejor amigo": "🥡", "Un día no es la semana": "📅", "Apúntalo igual": "✍️",
-  "Fiambre de pavo o pollo": "🥓", "Tortitas de arroz o maíz": "🍘", "Legumbres de bote": "🫘", "Salsas": "🥫", "Yogures": "🥛", "Verduras congeladas": "🥦", "Carne picada y hamburguesas": "🍔", "Crema de cacahuete": "🥜", "Pan «integral»": "🍞", "Tomate para untar": "🍅",
+  "Mejor que mejor: de panadería": "bread", "Pídelo cortado y congélalo": "snow", "Sacia más": "smile", "Pésalo la primera vez": "scale", "Lee la etiqueta": "search", "En la app": "phone",
+  "Cuánta agua": "drop", "El truco del color": "sun", "Botella siempre a la vista": "bottle", "Antes y durante el entreno": "drop", "¿Sed o hambre?": "help", "También cuentan": "citrus",
+  "Depende de ti": "compass", "Cuándo más ayuda": "zap", "Sí, azúcar también vale": "jar", "Cuánto y cuándo": "clock", "Lo que mejor evitar justo antes": "ban", "Si no comes nada, tampoco pasa nada": "smile", "Proteína": "glass", "Durante el entreno": "drop",
+  "Cuánta es mucha": "ruler", "Para entrenar": "dumbbell", "Cuidado con el sueño": "moon", "Cuánta lleva cada cosa (aprox.)": "cup", "Ojo con sumarla": "plus", "Si te sienta mal": "heart",
+  "Cuánta": "ruler", "Repártela": "plate", "Fuentes fáciles": "drum", "Truco": "bulb",
+  "Pide a la plancha": "flame", "Salsas aparte": "bowl", "El táper, tu mejor amigo": "box", "Un día no es la semana": "calendar", "Apúntalo igual": "pencil",
+  "Fiambre de pavo o pollo": "slice", "Tortitas de arroz o maíz": "ricecake", "Legumbres de bote": "bean", "Salsas": "can", "Yogures": "glass", "Verduras congeladas": "leaf", "Carne picada y hamburguesas": "burger", "Crema de cacahuete": "nut", "Pan «integral»": "bread", "Tomate para untar": "tomato",
 };
 const firstSentence = (t) => { const m = t.match(/^.+?[.!?](\s|$)/); return m && m[0].length < t.length ? m[0].trim() : t; };
 
@@ -3702,7 +3979,7 @@ function GuideCards({ items }) {
         const short = firstSentence(d), more = short !== d, on = open === t;
         return (
           <button key={t} className={`gcard${on ? " on" : ""}`} onClick={() => more && setOpen(on ? null : t)}>
-            <span className="gc-ic">{GUIDE_ICONS[t] || "✦"}</span>
+            <span className="gc-ic"><Ic n={GUIDE_ICONS[t] || "star"} /></span>
             <b>{t}</b>
             <span className="gc-tx">{on ? d : short}</span>
             {more && <em>{on ? "Menos" : "Ver más"}</em>}
@@ -3717,9 +3994,9 @@ const Pick = ({ label, opts, val, set }) => (
   <div className="gpick"><small>{label}</small><div className="chips">{opts.map(([v, l]) => <button key={v} className={`chip ${val === v ? "on" : ""}`} onClick={() => set(v)}>{l}</button>)}</div></div>
 );
 
-const GIc = ({ i }) => (i.startsWith("/") ? <img className="gthumb" src={i} alt="" loading="lazy" /> : <span>{i}</span>);
+const GIc = ({ i }) => (i.startsWith("/") ? <img className="gthumb" src={i} alt="" loading="lazy" /> : <span className="gic"><Ic n={i} /></span>);
 const GUIDE_HERO = { pre: ["/guia/pre.jpg", "Mi pre-entreno de siempre: plátano y dátiles"] };
-const PRE_FOODS = [["/guia/t-platano.jpg", "1 plátano", "≈ 25 g"], ["/guia/t-datiles.jpg", "2 dátiles Medjoul", "≈ 30 g"], ["🍘", "2 tortitas de arroz + miel", "≈ 25 g"], ["🧃", "1 vaso de zumo", "≈ 25 g"], ["🍬", "Un puñado de gominolas (30 g)", "≈ 23 g"], ["🍞", "Pan blanco con mermelada", "≈ 30 g"]];
+const PRE_FOODS = [["/guia/t-platano.jpg", "1 plátano", "≈ 25 g"], ["/guia/t-datiles.jpg", "2 dátiles Medjoul", "≈ 30 g"], ["ricecake", "2 tortitas de arroz + miel", "≈ 25 g"], ["juice", "1 vaso de zumo", "≈ 25 g"], ["candy", "Un puñado de gominolas (30 g)", "≈ 23 g"], ["bread", "Pan blanco con mermelada", "≈ 30 g"]];
 function PreTool() {
   const [last, setLast] = useState("ayunas");
   const [len, setLen] = useState("normal");
@@ -3760,7 +4037,7 @@ function WaterTool({ weight }) {
   );
 }
 
-const CAF_DRINKS = [["/guia/t-cafe.png", "Café", 80], ["🍵", "Té negro", 50], ["🥤", "Cola (lata)", 32], ["⚡", "Red Bull 250 ml", 80], ["/guia/t-monster.png", "Monster 0 (500 ml)", 160], ["🧪", "Pre-entreno (cacito)", 200]];
+const CAF_DRINKS = [["/guia/t-cafe.png", "Café", 80], ["tea", "Té negro", 50], ["can", "Cola (lata)", 32], ["zap", "Red Bull 250 ml", 80], ["/guia/t-monster.png", "Monster 0 (500 ml)", 160], ["flask", "Pre-entreno (cacito)", 200]];
 function CafTool({ weight }) {
   const [n, setN] = useState({});
   const tot = CAF_DRINKS.reduce((a, [, k, mg]) => a + (n[k] || 0) * mg, 0);
@@ -3781,7 +4058,7 @@ function CafTool({ weight }) {
   );
 }
 
-const PROT_FOODS = [["🍗", "Pechuga de pollo", 23], ["🐟", "Atún al natural", 24], ["🥚", "Claras de huevo", 11], ["🥛", "Yogur proteico", 10], ["🧀", "Queso batido 0%", 8], ["🫘", "Lentejas cocidas", 9], ["🥢", "Tofu firme", 13]];
+const PROT_FOODS = [["drum", "Pechuga de pollo", 23], ["fish", "Atún al natural", 24], ["egg", "Claras de huevo", 11], ["glass", "Yogur proteico", 10], ["cheese", "Queso batido 0%", 8], ["bean", "Lentejas cocidas", 9], ["tofu", "Tofu firme", 13]];
 function ProtTool({ weight }) {
   const [kg, setKg] = useState(Math.round(weight) || 60);
   const lo = Math.round(kg * 1.6), hi = Math.round(kg * 2.2);
@@ -3791,7 +4068,7 @@ function ProtTool({ weight }) {
       <div className="gslider"><small>Tu peso</small><input type="range" min="40" max="130" value={kg} onChange={(e) => setKg(Number(e.target.value))} /><b>{kg} kg</b></div>
       <div className="gbig"><b>{lo}–{hi} g</b><span>≈ {Math.round(lo / 4)}–{Math.round(hi / 4)} g en cada una de 4 comidas</span></div>
       <div className="gtool-s">Para 30 g de proteína necesitas…</div>
-      <div className="gfoods">{PROT_FOODS.map(([i, n, p]) => <div key={n}><span>{i}</span><b>{n}</b><small>{Math.round((30 / p) * 100 / 5) * 5} g</small></div>)}</div>
+      <div className="gfoods">{PROT_FOODS.map(([i, n, p]) => <div key={n}><GIc i={i} /><b>{n}</b><small>{Math.round((30 / p) * 100 / 5) * 5} g</small></div>)}</div>
     </div>
   );
 }
@@ -3820,7 +4097,7 @@ function NutriGuide({ weight = 60 }) {
       <div className="shop-hd" style={{ cursor: "default" }}><b>Guía</b>{tab && <button className="link" onClick={() => setTab(null)}>Cerrar</button>}</div>
       <div className="gtabs" role="tablist">{GUIDE.map((x) => <button key={x.id} role="tab" aria-selected={tab === x.id} className={`chip ${tab === x.id ? "on" : ""}`} onClick={() => setTab(tab === x.id ? null : x.id)}>{x.label}</button>)}</div>
       {!g && <p className="hint" style={{ margin: "6px 0 0" }}>Calculadoras y trucos rápidos: toca una pestaña.</p>}
-      {g && GUIDE_HERO[g.id] && <figure className="ghero"><img src={GUIDE_HERO[g.id][0]} alt="" /><figcaption>{GUIDE_HERO[g.id][1]}</figcaption></figure>}
+      {false && GUIDE_HERO[g.id] && <figure className="ghero"><img src={GUIDE_HERO[g.id][0]} alt="" /><figcaption>{GUIDE_HERO[g.id][1]}</figcaption></figure>}
       {g && <p className="gintro">{g.intro}</p>}
       {g?.id === "pre" && <PreTool />}
       {g?.id === "agua" && <WaterTool weight={weight} />}
@@ -4574,14 +4851,14 @@ function ProfileSheet({ nick, api, media, onClose, onReport, blocked }) {
               return (
                 <>
                   <div className="pf-tags">
-                    {prog && <span>{prog.icon} {prog.name}</span>}
-                    <span>🎯 {g} días/semana</span>
-                    <span>🔥 {streak} {streak === 1 ? "semana" : "semanas"} cumpliendo</span>
+                    {prog && <span><Ic n={prog.icon} size={14} /> {prog.name}</span>}
+                    <span><Ic n="target" size={14} /> {g} días/semana</span>
+                    <span><Ic n="flame" size={14} /> {streak} {streak === 1 ? "semana" : "semanas"} cumpliendo</span>
                   </div>
                   {p.records?.length > 0 && <>
                     <h2>Mejores marcas</h2>
                     <div className="pf-rec">{p.records.map((r, i) => (
-                      <div key={r.exId}><span className="pf-medal">{["🥇", "🥈", "🥉"][i]}</span><b>{EXERCISES[EX_REMAP[r.exId] || r.exId]?.n || "Ejercicio"}</b><small>{r.kg} kg × {r.reps} · 1RM ≈ {r.e1} kg</small></div>
+                      <div key={r.exId}><span className={`pf-medal m${i}`}>{i + 1}</span><b>{EXERCISES[EX_REMAP[r.exId] || r.exId]?.n || "Ejercicio"}</b><small>{r.kg} kg × {r.reps} · 1RM ≈ {r.e1} kg</small></div>
                     ))}</div>
                   </>}
                 </>
@@ -4838,7 +5115,7 @@ function WeekChallenge({ me, friends, media, onOpen }) {
   const left = 7 - ((new Date().getDay() + 6) % 7);
   return (
     <div className="ch">
-      <div className="ch-hd"><span className="ch-ic">🏆</span><div><b>Reto de la semana</b><small>Cumplir tus días · quedan {left} {left === 1 ? "día" : "días"} · {done} de {rows.length} lo {done === 1 ? "ha" : "han"} conseguido</small></div></div>
+      <div className="ch-hd"><span className="ch-ic"><Ic n="trophy" color="#F5C76B" /></span><div><b>Reto de la semana</b><small>Cumplir tus días · quedan {left} {left === 1 ? "día" : "días"} · {done} de {rows.length} lo {done === 1 ? "ha" : "han"} conseguido</small></div></div>
       {rows.map((r, i) => (
         <button key={r.nickname} className={`ch-row${r.is_me ? " me" : ""}${r.pct >= 1 ? " done" : ""}`} onClick={() => !r.is_me && onOpen(r.nickname)} style={{ animationDelay: `${i * 0.05}s` }}>
           <span className="ch-pos">{r.pct >= 1 ? "✓" : i + 1}</span>
@@ -5272,7 +5549,7 @@ const SPARKS = Array.from({ length: 14 }, (_, i) => {
 // Al terminar un entreno: grito de ánimo con la foto que suba la coach (si sube varias, sale una al azar)
 const FINISH_KEYS = ["finish:1", "finish:2", "finish:3", "finish:4", "finish:5"];
 const FINISH_SHOUTS = [
-  ["¡PLUS ULTRA!", "Hoy has ido más allá."],
+  ["¡PLUS ULTRA!", "Has superado tus límites hoy.", "otaku"],
   ["¡ENTRENO HECHO!", "Esto es lo que te separa de quien solo lo piensa."],
   ["¡ASÍ SE HACE!", "Un día más sumando en tu arco."],
   ["¡IMPARABLE!", "Mañana tu cuerpo te lo agradece. Hoy, descansa y come bien."],
@@ -5363,7 +5640,7 @@ function FinishCompare({ cur, hist }) {
 }
 
 function FinishScreen({ data, onClose }) {
-  const [seed] = useState(() => FINISH_SHOUTS[Math.floor(Math.random() * FINISH_SHOUTS.length)]);
+  const [seed] = useState(() => { const l = FINISH_SHOUTS.filter((x) => !x[2] || (x[2] === "otaku" && data.otaku)); return l[Math.floor(Math.random() * l.length)]; });
   const [shareOpen, setShareOpen] = useState(false);
   const vol = useCount(data.volume || 0), sets = useCount(data.sets || 0, 700), xp = useCount(data.xp || 0, 700);
   const cur = data.share?.session;
@@ -6697,7 +6974,7 @@ function ClientSession({ s }) {
     <div className="cs">
       <button className="cs-hd" onClick={() => setOpen(!open)}>
         <span><b>{s.dayName || "Entreno"}</b><small>{new Date(s.date).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })} · {Math.max(1, Math.round((s.dur || 0) / 60))} min · {s.sets} series · {Number(s.volume || 0).toLocaleString("es-ES")} kg</small></span>
-        {notes.length > 0 && <em title="Tiene comentarios">💬 {notes.length}</em>}
+        {notes.length > 0 && <em title="Tiene comentarios"><Ic n="chat" size={13} /> {notes.length}</em>}
         <i>{open ? "–" : "+"}</i>
       </button>
       {!open && notes.length > 0 && <div className="cs-notes">{notes.map((e, i) => <p key={i}><b>{EXERCISES[EX_REMAP[e.exId] || e.exId]?.n || e.exId}:</b> {e.note}</p>)}</div>}
@@ -6710,7 +6987,7 @@ function ClientSession({ s }) {
             <div className="cs-sets">{(e.sets || []).map((st, k) => (
               <span key={k} className={`${st.done ? "" : "no"}${st.type === "W" ? " w" : ""}`}>{st.type === "W" ? "W " : ""}{u ? `${st.reps || "—"} ${u}` : `${st.kg || 0}×${st.reps || "—"}`}</span>
             ))}</div>
-            {e.note && <p className="cs-note">💬 {e.note}</p>}
+            {e.note && <p className="cs-note"><Ic n="chat" size={13} /> {e.note}</p>}
           </div>
         );
       })}
@@ -7198,6 +7475,19 @@ function ArcApp({ user }) {
     setState((s) => ({ ...s, active: a }));
     later("active", () => db.updateProfile(user.id, { active_session: a }), a ? 1500 : 0);
   };
+  // Cardio suelto (correr, bici, nadar…): se guarda como un entreno más
+  const logCardio = async (c) => {
+    const row = {
+      user_id: user.id, performed_at: new Date().toISOString(), day_id: `C:${c.type}`, day_name: `${c.label}${c.km ? ` · ${String(c.km).replace(".", ",")} km` : ""}`,
+      duration_s: c.min * 60, volume_kg: 0, sets_done: 1,
+      exercises: [{ exId: "CARDIO", sets: [{ kg: "", reps: String(c.min), done: true }], note: c.note || undefined, cardio: c }],
+    };
+    const saved = await db.addSession(row);
+    const session = { id: saved.id, date: saved.performed_at, dayId: row.day_id, dayName: row.day_name, dur: row.duration_s, volume: 0, sets: 1, exercises: row.exercises };
+    setState((s) => ({ ...s, sessions: [...s.sessions, session], xp: s.xp + Math.round(RULES.XP_PER_SESSION / 2), gems: s.gems + RULES.GEMS_PER_SESSION }));
+    setToast(`${c.label} guardado · ${c.min} min · +${Math.round(RULES.XP_PER_SESSION / 2)} XP`);
+  };
+
   const finish = async (volume, sets) => {
     const a = state.active;
     const prevLevel = ev.current;
@@ -7211,11 +7501,12 @@ function ArcApp({ user }) {
       const prs = countPRs(state.sessions, row.exercises);
       const saved = await db.addSession(row);
       const session = { id: saved.id, date: saved.performed_at, dayId: a.dayId, dayName: a.dayName, dur: row.duration_s, volume, sets, exercises: row.exercises };
-      const next = { ...state, active: null, sessions: [...state.sessions, session], xp: state.xp + RULES.XP_PER_SESSION, gems: state.gems + RULES.GEMS_PER_SESSION };
+      const bonus = String(a.dayId || "").startsWith("R:") ? CHALLENGE_XP : 0;
+      const next = { ...state, active: null, sessions: [...state.sessions, session], xp: state.xp + RULES.XP_PER_SESSION + bonus, gems: state.gems + RULES.GEMS_PER_SESSION };
       setState(next);
       const { best, pullups } = bestLifts(next);
       const lv = evaluate(next.profile.branch, { ...stats, ratio: ratioOf(next.profile.branch, best, currentWeight(next)), pullups }, next.profile.mode).current;
-      setDone({ dur: row.duration_s, sets, volume, xp: RULES.XP_PER_SESSION, prs, share: shareDataFor(session, next.sessions), history: next.sessions, nick: state.nickname, levelImg: next.profile.mode === "simple" ? null : mediaOr(media, levelKey(next.profile.branch, next.profile.mode || "otaku", lv)) });
+      setDone({ dur: row.duration_s, sets, volume, xp: RULES.XP_PER_SESSION + (String(a.dayId || "").startsWith("R:") ? CHALLENGE_XP : 0), prs, share: shareDataFor(session, next.sessions), history: next.sessions, otaku: (next.profile.mode || "otaku") === "otaku", nick: state.nickname, levelImg: next.profile.mode === "simple" ? null : mediaOr(media, levelKey(next.profile.branch, next.profile.mode || "otaku", lv)) });
       setTab("inicio");
     } catch (e) { setToast("No se ha podido guardar el entreno. Tu sesión sigue abierta: vuelve a darle a Terminar."); }
   };
@@ -7274,7 +7565,7 @@ function ArcApp({ user }) {
   } else if (tab === "inicio") {
     body = <Home state={state} stats={stats} ev={ev} quote={quote} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} testimonials={testimonials} showCoaching={!state.hasCoach || isCoach} onRemoveTestimonial={(id) => db.removeTestimonial(id).then(() => setTestimonials((l) => l.filter((x) => x.id !== id))).catch(() => {})} />;
   } else if (tab === "entrenos") {
-    body = <Workouts state={state} routine={routine} onStart={(d) => setActive(newSession(d, state.sessions))} setDays={(d) => setProfile({ days: d })} setProfile={setProfile} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
+    body = <Workouts onCardio={logCardio} state={state} routine={routine} onStart={(d) => setActive(newSession(d, state.sessions))} setDays={(d) => setProfile({ days: d })} setProfile={setProfile} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
   } else if (tab === "ranking") {
     body = <Social social={socialApi} api={rankApi} media={media} blocked={state.profile?.blocked || []}
       me={{ nickname: state.nickname, shareFeed: state.shareFeed !== false, showKg: state.showKg !== false, goal: state.profile?.days || 3, avatar: state.avatar, branch: state.profile?.branch, mode: state.profile?.mode, level: ev?.current || 0,
