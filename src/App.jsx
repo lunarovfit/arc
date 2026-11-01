@@ -6943,6 +6943,8 @@ const CHECKIN_CSS = `
 .ck2-added{display:inline-block;margin-top:6px;font-size:11.5px;color:var(--okl)}
 .ck2-share{margin-top:12px;font-size:12.5px;color:var(--okl);background:rgba(110,231,183,.08);border-radius:10px;padding:8px 10px}
 .ck2-share.no{color:var(--dm);background:#000}
+.webgate{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:40px 6px}
+.webgate .btn{width:100%;text-decoration:none}
 `;
 
 /* ============================ ASESORADAS (COACH) ============================ */
@@ -7538,7 +7540,19 @@ function ArcApp({ user }) {
   ] : null;
 
   let body;
-  if (showTour) {
+  if (!native.isNative && !state.hasCoach && !isCoach) {
+    // La versión web es solo para asesorad@s (el resto, en la app de la tienda)
+    body = (
+      <div className="webgate">
+        <Logo height={56} />
+        <h1>ARC está en la app</h1>
+        <p className="sub">La versión web es solo para quien hace asesoría con Luna. Descarga ARC en tu móvil para entrenar, ver tus comidas y subir de nivel.</p>
+        <a className="btn ac" href="https://apps.apple.com/app/arc-workout/id6823134477" target="_blank" rel="noopener noreferrer">Descargar en el App Store</a>
+        <p className="hint">Si haces asesoría conmigo, entra con el mismo correo que me diste. Si no te reconoce, escríbeme por WhatsApp.</p>
+        <button className="btn ghost" onClick={() => supabase.auth.signOut()}>Cerrar sesión</button>
+      </div>
+    );
+  } else if (showTour) {
     body = <Tour media={media} profile={state.profile} ev={ev} heroImg={mediaOr(media, levelKey(state.profile.branch, state.profile.mode, ev.current)) || AVATAR[state.profile.branch]} perms={tourPerms} onFinish={() => { const again = state.profile?.retour; setProfile({ toured: true, retour: false }); setTab("inicio"); if (!hasPremium && !again) setPaywall(true); }} />;
   } else if (showQuestionnaire) {
     body = <Questionnaire initial={state.profile || DEFAULT_PROFILE} editing={state.onboarded} onSave={saveProfile} onCancel={() => setScreen("ajustes")} />;
