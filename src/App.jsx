@@ -330,8 +330,8 @@ const EX_DB = [
   ["ARC-112", "Bíceps", "Curl martillo con mancuernas", "Bíceps, braquial, antebrazo", "Mancuernas", "De pie con una mancuerna en cada mano y las palmas mirándose, subes una mancuerna doblando el codo, bajas despacio y alternas.", "Codos pegados al cuerpo y sin balancearte; baja en 2-3 segundos."],
   ["ARC-116", "Pecho", "Press inclinado en Smith", "Pecho superior, hombro anterior, tríceps", "Multipower / Smith", "Tumbado en un banco inclinado dentro del Smith, bajas la barra guiada hasta la parte alta del pecho y empujas hacia arriba.", "Banco a 30-45 grados, escápulas juntas y pies firmes. Baja controlado hasta rozar el pecho, sin rebotar."],
   ["ARC-117", "Pecho", "Press banca en Smith", "Pecho, hombro anterior, tríceps", "Multipower / Smith", "Tumbado en un banco plano dentro del Smith, bajas la barra guiada hasta la mitad del pecho y empujas hacia arriba.", "Coloca el banco para que la barra caiga a la altura de los pezones. Codos a unos 45 grados del cuerpo, no abiertos del todo."],
-  ["ARC-114", "Tríceps", "Extensión de tríceps unilateral en polea", "Tríceps", "Polea", "De pie de lado a la polea alta con un agarre en una mano, estiras el codo hacia abajo y vuelves despacio.", "El codo pegado al costado y quieto: solo se mueve el antebrazo. Aprieta 1 segundo abajo y empieza por el brazo más débil."],
-  ["ARC-115", "Bíceps", "Curl martillo con cuerda en polea", "Bíceps, braquial, antebrazo", "Polea", "De pie frente a la polea baja con la cuerda y las palmas mirándose, subes doblando los codos y bajas despacio.", "Codos pegados al cuerpo y sin balancearte. Abre un poco la cuerda arriba y baja en 2-3 segundos."],
+  ["ARC-114", "Bíceps", "Curl de muñeca en polea alta", "Antebrazo (flexores de la muñeca)", "Polea", "De lado a la polea alta con el agarre en una mano y el codo fijo a la altura de la cara, doblas solo la muñeca hacia ti y vuelves despacio.", "Solo se mueve la muñeca: brazo y codo quietos. Peso ligero y recorrido completo, notando el antebrazo."],
+  ["ARC-115", "Bíceps", "Curl inverso en polea", "Antebrazo, braquiorradial, bíceps", "Polea", "De pie frente a la polea baja con el agarre cogido por encima (palmas hacia abajo), subes doblando los codos y bajas despacio.", "Muñecas rectas y codos pegados al cuerpo. Usa menos peso que en un curl normal: aquí manda el antebrazo."],
   ["CARDIO", "Cardio", "Cardio (cinta inclinada, bici o elíptica)", "Corazón y piernas", "Máquina", "Ritmo en el que puedas hablar pero te cueste un poco.", "Si vas con poco tiempo, mejor 20 minutos que nada."],
   ["MOVILIDAD", "Movilidad", "Movilidad y estiramientos", "Todo el cuerpo", "Peso corporal", "Cadera, tobillos, espalda alta y hombros, sin prisa.", "Respira lento y no fuerces el estiramiento."],
 ];
@@ -2025,6 +2025,9 @@ select.in{appearance:none}
 
 /* coaching con luna */
 .cc{background:linear-gradient(160deg,rgba(212,139,146,.18),var(--sf) 60%);border:1px solid rgba(212,139,146,.4);border-radius:20px;padding:16px;margin:22px 0 10px}
+.cc-hd{display:flex;gap:14px;align-items:center}
+.cc-hd>div{flex:1;min-width:0}
+.cc-ph{flex:none;width:92px;height:115px;object-fit:cover;object-position:center 20%;border-radius:16px;border:1px solid rgba(212,139,146,.45)}
 .cc-hd small{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ac)}
 .cc-hd b{display:block;font-size:21px;margin:3px 0}
 .cc-hd p{margin:0;color:var(--dm);font-size:14px}
@@ -2532,6 +2535,7 @@ function CoachingCard({ testimonials = [], coach = false, onRemove }) {
     <div className="cc">
       <div className="cc-hd">
         <div><small>Asesoría 1:1</small><b>Coaching con Luna</b><p>¿Quieres que te lleve yo? Plan a medida, revisión cada semana y contacto directo.</p></div>
+        <img className="cc-ph" src="/luna/luna-coach.jpg" alt="Luna" />
       </div>
       {testimonials.length > 0 && (
         <>
