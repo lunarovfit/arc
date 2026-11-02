@@ -6572,7 +6572,7 @@ function fromDb({ profile, sessions, habits, coach }) {
     onboarded: profile.onboarded,
     profile: base && forced ? { ...base, ownMode: base.mode, mode: forced } : base,
     hasCoach: !!coach, coachMode: forced,
-    sessions: sessions.map((s) => ({ id: s.id, date: s.performed_at, dayId: s.day_id, dayName: s.day_name, dur: s.duration_s, volume: Number(s.volume_kg), sets: s.sets_done, exercises: s.exercises })),
+    sessions: sessions.map((s) => ({ id: s.id, date: s.performed_at, dayId: s.day_id, dayName: s.day_name, dur: s.duration_s, volume: Number(s.volume_kg), sets: s.sets_done, exercises: s.exercises, byCoach: !!s.by_coach })),
     habits: Object.fromEntries(habits.map((h) => [h.day, { water: h.water ?? undefined, steps: h.steps ?? undefined, sleep: h.sleep != null ? Number(h.sleep) : undefined, weight: h.weight != null ? Number(h.weight) : undefined, food: h.food || undefined }])),
     xp: profile.xp, gems: profile.gems, active: profile.active_session, role: profile.role,
     nickname: profile.nickname, rankOptIn: profile.rank_opt_in && !!profile.nickname, savedLevel: profile.level,
@@ -6899,6 +6899,29 @@ function CheckinCard({ userId, habits = {}, startDate }) {
 }
 
 const CHECKIN_CSS = `
+.cl-log{max-height:90vh;overflow-y:auto}
+.cl-days{display:grid;gap:8px;margin:12px 0}
+.cl-days button{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:10px;text-align:left;padding:14px;border:1px solid var(--ln);border-radius:14px;background:transparent;color:inherit;font:inherit}
+.cl-days button b{font-size:13px;color:var(--ac)}
+.cl-days button small{color:var(--dm);font-size:12px}
+.cl-meta{display:grid;grid-template-columns:1fr 1fr 64px;gap:8px;margin:10px 0 4px}
+.cl-meta label{display:grid;gap:4px;font-size:11px;color:var(--dm);text-transform:uppercase;letter-spacing:.04em}
+.cl-meta .in,.cl-set .in,.cl-ex-ft .in{padding:9px 10px;margin:0;min-width:0}
+.cl-ex{border:1px solid var(--ln);border-radius:14px;padding:12px;margin:10px 0}
+.cl-ex-hd{display:flex;align-items:center;gap:8px}
+.cl-ex-hd b{flex:1;font-size:14px}
+.cl-ex-hd small{color:var(--dm);font-size:12px;white-space:nowrap}
+.cl-set{display:grid;grid-template-columns:40px 1fr 1fr 28px;gap:8px;align-items:center;margin-top:6px}
+.cl-set.u{grid-template-columns:40px 1fr 28px}
+.cl-set>span:first-child{text-align:center;font-weight:700;color:var(--dm);font-size:13px}
+.cl-set-h{font-size:11px;color:var(--dm);text-transform:uppercase;letter-spacing:.04em;margin-top:10px}
+.cl-set-h span{text-align:center}
+.cl-x{background:none;border:0;color:var(--dm);font-size:13px;padding:6px;cursor:pointer}
+.cl-ex-ft{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;margin-top:10px}
+.cs-hd .cl-badge,.cl-badge{display:inline-block;font-family:inherit;line-height:1.4;margin-left:8px;font-style:normal;font-weight:600;font-size:10px;padding:2px 7px;border-radius:99px;background:var(--ac);color:#fff;vertical-align:2px}
+.cs-edit{display:block;margin:4px 14px 14px}
+.ok-msg{color:var(--okl);font-size:13px;margin:8px 0 0}
+.btn.danger{background:#F87171;color:#000;border-color:#F87171}
 .ckcard{background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:14px 16px;margin-top:18px}
 .ck-hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .ck-hd span{font-size:12px;color:var(--dm);text-align:right}
@@ -6975,13 +6998,13 @@ function clientSummary(raw, routineDays) {
 }
 
 // Detalle de un entreno de la asesorada (todas las series y sus comentarios)
-function ClientSession({ s }) {
+function ClientSession({ s, onEdit }) {
   const [open, setOpen] = useState(false);
   const notes = (s.exercises || []).filter((e) => e.note);
   return (
     <div className="cs">
       <button className="cs-hd" onClick={() => setOpen(!open)}>
-        <span><b>{s.dayName || "Entreno"}</b><small>{new Date(s.date).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })} · {Math.max(1, Math.round((s.dur || 0) / 60))} min · {s.sets} series · {Number(s.volume || 0).toLocaleString("es-ES")} kg</small></span>
+        <span><b>{s.dayName || "Entreno"}{s.byCoach && <mark className="cl-badge">Apuntado por ti</mark>}</b><small>{new Date(s.date).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })} · {Math.max(1, Math.round((s.dur || 0) / 60))} min · {s.sets} series · {Number(s.volume || 0).toLocaleString("es-ES")} kg</small></span>
         {notes.length > 0 && <em title="Tiene comentarios"><Ic n="chat" size={13} /> {notes.length}</em>}
         <i>{open ? "–" : "+"}</i>
       </button>
@@ -6999,6 +7022,7 @@ function ClientSession({ s }) {
           </div>
         );
       })}
+      {open && onEdit && !String(s.dayId || "").startsWith("C:") && <button className="link cs-edit" onClick={() => onEdit(s)}>Corregir pesos o borrar</button>}
     </div>
   );
 }
@@ -7048,6 +7072,112 @@ function ClientHabits({ habits }) {
   );
 }
 
+// La coach apunta (o corrige) un entreno de su asesorad@, p. ej. cuando entrenan juntas en el gym
+const lastSetsOf = (sessions, exId) => {
+  for (let i = sessions.length - 1; i >= 0; i--) {
+    const e = (sessions[i].exercises || []).find((x) => (EX_REMAP[x.exId] || x.exId) === exId);
+    if (e) return (e.sets || []).filter((x) => x.type !== "W" && x.done !== false);
+  }
+  return [];
+};
+const dayInput = (d) => { const x = new Date(d); x.setMinutes(x.getMinutes() - x.getTimezoneOffset()); return x.toISOString().slice(0, 10); };
+
+function CoachLog({ clientId, name, routine, sessions, edit, onSaved, onClose }) {
+  const prior = sessions.filter((s) => !edit || s.id !== edit.id);
+  const exRow = (exId, n = 3, hint = "") => {
+    const last = lastSetsOf(prior, exId);
+    return { exId, note: "", hint, sets: Array.from({ length: n }, (_, k) => { const l = last[k] || last[last.length - 1]; return { kg: l?.kg ?? "", reps: "", last: l ? String(l.reps || "") : "" }; }) };
+  };
+  const [dayId, setDayId] = useState(edit ? edit.dayId || "L" : null);
+  const [dayName, setDayName] = useState(edit?.dayName || "");
+  const [date, setDate] = useState(dayInput(edit ? edit.date : new Date()));
+  const [mins, setMins] = useState(edit ? Math.max(1, Math.round((edit.dur || 0) / 60)) : 60);
+  const [list, setList] = useState(edit ? (edit.exercises || []).filter((e) => e.exId !== "CARDIO").map((e) => ({ exId: EX_REMAP[e.exId] || e.exId, note: e.note || "", sets: (e.sets || []).map((x) => ({ kg: x.kg ?? "", reps: x.reps ?? "", type: x.type })) })) : []);
+  const [picking, setPicking] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const [confirmDel, setConfirmDel] = useState(false);
+
+  const pickDay = (d) => { setDayId(d ? d.id : "L"); setDayName(d ? d.name : "Entreno libre"); setList(d ? d.ex.map((e) => exRow(e.id, e.sets, e.reps)) : []); };
+  const upEx = (i, fn) => setList((l) => l.map((e, j) => (j === i ? fn(e) : e)));
+  const upSet = (i, k, patch) => upEx(i, (e) => ({ ...e, sets: e.sets.map((x, j) => (j === k ? { ...x, ...patch } : x)) }));
+
+  const save = async () => {
+    const clean = list.map((e) => ({
+      exId: e.exId, note: e.note?.trim() || undefined,
+      sets: e.sets.filter((x) => String(x.reps ?? "").trim() !== "").map((x) => ({ kg: String(x.kg ?? "").replace(",", "."), reps: String(x.reps).replace(",", "."), done: true, ...(x.type ? { type: x.type } : {}) })),
+    })).filter((e) => e.sets.length);
+    if (!clean.length) return setErr("Apunta al menos una serie con sus repeticiones.");
+    const vol = clean.reduce((a, e) => a + e.sets.filter((x) => x.type !== "W").reduce((b, x) => b + (Number(x.kg) || 0) * (Number(x.reps) || 0), 0), 0);
+    const today = dayInput(new Date());
+    const when = edit && dayInput(edit.date) === date ? edit.date : date === today ? new Date().toISOString() : new Date(`${date}T18:00`).toISOString();
+    const row = { user_id: clientId, performed_at: when, day_id: dayId || "L", day_name: dayName.trim() || "Entreno", duration_s: Math.max(1, Number(mins) || 60) * 60, volume_kg: Math.round(vol), sets_done: clean.reduce((a, e) => a + e.sets.length, 0), exercises: clean };
+    setBusy(true); setErr("");
+    try { await db.coachSaveSession(edit?.id, row); onSaved(edit ? "Entreno corregido." : `Entreno apuntado. ${name || "Tu asesorad@"} lo verá en su historial.`); }
+    catch { setErr("No se ha podido guardar. Revisa la conexión y vuelve a probar."); setBusy(false); }
+  };
+  const del = async () => {
+    setBusy(true);
+    try { await db.coachDeleteSession(edit.id); onSaved("Entreno borrado."); } catch { setErr("No se ha podido borrar."); setBusy(false); }
+  };
+
+  return (
+    <div className="modal" onClick={onClose}>
+      <div className="box cl-log" onClick={(e) => e.stopPropagation()}>
+        <h1 style={{ fontSize: 20 }}>{edit ? "Corregir entreno" : `Apuntar entreno${name ? ` de ${name.split(" ")[0]}` : ""}`}</h1>
+        {!dayId ? (
+          <>
+            <p className="sub">¿Qué día de su rutina ha hecho?</p>
+            <div className="cl-days">
+              {routine.map((d) => (
+                <button key={d.id} onClick={() => pickDay(d)}><b>Día {d.id}</b><span>{d.name}</span><small>{d.ex.length} ejercicios</small></button>
+              ))}
+              <button onClick={() => pickDay(null)}><b>Libre</b><span>Elijo yo los ejercicios</span></button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="cl-meta">
+              <label>Nombre<input className="in" value={dayName} onChange={(e) => setDayName(e.target.value)} /></label>
+              <label>Fecha<input className="in" type="date" value={date} max={dayInput(new Date())} onChange={(e) => setDate(e.target.value)} /></label>
+              <label>Min<input className="in" inputMode="numeric" value={mins} onChange={(e) => setMins(e.target.value.replace(/\D/g, ""))} /></label>
+            </div>
+            <p className="hint">Rellena las series que haya hecho. Las que dejes sin repeticiones no se guardan. El peso viene puesto con el de la última vez.</p>
+            {list.map((e, i) => {
+              const ex = EXERCISES[e.exId]; const u = ex?.unit;
+              return (
+                <div className="cl-ex" key={i}>
+                  <div className="cl-ex-hd"><b>{ex?.n || e.exId}</b>{e.hint && <small>{e.hint} reps</small>}<button className="cl-x" aria-label="Quitar ejercicio" onClick={() => setList((l) => l.filter((_, j) => j !== i))}>✕</button></div>
+                  <div className="cl-set cl-set-h"><span>Serie</span>{!u && <span>Kg</span>}<span>{u || "Reps"}</span><span /></div>
+                  {e.sets.map((x, k) => (
+                    <div className={`cl-set${u ? " u" : ""}`} key={k}>
+                      <span>{x.type === "W" ? "W" : k + 1}</span>
+                      {!u && <input className="in" inputMode="decimal" placeholder="0" value={x.kg} onChange={(ev) => upSet(i, k, { kg: ev.target.value })} />}
+                      <input className="in" inputMode="decimal" placeholder={x.last || "—"} value={x.reps} onChange={(ev) => upSet(i, k, { reps: ev.target.value })} />
+                      <button className="cl-x" aria-label="Quitar serie" onClick={() => upEx(i, (o) => ({ ...o, sets: o.sets.filter((_, j) => j !== k) }))}>✕</button>
+                    </div>
+                  ))}
+                  <div className="cl-ex-ft">
+                    <button className="link" onClick={() => upEx(i, (o) => { const l = o.sets[o.sets.length - 1]; return { ...o, sets: [...o.sets, { kg: l?.kg ?? "", reps: "", last: l?.last || "" }] }; })}>+ Serie</button>
+                    <input className="in" placeholder="Comentario (opcional)" value={e.note} onChange={(ev) => upEx(i, (o) => ({ ...o, note: ev.target.value }))} />
+                  </div>
+                </div>
+              );
+            })}
+            <button className="btn ghost" onClick={() => setPicking(true)}>+ Añadir ejercicio</button>
+            {err && <div className="err">{err}</div>}
+            <button className="btn" disabled={busy} onClick={save}>{busy ? "Guardando…" : edit ? "Guardar cambios" : "Guardar entreno"}</button>
+            {edit && !confirmDel && <button className="btn ghost" disabled={busy} onClick={() => setConfirmDel(true)}>Borrar este entreno</button>}
+            {edit && confirmDel && <button className="btn danger" disabled={busy} onClick={del}>Sí, borrarlo</button>}
+          </>
+        )}
+        <button className="link" style={{ display: "block", margin: "12px auto 0" }} onClick={onClose}>Cancelar</button>
+        {picking && <ExercisePicker onPick={(id) => { setList((l) => [...l, exRow(id)]); setPicking(false); }} onClose={() => setPicking(false)} />}
+      </div>
+    </div>
+  );
+}
+
 function ClientDetail({ client, onBack, onSaved, onRemoved }) {
   const [data, setData] = useState(null);
   const [err, setErr] = useState("");
@@ -7060,6 +7190,8 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
   const [confirmDel, setConfirmDel] = useState(false);
   const [checkins, setCheckins] = useState(null);
   const [mode, setMode] = useState(client.mode || "");
+  const [logging, setLogging] = useState(null); // "new" o el entreno que se corrige
+  const [logMsg, setLogMsg] = useState("");
   useEffect(() => { if (tab === "revis" && client.client_id && checkins === null) db.listCheckins(client.client_id).then(setCheckins).catch(() => setCheckins([])); }, [tab]);
 
   useEffect(() => {
@@ -7142,9 +7274,17 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
                 </>
               );
             })()}
+            <button className="btn" onClick={() => { setLogMsg(""); setLogging("new"); }}>Apuntar un entreno suyo</button>
+            {logMsg && <p className="ok-msg">{logMsg}</p>}
             <h2>Todos sus entrenos</h2>
             {sum.p.sessions.length === 0 && <div className="empty">Todavía no ha registrado ningún entreno.</div>}
-            {sum.p.sessions.slice().reverse().map((s) => <ClientSession key={s.id} s={s} />)}
+            {sum.p.sessions.slice().reverse().map((s) => <ClientSession key={s.id} s={s} onEdit={(x) => { setLogMsg(""); setLogging(x); }} />)}
+            {logging && (
+              <CoachLog clientId={client.client_id} name={client.name || ""} sessions={sum.p.sessions} edit={logging === "new" ? null : logging}
+                routine={days?.length ? normDays(days) : sum.p.profile ? activeRoutine(sum.p.profile) : []}
+                onClose={() => setLogging(null)}
+                onSaved={(m) => { setLogging(null); setLogMsg(m); db.clientData(client.client_id).then(setData).catch(() => {}); }} />
+            )}
           </>
         )
       )}

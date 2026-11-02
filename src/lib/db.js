@@ -143,6 +143,16 @@ export async function clientData(clientId) {
   return { profile: must(profile), sessions: must(sessions), habits: must(habits) };
 }
 
+// La coach apunta o corrige entrenos de sus asesorad@s (by_coach marca que lo apuntó ella)
+const noCoachCol = (e) => /by_coach/.test(e?.message || "");
+export async function coachSaveSession(id, row) {
+  const run = (r) => (id ? supabase.from("workout_sessions").update(r).eq("id", id) : supabase.from("workout_sessions").insert(r)).select().single();
+  let res = await run({ ...row, by_coach: true });
+  if (res.error && noCoachCol(res.error)) res = await run(row);
+  return must(res);
+}
+export const coachDeleteSession = (id) => supabase.from("workout_sessions").delete().eq("id", id).then(must);
+
 // ---------- Opiniones (Coaching con Luna) ----------
 export const listTestimonials = () => supabase.from("testimonials").select("*").eq("active", true).order("created_at", { ascending: false }).then(must);
 export const addTestimonial = (row) => supabase.from("testimonials").insert(row).select().single().then(must);
