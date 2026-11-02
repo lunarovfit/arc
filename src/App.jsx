@@ -2069,7 +2069,8 @@ select.in{appearance:none}
 .rc .today-go{margin-top:4px}
 .rc-ok{font-weight:800;color:var(--okl);background:rgba(110,231,183,.1);border-radius:12px;padding:10px;text-align:center}
 .rc.done{border-color:rgba(110,231,183,.45)}
-.rc-in>small.rc-lock{font-size:11.5px;color:var(--dm);text-transform:none;letter-spacing:0;font-weight:400}
+.rc-in>small.rc-admin{display:block;margin-top:10px;font-size:12px}
+.rc-lock{font-size:11.5px;color:var(--dm);text-transform:none;letter-spacing:0;font-weight:400}
 
 /* cardio */
 .cl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0 14px}
@@ -3555,16 +3556,22 @@ const CHAR_CHALLENGES = [
     ex: [["ARC-001", 4, "máx.", 1, 60], ["ARC-081", 4, "20", 1, 45], ["ARC-080", 4, "20", 1, 45], ["ARC-042", 3, "8–10", 2, 120], ["CARDIO", 1, "15", 0, 60]] },
 ];
 const isoWeek = (d = new Date()) => { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const n = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - n); const y = new Date(Date.UTC(t.getUTCFullYear(), 0, 1)); return Math.ceil(((t - y) / 864e5 + 1) / 7); };
-function weekChallenge(branch, d = new Date()) {
+// Semanas con un personaje elegido a mano (el mismo para todo el mundo). Desde la app se puede cambiar sin actualizar: se guarda en media como "reto:AAAA-SS"
+const FEATURED_WEEKS = { "2026-45": "Maki Zenin" };
+const weekKey = (d = new Date()) => { const t = new Date(d); t.setDate(t.getDate() + 3 - ((t.getDay() + 6) % 7)); return `${t.getFullYear()}-${isoWeek(d)}`; };
+function weekChallenge(branch, d = new Date(), media = {}) {
   const mine = CHAR_CHALLENGES.filter((c) => c.b === branch);
   const list = mine.length ? [...mine, ...CHAR_CHALLENGES.filter((c) => c.b !== branch)] : CHAR_CHALLENGES;
-  const c = list[isoWeek(d) % Math.min(list.length, mine.length || list.length)];
+  const pick = media[`reto:${weekKey(d)}`] || FEATURED_WEEKS[weekKey(d)];
+  const c = CHAR_CHALLENGES.find((x) => x.who === pick) || list[isoWeek(d) % Math.min(list.length, mine.length || list.length)];
   return { ...c, key: `R:${c.who.split(" ")[0].toLowerCase()}`, day: { id: `R:${c.who.split(" ")[0].toLowerCase()}`, name: `Reto · ${c.tag}`, ex: c.ex.filter(([id]) => EXERCISES[id]).map(([id, sets, reps, rir, rest]) => ({ id, sets, reps, rir, rest })) } };
 }
 const CHALLENGE_XP = 60;
 
-function ChallengeCard({ state, media, onStart }) {
-  const c = weekChallenge(state.profile.branch);
+function ChallengeCard({ state, media, onStart, setMedia }) {
+  const c = weekChallenge(state.profile.branch, new Date(), media);
+  const [choosing, setChoosing] = useState(false);
+  const isAdmin = state.role === "coach" || state.role === "admin";
   const img = mediaOr(media, levelKey(c.b, state.profile.mode || "otaku", c.i));
   const done = state.sessions.some((s) => s.dayId === c.key && new Date(s.date) >= weekStart());
   const unlocked = (state.savedLevel ?? 0) >= c.i;
@@ -3583,6 +3590,12 @@ function ChallengeCard({ state, media, onStart }) {
         {done ? <div className="rc-ok">Reto superado · +{CHALLENGE_XP} XP extra</div>
           : <button className="today-go" onClick={() => onStart(c.day)}>Aceptar el reto · +{CHALLENGE_XP} XP</button>}
         {!unlocked && !done && <small className="rc-lock">Aún no has desbloqueado a {c.who.split(" ")[0]}: supera el reto y sigue subiendo de nivel.</small>}
+        {isAdmin && setMedia && <button className="link rc-admin" onClick={() => setChoosing(!choosing)}>{choosing ? "Cerrar" : "Elegir el reto de esta semana (solo tú)"}</button>}
+        {isAdmin && setMedia && choosing && (
+          <div className="chips" style={{ marginTop: 8 }}>
+            {CHAR_CHALLENGES.map((x) => <button key={x.who} className={`chip ${x.who === c.who ? "on" : ""}`} onClick={() => { setMedia(`reto:${weekKey()}`, x.who); setChoosing(false); }}>{x.who}</button>)}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -3705,7 +3718,7 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
           <div className="today-xp">+{RULES.XP_PER_SESSION} XP · +{RULES.GEMS_PER_SESSION} gemas al terminar</div>
         </div>
       )}
-      {state.profile.mode !== "simple" && state.profile.mode !== "clasico" && <ChallengeCard state={state} media={media} onStart={onStart} />}
+      {state.profile.mode !== "simple" && state.profile.mode !== "clasico" && <ChallengeCard state={state} media={media} onStart={onStart} setMedia={setMedia} />}
       {onCardio && <CardioWeek sessions={state.sessions} onLog={() => setCardioOpen(true)} />}
       {cardioOpen && <CardioLog weight={currentWeight(state)} sessions={state.sessions} onSave={onCardio} onClose={() => setCardioOpen(false)} />}
       <WarmUp media={media} onTech={setTech} />
