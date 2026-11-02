@@ -2067,6 +2067,22 @@ select.in{appearance:none}
 .rc-ex{display:flex;flex-direction:column;gap:2px;margin:4px 0 6px;font-size:12.5px;max-width:80%}
 .rc-ex em{font-style:normal;color:var(--dm)}
 .rc .today-go{margin-top:4px}
+.bdg{display:flex;flex-direction:column;align-items:center;gap:3px;width:calc(var(--s) + 14px);text-align:center}
+.bdg-ring{position:relative;width:var(--s);height:var(--s);border-radius:50%;padding:3px;background:conic-gradient(from 210deg,#D48B92,#F3C6CB,#8E5A60,#D48B92);box-shadow:0 0 0 1px rgba(255,255,255,.08),0 6px 18px rgba(212,139,146,.25)}
+.bdg-in{width:100%;height:100%;border-radius:50%;overflow:hidden;background:#0E0E11;border:2px solid #000;display:flex;align-items:center;justify-content:center;color:var(--ac)}
+.bdg-in img{width:100%;height:100%;object-fit:cover;object-position:top;filter:grayscale(1) contrast(1.1)}
+.bdg-star{position:absolute;right:-2px;bottom:-2px;width:calc(var(--s)*.32);height:calc(var(--s)*.32);min-width:18px;min-height:18px;border-radius:50%;background:#D48B92;border:2px solid #000;display:flex;align-items:center;justify-content:center}
+.bdg b{font-size:12px;font-weight:800;line-height:1.1;margin-top:4px}
+.bdg small{font-size:10px;color:var(--dm);line-height:1.2}
+.bdg.new .bdg-ring{animation:bdgIn .9s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes bdgIn{0%{transform:scale(.3) rotate(-25deg);opacity:0}100%{transform:none;opacity:1}}
+.bdg-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.rc-won{display:flex;align-items:center;gap:12px;background:rgba(212,139,146,.1);border:1px solid rgba(212,139,146,.3);border-radius:14px;padding:12px}
+.rc-won b{display:block;font-size:14px}.rc-won span{font-size:12px;color:var(--dm)}
+.rc-won .bdg small{display:none}
+.rc-mine{margin-top:12px}.rc-mine>small{font-size:11px;color:var(--dm);text-transform:uppercase;letter-spacing:.05em}
+.fin-bdg{position:relative;display:flex;flex-direction:column;align-items:center;margin-top:14px}
+.fin-bdg p{font-weight:800;color:var(--ac);font-size:13px;margin:6px 0 0;letter-spacing:.04em;text-transform:uppercase}
 .rc-ok{font-weight:800;color:var(--okl);background:rgba(110,231,183,.1);border-radius:12px;padding:10px;text-align:center}
 .rc.done{border-color:rgba(110,231,183,.45)}
 .rc-in>small.rc-admin{display:block;margin-top:10px;font-size:12px}
@@ -3567,6 +3583,25 @@ function weekChallenge(branch, d = new Date(), media = {}) {
   return { ...c, key: `R:${c.who.split(" ")[0].toLowerCase()}`, day: { id: `R:${c.who.split(" ")[0].toLowerCase()}`, name: `Reto · ${c.tag}`, ex: c.ex.filter(([id]) => EXERCISES[id]).map(([id, sets, reps, rir, rest]) => ({ id, sets, reps, rir, rest })) } };
 }
 const CHALLENGE_XP = 60;
+const challengeKey = (c) => `R:${c.who.split(" ")[0].toLowerCase()}`;
+const badgeOf = (id) => CHAR_CHALLENGES.find((c) => challengeKey(c) === id) || null;
+// Insignias conseguidas: un reto superado = una insignia (la primera vez que se completa)
+const myBadges = (sessions) => { const m = {}; sessions.forEach((s) => { if (String(s.dayId || "").startsWith("R:") && badgeOf(s.dayId) && !m[s.dayId]) m[s.dayId] = s.date; }); return Object.entries(m).map(([id, at]) => ({ id, at })); };
+function Badge({ id, media, size = 74, at, isNew }) {
+  const c = badgeOf(id); if (!c) return null;
+  const img = mediaOr(media || {}, levelKey(c.b, "otaku", c.i));
+  return (
+    <div className={`bdg${isNew ? " new" : ""}`} style={{ "--s": `${size}px` }}>
+      <div className="bdg-ring"><div className="bdg-in">{img ? <img src={img} alt="" /> : <Ic n="star" size={size * 0.4} />}</div><i className="bdg-star"><Ic n="star" size={Math.max(10, size * 0.17)} color="#000" sw={2.4} /></i></div>
+      <b>{c.who.split(" ")[0]}</b>
+      <small>{at ? new Date(at).toLocaleDateString("es-ES", { day: "numeric", month: "short" }) : c.tag}</small>
+    </div>
+  );
+}
+function BadgeRow({ list, media, title = "Insignias" }) {
+  if (!list?.length) return null;
+  return (<><h2>{title}</h2><div className="bdg-row">{list.map((b) => <Badge key={b.id} id={b.id} at={b.at} media={media} />)}</div></>);
+}
 
 function ChallengeCard({ state, media, onStart, setMedia }) {
   const c = weekChallenge(state.profile.branch, new Date(), media);
@@ -3584,12 +3619,13 @@ function ChallengeCard({ state, media, onStart, setMedia }) {
         <small>Reto de la semana · {done ? "completado" : left === 1 ? "último día" : `quedan ${left} días`}</small>
         <b>Entrena como {c.who}</b>
         <span className="rc-tag">{c.tag}</span>
-        <p>{c.why}</p>
+        <p>{c.why} Supéralo antes de que acabe la semana y llévate su insignia.</p>
         <div className="rc-mus">{c.focus.map((f) => <span key={f}>{f}</span>)}</div>
         <div className="rc-ex">{c.day.ex.map((e) => <span key={e.id}>{EXERCISES[e.id]?.n} <em>{e.sets}×{e.reps}</em></span>)}</div>
-        {done ? <div className="rc-ok">Reto superado · +{CHALLENGE_XP} XP extra</div>
+        {done ? <div className="rc-won"><Badge id={c.key} media={media} size={64} /><div><b>Insignia de {c.who.split(" ")[0]} conseguida</b><span>Reto superado · +{CHALLENGE_XP} XP extra. Ya sale en tu perfil.</span></div></div>
           : <button className="today-go" onClick={() => onStart(c.day)}>Aceptar el reto · +{CHALLENGE_XP} XP</button>}
         {!unlocked && !done && <small className="rc-lock">Aún no has desbloqueado a {c.who.split(" ")[0]}: supera el reto y sigue subiendo de nivel.</small>}
+        {myBadges(state.sessions).length > 0 && <div className="rc-mine"><small>Tus insignias</small><div className="bdg-row">{myBadges(state.sessions).map((b) => <Badge key={b.id} id={b.id} at={b.at} media={media} size={48} />)}</div></div>}
         {isAdmin && setMedia && <button className="link rc-admin" onClick={() => setChoosing(!choosing)}>{choosing ? "Cerrar" : "Elegir el reto de esta semana (solo tú)"}</button>}
         {isAdmin && setMedia && choosing && (
           <div className="chips" style={{ marginTop: 8 }}>
@@ -4880,6 +4916,7 @@ function ProfileSheet({ nick, api, media, onClose, onReport, blocked }) {
                       <div key={r.exId}><span className={`pf-medal m${i}`}>{i + 1}</span><b>{EXERCISES[EX_REMAP[r.exId] || r.exId]?.n || "Ejercicio"}</b><small>{r.kg} kg × {r.reps} · 1RM ≈ {r.e1} kg</small></div>
                     ))}</div>
                   </>}
+                  <BadgeRow list={(p.badges || []).filter((b) => badgeOf(b.id))} media={media} />
                 </>
               );
             })()}
@@ -5675,6 +5712,7 @@ function FinishScreen({ data, onClose }) {
         <div><b>{Math.round(vol).toLocaleString("es-ES")}</b><span>Kg movidos</span></div>
         <div><b>+{Math.round(xp)}</b><span>XP</span></div>
       </div>
+      {data.badge && badgeOf(data.badge) && <div className="fin-bdg"><Badge id={data.badge} media={data.media} size={96} isNew /><p>{data.badgeFirst ? "Nueva insignia desbloqueada" : "Reto superado otra vez"}</p></div>}
       {data.prs > 0 && <div className="fin-pr">{data.prs === 1 ? "¡Nuevo récord en 1 ejercicio!" : `¡Nuevos récords en ${data.prs} ejercicios!`}</div>}
       {cur && <FinishCompare cur={cur} hist={data.history || []} />}
       {data.share && <button className="btn fin-share" onClick={() => setShareOpen(true)}>Compartir en historias</button>}
@@ -7667,7 +7705,7 @@ function ArcApp({ user }) {
       setState(next);
       const { best, pullups } = bestLifts(next);
       const lv = evaluate(next.profile.branch, { ...stats, ratio: ratioOf(next.profile.branch, best, currentWeight(next)), pullups }, next.profile.mode).current;
-      setDone({ dur: row.duration_s, sets, volume, xp: RULES.XP_PER_SESSION + (String(a.dayId || "").startsWith("R:") ? CHALLENGE_XP : 0), prs, share: shareDataFor(session, next.sessions), history: next.sessions, otaku: (next.profile.mode || "otaku") === "otaku", nick: state.nickname, levelImg: next.profile.mode === "simple" ? null : mediaOr(media, levelKey(next.profile.branch, next.profile.mode || "otaku", lv)) });
+      setDone({ badge: String(a.dayId || "").startsWith("R:") ? a.dayId : null, badgeFirst: !state.sessions.some((x) => x.dayId === a.dayId), media, dur: row.duration_s, sets, volume, xp: RULES.XP_PER_SESSION + (String(a.dayId || "").startsWith("R:") ? CHALLENGE_XP : 0), prs, share: shareDataFor(session, next.sessions), history: next.sessions, otaku: (next.profile.mode || "otaku") === "otaku", nick: state.nickname, levelImg: next.profile.mode === "simple" ? null : mediaOr(media, levelKey(next.profile.branch, next.profile.mode || "otaku", lv)) });
       setTab("inicio");
     } catch (e) { setToast("No se ha podido guardar el entreno. Tu sesión sigue abierta: vuelve a darle a Terminar."); }
   };
