@@ -7,3 +7,7 @@ on conflict (id) do nothing;
 insert into public.content_exercises (id, grp, name, muscle, equip, simple, tip, unit, sort) values
   ('ARC-109', 'Tríceps', 'Extensión de tríceps sobre la cabeza en polea', 'Tríceps (porción larga)', 'Polea', 'De espaldas a la polea, con los codos apuntando al frente junto a la cabeza, estiras los brazos hacia delante y arriba.', 'Estira del todo y baja lento notando el estiramiento del tríceps.', '', 841)
 on conflict (id) do nothing;
+
+insert into public.content_exercises (id, grp, name, muscle, equip, simple, tip, unit, sort) values
+  ('ARC-112', 'Bíceps', 'Curl martillo con mancuernas', 'Bíceps, braquial, antebrazo', 'Mancuernas', 'De pie con una mancuerna en cada mano y las palmas mirándose, subes una mancuerna doblando el codo, bajas despacio y alternas.', 'Codos pegados al cuerpo y sin balancearte; baja en 2-3 segundos.', '', 844)
+on conflict (id) do nothing;
