@@ -1,8 +1,8 @@
--- ARC · Cintia y Ana Belén: nombre bien escrito, se unen a su cuenta y les pone rutina, dieta y modo
+-- ARC · Cynthia y Ana Belén: nombre bien escrito, se unen a su cuenta y les pone rutina, dieta y modo
 -- Vale aunque las hayas dado de alta tú desde el panel con otro correo.
 
--- 1) Nombres
-update public.coach_clients set name = 'Cintia' where (lower(email) = 'cynthiatuset@gmail.com' or name ilike 'cint%' or name ilike 'cynth%' or email ilike '%tuset%');
+-- 1) Nombres (Cynthia, por si se cambió)
+update public.coach_clients set name = 'Cynthia' where (lower(email) = 'cynthiatuset@gmail.com' or name ilike 'cint%' or name ilike 'cynth%' or email ilike '%tuset%');
 update public.coach_clients set name = 'Ana Belén' where (lower(email) = 'anabelen.hago@gmail.com' or name ilike 'ana%' or email ilike '%anabelen%') and (name is null or name ilike 'ana' or name ilike 'ana belen');
 
 -- 2) Unir con su cuenta si ya se han registrado con ese correo
