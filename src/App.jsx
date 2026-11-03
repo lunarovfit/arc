@@ -4477,7 +4477,14 @@ function Habits({ state, setHabit, adh, steps }) {
               <button className="chip" disabled={steps.busy} onClick={steps.sync}>{steps.busy ? "Leyendo pasos…" : "Actualizar pasos del móvil"}</button>
             </div>
           : <button className="btn ghost" style={{ marginTop: 10 }} disabled={steps.busy} onClick={steps.connect}>{steps.busy ? "Un momento…" : steps.label}</button>)}
-        {steps && steps.source !== "Apple Salud" && steps.error && <div className="err">{steps.error}</div>}
+        {steps && steps.source !== "Apple Salud" && steps.error && <div className="err">{steps.error}{steps.openSettings && <button className="link" style={{ display: "block", marginTop: 6 }} onClick={steps.openSettings}>Abrir Health Connect</button>}</div>}
+        {steps && steps.source !== "Apple Salud" && !steps.error && steps.zero && (
+          <div className="note" style={{ marginTop: 10 }}>
+            <b>Health Connect no tiene pasos de hoy</b>
+            <p className="hint" style={{ margin: "4px 0 0" }}>Health Connect solo guarda los pasos si otra app se los manda. Abre Samsung Health, Google Fit o la app de tu reloj y activa "Sincronizar con Health Connect". Después vuelve aquí y dale a Actualizar.</p>
+            <button className="link" style={{ marginTop: 6 }} onClick={steps.openSettings}>Abrir Health Connect</button>
+          </div>
+        )}
         {steps?.source === "Apple Salud" && <HealthKitCard steps={steps} />}
       </div>
 
@@ -7625,7 +7632,11 @@ function ArcApp({ user }) {
   };
 
   // Pasos y recordatorios (solo en el móvil)
-  useEffect(() => { native.stepsAvailable().then(setStepsAvail); }, []);
+  const [stepsPerm, setStepsPerm] = useState(null); // Android: permiso real de Health Connect en este móvil
+  const [stepsZero, setStepsZero] = useState(false);
+  useEffect(() => { native.stepsAvailable().then((ok) => { setStepsAvail(ok); if (ok) native.stepsPermission().then(setStepsPerm); }); }, []);
+  // En Android el "conectado" solo vale si este móvil tiene el permiso (puede venir del iPhone)
+  const stepsLinked = !!state.profile?.stepsLinked && (native.platform !== "android" || stepsPerm === true);
   useEffect(() => {
     if (loaded && state.profile?.reminders) native.applyReminders(state.profile.reminders).catch(() => {});
   }, [loaded]);
@@ -7635,16 +7646,26 @@ function ArcApp({ user }) {
       const n = await native.stepsToday();
       const current = Number(state.habits[dkey()]?.steps) || 0;
       if (n > current) setHabit("steps", n);
+      setStepsZero(native.platform === "android" && n === 0 && new Date().getHours() >= 10);
     } catch { setStepsErr("No se han podido leer los pasos. Revisa el permiso en " + (native.platform === "ios" ? "Apple Salud." : "Health Connect.")); }
     finally { setStepsBusy(false); }
   };
   const connectSteps = async () => {
     if (native.platform === "android" && !stepsAvail) return native.installHealthConnect();
     setStepsBusy(true); setStepsErr("");
-    try { await native.connectSteps(); setProfile({ stepsLinked: true }); setStepsBusy(false); await syncSteps(); }
+    try { await native.connectSteps(); setStepsPerm(true); setProfile({ stepsLinked: true }); setStepsBusy(false); await syncSteps(); }
     catch { setStepsBusy(false); setStepsErr("No has dado permiso para leer los pasos. Puedes activarlo en " + (native.platform === "ios" ? "Ajustes > Salud > Acceso a datos > ARC." : "Health Connect > Permisos de apps > ARC.")); }
   };
-  useEffect(() => { if ((tab === "habitos" || tab === "inicio") && state.profile?.stepsLinked && stepsAvail) syncSteps(); }, [tab, stepsAvail]);
+  useEffect(() => { if ((tab === "habitos" || tab === "inicio") && stepsLinked && stepsAvail) syncSteps(); }, [tab, stepsAvail, stepsLinked]);
+  // Al volver a la app (y cada 5 min con ella abierta) se vuelven a leer los pasos
+  const syncRef = useRef(null); syncRef.current = () => { if (stepsLinked && stepsAvail) syncSteps(); };
+  useEffect(() => {
+    if (!native.isNative) return;
+    const onVis = () => { if (document.visibilityState === "visible") { native.stepsPermission().then((p) => p !== null && setStepsPerm(p)); syncRef.current?.(); } };
+    document.addEventListener("visibilitychange", onVis);
+    const t = setInterval(() => { if (document.visibilityState === "visible") syncRef.current?.(); }, 5 * 60 * 1000);
+    return () => { document.removeEventListener("visibilitychange", onVis); clearInterval(t); };
+  }, []);
 
   const [levelUp, closeLevelUp] = useLevelUp(loaded && state.onboarded ? state.profile : null, ev, media, (patch) => setState((s) => {
     const profile = { ...s.profile, ...patch };
@@ -7733,7 +7754,7 @@ function ArcApp({ user }) {
     { key: "steps", title: native.platform === "ios" ? "Pasos de Apple Salud" : "Pasos de Health Connect",
       text: native.platform === "ios" ? "ARC usa HealthKit para leer tus pasos de la app Salud y apuntarlos solos en Hábitos. Solo lectura, nunca se comparten." : "Así tus pasos se apuntan solos en Hábitos, sin escribir nada.",
       button: native.platform === "android" && !stepsAvail ? "Instalar Health Connect" : native.platform === "ios" ? "Conectar con Apple Salud" : "Conectar pasos",
-      done: !!state.profile?.stepsLinked, doneText: "Conectado", busy: stepsBusy, error: stepsErr, onAsk: connectSteps },
+      done: stepsLinked, doneText: "Conectado", busy: stepsBusy, error: stepsErr, onAsk: connectSteps },
     { key: "notif", title: "Recordatorios",
       text: "Un aviso los días de entreno y el cierre del domingo. Nada de spam.",
       button: "Activar avisos",
@@ -7791,7 +7812,7 @@ function ArcApp({ user }) {
   } else {
     body = <>{<Habits state={state} setHabit={setHabit} adh={adh} steps={native.isNative ? {
       available: native.platform === "android" || stepsAvail,
-      linked: !!state.profile?.stepsLinked && stepsAvail,
+      linked: stepsLinked && stepsAvail, zero: stepsZero && stepsLinked, openSettings: native.openHealthSettings,
       label: native.platform === "android" && !stepsAvail ? "Instalar Health Connect para leer tus pasos" : `Conectar con ${native.platform === "ios" ? "Apple Salud" : "Health Connect"}`,
       source: native.platform === "ios" ? "Apple Salud" : "Health Connect",
       busy: stepsBusy, error: stepsErr, connect: connectSteps, sync: syncSteps,

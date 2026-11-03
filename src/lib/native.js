@@ -25,6 +25,17 @@ export async function connectSteps() {
   return true;
 }
 
+// En Android mira si el permiso de Health Connect está dado de verdad en ESTE móvil
+// (el "conectado" del perfil puede venir de otro dispositivo). En iPhone Apple no lo dice: null.
+export async function stepsPermission() {
+  if (!isNative || platform !== "android") return null;
+  try {
+    const res = await Health.checkHealthPermissions({ permissions: ["READ_STEPS"] });
+    const list = Array.isArray(res?.permissions) ? res.permissions : [res?.permissions || {}];
+    return list.some((p) => p && p.READ_STEPS === true);
+  } catch { return false; }
+}
+
 export async function stepsToday() {
   const start = new Date(); start.setHours(0, 0, 0, 0);
   const { aggregatedData } = await Health.queryAggregated({
