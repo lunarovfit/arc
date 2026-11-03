@@ -2075,6 +2075,9 @@ select.in{appearance:none}
 .rc-mus span{font-size:11.5px;padding:3px 9px;border-radius:999px;border:1px solid var(--ln);background:rgba(0,0,0,.6)}
 .rc-ex{display:flex;flex-direction:column;gap:2px;margin:4px 0 6px;font-size:12.5px;max-width:80%}
 .rc-ex em{font-style:normal;color:var(--dm)}
+.rc-sci{font-size:12px;line-height:1.45;color:var(--dm);margin:0 0 8px;max-width:88%;text-transform:none;letter-spacing:0}
+.rc-sci b{color:var(--tx,#fff);font-weight:600}
+.rc-sci a{color:inherit;text-decoration:underline}
 .rc .today-go{margin-top:4px}
 .bdg{display:flex;flex-direction:column;align-items:center;gap:3px;width:calc(var(--s) + 14px);text-align:center}
 .bdg-ring{position:relative;width:var(--s);height:var(--s);border-radius:50%;padding:3px;background:conic-gradient(from 210deg,#D48B92,#F3C6CB,#8E5A60,#D48B92);box-shadow:0 0 0 1px rgba(255,255,255,.08),0 6px 18px rgba(212,139,146,.25)}
@@ -3568,32 +3571,44 @@ function ExerciseProgress({ sessions }) {
 }
 
 // ---------- Retos de personaje (modo anime): una sesión especial que cambia cada semana ----------
-// Cada personaje, según los músculos que más tiene desarrollados
+// Cada personaje, según el físico que tiene de verdad en el anime, con el porqué (sci) y su estudio (ref)
 const CHAR_CHALLENGES = [
-  { who: "Maki Zenin", b: "female", i: 11, tag: "Espalda y glúteo de acero", focus: ["Espalda", "Glúteo", "Core"], why: "Maneja armas enormes sin energía maldita: espalda fuerte y cadera explosiva.",
-    ex: [["ARC-021", 4, "5", 2, 180], ["ARC-009", 4, "8–10", 1, 120], ["ARC-054", 3, "10", 1, 90], ["ARC-015", 3, "10 por brazo", 1, 90], ["ARC-077", 3, "45", 0, 60]] },
-  { who: "Toji Fushiguro", b: "male", i: 11, tag: "Torso de Toji", focus: ["Espalda", "Pecho", "Hombro"], why: "Espalda ancha, pecho y hombros: el físico que todos quieren.",
-    ex: [["ARC-007", 4, "máx.", 1, 120], ["ARC-X04", 4, "6–8", 2, 150], ["ARC-016", 4, "8", 2, 120], ["ARC-022", 3, "8–10", 1, 90], ["ARC-026", 3, "15", 0, 60]] },
-  { who: "Mirko", b: "female", i: 8, tag: "Piernas de conejo", focus: ["Cuádriceps", "Glúteo", "Gemelo"], why: "Pelea solo con patadas: piernas potentes y gemelos de acero.",
-    ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-078", 3, "10 por pierna", 1, 90], ["ARC-054", 3, "10", 1, 90], ["ARC-041", 3, "15", 0, 60], ["ARC-091", 4, "15", 0, 45]] },
-  { who: "Levi Ackerman", b: "male", i: 8, tag: "Core de Levi", focus: ["Espalda", "Abdomen"], why: "Gira en el aire con el equipo de maniobras: core y espalda de acero.",
-    ex: [["ARC-007", 4, "máx.", 1, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-079", 3, "10", 1, 60], ["ARC-067", 3, "12", 1, 60], ["ARC-077", 3, "45", 0, 60]] },
-  { who: "Mikasa Ackerman", b: "female", i: 9, tag: "Fuerza Ackerman", focus: ["Espalda", "Abdomen", "Pierna"], why: "Espalda marcada y abdomen fuerte: la más fuerte de su promoción.",
-    ex: [["ARC-009", 4, "8–10", 1, 120], ["ARC-072", 3, "8", 2, 120], ["ARC-015", 3, "10 por brazo", 1, 90], ["ARC-X01", 3, "8 por pierna", 1, 90], ["ARC-079", 3, "10", 1, 60]] },
-  { who: "Ippo Makunouchi", b: "male", i: 4, tag: "Puños de Ippo", focus: ["Hombro", "Espalda", "Cardio"], why: "El Dempsey Roll sale de hombros, espalda y mucho fondo.",
-    ex: [["ARC-022", 4, "8–10", 1, 90], ["ARC-016", 3, "8–10", 1, 90], ["ARC-001", 3, "máx.", 1, 60], ["ARC-083", 3, "30", 1, 45], ["CARDIO", 1, "15", 0, 60]] },
-  { who: "Annie Leonhart", b: "female", i: 6, tag: "La patada de Annie", focus: ["Glúteo", "Femoral", "Cuádriceps"], why: "Su patada tumba titanes: glúteo y femoral a tope.",
-    ex: [["ARC-054", 4, "8–10", 1, 120], ["ARC-072", 3, "8–10", 2, 120], ["ARC-X03", 3, "12 por pierna", 1, 60], ["ARC-049", 3, "10–12", 1, 60], ["ARC-060", 3, "15", 0, 45]] },
-  { who: "Roronoa Zoro", b: "male", i: 9, tag: "Entreno de Zoro", focus: ["Hombro", "Brazos", "Espalda"], why: "Tres espadas piden hombros, brazos y espalda de hierro.",
-    ex: [["ARC-023", 4, "8–10", 1, 90], ["ARC-009", 3, "8–10", 1, 90], ["ARC-102", 3, "10–12", 1, 60], ["ARC-096", 3, "10–12", 1, 60], ["ARC-027", 3, "12–15 por brazo", 0, 45]] },
-  { who: "Nobara Kugisaki", b: "female", i: 4, tag: "Martillazo de Nobara", focus: ["Hombro", "Brazos", "Core"], why: "Martillo en mano: hombros y brazos que no se cansan.",
-    ex: [["ARC-022", 4, "8–10", 1, 90], ["ARC-026", 4, "12–15", 0, 60], ["ARC-102", 3, "10–12", 1, 60], ["ARC-096", 3, "10–12", 1, 60], ["ARC-077", 3, "45", 0, 45]] },
-  { who: "Yuji Itadori", b: "male", i: 7, tag: "Cuerpo de Itadori", focus: ["Pierna", "Pecho", "Espalda"], why: "Velocidad y fuerza bruta: cuerpo entero sin descanso.",
-    ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-X04", 3, "8", 2, 120], ["ARC-007", 3, "máx.", 1, 90], ["ARC-078", 3, "10 por pierna", 1, 60], ["ARC-083", 3, "30", 1, 45]] },
-  { who: "Mitsuri Kanroji", b: "female", i: 7, tag: "Fuerza de Mitsuri", focus: ["Pierna", "Glúteo", "Core"], why: "Ocho veces más fuerte de lo normal: pierna y core sin miedo.",
-    ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-054", 4, "8–10", 1, 90], ["ARC-051", 3, "10", 1, 90], ["ARC-060", 3, "15", 0, 45], ["ARC-067", 3, "12", 1, 45]] },
-  { who: "Sung Jinwoo", b: "male", i: 10, tag: "Daily quest de Jinwoo", focus: ["Pecho", "Abdomen", "Pierna", "Cardio"], why: "El entreno diario que lo cambió todo, versión gym.",
-    ex: [["ARC-001", 4, "máx.", 1, 60], ["ARC-081", 4, "20", 1, 45], ["ARC-080", 4, "20", 1, 45], ["ARC-042", 3, "8–10", 2, 120], ["CARDIO", 1, "15", 0, 60]] },
+  { who: "Maki Zenin", b: "female", i: 11, tag: "Espalda y agarre de Maki", focus: ["Espalda", "Glúteo", "Agarre"], why: "Pelea con lanzas y espadas enormes sin energía maldita. Eso sale de la cadena posterior y de un agarre de hierro.",
+    sci: "Tirones pesados en pocas repeticiones para la fuerza, y el hip thrust, que hace crecer el glúteo igual que la sentadilla. El curl inverso entrena el antebrazo que sujeta el arma.", ref: ["Plotkin DL et al. Hip thrust and back squat training elicit similar gluteus muscle hypertrophy and transfer similarly to the deadlift. PeerJ, 2023.", "https://pubmed.ncbi.nlm.nih.gov/?term=Hip+thrust+and+back+squat+training+elicit+similar+gluteus+muscle+hypertrophy+and+transfer+similarly+to+the+deadlift"],
+    ex: [["ARC-021", 4, "5", 2, 180], ["ARC-007", 4, "máx.", 1, 150], ["ARC-012", 3, "8–10", 1, 120], ["ARC-054", 3, "8–10", 1, 120], ["ARC-115", 3, "12–15", 1, 60]] },
+  { who: "Toji Fushiguro", b: "male", i: 11, tag: "Torso de Toji", focus: ["Espalda", "Pecho", "Hombro"], why: "Espalda ancha, pecho grande y hombros redondos: el torso en V que todos quieren.",
+    sci: "La anchura la dan el dorsal y el deltoide lateral, por eso llevan más series. Más series a la semana, más músculo.", ref: ["Schoenfeld BJ, Ogborn D, Krieger JW. Dose-response relationship between weekly resistance training volume and increases in muscle mass. J Sports Sci, 2017.", "https://doi.org/10.1080/02640414.2016.1210197"],
+    ex: [["ARC-X04", 4, "6–8", 2, 180], ["ARC-007", 4, "máx.", 1, 150], ["ARC-101", 3, "8–10", 1, 120], ["ARC-012", 3, "8–10", 1, 120], ["ARC-027", 4, "12–15", 0, 60]] },
+  { who: "Mirko", b: "female", i: 8, tag: "Cuádriceps de Mirko", focus: ["Cuádriceps", "Glúteo", "Abdomen"], why: "Pelea solo a patadas: muslos enormes y abdomen marcado.",
+    sci: "Sentadillas profundas y extensión de cuádriceps con pausa abajo. El cuádriceps crece más cuando trabaja estirado, con la rodilla muy doblada.", ref: ["Pedrosa GF et al. Partial range of motion training elicits favorable improvements in muscular adaptations when carried out at long muscle lengths. Eur J Sport Sci, 2022.", "https://pubmed.ncbi.nlm.nih.gov/?term=Partial+range+of+motion+training+elicits+favorable+improvements+in+muscular+adaptations+when+carried+out+at+long+muscle+lengths"],
+    ex: [["ARC-075", 4, "6–8", 2, 150], ["ARC-078", 3, "8–10 por pierna", 1, 120], ["ARC-076", 3, "10–12", 1, 120], ["ARC-041", 3, "10–12 (pausa abajo)", 0, 90], ["ARC-079", 3, "8–10", 1, 60]] },
+  { who: "Levi Ackerman", b: "male", i: 8, tag: "Core de Levi", focus: ["Abdomen", "Espalda", "Agarre"], why: "Gira en el aire colgado del equipo de maniobras con las espadas al revés: core, dorsal y antebrazos en un cuerpo pequeño.",
+    sci: "Rueda (aguantar sin arquear) y elevaciones de piernas para el core, dominadas para colgarse, y curl de muñeca para el agarre invertido de sus espadas.",
+    ex: [["ARC-007", 4, "máx.", 1, 150], ["ARC-013", 3, "10–12", 1, 90], ["ARC-079", 4, "8–10", 1, 60], ["ARC-067", 3, "10–12", 1, 60], ["ARC-114", 3, "15", 1, 45]] },
+  { who: "Mikasa Ackerman", b: "female", i: 9, tag: "Espalda y abdomen Ackerman", focus: ["Espalda", "Abdomen"], why: "Tiene la espalda y el abdomen más famosos del anime.",
+    sci: "Dominadas y remos para la espalda, rueda y elevaciones para el abdomen. Ojo: entrenar abdomen lo hace más grueso, pero que se marque depende de la grasa, no de hacer más abdominales.", ref: ["Vispute SS et al. The effect of abdominal exercise on abdominal fat. J Strength Cond Res, 2011.", "https://pubmed.ncbi.nlm.nih.gov/?term=The+effect+of+abdominal+exercise+on+abdominal+fat"],
+    ex: [["ARC-007", 4, "máx.", 1, 150], ["ARC-016", 4, "6–8", 2, 120], ["ARC-070", 3, "10–12 por brazo", 1, 90], ["ARC-079", 3, "8–10", 1, 60], ["ARC-067", 3, "10–12", 1, 60]] },
+  { who: "Ippo Makunouchi", b: "male", i: 4, tag: "Puños de Ippo", focus: ["Espalda", "Pierna", "Cardio"], why: "Su espalda es enorme y el Dempsey Roll sale de las piernas: boxeo de pies a cabeza.",
+    sci: "Nivel de principiante: básicos con buena técnica y fondo. Con cargas ligeras también se gana músculo si llegas cerca del fallo.", ref: ["Schoenfeld BJ et al. Effects of low- vs. high-load resistance training on muscle strength and hypertrophy in well-trained men. J Strength Cond Res, 2015.", "https://pubmed.ncbi.nlm.nih.gov/?term=Effects+of+low-+vs.+high-load+resistance+training+on+muscle+strength+and+hypertrophy+in+well-trained+men"],
+    ex: [["ARC-043", 3, "10–12", 2, 90], ["ARC-015", 3, "10 por brazo", 1, 90], ["ARC-001", 3, "máx.", 1, 60], ["ARC-083", 3, "30 s", 1, 45], ["CARDIO", 1, "15", 0, 60]] },
+  { who: "Annie Leonhart", b: "female", i: 6, tag: "La patada de Annie", focus: ["Glúteo", "Femoral"], why: "Tumba titanes de una patada: glúteo y femoral potentes.",
+    sci: "Femoral sentado en lugar de tumbado: con la cadera doblada el femoral trabaja más estirado y crece más.", ref: ["Maeo S et al. Greater hamstrings muscle hypertrophy but similar damage protection after training at long versus short muscle lengths. Med Sci Sports Exerc, 2021.", "https://pubmed.ncbi.nlm.nih.gov/?term=Greater+hamstrings+muscle+hypertrophy+but+similar+damage+protection+after+training+at+long+versus+short+muscle+lengths"],
+    ex: [["ARC-072", 4, "6–8", 2, 150], ["ARC-054", 4, "8–10", 1, 120], ["ARC-050", 3, "10–12", 1, 90], ["ARC-X03", 3, "12 por pierna", 1, 60], ["ARC-060", 3, "15", 0, 60]] },
+  { who: "Roronoa Zoro", b: "male", i: 9, tag: "Brazos de Zoro", focus: ["Hombro", "Brazos", "Agarre"], why: "Levanta pesas gigantes en el barco y pelea con tres espadas: hombros, brazos y antebrazos.",
+    sci: "El tríceps es casi dos tercios del brazo, y crece mucho más con el brazo por encima de la cabeza. Las dominadas supinas meten bíceps con mucho peso.", ref: ["Maeo S et al. Triceps brachii hypertrophy is substantially greater after elbow extension training performed in the overhead versus neutral arm position. Eur J Sport Sci, 2023.", "https://pubmed.ncbi.nlm.nih.gov/?term=Triceps+brachii+hypertrophy+is+substantially+greater+after+elbow+extension+training+performed+in+the+overhead+versus+neutral+arm+position"],
+    ex: [["ARC-022", 4, "6–8", 2, 150], ["ARC-088", 3, "máx.", 1, 120], ["ARC-109", 3, "10–12", 1, 60], ["ARC-112", 3, "10–12", 1, 60], ["ARC-115", 3, "12–15", 1, 60]] },
+  { who: "Nobara Kugisaki", b: "female", i: 4, tag: "Martillo de Nobara", focus: ["Hombro", "Brazos", "Core"], why: "Martillo y clavos todo el día: hombros y brazos que no se cansan.",
+    sci: "Nivel de principiante. El curl martillo es literal: entrena el braquial y el antebrazo, los que mueven un martillo.",
+    ex: [["ARC-022", 3, "8–10", 2, 120], ["ARC-027", 3, "12–15", 1, 60], ["ARC-112", 3, "10–12", 1, 60], ["ARC-109", 3, "10–12", 1, 60], ["ARC-077", 3, "10", 1, 60]] },
+  { who: "Yuji Itadori", b: "male", i: 7, tag: "Cuerpo de Itadori", focus: ["Pierna", "Pecho", "Espalda"], why: "Fuerza bruta y velocidad: corre como un coche y pega igual de fuerte.",
+    sci: "Cuerpo entero con básicos pesados para la fuerza, y la búlgara para la pierna de una en una, como en un sprint. Sentadilla profunda: bajar del todo da más glúteo.", ref: ["Kubo K, Ikebukuro T, Yata H. Effects of squat training with different depths on lower limb muscle volumes. Eur J Appl Physiol, 2019.", "https://pubmed.ncbi.nlm.nih.gov/?term=Effects+of+squat+training+with+different+depths+on+lower+limb+muscle+volumes"],
+    ex: [["ARC-075", 4, "6–8", 2, 150], ["ARC-117", 4, "6–8", 2, 150], ["ARC-007", 3, "máx.", 1, 120], ["ARC-X01", 3, "8 por pierna", 1, 90], ["ARC-083", 3, "30 s", 1, 45]] },
+  { who: "Mitsuri Kanroji", b: "female", i: 7, tag: "Fuerza de Mitsuri", focus: ["Pierna", "Glúteo", "Core"], why: "Músculos ocho veces más densos de lo normal, sobre todo de cintura para abajo.",
+    sci: "Sentadilla bien profunda: bajar del todo hace crecer más el glúteo que la media sentadilla.", ref: ["Kubo K, Ikebukuro T, Yata H. Effects of squat training with different depths on lower limb muscle volumes. Eur J Appl Physiol, 2019.", "https://pubmed.ncbi.nlm.nih.gov/?term=Effects+of+squat+training+with+different+depths+on+lower+limb+muscle+volumes"],
+    ex: [["ARC-042", 4, "6–8", 2, 150], ["ARC-051", 3, "8–10", 2, 120], ["ARC-054", 3, "10–12", 1, 90], ["ARC-060", 3, "15", 0, 60], ["ARC-067", 3, "12", 1, 45]] },
+  { who: "Sung Jinwoo", b: "male", i: 10, tag: "Daily quest de Jinwoo", focus: ["Pecho", "Abdomen", "Pierna", "Cardio"], why: "Cien flexiones, cien abdominales, cien sentadillas y diez kilómetros: su misión diaria, versión gym.",
+    sci: "Muchas repeticiones también hacen crecer el músculo si llegas cerca del fallo. Y una sentadilla pesada para que no todo sea aguante.", ref: ["Schoenfeld BJ et al. Effects of low- vs. high-load resistance training on muscle strength and hypertrophy in well-trained men. J Strength Cond Res, 2015.", "https://pubmed.ncbi.nlm.nih.gov/?term=Effects+of+low-+vs.+high-load+resistance+training+on+muscle+strength+and+hypertrophy+in+well-trained+men"],
+    ex: [["ARC-001", 5, "20", 1, 60], ["ARC-081", 5, "20", 1, 45], ["ARC-080", 4, "25", 1, 45], ["ARC-042", 3, "8", 2, 120], ["CARDIO", 1, "20", 0, 60]] },
 ];
 const isoWeek = (d = new Date()) => { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const n = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - n); const y = new Date(Date.UTC(t.getUTCFullYear(), 0, 1)); return Math.ceil(((t - y) / 864e5 + 1) / 7); };
 // Semanas con un personaje elegido a mano (el mismo para todo el mundo). Desde la app se puede cambiar sin actualizar: se guarda en media como "reto:AAAA-SS"
@@ -3646,6 +3661,7 @@ function ChallengeCard({ state, media, onStart, setMedia }) {
         <p>{c.why} Supéralo antes de que acabe la semana y llévate su insignia.</p>
         <div className="rc-mus">{c.focus.map((f) => <span key={f}>{f}</span>)}</div>
         <div className="rc-ex">{c.day.ex.map((e) => <span key={e.id}>{EXERCISES[e.id]?.n} <em>{e.sets}×{e.reps}</em></span>)}</div>
+        {c.sci && <p className="rc-sci"><b>Por qué estos ejercicios.</b> {c.sci}{c.ref && <> <a href={c.ref[1]} target="_blank" rel="noreferrer">{c.ref[0].split(". ")[0].split(",")[0]} et al.</a></>}</p>}
         {done ? <div className="rc-won"><Badge id={c.key} media={media} size={64} /><div><b>Insignia de {c.who.split(" ")[0]} conseguida</b><span>Reto superado · +{CHALLENGE_XP} XP extra. Ya sale en tu perfil.</span></div></div>
           : <button className="today-go" onClick={() => onStart(c.day)}>Aceptar el reto · +{CHALLENGE_XP} XP</button>}
         {!unlocked && !done && <small className="rc-lock">Aún no has desbloqueado a {c.who.split(" ")[0]}: supera el reto y sigue subiendo de nivel.</small>}
