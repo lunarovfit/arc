@@ -1924,6 +1924,47 @@ select.in{appearance:none}
 .fin-note{font-size:11.5px;color:var(--dm);margin:8px 2px 0}
 
 /* programas, análisis y progreso */
+.cpk{margin:4px 0 12px}
+.cpk-hd{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:6px}
+.cpk-hd small{font-size:11.5px;color:var(--ac);font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.cpk-hd b{display:block;font-size:20px;margin-top:2px}
+.cpk-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cpk-c{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:8px 8px 11px;color:var(--tx);font:inherit;cursor:pointer;min-width:0}
+.cpk-c.on{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac)}
+.cpk-img{position:relative;width:100%;aspect-ratio:4/5;border-radius:11px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;color:var(--ac);margin-bottom:6px}
+.cpk-img img{width:100%;height:100%;object-fit:cover;object-position:top;filter:grayscale(1) contrast(1.05)}
+.cpk-bdg{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;border:2px solid #000}
+.cpk-c b{font-size:14px;line-height:1.2;padding:0 3px}
+.cpk-c span{font-size:12px;color:var(--ac);font-weight:700;padding:0 3px}
+.cpk-c small{font-size:11.5px;color:var(--dm);padding:0 3px}
+.cpc{border:1px solid rgba(212,139,146,.4);border-radius:20px;overflow:hidden;margin:4px 0 12px;background:var(--sf)}
+.cpc-hero{position:relative;min-height:200px;display:flex;align-items:flex-end;background:#000}
+.cpc-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%;filter:grayscale(1) contrast(1.05);opacity:.75}
+.cpc-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,.55) 45%,rgba(0,0,0,.95) 100%)}
+.cpc-hero-in{position:relative;z-index:1;padding:14px 16px}
+.cpc-hero-in small{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#F3C6CB;text-shadow:0 1px 6px rgba(0,0,0,.9)}
+.cpc-hero-in b{display:block;font-size:24px;line-height:1.1;margin:4px 0 8px;text-shadow:0 2px 10px rgba(0,0,0,.8)}
+.cpc-body{padding:14px 16px 16px}
+.cpc-meta{display:flex;flex-wrap:wrap;gap:6px}
+.cpc-meta span{font-size:12px;border:1px solid var(--ln);border-radius:999px;padding:4px 10px}
+.cpc-meta span:first-child{background:var(--ac);color:#000;border-color:var(--ac);font-weight:800}
+.cpc-phy{font-size:14px;color:var(--dm);line-height:1.45;margin:10px 0 0}
+.cpc-prog{display:flex;align-items:center;gap:10px;margin-top:12px;background:#000;border-radius:14px;padding:10px 12px}
+.cpc-prog>span{flex:1;font-size:12.5px;color:var(--dm);line-height:1.35}
+.cpc-dots{display:flex;gap:5px}
+.cpc-dots i{width:24px;height:24px;border-radius:8px;border:1px solid var(--ln);font-style:normal;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;color:var(--dm)}
+.cpc-dots i.on{background:var(--ac);border-color:var(--ac);color:#000}
+.cpc-prog .bdg small{display:none}.cpc-prog .bdg b{display:none}
+.cpc-more{display:block;margin:12px 0 0}
+.cpc-more-in h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ac);margin:16px 0 6px}
+.cpc-more-in p{font-size:14px;line-height:1.5;margin:0;color:var(--tx)}
+.cpc-ref{color:var(--ac);text-decoration:underline}
+.cpc-step{display:grid;grid-template-columns:96px 1fr;gap:8px;font-size:13.5px;padding:7px 0;border-bottom:1px solid var(--ln)}
+.cpc-step b{color:var(--tx)}.cpc-step span{color:var(--dm)}
+.cpc-tip{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;line-height:1.45;padding:5px 0;color:var(--tx)}
+.cpc-tip svg{flex:none;margin-top:2px;color:var(--ac)}
+.cpc-fic{display:flex;gap:8px;align-items:flex-start;margin-top:14px;font-size:12px;line-height:1.45;color:var(--dm);border:1px dashed var(--ln);border-radius:12px;padding:10px 12px}
+.cpc-fic svg{flex:none;margin-top:1px}
 .prog-card{width:100%;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(212,139,146,.16),var(--sf));border:1px solid rgba(212,139,146,.4);border-radius:18px;padding:14px;margin:4px 0 10px;color:var(--tx);font:inherit;text-align:left;cursor:pointer}
 .prog-card.coach{background:linear-gradient(135deg,rgba(245,199,107,.15),var(--sf));border-color:rgba(245,199,107,.4);cursor:default}
 .prog-card>div{flex:1;min-width:0}
@@ -3255,6 +3296,7 @@ function activeRoutine(profile) {
   BODY_FEMALE = profile?.branch === "female";
   if (profile?.coachRoutine?.length) return normDays(profile.coachRoutine); // la que pone la coach manda
   if (profile?.routineMode === "custom" && profile.customRoutine?.length) return normDays(profile.customRoutine);
+  if (profile?.routineMode === "char" && (profile.mode || "otaku") === "otaku" && cpOf(profile.charProgram)) return cpDays(cpOf(profile.charProgram)).map((d) => ({ ...d, ex: d.ex.filter((e) => EXERCISES[e.id]) }));
   return buildRoutine(profile?.days || 3, profile?.branch, profile || {});
 }
 
@@ -3623,9 +3665,23 @@ function weekChallenge(branch, d = new Date(), media = {}) {
 }
 const CHALLENGE_XP = 60;
 const challengeKey = (c) => `R:${c.who.split(" ")[0].toLowerCase()}`;
-const badgeOf = (id) => CHAR_CHALLENGES.find((c) => challengeKey(c) === id) || null;
+const badgeOf = (id) => {
+  const c = CHAR_CHALLENGES.find((x) => challengeKey(x) === id);
+  if (c) return c;
+  const p = typeof CHAR_PROGRAMS !== "undefined" ? CHAR_PROGRAMS.find((x) => `R:${x.key}` === id) : null;
+  return p ? { who: p.who, b: p.b, i: cpLevel(p), tag: p.tag } : null;
+};
 // Insignias conseguidas: un reto superado = una insignia (la primera vez que se completa)
-const myBadges = (sessions) => { const m = {}; sessions.forEach((s) => { if (String(s.dayId || "").startsWith("R:") && badgeOf(s.dayId) && !m[s.dayId]) m[s.dayId] = s.date; }); return Object.entries(m).map(([id, at]) => ({ id, at })); };
+const myBadges = (sessions) => {
+  const m = {};
+  sessions.forEach((s) => { if (/^R:[a-z]+$/.test(String(s.dayId || "")) && badgeOf(s.dayId) && !m[s.dayId]) m[s.dayId] = s.date; });
+  // Programas de personaje: la insignia llega al completar cada día del programa una vez
+  CHAR_PROGRAMS.forEach((p) => {
+    const first = p.days.map((_, i) => sessions.find((s) => s.dayId === cpDayId(p, i))?.date);
+    if (first.every(Boolean) && !m[`R:${p.key}`]) m[`R:${p.key}`] = first.reduce((a, b) => (new Date(a) > new Date(b) ? a : b));
+  });
+  return Object.entries(m).map(([id, at]) => ({ id, at }));
+};
 function Badge({ id, media, size = 74, at, isNew }) {
   const c = badgeOf(id); if (!c) return null;
   const img = mediaOr(media || {}, levelKey(c.b, "otaku", c.i));
@@ -3640,6 +3696,434 @@ function Badge({ id, media, size = 74, at, isNew }) {
 function BadgeRow({ list, media, title = "Insignias" }) {
   if (!list?.length) return null;
   return (<><h2>{title}</h2><div className="bdg-row">{list.map((b) => <Badge key={b.id} id={b.id} at={b.at} media={media} />)}</div></>);
+}
+
+// ---------- Programas de personajes (opción dentro de Entrenos, solo modo anime) ----------
+// Cada personaje tiene su programa completo, montado con los ejercicios de ARC y el estilo de rutinas de Luna:
+// una serie top + series de bajada en el básico, rangos de 8–12 en los accesorios, superseries al final
+// y calentamiento de abductores y aductores en los días de pierna.
+// [id, series, reps, RIR, descanso en segundos]
+const CP_WU = [["ARC-060", 2, "15–20 (calentamiento, superserie con el siguiente)", 2, 30], ["ARC-089", 2, "15–20 (calentamiento)", 2, 60]];
+const CHAR_PROGRAMS = [
+  // ===================== CHICAS =====================
+  { key: "kobeni", who: "Kobeni Higashiyama", b: "female", tag: "Empezar sin miedo", level: "Principiante", weeks: 8,
+    physique: "Delgada, rápida y con unas piernas que la sacan de cualquier lío. No tiene un gramo de más, pero tampoco una fuerza brutal: es el punto de partida perfecto.",
+    why: "Para quien empieza de cero o vuelve después de mucho tiempo. Cuerpo entero en máquinas, que son las más fáciles de aprender, y pocas series para que la técnica salga bien desde el principio.",
+    focus: ["Cuerpo entero", "Pierna", "Técnica"],
+    days: [
+      { n: "Cuerpo entero A", ex: [...CP_WU, ["ARC-099", 3, "10–12", 3, 120], ["ARC-004", 3, "10–12", 3, 90], ["ARC-098", 3, "10–12", 2, 90], ["ARC-050", 2, "12–15", 2, 75], ["ARC-105", 3, "20–30 s", 2, 45]] },
+      { n: "Cuerpo entero B", ex: [["ARC-054", 3, "10–12", 3, 120], ["ARC-013", 3, "10–12", 2, 90], ["ARC-043", 3, "10–12", 2, 90], ["ARC-023", 2, "10–12", 2, 90], ["ARC-029", 2, "12–15", 1, 60], ["ARC-081", 3, "12–15", 1, 45]] },
+      { n: "Cuerpo entero C", ex: [...CP_WU, ["ARC-090", 3, "10–12", 2, 120], ["ARC-011", 3, "10–12 por brazo", 2, 75], ["ARC-085", 3, "8–12", 2, 75], ["ARC-041", 2, "12–15", 1, 60], ["ARC-CARDIO", 1, "15", 0, 60]] },
+    ],
+    tips: ["Las dos primeras semanas usa pesos con los que te sobren 3 repeticiones. Aprender el movimiento ahora te ahorra lesiones luego.", "Apunta cada peso en la app: la semana que viene solo tienes que ganarle a la pasada, aunque sea por 1 repetición.", "Si un día vas con miedo o sin ganas, haz solo los tres primeros ejercicios. Ir siempre gana a ir perfecta."],
+    food: "Proteína en cada comida (huevos, yogur proteico, pollo, atún, legumbre) y no te saltes comidas: con hambre se entrena fatal.",
+    mind: "Kobeni quiere huir de todo y aun así sigue ahí. Tener miedo al gym es normal. Ir con miedo también vale." },
+
+  { key: "ochaco", who: "Ochaco Uraraka", b: "female", tag: "Muslos de heroína", level: "Principiante", weeks: 8,
+    physique: "Muslos y glúteo fuertes de tanto entrenar artes marciales, core firme y un cuerpo que aguanta golpes sin perder la sonrisa.",
+    why: "Tres días con la pierna como protagonista, el torso cubierto y el core al final. Ideal si empiezas y lo que más quieres es pierna y glúteo.",
+    focus: ["Cuádriceps", "Glúteo", "Core"],
+    days: [
+      { n: "Pierna y core", ex: [...CP_WU, ["ARC-042", 4, "1×6–8 / 3×8–10", 2, 150], ["ARC-099", 3, "10–12", 1, 120], ["ARC-041", 3, "12–15", 1, 75], ["ARC-050", 2, "10–12", 1, 75], ["ARC-077", 3, "30 s", 1, 45]] },
+      { n: "Torso", ex: [["ARC-098", 3, "8–12", 2, 120], ["ARC-004", 3, "8–12", 2, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-026", 3, "12–15", 1, 75], ["ARC-102", 2, "10–12", 1, 60], ["ARC-104", 3, "12–15", 1, 45]] },
+      { n: "Glúteo y femoral", ex: [...CP_WU, ["ARC-054", 4, "1×6–8 / 3×8–12", 1, 120], ["ARC-051", 3, "8–10", 2, 120], ["ARC-078", 2, "8–10 por pierna", 1, 90], ["ARC-049", 3, "10–12", 1, 75], ["ARC-067", 3, "10–12", 1, 45]] },
+    ],
+    tips: ["En la sentadilla, baja en 2-3 segundos y sube con fuerza. El cuádriceps crece con el control, no con el rebote.", "El hip thrust es tu ejercicio estrella: aguanta 1 segundo arriba apretando el glúteo en cada repetición.", "Haz los abdominales siempre, aunque vayas con prisa. Son 3 minutos."],
+    food: "Para que crezca la pierna hay que comer: carbohidrato antes de entrenar (pan, arroz, fruta) y proteína después.",
+    mind: "Ochaco entrena para ayudar a su familia. Ten tu motivo claro: el día que no haya ganas, te va a sacar de casa." },
+
+  { key: "nami", who: "Nami", b: "female", tag: "Cintura y glúteo", level: "Principiante", weeks: 8,
+    physique: "Cintura estrecha, glúteo marcado y hombros que hacen que la cintura parezca aún más fina. El físico de reloj de arena por excelencia.",
+    why: "Tres días para el efecto reloj de arena de verdad: mucho glúteo y hombro lateral, espalda para la postura y core sin cargar la cintura de oblicuos pesados.",
+    focus: ["Glúteo", "Hombro", "Espalda"],
+    days: [
+      { n: "Glúteo", ex: [...CP_WU, ["ARC-054", 4, "1×6–8 / 3×8–12", 1, 120], ["ARC-072", 3, "8–10", 2, 120], ["ARC-078", 2, "8–10 por pierna", 1, 90], ["ARC-X03", 3, "12–15 por pierna", 0, 60]] },
+      { n: "Hombro y espalda", ex: [["ARC-022", 3, "1×6–8 / 2×8–10", 2, 120], ["ARC-098", 3, "8–12", 1, 120], ["ARC-026", 4, "12–15", 1, 75], ["ARC-013", 3, "10–12", 1, 90], ["ARC-019", 3, "12–15", 0, 60], ["ARC-105", 3, "30–40 s", 1, 45]] },
+      { n: "Pierna y glúteo", ex: [...CP_WU, ["ARC-099", 3, "8–12", 1, 120], ["ARC-055", 3, "10–12 por pierna", 1, 75], ["ARC-049", 3, "10–12", 1, 75], ["ARC-027", 3, "12–15 por brazo", 0, 60], ["ARC-067", 3, "10–12", 1, 45]] },
+    ],
+    tips: ["El hombro lateral es lo que más afina la cintura a la vista: haz las elevaciones lentas y sin balancearte.", "No hace falta matar los oblicuos para tener cintura. La plancha y las elevaciones de piernas bastan.", "En el peso muerto rumano piensa en llevar la cadera hacia atrás, no en bajar la barra."],
+    food: "Comer bien no es comer poco: si quieres glúteo, necesitas comida suficiente y proteína alta todos los días.",
+    mind: "Nami pasó años ahorrando sola para comprar su pueblo. Esto es igual: poco a poco y sin parar." },
+
+  { key: "talia", who: "Talia Yang", b: "female", tag: "Cuerpo de mercenaria", level: "Principiante", weeks: 8,
+    physique: "Atlética y funcional: espalda fuerte, piernas que corren y empujan, y un core que aguanta lo que le echen.",
+    why: "Torso y pierna repartidos en tres días, con básicos y algo de cardio. Para estar fuerte y en forma para todo, no solo para la foto.",
+    focus: ["Espalda", "Pierna", "Cardio"],
+    days: [
+      { n: "Torso", ex: [["ARC-098", 4, "1×6–8 / 3×8–10", 2, 120], ["ARC-002", 3, "8–12", 2, 120], ["ARC-015", 3, "10–12 por brazo", 1, 90], ["ARC-022", 3, "8–12", 1, 90], ["ARC-020", 2, "12–15 (superserie con el siguiente)", 1, 30], ["ARC-102", 2, "10–12", 1, 75]] },
+      { n: "Pierna", ex: [...CP_WU, ["ARC-042", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-051", 3, "8–10", 2, 120], ["ARC-078", 2, "8–10 por pierna", 1, 90], ["ARC-091", 3, "12–15", 1, 60]] },
+      { n: "Cuerpo entero y cardio", ex: [["ARC-054", 3, "8–12", 1, 120], ["ARC-009", 3, "8–12", 1, 90], ["ARC-001", 3, "máx.", 1, 75], ["ARC-083", 3, "30 s", 1, 45], ["ARC-CARDIO", 1, "20", 0, 60]] },
+    ],
+    tips: ["Si aún no haces flexiones completas, empieza con las de rodillas y cambia a las normales cuando hagas 12 seguidas.", "El cardio del tercer día, a un ritmo en el que puedas hablar con frases cortas.", "Junta el face pull y el curl sin descanso: ahorras tiempo y la espalda alta lo agradece."],
+    food: "Come algo con carbohidrato antes de entrenar si vas con el estómago vacío; vas a rendir el doble.",
+    mind: "Ser fuerte para la vida real: cargar la compra, subir escaleras, aguantar un día largo. Eso también es progreso." },
+
+  { key: "nobara", who: "Nobara Kugisaki", b: "female", tag: "Martillazo de Nobara", level: "Intermedio", weeks: 8,
+    physique: "Hombros y brazos fuertes de tanto dar martillazos, espalda que aguanta y piernas firmes. Fuerte sin dejar de ser ella misma.",
+    why: "Cuatro días en torso y pierna con un extra de hombro y brazo, que es lo que más se le nota. Para quien ya sabe entrenar y quiere darle forma al tren superior.",
+    focus: ["Hombro", "Brazos", "Espalda"],
+    days: [
+      { n: "Torso A", ex: [["ARC-022", 4, "1×6–8 / 3×8–10", 2, 120], ["ARC-098", 3, "8–12", 1, 120], ["ARC-101", 3, "8–12", 1, 90], ["ARC-026", 3, "12–15", 1, 75], ["ARC-096", 2, "10–12 (superserie con el siguiente)", 1, 30], ["ARC-102", 2, "10–12", 1, 75]] },
+      { n: "Pierna A", ex: [...CP_WU, ["ARC-042", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-099", 3, "8–12", 1, 120], ["ARC-050", 3, "10–12", 1, 75], ["ARC-041", 2, "12–15", 0, 60]] },
+      { n: "Torso B", ex: [["ARC-023", 3, "8–10", 2, 120], ["ARC-013", 3, "8–12", 1, 120], ["ARC-011", 2, "10–12 por brazo", 1, 75], ["ARC-027", 3, "12–15 por brazo", 0, 60], ["ARC-109", 3, "10–12", 1, 60], ["ARC-112", 3, "10–12", 1, 60], ["ARC-077", 3, "30 s", 1, 45]] },
+      { n: "Pierna B", ex: [...CP_WU, ["ARC-054", 4, "1×6–8 / 3×8–12", 1, 120], ["ARC-072", 3, "8–10", 2, 120], ["ARC-X01", 2, "8–12 por pierna", 1, 90], ["ARC-049", 3, "10–12", 1, 75]] },
+    ],
+    tips: ["El hombro crece con volumen: no te saltes las elevaciones aunque vayas con prisa.", "En los brazos, baja siempre en 2-3 segundos. La parte de bajada es la que más construye.", "Si un día no puedes ir 4 veces, junta Torso A y Pierna B en un solo día con la mitad de series."],
+    food: "Proteína repartida en 3-4 tomas y una pieza de fruta antes de entrenar.",
+    mind: "Nobara se fue de su pueblo porque no quería ser como los demás esperaban. Entrena para ti, no para lo que digan." },
+
+  { key: "lucy", who: "Lucy", b: "female", tag: "Piernas de netrunner", level: "Intermedio", weeks: 8,
+    physique: "Esbelta, piernas largas y definidas, glúteo firme y un core que la mantiene estable mientras salta de un edificio a otro.",
+    why: "Tres días muy de pierna y glúteo, con torso suficiente para no descompensar y un core de verdad. Para un físico estilizado y fuerte.",
+    focus: ["Glúteo", "Pierna", "Core"],
+    days: [
+      { n: "Pierna y glúteo", ex: [...CP_WU, ["ARC-075", 4, "1×6–8 / 3×8–10", 2, 150], ["ARC-054", 3, "8–12", 1, 120], ["ARC-078", 2, "8–10 por pierna", 1, 90], ["ARC-041", 3, "12–15", 0, 60], ["ARC-079", 3, "8–10", 1, 60]] },
+      { n: "Torso", ex: [["ARC-009", 3, "1×6–8 / 2×8–10", 2, 120], ["ARC-101", 3, "8–12", 1, 120], ["ARC-014", 3, "8–12", 1, 90], ["ARC-026", 3, "12–15", 1, 75], ["ARC-020", 2, "12–15", 1, 60], ["ARC-105", 3, "30–45 s", 1, 45]] },
+      { n: "Glúteo y femoral", ex: [...CP_WU, ["ARC-054", 4, "1×6–8 / 3×8–12", 1, 120], ["ARC-X02", 3, "8–10", 2, 120], ["ARC-049", 3, "10–12", 1, 75], ["ARC-X03", 3, "12–15 por pierna", 0, 60], ["ARC-067", 3, "10–12", 1, 45]] },
+    ],
+    tips: ["En la sentadilla hack, pies un poco adelantados si quieres más glúteo; centrados si quieres más cuádriceps.", "La rueda abdominal es dura: empieza de rodillas y con poco recorrido.", "Dos días seguidos de pierna no: deja el torso en medio."],
+    food: "Si buscas definir, el truco es mantener la proteína alta y bajar un poco las cantidades, no quitar comidas.",
+    mind: "Lucy soñaba con la Luna. Ten un objetivo grande, pero entrena para el de esta semana." },
+
+  { key: "annie", who: "Annie Leonhart", b: "female", tag: "La patada de Annie", level: "Intermedio", weeks: 8,
+    physique: "Glúteo y femoral que tumban titanes, cuádriceps fuertes y un torso compacto. Toda su fuerza sale de la cadera.",
+    why: "Cuatro días con dos de pierna muy completos (uno de cadera y otro de cuádriceps) y dos de torso. Para quien quiere tren inferior potente de verdad.",
+    focus: ["Glúteo", "Femoral", "Cuádriceps"],
+    days: [
+      { n: "Cadera", ex: [...CP_WU, ["ARC-054", 4, "1×5–8 / 3×6–10", 1, 150], ["ARC-072", 3, "6–10", 2, 150], ["ARC-050", 3, "10–12", 1, 75], ["ARC-X03", 3, "12–15 por pierna", 0, 60]] },
+      { n: "Torso A", ex: [["ARC-098", 3, "1×6–8 / 2×8–10", 2, 120], ["ARC-002", 3, "8–12", 1, 120], ["ARC-015", 3, "10–12 por brazo", 1, 90], ["ARC-026", 3, "12–15", 1, 75], ["ARC-104", 3, "12–15", 1, 45]] },
+      { n: "Cuádriceps", ex: [...CP_WU, ["ARC-042", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-076", 3, "8–12", 1, 120], ["ARC-078", 2, "8–10 por pierna", 1, 90], ["ARC-041", 3, "12–15", 0, 60], ["ARC-091", 3, "12–15", 1, 45]] },
+      { n: "Torso B", ex: [["ARC-022", 3, "8–10", 2, 120], ["ARC-013", 3, "8–12", 1, 120], ["ARC-011", 2, "10–12 por brazo", 1, 75], ["ARC-019", 3, "12–15", 0, 60], ["ARC-102", 2, "10–12", 1, 60], ["ARC-077", 3, "30 s", 1, 45]] },
+    ],
+    tips: ["En el peso muerto rumano, barra pegada a las piernas y espalda neutra. Baja hasta notar el femoral, no hasta el suelo.", "El hip thrust con la serie top: una serie pesada de 5-8 y luego tres algo más ligeras. Así subes fuerza y volumen a la vez.", "Gemelo al final del día de cuádriceps: sube rápido y baja en 3 segundos."],
+    food: "Las piernas grandes gastan mucho. Los días de pierna, ración extra de arroz, pasta o patata.",
+    mind: "Annie entrenó desde niña aunque no quisiera. Tú sí eliges estar aquí: aprovéchalo." },
+
+  { key: "mitsuri", who: "Mitsuri Kanroji", b: "female", tag: "Fuerza de Mitsuri", level: "Intermedio", weeks: 8,
+    physique: "Una densidad muscular ocho veces mayor de lo normal: piernas muy fuertes, core sólido y una flexibilidad que le permite mover un látigo-espada como si nada.",
+    why: "Cuatro días de fuerza sin miedo a cargar, con pierna dos veces por semana y un torso completo. Para quien quiere sentirse fuerte, no solo verse bien.",
+    focus: ["Pierna", "Glúteo", "Core"],
+    days: [
+      { n: "Pierna fuerte", ex: [...CP_WU, ["ARC-042", 4, "1×4–6 / 3×6–8", 2, 180], ["ARC-099", 3, "8–12", 1, 120], ["ARC-050", 3, "10–12", 1, 75], ["ARC-041", 2, "12–15", 0, 60]] },
+      { n: "Torso", ex: [["ARC-X04", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-098", 3, "8–12", 1, 120], ["ARC-023", 3, "8–10", 1, 90], ["ARC-013", 3, "10–12", 1, 90], ["ARC-026", 3, "12–15", 0, 60]] },
+      { n: "Glúteo y cadera", ex: [...CP_WU, ["ARC-054", 4, "1×5–8 / 3×6–10", 1, 150], ["ARC-051", 3, "8–10", 2, 120], ["ARC-X01", 2, "8–12 por pierna", 1, 90], ["ARC-055", 2, "10–12 por pierna", 0, 60]] },
+      { n: "Core y brazos", ex: [["ARC-009", 3, "8–12", 1, 90], ["ARC-022", 3, "8–12", 1, 90], ["ARC-102", 3, "10–12 (superserie con el siguiente)", 1, 30], ["ARC-096", 3, "10–12", 1, 60], ["ARC-079", 3, "8–10", 1, 60], ["ARC-067", 3, "10–12", 1, 45], ["ARC-M08", 1, "60 s", 0, 30]] },
+    ],
+    tips: ["El día de pierna fuerte, las repeticiones son bajas a propósito: elige un peso que te cueste de verdad.", "Termina el último día con la cadera 90/90: la movilidad también es fuerza.", "Si un ejercicio te molesta en las rodillas, cámbialo por otro de la misma zona desde el menú de los tres puntos."],
+    food: "Mitsuri come muchísimo y no se esconde. Para ganar fuerza hay que comer suficiente, sin culpa.",
+    mind: "La rechazaban por ser demasiado fuerte. Lo que a otros les parece raro de ti puede ser tu superpoder." },
+
+  { key: "mirko", who: "Mirko", b: "female", tag: "Piernas de conejo", level: "Avanzado", weeks: 8,
+    physique: "Piernas explosivas, gemelos de acero, glúteo muy desarrollado y abdominales marcados. Pelea solo a patadas.",
+    why: "Cuatro días con la pierna tres veces desde ángulos distintos y un torso eficaz. Para quien ya lleva tiempo y quiere llevar la pierna al siguiente nivel.",
+    focus: ["Cuádriceps", "Glúteo", "Gemelo"],
+    days: [
+      { n: "Cuádriceps", ex: [...CP_WU, ["ARC-075", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-099", 3, "8–12", 1, 120], ["ARC-078", 2, "8–10 por pierna", 1, 90], ["ARC-041", 3, "12–15", 0, 60], ["ARC-091", 4, "10–15", 1, 45]] },
+      { n: "Torso", ex: [["ARC-098", 3, "1×6–8 / 2×8–10", 2, 120], ["ARC-101", 3, "8–12", 1, 120], ["ARC-013", 3, "8–12", 1, 90], ["ARC-022", 3, "8–12", 1, 90], ["ARC-026", 3, "12–15", 0, 60], ["ARC-079", 3, "8–10", 1, 60]] },
+      { n: "Glúteo y femoral", ex: [...CP_WU, ["ARC-054", 4, "1×5–8 / 3×6–10", 1, 150], ["ARC-072", 3, "6–10", 2, 150], ["ARC-049", 3, "10–12", 1, 75], ["ARC-X03", 3, "12–15 por pierna", 0, 60], ["ARC-100", 3, "12–15", 1, 45]] },
+      { n: "Pierna explosiva", ex: [["ARC-042", 3, "6–8", 2, 150], ["ARC-055", 3, "10–12 por pierna", 1, 75], ["ARC-076", 3, "10–12", 1, 90], ["ARC-091", 4, "10–15", 1, 45], ["ARC-083", 3, "30 s", 1, 45], ["ARC-067", 3, "10–12", 1, 45]] },
+    ],
+    tips: ["Gemelo cuatro series y lento: 2 segundos estirando abajo y 1 apretando arriba.", "En la sentadilla del último día, sube lo más rápido que puedas con técnica perfecta. Eso entrena la explosividad.", "Tres días de pierna cansan: si el femoral o la rodilla se quejan, quita el día de pierna explosiva esa semana."],
+    food: "Con tanta pierna vas a tener hambre. Carbohidrato alrededor del entreno y proteína en todas las comidas.",
+    mind: "Mirko perdió un brazo y una pierna y siguió peleando. Adapta el plan a tus días malos, pero no lo abandones." },
+
+  { key: "mikasa", who: "Mikasa Ackerman", b: "female", tag: "Fuerza Ackerman", level: "Avanzado", weeks: 8,
+    physique: "Espalda marcada, abdomen fuerte, hombros definidos y piernas preparadas para volar con el equipo de maniobras.",
+    why: "Cuatro días en torso y pierna con prioridad para espalda y core. Para lucir espalda y abdomen sin descuidar la pierna.",
+    focus: ["Espalda", "Abdomen", "Pierna"],
+    days: [
+      { n: "Espalda y core", ex: [["ARC-007", 4, "1×máx. / 3×6–10", 2, 150], ["ARC-016", 3, "6–10", 2, 120], ["ARC-011", 3, "10–12 por brazo", 1, 75], ["ARC-019", 3, "12–15", 0, 60], ["ARC-079", 3, "8–10", 1, 60], ["ARC-067", 3, "10–12", 1, 45]] },
+      { n: "Pierna A", ex: [...CP_WU, ["ARC-042", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-072", 3, "8–10", 2, 120], ["ARC-X01", 2, "8–12 por pierna", 1, 90], ["ARC-041", 3, "12–15", 0, 60]] },
+      { n: "Hombro y brazos", ex: [["ARC-022", 4, "1×6–8 / 3×8–10", 2, 120], ["ARC-101", 3, "8–12", 1, 120], ["ARC-026", 4, "12–15", 1, 60], ["ARC-020", 3, "12–15", 1, 60], ["ARC-112", 3, "10–12 (superserie con el siguiente)", 1, 30], ["ARC-109", 3, "10–12", 1, 60], ["ARC-104", 3, "12–15", 1, 45]] },
+      { n: "Pierna B", ex: [...CP_WU, ["ARC-054", 4, "1×6–8 / 3×8–12", 1, 120], ["ARC-099", 3, "8–12", 1, 120], ["ARC-049", 3, "10–12", 1, 75], ["ARC-105", 3, "45–60 s", 1, 45]] },
+    ],
+    tips: ["Si no llegas a 6 dominadas, cámbialas por la dominada con banda o por jalón al pecho hasta que llegues.", "En el remo con barra, el torso inclinado y quieto: si te balanceas, baja el peso.", "Los abdominales se marcan con músculo y con poca grasa. Entrénalos tres días y el resto lo hace la dieta."],
+    food: "Para que se vea el abdomen hace falta un poco de déficit. Bájalo despacio y con la proteína siempre alta.",
+    mind: "Mikasa tiene un motivo claro para todo lo que hace. Escribe el tuyo y míralo antes de entrenar." },
+
+  { key: "yuki", who: "Yuki Tsukumo", b: "female", tag: "Masa de Yuki", level: "Avanzado", weeks: 8,
+    physique: "Grande, fuerte y segura: piernas potentes, glúteo enorme, espalda ancha y una fuerza que convierte su masa en un ataque.",
+    why: "Cuatro días de fuerza con básicos pesados y volumen detrás. Para quien quiere ganar músculo y fuerza de verdad, sin miedo a la báscula.",
+    focus: ["Pierna", "Glúteo", "Espalda"],
+    days: [
+      { n: "Pierna pesada", ex: [...CP_WU, ["ARC-042", 5, "1×3–5 / 4×5–8", 2, 180], ["ARC-099", 3, "8–12", 1, 120], ["ARC-050", 3, "10–12", 1, 75], ["ARC-091", 3, "10–15", 1, 45]] },
+      { n: "Empuje", ex: [["ARC-X04", 4, "1×4–6 / 3×6–8", 2, 180], ["ARC-022", 3, "8–10", 2, 120], ["ARC-101", 3, "8–12", 1, 90], ["ARC-026", 3, "12–15", 0, 60], ["ARC-096", 3, "10–12", 1, 60]] },
+      { n: "Cadera pesada", ex: [...CP_WU, ["ARC-021", 4, "1×3–5 / 3×5–6", 2, 180], ["ARC-054", 4, "6–10", 1, 120], ["ARC-078", 2, "8–10 por pierna", 1, 90], ["ARC-049", 3, "10–12", 0, 60]] },
+      { n: "Tirón", ex: [["ARC-007", 4, "1×máx. / 3×6–8", 2, 150], ["ARC-016", 3, "6–10", 2, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-020", 3, "12–15", 1, 60], ["ARC-102", 3, "10–12", 1, 60], ["ARC-079", 3, "8–10", 1, 60]] },
+    ],
+    tips: ["En las series top, descansa hasta 3 minutos. Con fuerza, el descanso es parte del entreno.", "El peso muerto el día de cadera, sin prisa: cada repetición la empiezas desde cero, con la barra quieta en el suelo.", "Si la técnica se rompe en la última repetición, esa no cuenta. Mejor 4 buenas que 6 feas."],
+    food: "Para ganar masa necesitas comer por encima de lo que gastas. Si la báscula no se mueve en tres semanas, añade un poco más.",
+    mind: "Yuki no pide perdón por ocupar espacio. Tú tampoco tienes que hacerlo." },
+
+  { key: "maki", who: "Maki Zenin", b: "female", tag: "Espalda y glúteo de acero", level: "Avanzado", weeks: 8,
+    physique: "Espalda fuerte y marcada, glúteo y cadera explosivos, core de acero. Maneja armas enormes sin energía maldita: todo es entreno.",
+    why: "Cinco días para el físico más buscado del gym: espalda y glúteo dos veces por semana, hombro y brazos con su día propio y core en todos. El programa más duro de ARC.",
+    focus: ["Espalda", "Glúteo", "Core"],
+    days: [
+      { n: "Espalda", ex: [["ARC-007", 4, "1×máx. / 3×6–10", 2, 150], ["ARC-016", 3, "6–10", 2, 120], ["ARC-009", 3, "8–12", 1, 90], ["ARC-015", 3, "10–12 por brazo", 1, 75], ["ARC-019", 3, "12–15", 0, 60], ["ARC-077", 3, "45 s", 1, 45]] },
+      { n: "Glúteo", ex: [...CP_WU, ["ARC-054", 4, "1×5–8 / 3×6–10", 1, 150], ["ARC-021", 3, "5", 2, 180], ["ARC-078", 2, "8–10 por pierna", 1, 90], ["ARC-X03", 3, "12–15 por pierna", 0, 60]] },
+      { n: "Hombro y brazos", ex: [["ARC-022", 4, "1×6–8 / 3×8–10", 2, 120], ["ARC-026", 4, "12–15", 1, 60], ["ARC-020", 3, "12–15", 1, 60], ["ARC-102", 3, "10–12 (superserie con el siguiente)", 1, 30], ["ARC-109", 3, "10–12", 1, 60], ["ARC-115", 3, "12–15", 1, 45], ["ARC-079", 3, "8–10", 1, 60]] },
+      { n: "Pierna", ex: [...CP_WU, ["ARC-042", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-072", 3, "8–10", 2, 120], ["ARC-041", 3, "12–15", 0, 60], ["ARC-049", 3, "10–12", 1, 60]] },
+      { n: "Espalda y glúteo", ex: [["ARC-098", 3, "8–12", 1, 90], ["ARC-013", 3, "8–12", 1, 90], ["ARC-055", 3, "10–12 por pierna", 1, 75], ["ARC-X02", 3, "8–10", 1, 90], ["ARC-067", 3, "10–12", 1, 45], ["ARC-105", 3, "45–60 s", 1, 45]] },
+    ],
+    tips: ["Cinco días es mucho: si una semana solo puedes cuatro, quita el de hombro y brazos.", "En el peso muerto, 3 series de 5 bien hechas valen más que cualquier otra cosa del día.", "Las dominadas, con el pecho hacia la barra y bajando del todo. Si aún no te salen, usa la banda."],
+    food: "Con cinco días de entreno, no hagas déficits agresivos. Come bien los días duros y ajusta en los de descanso.",
+    mind: "A Maki la trataban como si no valiera nada. Entrenó hasta que nadie pudo decirlo. No necesitas que crean en ti para empezar." },
+
+  // ===================== CHICOS =====================
+  { key: "reigen", who: "Reigen Arataka", b: "male", tag: "Cero poderes", level: "Principiante", weeks: 8,
+    physique: "Cero poderes, cero músculo y mucha labia. Es el punto de partida más honesto que hay: empezar sin nada.",
+    why: "Tres días de cuerpo entero en máquinas para quien nunca ha entrenado. Pocos ejercicios, bien hechos, y la base de todo lo que viene después.",
+    focus: ["Cuerpo entero", "Técnica"],
+    days: [
+      { n: "Cuerpo entero A", ex: [["ARC-099", 3, "10–12", 3, 120], ["ARC-004", 3, "10–12", 3, 90], ["ARC-098", 3, "10–12", 2, 90], ["ARC-050", 2, "12–15", 2, 75], ["ARC-081", 3, "12–15", 1, 45]] },
+      { n: "Cuerpo entero B", ex: [["ARC-043", 3, "10–12", 3, 120], ["ARC-013", 3, "10–12", 2, 90], ["ARC-023", 3, "10–12", 2, 90], ["ARC-029", 2, "12–15", 1, 60], ["ARC-096", 2, "12–15", 1, 60], ["ARC-105", 3, "20–30 s", 1, 45]] },
+      { n: "Cuerpo entero C", ex: [["ARC-090", 3, "10–12", 2, 120], ["ARC-011", 3, "10–12 por brazo", 2, 75], ["ARC-085", 3, "8–12", 2, 75], ["ARC-041", 2, "12–15", 1, 60], ["ARC-CARDIO", 1, "15", 0, 60]] },
+    ],
+    tips: ["Las dos primeras semanas, pesos con los que te sobren 3 repeticiones. Nadie te mira, de verdad.", "Apunta todo en la app. Ganarle a tu yo de la semana pasada es el único reto que importa.", "Si un ejercicio no sabes hacerlo, toca su nombre y mira el vídeo antes de empezar."],
+    food: "Proteína en cada comida y deja de saltarte el desayuno si luego llegas muerto de hambre a la noche.",
+    mind: "Reigen no tiene poderes y aun así es el que manda. La constancia es tu superpoder." },
+
+  { key: "denji", who: "Denji", b: "male", tag: "De pan duro a cazador", level: "Principiante", weeks: 8,
+    physique: "Delgado, fibroso y con más ganas que técnica. Empezó comiendo pan duro y ahora pelea con motosierras.",
+    why: "Tres días de torso, pierna y cuerpo entero para pasar de cero a tener una base de verdad. Básicos sencillos y progresión clara.",
+    focus: ["Cuerpo entero", "Pecho", "Pierna"],
+    days: [
+      { n: "Torso", ex: [["ARC-004", 4, "1×6–8 / 3×8–10", 2, 120], ["ARC-098", 3, "8–12", 2, 120], ["ARC-023", 3, "8–12", 1, 90], ["ARC-013", 3, "10–12", 1, 90], ["ARC-102", 2, "10–12 (superserie con el siguiente)", 1, 30], ["ARC-096", 2, "10–12", 1, 60]] },
+      { n: "Pierna", ex: [["ARC-042", 4, "1×6–8 / 3×8–10", 2, 150], ["ARC-099", 3, "10–12", 1, 120], ["ARC-050", 3, "10–12", 1, 75], ["ARC-091", 3, "12–15", 1, 45], ["ARC-081", 3, "15", 1, 45]] },
+      { n: "Cuerpo entero", ex: [["ARC-002", 3, "8–12", 2, 120], ["ARC-015", 3, "10–12 por brazo", 1, 90], ["ARC-054", 3, "10–12", 1, 90], ["ARC-026", 3, "12–15", 1, 60], ["ARC-001", 2, "máx.", 1, 60], ["ARC-CARDIO", 1, "15", 0, 60]] },
+    ],
+    tips: ["Si estás muy delgado, no hagas mucho cardio: con 15 minutos al final de un día basta.", "Sube peso cuando hagas todas las series arriba del rango. Si no, sube una repetición.", "Duerme. Crecer pasa mientras descansas, no mientras entrenas."],
+    food: "Denji sueña con comer pan con mermelada. Tú sueña con comer suficiente: tres comidas grandes y un batido si no llegas.",
+    mind: "Sus sueños eran pequeños y aun así le movían. No hace falta un objetivo épico, hace falta uno tuyo." },
+
+  { key: "kirishima", who: "Eijiro Kirishima", b: "male", tag: "Duro como una roca", level: "Intermedio", weeks: 8,
+    physique: "Pecho y hombros grandes, abdomen marcado y un torso que endurece como una roca. Su quirk no era vistoso, pero lo convirtió en muro.",
+    why: "Cuatro días en torso y pierna con más volumen de pecho, hombro y abdomen. Para tener un torso grande y fuerte.",
+    focus: ["Pecho", "Hombro", "Abdomen"],
+    days: [
+      { n: "Torso A", ex: [["ARC-X04", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-098", 3, "8–12", 1, 120], ["ARC-101", 3, "8–12", 1, 90], ["ARC-026", 3, "12–15", 1, 60], ["ARC-096", 3, "10–12", 1, 60], ["ARC-079", 3, "8–10", 1, 60]] },
+      { n: "Pierna A", ex: [["ARC-042", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-072", 3, "8–10", 2, 120], ["ARC-099", 3, "10–12", 1, 90], ["ARC-091", 3, "12–15", 1, 45]] },
+      { n: "Torso B", ex: [["ARC-022", 4, "1×6–8 / 3×8–10", 2, 120], ["ARC-016", 3, "6–10", 2, 120], ["ARC-004", 3, "8–12", 1, 90], ["ARC-027", 3, "12–15 por brazo", 0, 60], ["ARC-102", 3, "10–12 (superserie con el siguiente)", 1, 30], ["ARC-109", 3, "10–12", 1, 60], ["ARC-104", 3, "12–15", 1, 45]] },
+      { n: "Pierna B", ex: [["ARC-075", 4, "1×6–8 / 3×8–10", 2, 150], ["ARC-054", 3, "8–12", 1, 120], ["ARC-049", 3, "10–12", 1, 75], ["ARC-041", 2, "12–15", 0, 60], ["ARC-067", 3, "10–12", 1, 45]] },
+    ],
+    tips: ["En el press banca, escápulas juntas y pies firmes en el suelo. Toca el pecho sin rebotar.", "Abdomen tres días por semana: rueda, crunch en polea y elevaciones. Con eso es suficiente.", "El hombro lateral es lo que hace el torso ancho: no te lo saltes."],
+    food: "Para un torso grande hay que comer: proteína alta y un pequeño superávit, sin pasarte para no tapar el abdomen.",
+    mind: "Kirishima pensaba que su quirk era aburrido. Lo entrenó hasta que nadie podía romperlo. Lo básico, bien hecho, gana." },
+
+  { key: "david", who: "David Martinez", b: "male", tag: "Chaval de Santo Domingo", level: "Intermedio", weeks: 8,
+    physique: "Atlético y fibroso, espalda en V, piernas rápidas y un cuerpo hecho para aguantar al límite.",
+    why: "Tres días de torso, pierna y cuerpo entero con cardio, para un físico atlético y en forma. Rendir y verse bien a la vez.",
+    focus: ["Espalda", "Pierna", "Cardio"],
+    days: [
+      { n: "Torso", ex: [["ARC-007", 4, "1×máx. / 3×6–10", 2, 150], ["ARC-002", 3, "8–12", 1, 120], ["ARC-016", 3, "6–10", 2, 120], ["ARC-022", 3, "8–12", 1, 90], ["ARC-026", 3, "12–15", 0, 60], ["ARC-102", 2, "10–12", 1, 60]] },
+      { n: "Pierna", ex: [["ARC-042", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-051", 3, "8–10", 2, 120], ["ARC-078", 2, "8–10 por pierna", 1, 90], ["ARC-091", 3, "12–15", 1, 45], ["ARC-079", 3, "8–10", 1, 60]] },
+      { n: "Cuerpo entero y cardio", ex: [["ARC-101", 3, "8–12", 1, 90], ["ARC-011", 3, "10–12 por brazo", 1, 75], ["ARC-054", 3, "8–12", 1, 90], ["ARC-020", 3, "12–15", 1, 60], ["ARC-083", 3, "30 s", 1, 45], ["ARC-CARDIO", 1, "20", 0, 60]] },
+    ],
+    tips: ["Si no llegas a 6 dominadas, empieza con la banda elástica.", "El cardio, a ritmo medio: que puedas hablar con frases cortas.", "Tres días bien hechos dan para mucho. Si quieres un cuarto, repite el de cuerpo entero."],
+    food: "Come algo con carbohidrato 1-2 horas antes: con el depósito vacío no se rinde.",
+    mind: "David fue más allá de su límite y le salió caro. Exígete, pero escucha a tu cuerpo: descansar también es entrenar." },
+
+  { key: "ippo", who: "Ippo Makunouchi", b: "male", tag: "Puños de Ippo", level: "Intermedio", weeks: 8,
+    physique: "Hombros y espalda enormes para un peso pluma, piernas que lo sostienen en el Dempsey Roll y un fondo que no se acaba.",
+    why: "Cuatro días con hombro, espalda y pierna como base, y cardio de boxeador. Para un cuerpo potente y con fondo.",
+    focus: ["Hombro", "Espalda", "Cardio"],
+    days: [
+      { n: "Hombro y espalda", ex: [["ARC-022", 4, "1×6–8 / 3×8–10", 2, 120], ["ARC-007", 3, "máx.", 1, 120], ["ARC-016", 3, "8–10", 2, 120], ["ARC-026", 3, "12–15", 1, 60], ["ARC-020", 3, "12–15", 1, 60], ["ARC-083", 3, "30 s", 1, 45]] },
+      { n: "Pierna", ex: [["ARC-042", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-078", 3, "8–10 por pierna", 1, 90], ["ARC-050", 3, "10–12", 1, 75], ["ARC-091", 4, "12–15", 1, 45], ["ARC-079", 3, "8–10", 1, 60]] },
+      { n: "Pecho y brazos", ex: [["ARC-X04", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-101", 3, "8–12", 1, 90], ["ARC-001", 3, "máx.", 1, 60], ["ARC-112", 3, "10–12 (superserie con el siguiente)", 1, 30], ["ARC-096", 3, "10–12", 1, 60], ["ARC-115", 2, "12–15", 1, 45]] },
+      { n: "Fondo de boxeador", ex: [["ARC-015", 3, "10–12 por brazo", 1, 75], ["ARC-023", 3, "10–12", 1, 75], ["ARC-055", 3, "10–12 por pierna", 1, 60], ["ARC-083", 4, "30 s", 1, 30], ["ARC-CARDIO", 1, "20", 0, 60]] },
+    ],
+    tips: ["El curl inverso del día de brazos es para el antebrazo: los boxeadores lo tienen enorme por algo.", "En el último día, cardio a intervalos si puedes: 1 minuto fuerte y 1 suave.", "Ippo ganó por entrenar lo básico mil veces. No cambies de rutina cada semana."],
+    food: "Mucho entreno y mucho cardio: no recortes el carbohidrato o te quedarás sin gasolina.",
+    mind: "Le pegaban en el instituto. Empezó a boxear para saber qué se siente al ser fuerte. Entrena por esa sensación." },
+
+  { key: "thorfinn", who: "Thorfinn", b: "male", tag: "Guerrero sin enemigos", level: "Intermedio", weeks: 8,
+    physique: "Compacto y ágil, espalda fuerte, antebrazos de guerrero y un core que aguanta cualquier golpe.",
+    why: "Cuatro días en torso y pierna con espalda, agarre y core reforzados. Fuerza útil, de las que se notan en la vida real.",
+    focus: ["Espalda", "Antebrazo", "Core"],
+    days: [
+      { n: "Tirón", ex: [["ARC-021", 4, "1×3–5 / 3×5–6", 2, 180], ["ARC-007", 3, "máx.", 1, 120], ["ARC-016", 3, "8–10", 2, 120], ["ARC-020", 3, "12–15", 1, 60], ["ARC-115", 3, "12–15 (superserie con el siguiente)", 1, 30], ["ARC-114", 3, "15–20", 1, 45]] },
+      { n: "Pierna", ex: [["ARC-042", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-078", 3, "8–10 por pierna", 1, 90], ["ARC-049", 3, "10–12", 1, 75], ["ARC-091", 3, "12–15", 1, 45], ["ARC-079", 3, "8–10", 1, 60]] },
+      { n: "Empuje", ex: [["ARC-X04", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-022", 3, "8–10", 1, 120], ["ARC-006", 3, "máx.", 1, 90], ["ARC-026", 3, "12–15", 0, 60], ["ARC-096", 3, "10–12", 1, 60], ["ARC-077", 3, "45 s", 1, 45]] },
+      { n: "Cuerpo entero", ex: [["ARC-015", 3, "8–12 por brazo", 1, 90], ["ARC-054", 3, "8–12", 1, 90], ["ARC-101", 3, "8–12", 1, 90], ["ARC-072", 3, "8–10", 2, 120], ["ARC-112", 3, "10–12", 1, 60], ["ARC-067", 3, "10–12", 1, 45]] },
+    ],
+    tips: ["En el peso muerto, sin straps: el agarre es parte del programa.", "Fondos en paralelas con el torso un poco inclinado para pecho, recto para tríceps.", "Si te cuesta el día 4, quita el peso muerto rumano: ya hiciste el convencional."],
+    food: "Comida de verdad: carne, pescado, huevos, patata, arroz, fruta. Lo simple funciona.",
+    mind: "Thorfinn pasó de vivir para la venganza a vivir sin enemigos. Entrena para construir, no para castigarte." },
+
+  { key: "d", who: "D", b: "male", tag: "Netrunner en V", level: "Intermedio", weeks: 8,
+    physique: "Espalda en V, hombros marcados y cintura estrecha: un físico ligero y definido, de los que se mueven rápido.",
+    why: "Tres días con la espalda y el hombro como prioridad para la forma en V, sin olvidar la pierna. Estético y eficaz.",
+    focus: ["Espalda", "Hombro", "Brazos"],
+    days: [
+      { n: "Espalda y hombro", ex: [["ARC-009", 4, "1×6–8 / 3×8–10", 2, 120], ["ARC-022", 3, "8–10", 2, 120], ["ARC-014", 3, "8–12", 1, 90], ["ARC-026", 4, "12–15", 1, 60], ["ARC-019", 3, "12–15", 0, 60], ["ARC-104", 3, "12–15", 1, 45]] },
+      { n: "Pierna", ex: [["ARC-075", 4, "1×6–8 / 3×8–10", 2, 150], ["ARC-051", 3, "8–10", 2, 120], ["ARC-041", 3, "12–15", 0, 60], ["ARC-049", 3, "10–12", 1, 60], ["ARC-100", 3, "12–15", 1, 45]] },
+      { n: "Pecho, espalda y brazos", ex: [["ARC-116", 4, "1×6–8 / 3×8–10", 2, 120], ["ARC-011", 3, "10–12 por brazo", 1, 75], ["ARC-004", 3, "10–12", 1, 90], ["ARC-027", 3, "12–15 por brazo", 0, 60], ["ARC-102", 3, "10–12 (superserie con el siguiente)", 1, 30], ["ARC-109", 3, "10–12", 1, 60]] },
+    ],
+    tips: ["La V se hace con dorsal ancho y hombro lateral. Son los dos grupos que más series tienen aquí.", "En el jalón, primero baja los hombros y luego tira con los codos hacia el suelo.", "Cintura estrecha = poca grasa, no oblicuos gigantes. Abdomen sí, pero sin cargar los oblicuos."],
+    food: "Si buscas definir, baja un poco el carbohidrato los días de descanso y mantén la proteína.",
+    mind: "Un físico estético se construye con paciencia. Haz fotos cada mes: el espejo de cada día engaña." },
+
+  { key: "yuji", who: "Yuji Itadori", b: "male", tag: "Cuerpo de Itadori", level: "Avanzado", weeks: 8,
+    physique: "Explosivo y completo: piernas que corren 50 metros en 3 segundos, pecho y espalda fuertes y un cuerpo que no se cansa.",
+    why: "Cuatro días en torso y pierna con fuerza y algo de potencia. Para quien quiere ser rápido, fuerte y verse completo.",
+    focus: ["Pierna", "Pecho", "Espalda"],
+    days: [
+      { n: "Pierna potente", ex: [["ARC-042", 4, "1×3–5 / 3×5–8", 2, 180], ["ARC-099", 3, "8–12", 1, 120], ["ARC-078", 2, "8–10 por pierna", 1, 90], ["ARC-050", 3, "10–12", 1, 75], ["ARC-091", 3, "12–15", 1, 45]] },
+      { n: "Torso fuerte", ex: [["ARC-X04", 4, "1×4–6 / 3×6–8", 2, 180], ["ARC-007", 4, "1×máx. / 3×6–8", 2, 150], ["ARC-022", 3, "8–10", 1, 90], ["ARC-016", 3, "8–10", 1, 90], ["ARC-079", 3, "8–10", 1, 60]] },
+      { n: "Cadera", ex: [["ARC-021", 4, "1×3–5 / 3×5–6", 2, 180], ["ARC-054", 3, "8–12", 1, 120], ["ARC-076", 3, "8–12", 1, 90], ["ARC-049", 3, "10–12", 0, 60], ["ARC-083", 3, "30 s", 1, 45]] },
+      { n: "Torso volumen", ex: [["ARC-101", 3, "8–12", 1, 90], ["ARC-098", 3, "8–12", 1, 90], ["ARC-004", 3, "10–12", 1, 75], ["ARC-013", 3, "10–12", 1, 75], ["ARC-026", 3, "12–15", 0, 60], ["ARC-102", 3, "10–12 (superserie con el siguiente)", 1, 30], ["ARC-096", 3, "10–12", 1, 60]] },
+    ],
+    tips: ["En los días de fuerza, sube cada repetición lo más rápido que puedas con buena técnica. Eso es potencia.", "Separa los dos días pesados (pierna y cadera) al menos 48 horas.", "Si te ves muy cansado, el día 4 hazlo con 2 series por ejercicio."],
+    food: "Mucho volumen de entreno pide mucha comida: proteína alta y carbohidrato en todas las comidas los días de pierna.",
+    mind: "Yuji quiere ayudar a la gente y morir rodeado de los suyos. Entrena para estar bien para los que quieres." },
+
+  { key: "levi", who: "Levi Ackerman", b: "male", tag: "Core de Levi", level: "Avanzado", weeks: 8,
+    physique: "Compacto, cada músculo marcado, espalda y core de acero y un agarre que gira en el aire con el equipo de maniobras.",
+    why: "Cuatro días con espalda, core y agarre como prioridad y un físico muy definido. Calidad por encima de cantidad, como él.",
+    focus: ["Espalda", "Abdomen", "Agarre"],
+    days: [
+      { n: "Espalda y core", ex: [["ARC-007", 4, "1×máx. / 3×6–10", 2, 150], ["ARC-016", 3, "6–10", 2, 120], ["ARC-011", 3, "10–12 por brazo", 1, 75], ["ARC-019", 3, "12–15", 0, 60], ["ARC-079", 3, "8–10", 1, 60], ["ARC-067", 3, "10–12", 1, 45]] },
+      { n: "Pierna", ex: [["ARC-042", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-072", 3, "8–10", 2, 120], ["ARC-X01", 2, "8–12 por pierna", 1, 90], ["ARC-091", 3, "12–15", 1, 45], ["ARC-105", 3, "45–60 s", 1, 45]] },
+      { n: "Empuje", ex: [["ARC-X04", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-022", 3, "8–10", 1, 120], ["ARC-006", 3, "máx.", 1, 90], ["ARC-026", 3, "12–15", 0, 60], ["ARC-109", 3, "10–12", 1, 60], ["ARC-104", 3, "12–15", 1, 45]] },
+      { n: "Tirón y agarre", ex: [["ARC-088", 3, "máx.", 1, 120], ["ARC-013", 3, "8–12", 1, 90], ["ARC-020", 3, "12–15", 1, 60], ["ARC-112", 3, "10–12", 1, 60], ["ARC-114", 3, "15–20 (superserie con el siguiente)", 1, 30], ["ARC-115", 3, "12–15", 1, 60], ["ARC-077", 3, "45 s", 1, 45]] },
+    ],
+    tips: ["En las dominadas, controla la bajada en 3 segundos. Levi no tiene prisa y su espalda tampoco.", "El agarre se entrena: curl de muñeca y curl inverso cada semana.", "Limpieza de técnica ante todo: si una repetición sale fea, para la serie."],
+    food: "Para estar así de definido hay que tener poca grasa. Ve bajando despacio y sin dejar de comer proteína.",
+    mind: "Levi elige y asume las consecuencias. Decide hoy si vas a entrenar mañana y no lo vuelvas a negociar." },
+
+  { key: "zoro", who: "Roronoa Zoro", b: "male", tag: "Entreno de Zoro", level: "Avanzado", weeks: 8,
+    physique: "Hombros enormes, brazos y antebrazos que sujetan tres espadas, espalda y pecho grandes. Entrena con pesas de toneladas mientras se pierde.",
+    why: "Cuatro días con hombro y brazos priorizados y torso completo, sin olvidar la pierna. Para un tren superior imponente.",
+    focus: ["Hombro", "Brazos", "Espalda"],
+    days: [
+      { n: "Hombro y brazos", ex: [["ARC-022", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-023", 3, "8–12", 1, 90], ["ARC-026", 4, "12–15", 1, 60], ["ARC-102", 3, "8–12 (superserie con el siguiente)", 1, 30], ["ARC-096", 3, "10–12", 1, 60], ["ARC-115", 3, "12–15", 1, 45]] },
+      { n: "Pierna", ex: [["ARC-042", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-072", 3, "8–10", 2, 120], ["ARC-099", 3, "10–12", 1, 90], ["ARC-091", 3, "12–15", 1, 45], ["ARC-079", 3, "8–10", 1, 60]] },
+      { n: "Pecho y espalda", ex: [["ARC-X04", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-007", 4, "máx.", 2, 120], ["ARC-101", 3, "8–12", 1, 90], ["ARC-016", 3, "8–10", 1, 90], ["ARC-019", 3, "12–15", 0, 60]] },
+      { n: "Brazos y agarre", ex: [["ARC-006", 3, "máx.", 1, 90], ["ARC-027", 3, "12–15 por brazo", 0, 60], ["ARC-112", 3, "10–12", 1, 60], ["ARC-109", 3, "10–12", 1, 60], ["ARC-114", 3, "15–20", 1, 45], ["ARC-020", 3, "12–15", 1, 45], ["ARC-104", 3, "12–15", 1, 45]] },
+    ],
+    tips: ["El brazo crece con constancia, no con ego: baja en 2-3 segundos y sin balanceos.", "Dos días de brazos en la semana: si los codos se quejan, quita el curl de muñeca.", "Zoro entrena mucho, pero también duerme mucho. Tú también."],
+    food: "Para brazos grandes, cuerpo grande: no se puede crecer brazo comiendo poco.",
+    mind: "Zoro prometió ser el mejor espadachín del mundo y no se desvía. Elige un objetivo y no cambies de plan cada semana." },
+
+  { key: "jinwoo", who: "Sung Jinwoo", b: "male", tag: "Daily quest de Jinwoo", level: "Avanzado", weeks: 8,
+    physique: "Pasó de ser el cazador más débil a uno de los más fuertes: cuerpo completo, abdomen marcado, piernas fuertes y un fondo infinito.",
+    why: "Cuatro días de fuerza con el daily quest de flexiones, abdominales, sentadillas y cardio como final de cada sesión. Subir de nivel de verdad.",
+    focus: ["Pecho", "Abdomen", "Pierna", "Cardio"],
+    days: [
+      { n: "Pecho y abdomen", ex: [["ARC-X04", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-101", 3, "8–12", 1, 90], ["ARC-022", 3, "8–10", 1, 90], ["ARC-026", 3, "12–15", 0, 60], ["ARC-001", 3, "máx.", 1, 60], ["ARC-081", 3, "20", 1, 45]] },
+      { n: "Pierna", ex: [["ARC-042", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-072", 3, "8–10", 2, 120], ["ARC-099", 3, "10–12", 1, 90], ["ARC-080", 3, "20", 1, 45], ["ARC-CARDIO", 1, "15", 0, 60]] },
+      { n: "Espalda y brazos", ex: [["ARC-007", 4, "1×máx. / 3×6–10", 2, 150], ["ARC-016", 3, "6–10", 2, 120], ["ARC-013", 3, "10–12", 1, 90], ["ARC-102", 3, "10–12 (superserie con el siguiente)", 1, 30], ["ARC-096", 3, "10–12", 1, 60], ["ARC-079", 3, "8–10", 1, 60]] },
+      { n: "Daily quest", ex: [["ARC-054", 3, "8–12", 1, 90], ["ARC-002", 3, "8–12", 1, 90], ["ARC-015", 3, "10–12 por brazo", 1, 75], ["ARC-001", 4, "máx.", 1, 45], ["ARC-081", 4, "20", 1, 30], ["ARC-080", 4, "20", 1, 30], ["ARC-CARDIO", 1, "20", 0, 60]] },
+    ],
+    tips: ["El daily quest del anime son 100 flexiones, 100 abdominales y 100 sentadillas. Aquí lo repartes en series y lo haces cada semana.", "Apunta tus flexiones máximas el primer día y ve a por una más cada semana.", "Jinwoo subía de nivel cada día. Mira tu gráfica de progreso en la app y celebra cada récord."],
+    food: "Con tanto volumen, come suficiente: tres comidas grandes con proteína y carbohidrato y algo antes de entrenar.",
+    mind: "Era el más débil y nadie apostaba por él. Lo que importa no es dónde empiezas, es que subas un poco cada semana." },
+
+  { key: "toji", who: "Toji Fushiguro", b: "male", tag: "Torso de Toji", level: "Avanzado", weeks: 8,
+    physique: "Espalda ancha, pecho grande, hombros redondos y brazos marcados. Cero energía maldita y el cuerpo más fuerte de Jujutsu Kaisen.",
+    why: "Cinco días para el físico que todos los gymbros quieren: torso dos veces por semana con mucho volumen, un día de brazos y la pierna bien hecha. El programa más duro de ARC.",
+    focus: ["Espalda", "Pecho", "Hombro", "Brazos"],
+    days: [
+      { n: "Pecho y espalda", ex: [["ARC-X04", 4, "1×4–6 / 3×6–8", 2, 180], ["ARC-007", 4, "1×máx. / 3×6–8", 2, 150], ["ARC-101", 3, "8–12", 1, 90], ["ARC-016", 3, "6–10", 1, 90], ["ARC-079", 3, "8–10", 1, 60]] },
+      { n: "Pierna", ex: [["ARC-042", 4, "1×4–6 / 3×6–8", 2, 180], ["ARC-072", 3, "6–10", 2, 150], ["ARC-099", 3, "10–12", 1, 90], ["ARC-049", 3, "10–12", 0, 60], ["ARC-091", 3, "12–15", 1, 45]] },
+      { n: "Hombro", ex: [["ARC-022", 4, "1×5–8 / 3×6–10", 2, 150], ["ARC-023", 3, "8–12", 1, 90], ["ARC-026", 4, "12–15", 1, 60], ["ARC-019", 3, "12–15", 0, 60], ["ARC-020", 3, "12–15", 1, 45], ["ARC-104", 3, "12–15", 1, 45]] },
+      { n: "Espalda y pecho (volumen)", ex: [["ARC-098", 3, "8–12", 1, 90], ["ARC-116", 3, "8–12", 1, 90], ["ARC-013", 3, "10–12", 1, 75], ["ARC-004", 3, "10–12", 1, 75], ["ARC-011", 3, "10–12 por brazo", 0, 60], ["ARC-067", 3, "10–12", 1, 45]] },
+      { n: "Brazos", ex: [["ARC-006", 3, "máx.", 1, 90], ["ARC-102", 4, "8–12 (superserie con el siguiente)", 1, 30], ["ARC-096", 4, "10–12", 1, 60], ["ARC-112", 3, "10–12 (superserie con el siguiente)", 1, 30], ["ARC-109", 3, "10–12", 1, 60], ["ARC-115", 3, "12–15", 1, 45]] },
+    ],
+    tips: ["Cinco días es mucho: si solo puedes cuatro, junta Hombro y Brazos con la mitad de series.", "Las series top son pesadas de verdad. Pide a alguien que te vigile en el press banca.", "Toji no hace tonterías: técnica limpia y peso que puedas controlar."],
+    food: "Para un torso así necesitas comer de más con cabeza: un poco por encima de lo que gastas y proteína alta todos los días.",
+    mind: "Toji no tenía energía maldita y lo compensó con el cuerpo. Lo que no te dieron, lo puedes construir." },
+];
+const CP_DISCLAIMER = (who) => `${who} es un personaje de ficción. Su cuerpo es un dibujo, no una persona real: nadie va a tener exactamente ese físico, y no pasa nada. Este programa se inspira en cómo entrena y en los músculos que más se le marcan. Lo que de verdad cambia tu cuerpo es hacerlo semanas y meses, comer bien y dormir.`;
+const CP_PROGRESS = [
+  ["Semanas 1-2", "Aprende la técnica. Usa pesos con los que te sobren 2-3 repeticiones."],
+  ["Semanas 3-7", "Cuando hagas todas las series arriba del rango, sube el peso. Si no, ve a por una repetición más."],
+  ["Semana 8", "Descarga: haz la mitad de series con el mismo peso. Luego repite el programa o cambia de personaje."],
+];
+const cpOf = (key) => CHAR_PROGRAMS.find((p) => p.key === key) || null;
+const cpLevel = (p) => LEVELS[p.b].findIndex((l) => l.name === p.who);
+// Los días llevan un id propio (R:clave:nºdías:letra) para saber cuándo se ha completado el programa entero
+const cpDayId = (p, i) => `R:${p.key}:${p.days.length}:${DAY_IDS[i]}`;
+const cpDays = (p) => p.days.map((d, i) => ({ id: cpDayId(p, i), name: `${p.who.split(" ")[0]} · ${d.n}`, ex: d.ex.map(([id, sets, reps, rir, rest]) => ({ id: id === "ARC-CARDIO" ? "CARDIO" : id, sets, reps, rir, rest })) }));
+const cpDone = (sessions, p) => { const ids = new Set(sessions.map((s) => s.dayId)); return p.days.map((_, i) => ids.has(cpDayId(p, i))); };
+
+// Elegir personaje: tarjetas con su foto, nivel y días
+function CharProgramPicker({ branch, media, current, sessions, onPick, onClose }) {
+  const [b, setB] = useState(branch === "male" ? "male" : "female");
+  const list = CHAR_PROGRAMS.filter((p) => p.b === b).sort((x, y) => cpLevel(x) - cpLevel(y));
+  return (
+    <div className="cpk">
+      <div className="cpk-hd"><div><small>Programas de personajes</small><b>¿Con quién entrenas?</b></div>{onClose && <button className="link" onClick={onClose}>Cerrar</button>}</div>
+      <p className="sub" style={{ margin: "0 0 10px" }}>Cada personaje tiene su programa completo, pensado para los músculos que más se le marcan. Lo eliges y pasa a ser tu rutina.</p>
+      <div className="seg"><button className={b === "female" ? "on" : ""} onClick={() => setB("female")}>Chicas</button><button className={b === "male" ? "on" : ""} onClick={() => setB("male")}>Chicos</button></div>
+      <div className="cpk-grid">
+        {list.map((p) => {
+          const img = mediaOr(media, levelKey(p.b, "otaku", cpLevel(p)));
+          const done = cpDone(sessions, p).every(Boolean);
+          return (
+            <button key={p.key} className={`cpk-c${current === p.key ? " on" : ""}`} onClick={() => onPick(p.key)}>
+              <div className="cpk-img">{img ? <img src={img} alt="" /> : <Ic n="star" size={28} />}{done && <i className="cpk-bdg"><Ic n="star" size={11} color="#000" sw={2.4} /></i>}</div>
+              <b>{p.who}</b>
+              <span>{p.tag}</span>
+              <small>{p.days.length} días · {p.level}</small>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// Ficha del programa elegido: físico, por qué, progreso, tips y aviso de ficción
+function CharProgramCard({ p, media, sessions, onChange }) {
+  const img = mediaOr(media, levelKey(p.b, "otaku", cpLevel(p)));
+  const done = cpDone(sessions, p);
+  const all = done.every(Boolean);
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="cpc">
+      <div className="cpc-hero">
+        {img && <img src={img} alt="" />}
+        <div className="cpc-hero-in">
+          <small>Programa de personaje · {p.days.length} días · {p.weeks} semanas</small>
+          <b>Entrena como {p.who}</b>
+          <span className="rc-tag">{p.tag}</span>
+        </div>
+      </div>
+      <div className="cpc-body">
+        <div className="cpc-meta"><span>{p.level}</span>{p.focus.map((f) => <span key={f}>{f}</span>)}</div>
+        <p className="cpc-phy">{p.physique}</p>
+        <div className="cpc-prog">
+          <div className="cpc-dots">{p.days.map((d, i) => <i key={i} className={done[i] ? "on" : ""} title={d.n}>{DAY_IDS[i]}</i>)}</div>
+          <span>{all ? "Programa completado · insignia conseguida" : `Completa cada día una vez para llevarte la insignia de ${p.who.split(" ")[0]}`}</span>
+          {all && <Badge id={`R:${p.key}`} media={media} size={44} />}
+        </div>
+        <button className="link cpc-more" onClick={() => setOpen(!open)}>{open ? "Ocultar detalles" : "Por qué funciona, cómo progresar y tips"}</button>
+        {open && (
+          <div className="cpc-more-in">
+            <h3>Por qué este programa</h3>
+            <p>{p.why}</p>
+            {(() => { const c = CHAR_CHALLENGES.find((x) => x.who === p.who); return c?.sci ? (<>
+              <h3>Lo que dice la ciencia</h3>
+              <p>{c.sci}{c.ref && <> <a className="cpc-ref" href={c.ref[1]} target="_blank" rel="noreferrer">{c.ref[0].split(". ")[0].split(",")[0]} et al.</a></>}</p>
+            </>) : null; })()}
+            <h3>Cómo progresar</h3>
+            {CP_PROGRESS.map(([t, d]) => <div key={t} className="cpc-step"><b>{t}</b><span>{d}</span></div>)}
+            <h3>Tips</h3>
+            {p.tips.map((t, i) => <div key={i} className="cpc-tip"><Ic n="zap" size={15} /><span>{t}</span></div>)}
+            <h3>Comida</h3>
+            <p>{p.food}</p>
+            <h3>Lo que te enseña {p.who.split(" ")[0]}</h3>
+            <p>{p.mind}</p>
+          </div>
+        )}
+        <div className="cpc-fic"><Ic n="bulb" size={15} /><span>{CP_DISCLAIMER(p.who)}</span></div>
+        <button className="btn ghost" style={{ marginTop: 10 }} onClick={onChange}>Cambiar de personaje</button>
+      </div>
+    </div>
+  );
 }
 
 function ChallengeCard({ state, media, onStart, setMedia }) {
@@ -3760,7 +4244,10 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
   const [cardioOpen, setCardioOpen] = useState(false);
   const [shareS, setShareS] = useState(null);
   const fromCoach = !!state.coachRoutine?.length;
-  const mode = fromCoach ? "coach" : state.profile.routineMode || "auto";
+  const otaku = (state.profile.mode || "otaku") === "otaku";
+  const rawMode = fromCoach ? "coach" : state.profile.routineMode || "auto";
+  const mode = rawMode === "char" && !otaku ? "auto" : rawMode;
+  const [charPick, setCharPick] = useState(false);
   const custom = state.profile.customRoutine || [];
   const [editing, setEditing] = useState(false);
   const [picking, setPicking] = useState(false);
@@ -3783,8 +4270,8 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
   return (
     <>
       <h1>Entrenos</h1>
-      <WeekStrip sessions={state.sessions} goal={fromCoach ? routine.length : state.profile.days || routine.length} />
-      {next && !(mode === "custom" && (editing || custom.length === 0)) && (
+      <WeekStrip sessions={state.sessions} goal={fromCoach || mode === "char" ? routine.length : state.profile.days || routine.length} />
+      {next && !(mode === "custom" && (editing || custom.length === 0)) && !(mode === "char" && (charPick || !cpOf(state.profile.charProgram))) && (
         <div className="today">
           <div className="today-tag">{doneToday ? "Hoy ya has entrenado · el siguiente" : "Hoy toca"}</div>
           <div className="today-name">{next.name}</div>
@@ -3794,15 +4281,21 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
           <div className="today-xp">+{RULES.XP_PER_SESSION} XP · +{RULES.GEMS_PER_SESSION} gemas al terminar</div>
         </div>
       )}
-      {state.profile.mode !== "simple" && state.profile.mode !== "clasico" && <ChallengeCard state={state} media={media} onStart={onStart} setMedia={setMedia} />}
       {onCardio && <CardioWeek sessions={state.sessions} onLog={() => setCardioOpen(true)} />}
       {cardioOpen && <CardioLog weight={currentWeight(state)} sessions={state.sessions} onSave={onCardio} onClose={() => setCardioOpen(false)} />}
       <WarmUp media={media} onTech={setTech} />
       {fromCoach && <div className="prog-card coach"><span className="pp-ic"><Ic n="star" color="#F5C76B" /></span><div><small>Tu rutina</small><b>Hecha por tu coach</b><p>Te la ha preparado a medida. Si quieres cambiar algo, díselo.</p></div></div>}
       {!fromCoach && <div className="seg">
-        <button className={mode === "auto" ? "on" : ""} onClick={() => { setProfile({ routineMode: "auto" }); setEditing(false); }}>Programas ARC</button>
-        <button className={mode === "custom" ? "on" : ""} onClick={() => setProfile({ routineMode: "custom" })}>Mi propia rutina</button>
+        <button className={mode === "auto" ? "on" : ""} onClick={() => { setProfile({ routineMode: "auto" }); setEditing(false); setCharPick(false); }}>Programas ARC</button>
+        {otaku && <button className={mode === "char" ? "on" : ""} onClick={() => { setProfile({ routineMode: "char" }); setEditing(false); if (!cpOf(state.profile.charProgram)) setCharPick(true); }}>Personajes</button>}
+        <button className={mode === "custom" ? "on" : ""} onClick={() => { setProfile({ routineMode: "custom" }); setCharPick(false); }}>Mi propia rutina</button>
       </div>}
+      {mode === "char" && (charPick || !cpOf(state.profile.charProgram)) && (
+        <CharProgramPicker branch={state.profile.branch} media={media} current={state.profile.charProgram} sessions={state.sessions}
+          onClose={cpOf(state.profile.charProgram) ? () => setCharPick(false) : null}
+          onPick={(key) => { setProfile({ routineMode: "char", charProgram: key }); setCharPick(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
+      )}
+      {mode === "char" && !charPick && cpOf(state.profile.charProgram) && <CharProgramCard p={cpOf(state.profile.charProgram)} media={media} sessions={state.sessions} onChange={() => setCharPick(true)} />}
       {mode === "auto" && (() => { const pg = programOf(state.profile, state.profile.branch); return (
         <button className="prog-card" onClick={() => setPicking(true)}>
           <span className="pp-ic"><Ic n={pg.icon} size={24} /></span>
@@ -3829,9 +4322,9 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
         </>
       )}
       {mode === "custom" && custom.length > 0 && !editing && <button className="btn ghost" style={{ marginBottom: 6 }} onClick={() => setEditing(true)}>Editar mi rutina</button>}
-      {!(mode === "custom" && (editing || custom.length === 0)) && routine.map((d) => (
+      {!(mode === "custom" && (editing || custom.length === 0)) && !(mode === "char" && (charPick || !cpOf(state.profile.charProgram))) && routine.map((d) => (
         <div className={`day${next && d.id === next.id ? " next" : ""}`} key={d.id}>
-          <div className="hd"><div className="day-t"><span className="day-n">{d.id}</span><div><b>{d.name}</b><small>{dayInfo(d).groups.slice(0, 3).join(" · ")}{lastAgo(d.id) ? ` · ${lastAgo(d.id)}` : ""}</small></div></div><button className="sbtn" onClick={() => onStart(d)}>Empezar</button></div>
+          <div className="hd"><div className="day-t"><span className="day-n">{String(d.id).slice(-1)}</span><div><b>{d.name}</b><small>{dayInfo(d).groups.slice(0, 3).join(" · ")}{lastAgo(d.id) ? ` · ${lastAgo(d.id)}` : ""}</small></div></div><button className="sbtn" onClick={() => onStart(d)}>Empezar</button></div>
           {d.ex.map((e) => (
             <button key={e.id} className="exrow" onClick={() => setTech(e.id)}>
               <span>{e.pick === "abs" ? "Abdominales (eliges tú)" : <>{media[`ex:${e.id}`] && <span className="play">▶</span>}{EXERCISES[e.id].n}</>}</span>
@@ -7633,7 +8126,7 @@ function ArcApp({ user }) {
     await setMedia(key, url);
   };
 
-  const routine = useMemo(() => activeRoutine({ ...state.profile, coachRoutine: state.coachRoutine }), [state.profile?.days, state.profile?.branch, state.profile?.routineMode, state.profile?.customRoutine, state.coachRoutine]);
+  const routine = useMemo(() => activeRoutine({ ...state.profile, coachRoutine: state.coachRoutine }), [state.profile?.days, state.profile?.branch, state.profile?.routineMode, state.profile?.customRoutine, state.profile?.charProgram, state.profile?.program, state.coachRoutine]);
   const adh = useMemo(() => (state.profile ? adherenceInfo(state.habits, state.profile.startDate) : null), [state.habits, state.profile]);
   const stats = useMemo(() => {
     if (!state.profile) return null;
@@ -7775,12 +8268,17 @@ function ArcApp({ user }) {
       const prs = countPRs(state.sessions, row.exercises);
       const saved = await db.addSession(row);
       const session = { id: saved.id, date: saved.performed_at, dayId: a.dayId, dayName: a.dayName, dur: row.duration_s, volume, sets, exercises: row.exercises };
-      const bonus = String(a.dayId || "").startsWith("R:") ? CHALLENGE_XP : 0;
+      // Programa de personaje: insignia y XP extra al completar el último día que faltaba
+      const cpk = (/^R:([a-z]+):\d+:[A-Z]$/.exec(a.dayId || "") || [])[1];
+      const cprog = cpk ? cpOf(cpk) : null;
+      const cpNew = !!cprog && !cpDone(state.sessions, cprog).every(Boolean) && cpDone([...state.sessions, { dayId: a.dayId }], cprog).every(Boolean);
+      const oldR = /^R:[a-z]+$/.test(a.dayId || "");
+      const bonus = cprog ? (cpNew ? CHALLENGE_XP : 0) : oldR ? CHALLENGE_XP : 0;
       const next = { ...state, active: null, sessions: [...state.sessions, session], xp: state.xp + RULES.XP_PER_SESSION + bonus, gems: state.gems + RULES.GEMS_PER_SESSION };
       setState(next);
       const { best, pullups } = bestLifts(next);
       const lv = evaluate(next.profile.branch, { ...stats, ratio: ratioOf(next.profile.branch, best, currentWeight(next)), pullups }, next.profile.mode).current;
-      setDone({ badge: String(a.dayId || "").startsWith("R:") ? a.dayId : null, badgeFirst: !state.sessions.some((x) => x.dayId === a.dayId), media, dur: row.duration_s, sets, volume, xp: RULES.XP_PER_SESSION + (String(a.dayId || "").startsWith("R:") ? CHALLENGE_XP : 0), prs, share: shareDataFor(session, next.sessions), history: next.sessions, otaku: (next.profile.mode || "otaku") === "otaku", nick: state.nickname, levelImg: next.profile.mode === "simple" ? null : mediaOr(media, levelKey(next.profile.branch, next.profile.mode || "otaku", lv)) });
+      setDone({ badge: cprog ? (cpNew ? `R:${cpk}` : null) : oldR ? a.dayId : null, badgeFirst: cprog ? cpNew : !state.sessions.some((x) => x.dayId === a.dayId), media, dur: row.duration_s, sets, volume, xp: RULES.XP_PER_SESSION + bonus, prs, share: shareDataFor(session, next.sessions), history: next.sessions, otaku: (next.profile.mode || "otaku") === "otaku", nick: state.nickname, levelImg: next.profile.mode === "simple" ? null : mediaOr(media, levelKey(next.profile.branch, next.profile.mode || "otaku", lv)) });
       setTab("inicio");
     } catch (e) { setToast("No se ha podido guardar el entreno. Tu sesión sigue abierta: vuelve a darle a Terminar."); }
   };
