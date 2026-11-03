@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, Fragment } from "react";
 import { supabase } from "./lib/supabase";
 import * as db from "./lib/db";
 import * as native from "./lib/native";
@@ -1442,6 +1442,12 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .sets tr.done td:last-child{border-radius:0 10px 10px 0}
 .sets .lbl{background:none;border:0;color:var(--tx);font:inherit;font-weight:700;cursor:pointer;width:28px}
 .sets .lbl.w{color:var(--wu)}
+.sets tr.opt td{background:var(--sf2)}
+.sets .set-opt td{padding:2px 0 8px;text-align:left}
+.sets .set-opt .chip{margin:4px 6px 0 0}
+.set-add{display:flex;gap:8px}
+.set-add .add{flex:1}
+.set-add .add.w{color:var(--wu)}
 .sets .prev{color:var(--dm);font-size:13px}
 .sets input{width:100%;max-width:62px;background:var(--sf2);border:1px solid var(--ln);color:var(--tx);border-radius:8px;padding:7px 4px;text-align:center;font:inherit;font-weight:700;font-size:16px}
 .chk{width:30px;height:30px;border-radius:8px;border:1px solid var(--ln);background:var(--sf2);color:transparent;cursor:pointer;font-size:16px;font-weight:800}
@@ -3121,6 +3127,7 @@ function Tracker({ active, sessions, setActive, onFinish, onCancel, media, coach
   const [menu, setMenu] = useState(null);
   const [hist, setHist] = useState(null);
   const [tech, setTech] = useState(null);
+  const [setOpt, setSetOpt] = useState(null);
   const [swap, setSwap] = useState(null);
   const [adding, setAdding] = useState(false);
   const [msg, setMsg] = useState("");
@@ -3187,19 +3194,32 @@ function Tracker({ active, sessions, setActive, onFinish, onCancel, media, coach
                   if (s.type !== "W") n++;
                   const p = prev?.[si];
                   const prevTxt = !p || p.reps === "" ? "—" : ex.unit ? `${p.reps} ${ex.unit}` : `${p.kg}kg × ${p.reps}`;
+                  const open = setOpt === `${ei}-${si}`;
                   return (
-                    <tr key={si} className={s.done ? "done" : ""}>
-                      <td><button className={`lbl ${s.type === "W" ? "w" : ""}`} title="Toca para cambiar entre calentamiento y serie efectiva" onClick={() => !ex.unit && updSet(ei, si, { type: s.type === "W" ? "N" : "W" })}>{s.type === "W" ? "W" : n}</button></td>
+                    <Fragment key={si}>
+                    <tr className={`${s.done ? "done" : ""}${open ? " opt" : ""}`}>
+                      <td><button className={`lbl ${s.type === "W" ? "w" : ""}`} aria-label="Opciones de la serie" onClick={() => setSetOpt(open ? null : `${ei}-${si}`)}>{s.type === "W" ? "W" : n}</button></td>
                       <td className="prev">{prevTxt}</td>
                       <td>{ex.unit ? null : <input type="number" inputMode="decimal" aria-label="Kilos" value={s.kg} onChange={(ev) => updSet(ei, si, { kg: ev.target.value })} />}</td>
                       <td><input type="number" inputMode="numeric" aria-label={ex.unit ? "Tiempo" : "Repeticiones"} value={s.reps} onChange={(ev) => updSet(ei, si, { reps: ev.target.value })} /></td>
                       <td><button className={`chk ${s.done ? "on" : ""}`} aria-label="Completar serie" onClick={() => { updSet(ei, si, { done: !s.done }); if (!s.done) setRestEnd(Date.now() + e.rest * 1000, ex.n); }}>✓</button></td>
                     </tr>
+                    {open && (
+                      <tr className="set-opt"><td colSpan={5}>
+                        <button className={`chip ${s.type === "W" ? "on" : ""}`} onClick={() => { updSet(ei, si, { type: s.type === "W" ? "N" : "W" }); setSetOpt(null); }}>{s.type === "W" ? "Pasar a serie efectiva" : "Marcar como calentamiento"}</button>
+                        {e.sets.length > 1 && <button className="chip" onClick={() => { upd(ei, (x) => ({ ...x, sets: x.sets.filter((_, k) => k !== si) })); setSetOpt(null); }}>Quitar serie</button>}
+                      </td></tr>
+                    )}
+                    </Fragment>
                   );
                 })}
               </tbody>
             </table>
-            <button className="add" onClick={() => upd(ei, (x) => { const last = x.sets[x.sets.length - 1] || { kg: "", reps: "" }; return { ...x, sets: [...x.sets, { type: "N", kg: last.kg, reps: last.reps, done: false }] }; })}>+ Añadir serie</button>
+            <div className="set-add">
+              <button className="add" onClick={() => upd(ei, (x) => { const last = x.sets[x.sets.length - 1] || { kg: "", reps: "" }; return { ...x, sets: [...x.sets, { type: "N", kg: last.kg, reps: last.reps, done: false }] }; })}>+ Añadir serie</button>
+              {!ex.unit && <button className="add w" onClick={() => upd(ei, (x) => { const first = x.sets.find((st) => st.type !== "W"); const kg = first?.kg ? String(Math.round(Number(first.kg) * 0.5 / 2.5) * 2.5 || "") : ""; return { ...x, sets: [{ type: "W", kg, reps: "10", done: false }, ...x.sets] }; })}>+ Calentamiento</button>}
+            </div>
+            {ei === 0 && <p className="hint" style={{ margin: "6px 0 0" }}>Toca el número de una serie para marcarla como calentamiento o quitarla.</p>}
           </div>
         );
       })}
@@ -6975,7 +6995,9 @@ const CHECKIN_CSS = `
 .cl-ex-hd small{color:var(--dm);font-size:12px;white-space:nowrap}
 .cl-set{display:grid;grid-template-columns:40px 1fr 1fr 28px;gap:8px;align-items:center;margin-top:6px}
 .cl-set.u{grid-template-columns:40px 1fr 28px}
-.cl-set>span:first-child{text-align:center;font-weight:700;color:var(--dm);font-size:13px}
+.cl-set>span:first-child,.cl-n{text-align:center;font-weight:700;color:var(--dm);font-size:13px;background:none;border:0;font-family:inherit;cursor:pointer;padding:0}
+.cl-n.w,.cl-adds .w{color:var(--wu)}
+.cl-adds{display:flex;flex-direction:column;gap:4px}
 .cl-set-h{font-size:11px;color:var(--dm);text-transform:uppercase;letter-spacing:.04em;margin-top:10px}
 .cl-set-h span{text-align:center}
 .cl-x{background:none;border:0;color:var(--dm);font-size:13px;padding:6px;cursor:pointer}
@@ -7204,7 +7226,7 @@ function CoachLog({ clientId, name, routine, sessions, edit, onSaved, onClose })
               <label>Fecha<input className="in" type="date" value={date} max={dayInput(new Date())} onChange={(e) => setDate(e.target.value)} /></label>
               <label>Min<input className="in" inputMode="numeric" value={mins} onChange={(e) => setMins(e.target.value.replace(/\D/g, ""))} /></label>
             </div>
-            <p className="hint">Rellena las series que haya hecho. Las que dejes sin repeticiones no se guardan. El peso viene puesto con el de la última vez.</p>
+            <p className="hint">Rellena las series que haya hecho. Las que dejes sin repeticiones no se guardan. El peso viene puesto con el de la última vez. Toca el número de una serie para marcarla como calentamiento (W).</p>
             {list.map((e, i) => {
               const ex = EXERCISES[e.exId]; const u = ex?.unit;
               return (
@@ -7213,14 +7235,17 @@ function CoachLog({ clientId, name, routine, sessions, edit, onSaved, onClose })
                   <div className="cl-set cl-set-h"><span>Serie</span>{!u && <span>Kg</span>}<span>{u || "Reps"}</span><span /></div>
                   {e.sets.map((x, k) => (
                     <div className={`cl-set${u ? " u" : ""}`} key={k}>
-                      <span>{x.type === "W" ? "W" : k + 1}</span>
+                      <button className={`cl-n${x.type === "W" ? " w" : ""}`} title="Toca para marcarla como calentamiento" onClick={() => upSet(i, k, { type: x.type === "W" ? undefined : "W" })}>{x.type === "W" ? "W" : e.sets.slice(0, k + 1).filter((y) => y.type !== "W").length}</button>
                       {!u && <input className="in" inputMode="decimal" placeholder="0" value={x.kg} onChange={(ev) => upSet(i, k, { kg: ev.target.value })} />}
                       <input className="in" inputMode="decimal" placeholder={x.last || "—"} value={x.reps} onChange={(ev) => upSet(i, k, { reps: ev.target.value })} />
                       <button className="cl-x" aria-label="Quitar serie" onClick={() => upEx(i, (o) => ({ ...o, sets: o.sets.filter((_, j) => j !== k) }))}>✕</button>
                     </div>
                   ))}
                   <div className="cl-ex-ft">
-                    <button className="link" onClick={() => upEx(i, (o) => { const l = o.sets[o.sets.length - 1]; return { ...o, sets: [...o.sets, { kg: l?.kg ?? "", reps: "", last: l?.last || "" }] }; })}>+ Serie</button>
+                    <span className="cl-adds">
+                      <button className="link" onClick={() => upEx(i, (o) => { const l = o.sets[o.sets.length - 1]; return { ...o, sets: [...o.sets, { kg: l?.kg ?? "", reps: "", last: l?.last || "" }] }; })}>+ Serie</button>
+                      {!u && <button className="link w" onClick={() => upEx(i, (o) => ({ ...o, sets: [{ type: "W", kg: "", reps: "", last: "" }, ...o.sets] }))}>+ Calent.</button>}
+                    </span>
                     <input className="in" placeholder="Comentario (opcional)" value={e.note} onChange={(ev) => upEx(i, (o) => ({ ...o, note: ev.target.value }))} />
                   </div>
                 </div>
