@@ -7443,6 +7443,7 @@ function Clients({ onClose }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
+  const [pf, setPf] = useState({ branch: "female", age: "", height: "", weight: "" });
 
   const load = () => db.listClients().then(setList).catch(() => setErr("No se ha podido cargar la lista. ¿Has pegado el SQL de asesorad@s en Supabase?"));
   useEffect(() => { load(); }, []);
@@ -7453,7 +7454,8 @@ function Clients({ onClose }) {
   const add = async () => {
     if (!/^\S+@\S+\.\S+$/.test(email.trim())) { setErr("Escribe un correo válido."); return; }
     setBusy(true); setErr("");
-    try { const row = await db.addClient(name.trim() || null, email.trim()); setList((l) => [...(l || []), row]); setName(""); setEmail(""); }
+    const profile = { branch: pf.branch, ...Object.fromEntries(["age", "height", "weight"].filter((k) => Number(String(pf[k]).replace(",", ".")) > 0).map((k) => [k, Number(String(pf[k]).replace(",", "."))])) };
+    try { const row = await db.addClient(name.trim() || null, email.trim(), profile); setList((l) => [...(l || []), row]); setName(""); setEmail(""); setPf({ branch: "female", age: "", height: "", weight: "" }); }
     catch (e) { setErr(/duplicate|unique/i.test(e.message || "") ? "Ya tienes a esa persona en tu lista." : "No se ha podido añadir. Inténtalo otra vez."); }
     finally { setBusy(false); }
   };
@@ -7468,6 +7470,13 @@ function Clients({ onClose }) {
       <p className="sub">Añádelas con el correo con el que usan ARC. Si aún no tienen cuenta, se unirán solas cuando se registren con ese correo.</p>
       <div className="field"><label>Nombre</label><input className="in" value={name} onChange={(e) => setName(e.target.value)} placeholder="Marta" /></div>
       <div className="field"><label>Correo</label><input className="in" type="email" autoCapitalize="none" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="marta@gmail.com" /></div>
+      <div className="field"><label>Sexo (para sus niveles)</label>
+        <div className="chips">{[["female", "Chica"], ["male", "Chico"]].map(([v, l]) => <button key={v} className={`chip ${pf.branch === v ? "on" : ""}`} onClick={() => setPf({ ...pf, branch: v })}>{l}</button>)}</div>
+      </div>
+      <div className="cl-meta">
+        {[["age", "Edad"], ["height", "Altura (cm)"], ["weight", "Peso (kg)"]].map(([k, l]) => <label key={k}>{l}<input className="in" inputMode="decimal" value={pf[k]} onChange={(e) => setPf({ ...pf, [k]: e.target.value })} /></label>)}
+      </div>
+      <p className="hint">Opcional. No tendrá que rellenar el cuestionario: entra directo a la rutina que le pongas, sin personajes de anime (lo puedes cambiar en su ficha).</p>
       <button className="btn ac" disabled={busy || !email} onClick={add}>{busy ? "Añadiendo…" : "Añadir asesorad@"}</button>
       {err && <div className="err" style={{ marginTop: 10 }}>{err}</div>}
 

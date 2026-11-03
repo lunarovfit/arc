@@ -130,7 +130,11 @@ export const social = {
 
 // ---------- Asesoradas (solo coach) ----------
 export const listClients = () => supabase.from("coach_clients").select("*").order("created_at", { ascending: true }).then(must);
-export const addClient = (name, email) => supabase.from("coach_clients").insert({ name, email }).select().single().then(must);
+export async function addClient(name, email, profile) {
+  let res = await supabase.from("coach_clients").insert({ name, email, mode: "clasico", ...(profile ? { profile } : {}) }).select().single();
+  if (res.error && /profile|mode/.test(res.error.message || "")) res = await supabase.from("coach_clients").insert({ name, email }).select().single();
+  return must(res);
+}
 export const updateClient = (id, patch) => supabase.from("coach_clients").update(patch).eq("id", id).select().single().then(must);
 export const removeClient = (id) => supabase.from("coach_clients").delete().eq("id", id).then(must);
 export async function clientData(clientId) {
