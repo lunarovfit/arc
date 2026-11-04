@@ -6,6 +6,7 @@ import { Auth, NewPassword } from "./Auth.jsx";
 import { LegalSheet, LEGAL_CSS } from "./Legal.jsx";
 import * as purchases from "./lib/purchases";
 import { shareImage as nativeShare } from "./lib/share";
+import { createPortal } from "react-dom";
 
 /* =====================================================================
    ARC by Lunarovx — vista previa v2
@@ -857,9 +858,9 @@ function withFallback(obj) {
   for (const v of Object.values(obj)) if (v && typeof v === "object") { if (v.simple) v.simple = neutralTxt(v.simple); if (v.tip) v.tip = neutralTxt(v.tip); }
   return new Proxy(obj, {
     get(t, k) {
-      if (k in t || typeof k !== "string" || !/^(ARC-|CARDIO|MOVILIDAD|EX-)/.test(k)) return t[k];
+      if (k in t || typeof k !== "string" || !/^(ARC-|CARDIO|MOVILIDAD|EX-|U-)/.test(k)) return t[k];
       if (EX_REMAP[k] && EX_REMAP[k] in t) return t[EX_REMAP[k]];
-      return { id: k, group: "Otros", n: "Ejercicio eliminado", muscle: "", equip: "", simple: "", tip: "" };
+      return { id: k, group: "Otros", n: k.startsWith("U-") ? "Ejercicio personalizado" : "Ejercicio eliminado", muscle: "", equip: "", simple: "", tip: "" };
     },
   });
 }
@@ -1980,6 +1981,14 @@ select.in{appearance:none}
 .cpc-tip svg{flex:none;margin-top:2px;color:var(--ac)}
 .cpc-fic{display:flex;gap:8px;align-items:flex-start;margin-top:14px;font-size:12px;line-height:1.45;color:var(--dm);border:1px dashed var(--ln);border-radius:12px;padding:10px 12px}
 .cpc-fic svg{flex:none;margin-top:1px}
+.cx-new{width:100%;display:flex;align-items:center;gap:10px;margin:10px 0 2px;padding:11px 12px;border:1px dashed rgba(212,139,146,.6);border-radius:14px;background:rgba(212,139,146,.08);color:var(--tx);font:inherit;text-align:left;cursor:pointer}
+.cx-new b{display:block;font-size:14px}.cx-new small{display:block;font-size:12px;color:var(--dm)}
+.cx-tag{font-style:normal;font-size:10px;font-weight:800;color:#000;background:var(--ac);border-radius:999px;padding:2px 7px;margin-left:6px;vertical-align:2px}
+.cx{max-height:90vh;overflow-y:auto}
+.cx-types{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cx-types button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px;border:1px solid var(--ln);border-radius:12px;background:var(--sf2);color:var(--tx);font:inherit;text-align:left;cursor:pointer}
+.cx-types button.on{border-color:var(--ac);background:rgba(212,139,146,.14)}
+.cx-types b{font-size:13.5px}.cx-types small{font-size:11.5px;color:var(--dm)}
 .prog-card{width:100%;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(212,139,146,.16),var(--sf));border:1px solid rgba(212,139,146,.4);border-radius:18px;padding:14px;margin:4px 0 10px;color:var(--tx);font:inherit;text-align:left;cursor:pointer}
 .prog-card.coach{background:linear-gradient(135deg,rgba(245,199,107,.15),var(--sf));border-color:rgba(245,199,107,.4);cursor:default}
 .prog-card>div{flex:1;min-width:0}
@@ -3247,7 +3256,7 @@ function Tracker({ active, sessions, setActive, onFinish, onCancel, media, coach
             <input className="note-in" placeholder="Notas: sensaciones, RIR, técnica…" value={e.note} onChange={(ev) => upd(ei, (x) => ({ ...x, note: ev.target.value }))} />
             <button className="rest" onClick={() => { const opts = [60, 90, 120, 150, 180]; upd(ei, (x) => ({ ...x, rest: opts[(opts.indexOf(x.rest) + 1) % opts.length] })); }}>Descanso: {mmss(e.rest)}</button>
             <table className="sets">
-              <thead><tr><th>Serie</th><th>Anterior</th><th>{ex.unit ? "" : "Kg"}</th><th>{ex.unit ? (ex.unit === "s" ? "Seg" : "Min") : "Reps"}</th><th>✓</th></tr></thead>
+              <thead><tr><th>Serie</th><th>Anterior</th><th>{ex.unit ? "" : "Kg"}</th><th>{ex.unit ? (ex.unit === "s" ? "Seg" : ex.unit === "min" ? "Min" : "Reps") : "Reps"}</th><th>✓</th></tr></thead>
               <tbody>
                 {e.sets.map((s, si) => {
                   if (s.type !== "W") n++;
@@ -3315,28 +3324,104 @@ function activeRoutine(profile) {
   return buildRoutine(profile?.days || 3, profile?.branch, profile || {});
 }
 
-function ExercisePicker({ onPick, onClose }) {
+// ---------- Ejercicios propios (cada usuari@ crea los suyos, como en Hevy) ----------
+// Se guardan en su perfil (profile.customEx) y se suman a la lista de ejercicios mientras usa la app
+const CX_EQUIP = ["Barra", "Mancuernas", "Máquina", "Polea", "Multipower", "Peso corporal", "Kettlebell", "Banda elástica", "Disco", "Otro"];
+const CX_TYPES = [["", "Peso y repeticiones", "Kg × reps"], ["reps", "Solo repeticiones", "Peso corporal"], ["s", "Tiempo", "Segundos"], ["min", "Cardio", "Minutos"]];
+let CUSTOM_EX_API = null; // { save(ex), remove(id) } lo pone la app
+function registerCustomEx(map) {
+  Object.entries(map || {}).forEach(([id, e]) => {
+    if (!e || !e.n) return;
+    EXERCISES[id] = { id, group: e.group || "Otros", n: e.n, muscle: [e.group, ...(e.other || [])].filter(Boolean).join(", "), equip: e.equip || "", simple: e.notes || "", tip: "", unit: e.unit || undefined, custom: true };
+  });
+}
+function CustomExForm({ initial, onSave, onDelete, onClose }) {
+  const editing = !!onDelete;
+  const groups = GROUPS.filter((g) => g !== "Cardio" && g !== "Movilidad");
+  const [f, setF] = useState(() => initial || { n: "", group: "", other: [], equip: "", unit: "", notes: "" });
+  const [err, setErr] = useState("");
+  const set = (k, v) => setF((x) => ({ ...x, [k]: v }));
+  const save = () => {
+    if (!f.n.trim()) return setErr("Ponle un nombre.");
+    if (!f.group) return setErr("Elige el músculo principal.");
+    onSave({ ...f, n: f.n.trim().charAt(0).toUpperCase() + f.n.trim().slice(1), other: (f.other || []).filter((g) => g !== f.group) });
+  };
+  return createPortal(
+    <div className="modal" style={{ zIndex: 60 }} onClick={onClose}>
+      <div className="box cx" onClick={(e) => e.stopPropagation()}>
+        <h1 style={{ fontSize: 20 }}>{editing ? "Editar ejercicio" : "Crear ejercicio"}</h1>
+        <div className="field"><label>Nombre</label><input className="in" autoFocus value={f.n} placeholder="Ej.: Press Arnold sentado" onChange={(e) => set("n", e.target.value)} /></div>
+        <div className="field"><label>Tipo</label>
+          <div className="cx-types">{CX_TYPES.map(([v, l, d]) => <button key={v} className={f.unit === v ? "on" : ""} onClick={() => set("unit", v)}><b>{l}</b><small>{d}</small></button>)}</div>
+        </div>
+        <div className="field"><label>Material</label>
+          <div className="chips">{CX_EQUIP.map((x) => <button key={x} className={`chip ${f.equip === x ? "on" : ""}`} onClick={() => set("equip", f.equip === x ? "" : x)}>{x}</button>)}</div>
+        </div>
+        <div className="field"><label>Músculo principal</label>
+          <div className="chips">{groups.map((g) => <button key={g} className={`chip ${f.group === g ? "on" : ""}`} onClick={() => set("group", g)}>{g}</button>)}</div>
+        </div>
+        <div className="field"><label>Otros músculos (opcional)</label>
+          <div className="chips">{groups.filter((g) => g !== f.group).map((g) => { const on = (f.other || []).includes(g); return <button key={g} className={`chip ${on ? "on" : ""}`} onClick={() => set("other", on ? f.other.filter((x) => x !== g) : [...(f.other || []), g])}>{g}</button>; })}</div>
+        </div>
+        <div className="field"><label>Notas de técnica (opcional)</label><textarea className="in" rows={3} value={f.notes} placeholder="Cómo lo haces, ajustes de la máquina…" onChange={(e) => set("notes", e.target.value)} /></div>
+        {err && <div className="err">{err}</div>}
+        <button className="btn ac" onClick={save}>{editing ? "Guardar cambios" : "Crear ejercicio"}</button>
+        {onDelete && <button className="btn ghost" onClick={onDelete}>Borrar ejercicio</button>}
+        <button className="link" style={{ display: "block", margin: "10px auto 0" }} onClick={onClose}>Cancelar</button>
+      </div>
+    </div>,
+    document.querySelector(".arc") || document.body
+  );
+}
+
+function ExercisePicker({ onPick, onClose, noCreate }) {
+  const [creating, setCreating] = useState(false);
+  const canCreate = !noCreate && !!CUSTOM_EX_API;
   const [q, setQ] = useState("");
   const [grp, setGrp] = useState(null);
   const norm = (t) => t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-  const list = Object.values(EXERCISES).filter((e) => !["CARDIO", "MOVILIDAD"].includes(e.id) && e.group !== "Movilidad" && (!grp || e.group === grp) && (!q || norm(`${e.n} ${e.muscle} ${e.equip} ${e.group}`).includes(norm(q))));
-  return (
-    <div className="modal" onClick={onClose}>
+  const list = Object.values(EXERCISES).filter((e) => !["CARDIO", "MOVILIDAD"].includes(e.id) && e.group !== "Movilidad" && (!grp || e.group === grp) && (!q || norm(`${e.n} ${e.muscle} ${e.equip} ${e.group}`).includes(norm(q)))).sort((a, b) => (b.custom ? 1 : 0) - (a.custom ? 1 : 0));
+  return createPortal(
+    <div className="modal" style={{ zIndex: 50 }} onClick={onClose}>
       <div className="box" onClick={(e) => e.stopPropagation()}>
         <h1 style={{ fontSize: 20 }}>Añadir ejercicio</h1>
         <input className="in" autoFocus placeholder="Buscar: jalón, hip thrust, polea…" value={q} onChange={(e) => setQ(e.target.value)} />
+        {canCreate && <button className="cx-new" onClick={() => setCreating(true)}><Ic n="plus" size={18} /><span><b>{q.trim() ? `Crear "${q.trim()}"` : "Crear ejercicio"}</b><small>¿No está el que buscas? Créalo a tu manera</small></span></button>}
         <div className="chips" style={{ margin: "10px 0" }}>{GROUPS.filter((g) => g !== "Cardio" && g !== "Movilidad").map((g) => <button key={g} className={`chip ${grp === g ? "on" : ""}`} onClick={() => setGrp(grp === g ? null : g)}>{g}</button>)}</div>
         <div style={{ maxHeight: "50vh", overflowY: "auto" }}>
           {list.map((e) => (
             <button key={e.id} className="exrow" style={{ padding: "11px 0", borderBottom: "1px solid var(--ln)" }} onClick={() => onPick(e.id)}>
-              <span>{e.n}<small style={{ display: "block", color: "var(--dm)", fontSize: 12 }}>{e.muscle}</small></span><span>{e.group}</span>
+              <span>{e.n}{e.custom && <em className="cx-tag">Tuyo</em>}<small style={{ display: "block", color: "var(--dm)", fontSize: 12 }}>{e.muscle}</small></span><span>{e.group}</span>
             </button>
           ))}
-          {list.length === 0 && <div className="empty">No hay ejercicios con esa búsqueda.</div>}
+          {list.length === 0 && <div className="empty">No hay ejercicios con esa búsqueda.{canCreate ? " Créalo con el botón de arriba." : ""}</div>}
         </div>
         <button className="btn" onClick={onClose}>Cerrar</button>
+        {creating && <CustomExForm initial={q.trim() ? { n: q.trim(), group: grp || "", other: [], equip: "", unit: "", notes: "" } : null} onClose={() => setCreating(false)}
+          onSave={(ex) => { const id = CUSTOM_EX_API.save(ex); setCreating(false); if (id) onPick(id); }} />}
       </div>
-    </div>
+    </div>,
+    document.querySelector(".arc") || document.body
+  );
+}
+
+function MyExercises() {
+  const [edit, setEdit] = useState(null); // "new" o id
+  const mine = Object.values(EXERCISES).filter((e) => e.custom);
+  if (!CUSTOM_EX_API) return null;
+  const cur = edit && edit !== "new" ? CUSTOM_EX_API.get(edit) : null;
+  return (
+    <>
+      {mine.length === 0 && <p className="hint" style={{ marginTop: 0 }}>Si haces un ejercicio que no está en ARC, créalo tú: nombre, material, músculos y si va con peso, solo repeticiones o tiempo. Luego lo añades a tu rutina o a cualquier entreno.</p>}
+      {mine.map((e) => (
+        <button key={e.id} className="exrow" style={{ padding: "10px 0", borderBottom: "1px solid var(--ln)" }} onClick={() => setEdit(e.id)}>
+          <span>{e.n}<small style={{ display: "block", color: "var(--dm)", fontSize: 12 }}>{[e.equip, e.muscle].filter(Boolean).join(" · ")}</small></span><span style={{ color: "var(--ac)" }}>Editar</span>
+        </button>
+      ))}
+      <button className="btn ghost" style={{ marginTop: 10 }} onClick={() => setEdit("new")}>+ Crear ejercicio</button>
+      {edit && <CustomExForm initial={cur} onClose={() => setEdit(null)} onSave={(ex) => { CUSTOM_EX_API.save(ex, cur ? edit : null); setEdit(null); }}
+        onDelete={cur ? () => { CUSTOM_EX_API.remove(edit); setEdit(null); } : null} />}
+    </>
   );
 }
 
@@ -4366,6 +4451,8 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
       <TrainSummary sessions={state.sessions} />
       <h2>Progreso por ejercicio</h2>
       <ExerciseProgress sessions={state.sessions} /></>}
+      <h2>Mis ejercicios</h2>
+      <MyExercises />
       <h2>Biblioteca de ejercicios</h2>
       <input className="in" placeholder="Buscar: hip thrust, polea, glúteo…" value={q} onChange={(e) => setQ(e.target.value)} />
       <div className="chips" style={{ margin: "10px 0" }}>{GROUPS.map((g) => <button key={g} className={`chip ${grp === g ? "on" : ""}`} onClick={() => setGrp(grp === g ? null : g)}>{g}</button>)}</div>
@@ -7794,7 +7881,7 @@ function CoachLog({ clientId, name, routine, sessions, edit, onSaved, onClose })
           </>
         )}
         <button className="link" style={{ display: "block", margin: "12px auto 0" }} onClick={onClose}>Cancelar</button>
-        {picking && <ExercisePicker onPick={(id) => { setList((l) => [...l, exRow(id)]); setPicking(false); }} onClose={() => setPicking(false)} />}
+        {picking && <ExercisePicker noCreate onPick={(id) => { setList((l) => [...l, exRow(id)]); setPicking(false); }} onClose={() => setPicking(false)} />}
       </div>
     </div>
   );
@@ -7818,7 +7905,7 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
 
   useEffect(() => {
     if (!client.client_id) return;
-    db.clientData(client.client_id).then(setData).catch(() => setErr("No se han podido cargar sus datos."));
+    db.clientData(client.client_id).then((d) => { registerCustomEx(d?.profile?.data?.customEx); setData(d); }).catch(() => setErr("No se han podido cargar sus datos."));
   }, [client.client_id]);
 
   const sum = data ? clientSummary(data, days?.length) : null;
@@ -8153,7 +8240,14 @@ function ArcApp({ user }) {
     await setMedia(key, url);
   };
 
-  const routine = useMemo(() => activeRoutine({ ...state.profile, coachRoutine: state.coachRoutine }), [state.profile?.days, state.profile?.branch, state.profile?.routineMode, state.profile?.customRoutine, state.profile?.charProgram, state.profile?.program, state.coachRoutine]);
+  // Ejercicios propios: se suman a la lista en cada render (así las rutinas y el registro los encuentran)
+  registerCustomEx(state.profile?.customEx);
+  CUSTOM_EX_API = state.onboarded ? {
+    get: (id) => state.profile?.customEx?.[id] || null,
+    save: (ex, id) => { const key = id || `U-${Date.now().toString(36)}`; registerCustomEx({ [key]: ex }); setProfile({ customEx: { ...(state.profile?.customEx || {}), [key]: ex } }); return key; },
+    remove: (id) => { const { [id]: _, ...rest } = state.profile?.customEx || {}; setProfile({ customEx: rest }); },
+  } : null;
+  const routine = useMemo(() => activeRoutine({ ...state.profile, coachRoutine: state.coachRoutine }), [state.profile?.days, state.profile?.branch, state.profile?.routineMode, state.profile?.customRoutine, state.profile?.charProgram, state.profile?.program, state.profile?.customEx, state.coachRoutine]);
   const adh = useMemo(() => (state.profile ? adherenceInfo(state.habits, state.profile.startDate) : null), [state.habits, state.profile]);
   const stats = useMemo(() => {
     if (!state.profile) return null;
