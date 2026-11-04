@@ -628,6 +628,16 @@ let FOODS = {
   tofu: { n: "Tofu firme", p: 15, c: 2, f: 8 },
   soja: { n: "Soja texturizada", p: 50, c: 30, f: 1 },
   fresas: { n: "Fresas", p: 0.7, c: 7.7, f: 0.3 },
+  manzana: { n: "Manzana", p: 0.3, c: 14, f: 0.2 },
+  pera: { n: "Pera", p: 0.4, c: 15, f: 0.1 },
+  naranja: { n: "Naranja", p: 0.9, c: 12, f: 0.1 },
+  mango: { n: "Mango", p: 0.8, c: 15, f: 0.4 },
+  melocoton: { n: "Melocotón", p: 0.9, c: 10, f: 0.3 },
+  sandia: { n: "Sandía", p: 0.6, c: 8, f: 0.2 },
+  melon: { n: "Melón", p: 0.8, c: 8, f: 0.2 },
+  frambuesas: { n: "Frambuesas", p: 1.2, c: 12, f: 0.7 },
+  chocolate85: { n: "Chocolate negro 85%", p: 11, c: 19, f: 46 },
+  cocoRallado: { n: "Coco rallado", p: 6.9, c: 6.4, f: 64 },
   frutosRojos: { n: "Frutos rojos congelados", p: 1, c: 9, f: 0.3 },
   chia: { n: "Semillas de chía", p: 17, c: 8, f: 31 },
   udon: { n: "Fideos udon (cocidos)", p: 2.6, c: 21, f: 0.4 },
@@ -1989,6 +1999,12 @@ select.in{appearance:none}
 .cx-types button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px;border:1px solid var(--ln);border-radius:12px;background:var(--sf2);color:var(--tx);font:inherit;text-align:left;cursor:pointer}
 .cx-types button.on{border-color:var(--ac);background:rgba(212,139,146,.14)}
 .cx-types b{font-size:13.5px}.cx-types small{font-size:11.5px;color:var(--dm)}
+.fswap-w{position:relative;display:inline-flex;align-items:center;gap:4px;min-width:0;flex:0 1 auto;max-width:62%}
+.fswap{appearance:none;-webkit-appearance:none;background:transparent;border:0;border-bottom:1px dashed var(--ac);color:var(--tx);font:inherit;padding:0 14px 1px 0;width:auto;max-width:100%;cursor:pointer;text-overflow:ellipsis}
+.fswap option{color:#000}
+.food em{white-space:nowrap}
+.fswap-hint{font-size:11.5px;color:var(--dm);margin:4px 0 0}
+.fswap-w i{position:absolute;right:0;font-style:normal;font-size:11px;color:var(--ac);pointer-events:none}
 .prog-card{width:100%;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(212,139,146,.16),var(--sf));border:1px solid rgba(212,139,146,.4);border-radius:18px;padding:14px;margin:4px 0 10px;color:var(--tx);font:inherit;text-align:left;cursor:pointer}
 .prog-card.coach{background:linear-gradient(135deg,rgba(245,199,107,.15),var(--sf));border-color:rgba(245,199,107,.4);cursor:default}
 .prog-card>div{flex:1;min-width:0}
@@ -4572,6 +4588,29 @@ const BREADS = [
   ["panMasaMadre", "Masa madre de panadería", null, "Unas 95 kcal la rebanada de 40 g", 40, "rebanada"],
 ];
 const BREAD_IDS = new Set(["panCristal", ...BREADS.map(([id]) => id)]);
+// Fruta y toppings: se pueden cambiar por otros con los mismos hidratos (fruta) o las mismas calorías (toppings)
+const SWAP_GROUPS = [
+  { by: "c", ids: ["platano", "manzana", "pera", "naranja", "kiwi", "fresas", "arandanos", "frambuesas", "frutosRojos", "uvas", "pina", "mango", "melocoton", "sandia", "melon", "datiles"] },
+  { by: "kcal", ids: ["cremaCacahuete", "frutosSecos", "chocolate85", "chia", "cocoRallado"] },
+];
+const FRUIT_UNITS = { platano: [120, "plátano", "plátanos"], manzana: [180, "manzana", "manzanas"], pera: [170, "pera", "peras"], naranja: [200, "naranja", "naranjas"], kiwi: [75, "kiwi", "kiwis"], melocoton: [150, "melocotón", "melocotones"], mango: [300, "mango", "mangos"], datiles: [8, "dátil", "dátiles"], fresas: [15, "fresa", "fresas"] };
+const swapGroupOf = (id) => SWAP_GROUPS.find((gr) => gr.ids.includes(id) && gr.ids.filter((x) => FOODS[x]).length > 1) || null;
+const kcalOf100 = (f) => f.p * 4 + f.c * 4 + f.f * 9;
+const eqGrams = (from, g, to, by) => { const a = FOODS[from], b = FOODS[to]; if (!a || !b) return g; const va = by === "c" ? a.c : kcalOf100(a), vb = by === "c" ? b.c : kcalOf100(b); if (!vb) return g; return Math.max(5, Math.round((g * va / vb) / 5) * 5); };
+const fruitUnits = (food, g) => { const u = FRUIT_UNITS[food]; if (!u) return ""; const n = Math.round((g / u[0]) * 2) / 2; if (n < 0.5) return ""; const t = n % 1 ? `${Math.floor(n) ? Math.floor(n) + " y " : ""}media` : String(n); return ` · ≈ ${t} ${n > 1 ? u[2] : u[1]}`; };
+function FoodSwap({ food, g, onSwap, taken = [] }) {
+  const gr = swapGroupOf(food);
+  if (!gr) return <span>{FOODS[food]?.n || food}</span>;
+  return (
+    <span className="fswap-w">
+      <select className="fswap" value={food} aria-label="Cambiar por otro" onChange={(e) => onSwap(e.target.value, eqGrams(food, g, e.target.value, gr.by))}>
+        {gr.ids.filter((id) => FOODS[id] && (id === food || !taken.includes(id))).map((id) => <option key={id} value={id}>{FOODS[id].n}{id === food ? "" : ` · ${eqGrams(food, g, id, gr.by)} g`}</option>)}
+      </select>
+      <i aria-hidden="true">▾</i>
+    </span>
+  );
+}
+
 const breadUnits = (food, g) => {
   const b = BREADS.find(([id]) => id === food); if (!b || !b[4] || !(g > 0)) return "";
   const n = Math.max(0.5, Math.round((g / b[4]) * 2) / 2);
@@ -4951,6 +4990,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
   const dkey = (m) => `${m.id}:${m.recipe.id || m.recipe.name}`;
   const draftOf = (m) => draft[dkey(m)] || m.items.map((it) => ({ food: it.food, g: Math.round(it.g) }));
   const setDraftG = (m, food, g) => setDraft({ ...draft, [dkey(m)]: draftOf(m).map((it) => (it.food === food ? { ...it, g: Math.max(0, Number(g) || 0) } : it)) });
+  const swapFood = (m, from, to, g) => setDraft({ ...draft, [dkey(m)]: draftOf(m).map((it) => (it.food === from ? { food: to, g } : it)) });
   const markEaten = (m) => {
     const next = { ...eaten };
     if (next[m.id]) delete next[m.id];
@@ -5018,7 +5058,8 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
                 ? <div className="mfoods">{draftOf(m).map((it) => <label className="food edit" key={it.food}><span>{FOODS[it.food]?.n || it.food}</span><span className="gin"><input className="in" type="number" inputMode="numeric" value={it.g} onChange={(e) => setDraftG(m, it.food, e.target.value)} aria-label={`Gramos de ${FOODS[it.food]?.n || it.food}`} /> g</span></label>)}</div>
                 : eaten[m.id] && editing === m.id
                 ? <div className="mfoods">{eaten[m.id].items.map((it) => <label className="food edit" key={it.food}><span>{FOODS[it.food]?.n || it.food}</span><span className="gin"><input className="in" type="number" inputMode="numeric" value={it.g} onChange={(e) => setGrams(m.id, it.food, e.target.value)} aria-label={`Gramos de ${FOODS[it.food]?.n || it.food}`} /> g</span></label>)}</div>
-                : <div className="mfoods">{(eaten[m.id]?.items || (draft[dkey(m)] ? draftOf(m) : m.items)).map((it) => <div className="food" key={it.food}><span>{FOODS[it.food]?.n || it.food}</span><em>{Math.round(it.g)} g{breadUnits(it.food, it.g)}</em></div>)}</div>}
+                : <div className="mfoods">{(eaten[m.id]?.items || (draft[dkey(m)] ? draftOf(m) : m.items)).map((it) => <div className="food" key={it.food}>{eaten[m.id] ? <span>{FOODS[it.food]?.n || it.food}</span> : <FoodSwap food={it.food} g={Math.round(it.g)} taken={(draft[dkey(m)] ? draftOf(m) : m.items).map((x) => x.food)} onSwap={(to, g2) => swapFood(m, it.food, to, g2)} />}<em>{Math.round(it.g)} g{breadUnits(it.food, it.g)}{fruitUnits(it.food, it.g)}</em></div>)}</div>}
+              {!eaten[m.id] && editing !== m.id && (draft[dkey(m)] ? draftOf(m) : m.items).some((it) => swapGroupOf(it.food)) && <p className="fswap-hint">Toca la fruta o el topping subrayado para cambiarlo por otro con los mismos macros.</p>}
               <div className="meat">
                 <button className={`eatbtn${eaten[m.id] ? " on" : ""}`} onClick={() => markEaten(m)}>{eaten[m.id] ? "✓ Comida apuntada" : "Me la he comido"}</button>
                 <button className="eatedit" onClick={() => setEditing(editing === m.id ? null : m.id)}>{editing === m.id ? "Listo" : eaten[m.id] ? "Cambiar cantidades" : "Ajustar cantidades"}</button>
