@@ -1473,6 +1473,12 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .stat3 div{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:12px}
 .stat3 b{display:block;font-size:20px}
 .stat3 span{font-size:12px;color:var(--dm)}
+.cln{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:20px}
+.cln-box{width:100%;max-width:380px;background:linear-gradient(160deg,rgba(212,139,146,.22),var(--sf) 55%);border:1px solid rgba(212,139,146,.45);border-radius:22px;padding:22px 20px;text-align:center;animation:toastIn .4s cubic-bezier(.2,.9,.3,1.3) both}
+.cln-box img{width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:center 20%;border:2px solid var(--ac)}
+.cln-box small{display:block;margin-top:10px;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ac)}
+.cln-box b{display:block;font-size:19px;line-height:1.25;margin:6px 0 10px}
+.cln-box p{font-size:15px;line-height:1.45;margin:0 0 16px;color:var(--tx)}
 .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#fff;color:#000;font-weight:700;font-size:14px;padding:10px 16px;border-radius:999px;z-index:20}
 .nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;background:rgba(0,0,0,.94);border-top:1px solid var(--ln)}
 .nav div{display:flex;width:100%;max-width:430px}
@@ -5548,6 +5554,7 @@ const NOTIF_TXT = {
   comment: "ha comentado tu entreno",
   mention: "te ha mencionado en un comentario",
   tag: "te ha etiquetado en su entreno",
+  coach_log: "ha registrado tu entreno",
 };
 const COMMENT_REPORT = ["Ofensivo o insultos", "Acoso", "Spam", "Otro motivo"];
 
@@ -8076,6 +8083,7 @@ function ArcApp({ user }) {
   useEffect(() => native.onReminderOpen((o) => { if (o === "story") { setTab("inicio"); setTimeout(() => window.dispatchEvent(new Event("arc-story")), 400); } }), []);
   const [screen, setScreen] = useState(null);
   const [toast, setToast] = useState("");
+  const [coachLog, setCoachLog] = useState(null); // aviso: la coach ha apuntado tu entreno
   const [coachView, setCoachView] = useState(true);
   const [stepsAvail, setStepsAvail] = useState(false);
   const [stepsBusy, setStepsBusy] = useState(false);
@@ -8192,6 +8200,17 @@ function ArcApp({ user }) {
       setState((s) => ({ ...s, ...("share_feed" in patch ? { shareFeed: patch.share_feed } : {}), ...("feed_show_kg" in patch ? { showKg: patch.feed_show_kg } : {}) }));
     },
   };
+
+  // Si la coach te ha apuntado un entreno, al abrir la app sale su aviso con el mensaje
+  useEffect(() => {
+    if (!loaded || !state.hasCoach) return;
+    db.social.notifs().then((l) => {
+      const n = (l || []).find((x) => x.kind === "coach_log" && !x.read);
+      let seen = 0; try { seen = Number(localStorage.getItem("arc-coachlog")) || 0; } catch {}
+      if (n && n.id > seen) setCoachLog(n);
+    }).catch(() => {});
+  }, [loaded]);
+  const closeCoachLog = () => { try { localStorage.setItem("arc-coachlog", String(coachLog.id)); } catch {} db.social.markRead?.().catch(() => {}); setCoachLog(null); };
 
   // Pasos y recordatorios (solo en el móvil)
   const [stepsPerm, setStepsPerm] = useState(null); // Android: permiso real de Health Connect en este móvil
@@ -8391,6 +8410,17 @@ function ArcApp({ user }) {
       <style>{CSS + EXTRA_CSS + LEGAL_CSS + PAYWALL_CSS + CLIENTS_CSS + CHECKIN_CSS}</style>
       {paywall && <Paywall media={media} coach={coach} uploadMedia={uploadMedia} setMedia={setMedia} onClose={() => setPaywall(false)} onPremium={() => { setPremium(true); setPaywall(false); setToast("¡Ya tienes ARC completo!"); }} />}
       {toast && <div className="toast" role="status">{toast}</div>}
+      {coachLog && (
+        <div className="cln" onClick={closeCoachLog}>
+          <div className="cln-box" onClick={(e) => e.stopPropagation()}>
+            <img src="/luna/luna-coach.jpg" alt="" />
+            <small>Tu coach</small>
+            <b>{(coachLog.nickname && !/luna/i.test(coachLog.nickname) ? coachLog.nickname : "Luna")} ha registrado tu entreno{coachLog.day_name ? ` de ${coachLog.day_name}` : ""}</b>
+            {coachLog.body && <p>{coachLog.body}</p>}
+            <button className="btn ac" onClick={closeCoachLog}>Gracias</button>
+          </div>
+        </div>
+      )}
       {done && <FinishScreen data={done} onClose={() => setDone(null)} />}
       {levelUp && <LevelUp data={levelUp} onClose={closeLevelUp} />}
       {splash && <Splash onDone={() => setSplash(false)} />}
