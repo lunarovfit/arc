@@ -430,6 +430,7 @@ const focusOf = (p) => p?.focus || (p?.branch === "male" ? "equilibrado" : "glut
 const UPPER_DAYS = ["superiorA", "superiorB", "espaldaBiceps", "empuje", "torsoA", "torsoB", "hombroBrazo", "calistenia", "fullA", "fullB", "fullGA", "fullGB", "fullMA", "fullMB", "fullMC"];
 // ---------- Iconos de línea con los colores de ARC (sustituyen a los emojis) ----------
 const IC = {
+  lock: "M6 11h12v10H6zM8.5 11V7.5a3.5 3.5 0 0 1 7 0V11M12 15v2",
   run: "M13 4a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0M7 21l3-6 3 2v5M10 15l1-6 4 3 3-1M6 11l3-2 2 0",
   bike: "M5.5 18a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM18.5 18a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM5.5 14.5 9 8h6l3.5 6.5M12 14.5 9 8M15 5h2l-2 3",
   wave: "M2 16c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2M2 20c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2M15 5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0M8 12l4-4 4 3",
@@ -1930,6 +1931,14 @@ select.in{appearance:none}
 .cpk-hd b{display:block;font-size:20px;margin-top:2px}
 .cpk-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .cpk-c{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:8px 8px 11px;color:var(--tx);font:inherit;cursor:pointer;min-width:0}
+.cpk-w{display:flex;flex-direction:column;min-width:0}
+.cpk-c.lock{cursor:default}
+.cpk-c.lock .cpk-img img{opacity:.35}
+.cpk-c.lock b,.cpk-c.lock span{opacity:.55}
+.cpk-c:disabled{color:var(--tx)}
+.cpk-lock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:rgba(0,0,0,.45)}
+.cpk-lock b{font-size:12px!important;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff;opacity:1!important;padding:4px 10px!important;border:1px solid rgba(255,255,255,.5);border-radius:999px;background:rgba(0,0,0,.5)}
+.cpk-adm{font-size:11.5px;margin-top:4px;text-align:center}
 .cpk-c.on{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac)}
 .cpk-img{position:relative;width:100%;aspect-ratio:4/5;border-radius:11px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;color:var(--ac);margin-bottom:6px}
 .cpk-img img{width:100%;height:100%;object-fit:cover;object-position:top;filter:grayscale(1) contrast(1.05)}
@@ -4043,6 +4052,9 @@ const CP_PROGRESS = [
   ["Semana 8", "Descarga: haz la mitad de series con el mismo peso. Luego repite el programa o cambia de personaje."],
 ];
 const cpOf = (key) => CHAR_PROGRAMS.find((p) => p.key === key) || null;
+// Programas abiertos (el resto sale con candado y "Próximamente"). Se cambia sin actualizar desde la app (solo la coach): media "cp:abiertos"
+const CP_OPEN = ["kobeni", "ochaco", "annie", "mikasa", "maki", "reigen", "denji", "ippo", "levi", "toji"];
+const cpOpenList = (media) => { const v = media?.["cp:abiertos"]; return v ? String(v).split(",").map((x) => x.trim()).filter(Boolean) : CP_OPEN; };
 const cpLevel = (p) => LEVELS[p.b].findIndex((l) => l.name === p.who);
 // Los días llevan un id propio (R:clave:nºdías:letra) para saber cuándo se ha completado el programa entero
 const cpDayId = (p, i) => `R:${p.key}:${p.days.length}:${DAY_IDS[i]}`;
@@ -4050,9 +4062,11 @@ const cpDays = (p) => p.days.map((d, i) => ({ id: cpDayId(p, i), name: `${p.who.
 const cpDone = (sessions, p) => { const ids = new Set(sessions.map((s) => s.dayId)); return p.days.map((_, i) => ids.has(cpDayId(p, i))); };
 
 // Elegir personaje: tarjetas con su foto, nivel y días
-function CharProgramPicker({ branch, media, current, sessions, onPick, onClose }) {
+function CharProgramPicker({ branch, media, current, sessions, onPick, onClose, isAdmin, setMedia }) {
+  const open = cpOpenList(media);
+  const toggle = (key) => { const next = open.includes(key) ? open.filter((k) => k !== key) : [...open, key]; setMedia?.("cp:abiertos", next.join(",")); };
   const [b, setB] = useState(branch === "male" ? "male" : "female");
-  const list = CHAR_PROGRAMS.filter((p) => p.b === b).sort((x, y) => cpLevel(x) - cpLevel(y));
+  const list = CHAR_PROGRAMS.filter((p) => p.b === b).sort((x, y) => (open.includes(y.key) - open.includes(x.key)) || cpLevel(x) - cpLevel(y));
   return (
     <div className="cpk">
       <div className="cpk-hd"><div><small>Programas de personajes</small><b>¿Con quién entrenas?</b></div>{onClose && <button className="link" onClick={onClose}>Cerrar</button>}</div>
@@ -4062,13 +4076,18 @@ function CharProgramPicker({ branch, media, current, sessions, onPick, onClose }
         {list.map((p) => {
           const img = mediaOr(media, levelKey(p.b, "otaku", cpLevel(p)));
           const done = cpDone(sessions, p).every(Boolean);
+          const locked = !open.includes(p.key) && current !== p.key;
           return (
-            <button key={p.key} className={`cpk-c${current === p.key ? " on" : ""}`} onClick={() => onPick(p.key)}>
-              <div className="cpk-img">{img ? <img src={img} alt="" /> : <Ic n="star" size={28} />}{done && <i className="cpk-bdg"><Ic n="star" size={11} color="#000" sw={2.4} /></i>}</div>
-              <b>{p.who}</b>
-              <span>{p.tag}</span>
-              <small>{p.days.length} días · {p.level}</small>
-            </button>
+            <div key={p.key} className="cpk-w">
+              <button className={`cpk-c${current === p.key ? " on" : ""}${locked ? " lock" : ""}`} disabled={locked && !isAdmin} onClick={() => onPick(p.key)}>
+                <div className="cpk-img">{img ? <img src={img} alt="" /> : !locked && <Ic n="star" size={28} />}{done && <i className="cpk-bdg"><Ic n="star" size={11} color="#000" sw={2.4} /></i>}
+                  {locked && <div className="cpk-lock"><Ic n="lock" size={26} color="#fff" /><b>Próximamente</b></div>}</div>
+                <b>{p.who}</b>
+                <span>{p.tag}</span>
+                <small>{p.days.length} días · {p.level}</small>
+              </button>
+              {isAdmin && setMedia && <button className="link cpk-adm" onClick={() => toggle(p.key)}>{open.includes(p.key) ? "Cerrar (solo tú)" : "Abrir a todos"}</button>}
+            </div>
           );
         })}
       </div>
@@ -4291,7 +4310,7 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
         <button className={mode === "custom" ? "on" : ""} onClick={() => { setProfile({ routineMode: "custom" }); setCharPick(false); }}>Mi propia rutina</button>
       </div>}
       {mode === "char" && (charPick || !cpOf(state.profile.charProgram)) && (
-        <CharProgramPicker branch={state.profile.branch} media={media} current={state.profile.charProgram} sessions={state.sessions}
+        <CharProgramPicker branch={state.profile.branch} media={media} current={state.profile.charProgram} sessions={state.sessions} isAdmin={coach || state.role === "coach" || state.role === "admin"} setMedia={setMedia}
           onClose={cpOf(state.profile.charProgram) ? () => setCharPick(false) : null}
           onPick={(key) => { setProfile({ routineMode: "char", charProgram: key }); setCharPick(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
       )}
