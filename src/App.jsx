@@ -758,6 +758,8 @@ let RECIPES = [
   {"id": "rl17", "slot": "desayuno", "mode": "sanji", "name": "Brunch completo de domingo", "items": [["huevo", 120], ["panIntegral", "c"], ["pollo", "p"], ["aguacate", "f"], ["yogurProt", 125], ["arandanos", 50]], "steps": ["Tuesta el pan y úntalo con el aguacate machacado con sal y pimienta.", "Pon por encima el pollo desmechado.", "Revuelve los huevos a fuego bajo para que queden jugosos.", "Al lado, yogur con arándanos y canela."], "plate": "Plato grande con el revuelto y la tostada, y el yogur en un bol aparte."},
   {"id": "rl18", "slot": "desayuno", "mode": "sencilla", "name": "Tostadas de centeno con tomate y jamón", "items": [["panCenteno", "c"], ["tomateUntar", 30], ["jamon", 40], ["yogurProt", "p"], ["uvas", 80]], "how": "Tuesta el pan de centeno, unta el tomate (el de bote ya lleva su aceite) y pon el jamón encima. Quítale la grasa blanca si quieres. De postre, un puñado de uvas, y un yogur proteico al lado para llegar a tu proteína."},
   {"id": "rl19", "slot": "desayuno", "mode": "sencilla", "name": "Tortitas proteicas de avena y zanahoria", "items": [["avena", "c"], ["proteina", 20], ["claras", "p"], ["huevo", 60], ["zanahoria", 60], ["quesoBatido", 100], ["mermelada", 20], ["arandanos", 40]], "how": "Tritura o mezcla la avena, la proteína, las claras, el huevo y la zanahoria rallada fina con canela y una pizca de levadura. Deja reposar 5 min y haz tortitas pequeñas a fuego medio-bajo. Encima, queso batido con canela, mermelada y arándanos. Sin zanahoria: pon 15-20 g más de avena o harina de avena.", "steps": ["Ralla la zanahoria muy fina y apriétala con las manos para quitarle el agua.", "Mezcla la avena (o harina de avena), la proteína, las claras, el huevo, la zanahoria, canela, una pizca de sal y media cucharadita de levadura química. Si no quieres zanahoria, pon 15-20 g más de avena.", "Deja reposar la masa 5 minutos: la avena absorbe líquido y las tortitas no se rompen. Tiene que quedar espesa, como un yogur. Si está muy líquida, una cucharada más de avena.", "Sartén antiadherente a fuego medio-bajo, untada con unas gotas de aceite con una servilleta. Echa un cucharón pequeño por tortita y tapa la sartén.", "Dales la vuelta cuando salgan burbujas y los bordes estén secos (2-3 min). Si se pegan, la sartén estaba fría o la diste la vuelta antes de tiempo.", "Monta con el queso batido con canela, la mermelada y los arándanos por encima."]},
+  {"id": "rl20", "slot": "cena", "mode": "sanji", "name": "Nachos proteicos de ternera al horno", "items": [["tortillaMaiz", "c"], ["terneraPicada", "p"], ["mozzarella", 20], ["guacamole", "f"], ["tomateFrito", 40], ["verduras", 80]], "how": "Tortillas de maíz cortadas en triángulos y horneadas hasta que crujan, con ternera picada, tomate, un poco de mozzarella gratinada, guacamole y pico de gallo.", "steps": ["Corta las tortillas de maíz en triángulos, ponlas en la bandeja sin aceite y hornéalas 8-10 minutos a 200 °C hasta que estén crujientes. Vigílalas: se queman rápido.", "Mientras, haz la ternera picada en la sartén con sal, pimentón, comino y un poco de ajo en polvo. Añade el tomate frito al final.", "Echa la carne sobre los nachos, reparte la mozzarella y gratina 2-3 minutos.", "Pica tomate, cebolla y cilantro con un poco de limón (pico de gallo) y ponlo por encima con el guacamole."], "plate": "", "tupper": false, "active": true},
+  {"id": "rl21", "slot": "comida", "mode": "sencilla", "name": "Nachos de pollo con dip de yogur", "items": [["tortillaMaiz", "c"], ["tirasPollo", "p"], ["yogurProt", 80], ["guacamole", "f"], ["verduras", 80]], "how": "Nachos caseros de tortilla de maíz con tiras de pollo especiadas, dip de yogur proteico con lima y ajo, guacamole y pico de gallo.", "steps": ["Corta las tortillas de maíz en triángulos y hornéalas 8-10 minutos a 200 °C, o 5-6 minutos en la freidora de aire, hasta que crujan.", "Saltea las tiras de pollo con pimentón, comino, sal y un chorrito de lima.", "Para el dip: yogur proteico con zumo de lima, sal, ajo en polvo y un poco de cilantro o perejil.", "Monta: nachos, pollo, pico de gallo (tomate y cebolla picados) y guacamole. El dip, aparte para mojar."], "plate": "", "tupper": false, "active": true},
 ];
 
 const SLOT_NAMES = { pre: "Pre-entreno", desayuno: "Desayuno", mediaManana: "Media mañana", comida: "Comida", merienda: "Merienda", cena: "Cena" };
@@ -2005,6 +2007,43 @@ select.in{appearance:none}
 .food em{white-space:nowrap}
 .fswap-hint{font-size:11.5px;color:var(--dm);margin:4px 0 0}
 .fswap-w i{position:absolute;right:0;font-style:normal;font-size:11px;color:var(--ac);pointer-events:none}
+.fl-box{max-height:90vh;overflow-y:auto}
+.fl-tabs{flex-wrap:nowrap;overflow-x:auto;margin:10px -2px 8px;padding-bottom:2px;scrollbar-width:none}
+.fl-tabs::-webkit-scrollbar{display:none}
+.fl-tabs .chip{flex:none}
+.fl-new{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.fl-new button{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border:1px dashed rgba(212,139,146,.6);border-radius:12px;background:rgba(212,139,146,.08);color:var(--tx);font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+.fl-list{max-height:48vh;overflow-y:auto}
+.fl-row{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--ln)}
+.fl-row-main,.fl-row.sm{flex:1;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;background:none;border:0;color:var(--tx);font:inherit;text-align:left;cursor:pointer;min-width:0}
+.fl-row.sm{width:100%;border-bottom:1px solid var(--ln)}
+.fl-row span{min-width:0;font-size:14.5px}
+.fl-row small{display:block;font-size:12px;color:var(--dm);margin-top:1px}
+.fl-row em{flex:none;font-style:normal;font-size:13px;font-weight:700;color:var(--ac)}
+.fl-edit{flex:none;background:none;border:0;color:var(--dm);font:inherit;font-size:12px;text-decoration:underline;cursor:pointer}
+.fl-lbl{display:block;font-size:12px;color:var(--dm);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.05em}
+.fl-mac{display:grid;grid-template-columns:1fr 1fr 1fr 64px;gap:8px;align-items:end}
+.fl-mac label{display:grid;gap:4px;font-size:11.5px;color:var(--dm)}
+.fl-mac .in{padding:9px 8px;margin:0;min-width:0}
+.fl-mac div{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--sf2);border-radius:12px;height:42px}
+.fl-mac div span{font-size:10.5px;color:var(--dm)}.fl-mac div b{font-size:15px}
+.fl-por{display:grid;grid-template-columns:100px 1fr;gap:8px}
+.fl-por .in{margin:0}
+.fl-serv{display:flex;align-items:center;gap:16px}
+.fl-serv button,.fl-qty button{width:42px;height:42px;border-radius:12px;border:1px solid var(--ln);background:var(--sf2);color:var(--tx);font-size:20px;cursor:pointer}
+.fl-serv b{font-size:20px;min-width:24px;text-align:center}
+.fl-ing{display:grid;grid-template-columns:1fr 70px 14px 24px;gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid var(--ln)}
+.fl-ing span{font-size:14px;min-width:0}.fl-ing small{display:block;font-size:11.5px;color:var(--dm)}
+.fl-ing .in{margin:0;padding:8px 6px;text-align:center}.fl-ing em{font-style:normal;color:var(--dm);font-size:12px}
+.fl-tot{margin:10px 0 2px;padding:10px 12px;border-radius:12px;background:rgba(212,139,146,.1)}
+.fl-tot b{display:block;font-size:15px}.fl-tot span{font-size:12.5px;color:var(--dm)}
+.fl-qty{display:grid;grid-template-columns:42px 1fr 42px;gap:10px;margin:12px 0}
+.fl-qty .in{margin:0;text-align:center;font-size:20px;font-weight:800}
+.fl-big{text-align:center;margin:6px 0 10px}.fl-big b{font-size:40px;font-weight:800;display:block;line-height:1}.fl-big span{font-size:13px;color:var(--dm)}
+.fl-kp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fl-kp div{background:var(--sf2);border-radius:12px;padding:10px;text-align:center}
+.fl-kp b{display:block;font-size:17px}.fl-kp span{font-size:11.5px;color:var(--dm)}
+.fl-meal{margin-top:8px}.fl-meal>small{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ac)}
 .prog-card{width:100%;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(212,139,146,.16),var(--sf));border:1px solid rgba(212,139,146,.4);border-radius:18px;padding:14px;margin:4px 0 10px;color:var(--tx);font:inherit;text-align:left;cursor:pointer}
 .prog-card.coach{background:linear-gradient(135deg,rgba(245,199,107,.15),var(--sf));border-color:rgba(245,199,107,.4);cursor:default}
 .prog-card>div{flex:1;min-width:0}
@@ -4866,6 +4905,223 @@ function ShopTips() {
 }
 
 // Picoteos y extras: lo que comes fuera del plan también cuenta
+// Catálogo de supermercado (por 100 g, valores aproximados de etiqueta: pueden variar según el envase)
+const CATALOG = [["cat-platano", "Plátano", "Genérico", 1.1, 23, 0.3, 120, "1 plátano"], ["cat-manzana", "Manzana", "Genérico", 0.3, 14, 0.2, 180, "1 manzana"], ["cat-pera", "Pera", "Genérico", 0.4, 15, 0.1, 170, "1 pera"], ["cat-naranja", "Naranja", "Genérico", 0.9, 12, 0.1, 200, "1 naranja"], ["cat-mandarina", "Mandarina", "Genérico", 0.8, 12, 0.3, 80, "1 mandarina"], ["cat-kiwi", "Kiwi", "Genérico", 1.1, 11, 0.4, 75, "1 kiwi"], ["cat-fresas", "Fresas", "Genérico", 0.7, 7.7, 0.3, 150, "1 bol"], ["cat-arandanos", "Arándanos", "Genérico", 0.7, 11, 0.3, 125, "1 tarrina"], ["cat-frambuesas", "Frambuesas", "Genérico", 1.2, 12, 0.7, 125, "1 tarrina"], ["cat-uvas", "Uvas", "Genérico", 0.7, 17, 0.2, 100, "1 racimo pequeño"], ["cat-pina", "Piña", "Genérico", 0.5, 13, 0.1, 150, "1 rodaja gruesa"], ["cat-mango", "Mango", "Genérico", 0.8, 15, 0.4, 150, "medio mango"], ["cat-melocoton", "Melocotón", "Genérico", 0.9, 10, 0.3, 150, "1 melocotón"], ["cat-sandia", "Sandía", "Genérico", 0.6, 8, 0.2, 300, "1 tajada"], ["cat-melon", "Melón", "Genérico", 0.8, 8, 0.2, 250, "1 tajada"], ["cat-cerezas", "Cerezas", "Genérico", 1.1, 16, 0.2, 100, "1 puñado"], ["cat-higos", "Higos", "Genérico", 0.8, 19, 0.3, 50, "1 higo"], ["cat-datiles-medjoul", "Dátiles Medjoul", "Genérico", 1.8, 75, 0.2, 24, "1 dátil"], ["cat-aguacate", "Aguacate", "Genérico", 2, 8.5, 14.7, 70, "medio aguacate"], ["cat-granada", "Granada", "Genérico", 1.7, 19, 1.2, 100, "1 bol"], ["cat-papaya", "Papaya", "Genérico", 0.5, 11, 0.3, 150, "1 bol"], ["cat-tomate", "Tomate", "Genérico", 0.9, 3.9, 0.2, 120, "1 tomate"], ["cat-lechuga", "Lechuga", "Genérico", 1.4, 2.9, 0.2, 80, "1 plato"], ["cat-espinacas", "Espinacas", "Genérico", 2.9, 3.6, 0.4, 100, "1 puñado grande"], ["cat-brocoli", "Brócoli", "Genérico", 2.8, 7, 0.4, 150, "1 ración"], ["cat-calabacin", "Calabacín", "Genérico", 1.2, 3.1, 0.3, 200, "1 calabacín"], ["cat-berenjena", "Berenjena", "Genérico", 1, 6, 0.2, 200, "1 berenjena"], ["cat-pimiento-rojo", "Pimiento rojo", "Genérico", 1, 6, 0.3, 150, "1 pimiento"], ["cat-cebolla", "Cebolla", "Genérico", 1.1, 9, 0.1, 110, "1 cebolla"], ["cat-zanahoria", "Zanahoria", "Genérico", 0.9, 9.6, 0.2, 80, "1 zanahoria"], ["cat-pepino", "Pepino", "Genérico", 0.7, 3.6, 0.1, 200, "1 pepino"], ["cat-champinones", "Champiñones", "Genérico", 3.1, 3.3, 0.3, 100, "1 ración"], ["cat-judias-verdes", "Judías verdes", "Genérico", 1.8, 7, 0.2, 150, "1 ración"], ["cat-coliflor", "Coliflor", "Genérico", 1.9, 5, 0.3, 150, "1 ración"], ["cat-calabaza", "Calabaza", "Genérico", 1, 6.5, 0.1, 150, "1 ración"], ["cat-esparragos-verdes", "Espárragos verdes", "Genérico", 2.2, 3.9, 0.1, 100, "1 manojo pequeño"], ["cat-maiz-dulce-en-lata", "Maíz dulce en lata", "Genérico", 2.9, 15, 1.2, 70, "1 lata pequeña"], ["cat-patata", "Patata", "Genérico", 2, 17, 0.1, 200, "1 patata"], ["cat-boniato", "Boniato", "Genérico", 1.6, 20, 0.1, 200, "1 boniato"], ["cat-pechuga-de-pollo", "Pechuga de pollo", "Genérico", 23, 0, 1.5, 150, "1 filete"], ["cat-contramuslo-de-pollo-sin-piel", "Contramuslo de pollo sin piel", "Genérico", 19, 0, 6, 120, "1 contramuslo"], ["cat-pechuga-de-pavo", "Pechuga de pavo", "Genérico", 24, 0, 1, 150, "1 filete"], ["cat-lomo-de-cerdo", "Lomo de cerdo", "Genérico", 21, 0, 6, 150, "1 filete"], ["cat-solomillo-de-cerdo", "Solomillo de cerdo", "Genérico", 21, 0, 4, 150, "1 ración"], ["cat-ternera-magra-filete", "Ternera magra (filete)", "Genérico", 22, 0, 4, 150, "1 filete"], ["cat-carne-picada-mixta", "Carne picada mixta", "Genérico", 17, 0, 18, 125, "1 ración"], ["cat-salmon-fresco", "Salmón fresco", "Genérico", 20, 0, 13, 150, "1 lomo"], ["cat-merluza", "Merluza", "Genérico", 18, 0, 1.3, 150, "1 ración"], ["cat-bacalao-fresco", "Bacalao fresco", "Genérico", 18, 0, 0.7, 150, "1 ración"], ["cat-atun-fresco", "Atún fresco", "Genérico", 23, 0, 4.9, 150, "1 ración"], ["cat-gambas-peladas", "Gambas peladas", "Genérico", 20, 0, 1, 100, "1 ración"], ["cat-sardinas", "Sardinas", "Genérico", 21, 0, 9, 100, "1 ración"], ["cat-dorada", "Dorada", "Genérico", 20, 0, 6, 150, "1 ración"], ["cat-lubina", "Lubina", "Genérico", 19, 0, 4, 150, "1 ración"], ["cat-huevo", "Huevo", "Genérico", 12.5, 0.7, 10, 60, "1 huevo M"], ["cat-clara-de-huevo", "Clara de huevo", "Genérico", 11, 0.7, 0.2, 33, "1 clara"], ["cat-arroz-blanco-crudo", "Arroz blanco (crudo)", "Genérico", 7, 78, 0.6, 80, "1 ración en crudo"], ["cat-arroz-integral-crudo", "Arroz integral (crudo)", "Genérico", 7.5, 74, 2.5, 80, "1 ración en crudo"], ["cat-arroz-cocido", "Arroz cocido", "Genérico", 2.7, 28, 0.3, 200, "1 plato"], ["cat-pasta-cruda", "Pasta (cruda)", "Genérico", 12.5, 72, 1.5, 80, "1 ración en crudo"], ["cat-pasta-cocida", "Pasta cocida", "Genérico", 5, 30, 0.9, 200, "1 plato"], ["cat-copos-de-avena", "Copos de avena", "Genérico", 13, 60, 7, 40, "1 ración"], ["cat-quinoa-cruda", "Quinoa (cruda)", "Genérico", 14, 64, 6, 70, "1 ración"], ["cat-cuscus-crudo", "Cuscús (crudo)", "Genérico", 12.8, 72, 0.6, 70, "1 ración"], ["cat-pan-blanco-de-barra", "Pan blanco de barra", "Genérico", 9, 51, 1.6, 60, "1 trozo"], ["cat-pan-integral", "Pan integral", "Genérico", 10, 44, 2.5, 60, "2 rebanadas"], ["cat-legumbres-cocidas-garbanzos", "Legumbres cocidas (garbanzos)", "Genérico", 7, 15, 2.5, 200, "1 bote escurrido"], ["cat-lentejas-cocidas", "Lentejas cocidas", "Genérico", 9, 13, 0.6, 200, "1 plato"], ["cat-leche-entera", "Leche entera", "Genérico", 3.1, 4.7, 3.6, 250, "1 vaso"], ["cat-leche-semidesnatada", "Leche semidesnatada", "Genérico", 3.2, 4.7, 1.6, 250, "1 vaso"], ["cat-leche-desnatada", "Leche desnatada", "Genérico", 3.4, 4.8, 0.2, 250, "1 vaso"], ["cat-yogur-natural", "Yogur natural", "Genérico", 3.6, 4.7, 3, 125, "1 yogur"], ["cat-yogur-griego-natural", "Yogur griego natural", "Genérico", 3.5, 4, 10, 125, "1 yogur"], ["cat-queso-fresco-tipo-burgos", "Queso fresco tipo Burgos", "Genérico", 12, 3, 11, 60, "1 ración"], ["cat-queso-curado", "Queso curado", "Genérico", 25, 0.5, 34, 30, "3 lonchas finas"], ["cat-queso-en-lonchas", "Queso en lonchas", "Genérico", 23, 1, 25, 20, "1 loncha"], ["cat-mozzarella-fresca", "Mozzarella fresca", "Genérico", 18, 1, 17, 125, "1 bola"], ["cat-aceite-de-oliva-virgen-extra", "Aceite de oliva virgen extra", "Genérico", 0, 0, 100, 10, "1 cucharada"], ["cat-mantequilla", "Mantequilla", "Genérico", 0.7, 0.6, 82, 10, "1 nuez"], ["cat-almendras", "Almendras", "Genérico", 21, 9, 52, 25, "1 puñado"], ["cat-nueces", "Nueces", "Genérico", 15, 7, 65, 25, "1 puñado"], ["cat-anacardos", "Anacardos", "Genérico", 18, 27, 44, 25, "1 puñado"], ["cat-pistachos", "Pistachos", "Genérico", 20, 17, 46, 25, "1 puñado"], ["cat-cacahuetes-tostados", "Cacahuetes tostados", "Genérico", 26, 12, 49, 25, "1 puñado"], ["cat-miel", "Miel", "Genérico", 0.4, 82, 0, 10, "1 cucharadita"], ["cat-azucar", "Azúcar", "Genérico", 0, 100, 0, 8, "1 sobre"], ["cat-chocolate-negro-85", "Chocolate negro 85%", "Genérico", 11, 19, 46, 20, "2 onzas"], ["cat-chocolate-con-leche", "Chocolate con leche", "Genérico", 7, 57, 31, 20, "2 onzas"], ["cat-mermelada", "Mermelada", "Genérico", 0.4, 60, 0, 20, "1 cucharada"], ["cat-ketchup", "Ketchup", "Genérico", 1.2, 24, 0.1, 15, "1 cucharada"], ["cat-mayonesa", "Mayonesa", "Genérico", 1.1, 1.5, 76, 15, "1 cucharada"], ["cat-hummus", "Hummus", "Genérico", 7, 12, 17, 50, "2 cucharadas"], ["cat-cafe-solo", "Café solo", "Genérico", 0.1, 0, 0, 30, "1 taza"], ["cat-cafe-con-leche-semi", "Café con leche (semi)", "Genérico", 2.5, 3.8, 1.3, 200, "1 taza"], ["cat-zumo-de-naranja", "Zumo de naranja", "Genérico", 0.7, 10, 0.2, 200, "1 vaso"], ["cat-refresco-de-cola", "Refresco de cola", "Genérico", 0, 10.6, 0, 330, "1 lata"], ["cat-refresco-de-cola-zero", "Refresco de cola zero", "Genérico", 0, 0, 0, 330, "1 lata"], ["cat-cerveza", "Cerveza", "Genérico", 0.5, 3.5, 0, 330, "1 caña grande"], ["cat-cerveza-sin-alcohol", "Cerveza sin alcohol", "Genérico", 0.3, 4.6, 0, 330, "1 lata"], ["cat-vino-tinto", "Vino tinto", "Genérico", 0.1, 2.6, 0, 150, "1 copa"], ["cat-bebida-energetica-sin-azucar", "Bebida energética sin azúcar", "Genérico", 0, 0.3, 0, 500, "1 lata"], ["cat-queso-fresco-batido-0-hacendado", "Queso fresco batido 0% (Hacendado)", "Mercadona", 8, 3.5, 0.2, 250, "1 tarrina"], ["cat-yogur-proteinas-natural-hacendado", "Yogur +Proteínas natural (Hacendado)", "Mercadona", 10, 3.7, 0.5, 120, "1 yogur"], ["cat-yogur-proteinas-sabores-hacendado", "Yogur +Proteínas sabores (Hacendado)", "Mercadona", 10, 5.5, 0.3, 120, "1 yogur"], ["cat-natillas-proteinas-hacendado", "Natillas +Proteínas (Hacendado)", "Mercadona", 10, 9, 1.5, 200, "1 tarrina"], ["cat-mousse-proteinas-chocolate-hacendado", "Mousse +Proteínas chocolate (Hacendado)", "Mercadona", 10, 8, 2, 140, "1 tarrina"], ["cat-bebida-proteinas-cacao-hacendado", "Bebida +Proteínas cacao (Hacendado)", "Mercadona", 8, 5, 0.8, 250, "1 botella"], ["cat-pudding-proteinas-hacendado", "Pudding +Proteínas (Hacendado)", "Mercadona", 10, 8, 1.5, 200, "1 tarrina"], ["cat-skyr-natural-hacendado", "Skyr natural (Hacendado)", "Mercadona", 11, 4, 0.2, 150, "1 yogur"], ["cat-queso-cottage-hacendado", "Queso cottage (Hacendado)", "Mercadona", 13, 1.6, 4, 200, "1 tarrina"], ["cat-queso-burgos-0-hacendado", "Queso Burgos 0% (Hacendado)", "Mercadona", 12, 4, 0.2, 60, "1 ración"], ["cat-queso-rallado-mozzarella-hacendado", "Queso rallado mozzarella (Hacendado)", "Mercadona", 21, 2, 21, 30, "1 puñado"], ["cat-queso-en-lonchas-light-hacendado", "Queso en lonchas light (Hacendado)", "Mercadona", 30, 1, 12, 20, "1 loncha"], ["cat-leche-semidesnatada-sin-lactosa-hacendad", "Leche semidesnatada sin lactosa (Hacendado)", "Mercadona", 3.1, 4.7, 1.6, 250, "1 vaso"], ["cat-bebida-de-avena-hacendado", "Bebida de avena (Hacendado)", "Mercadona", 0.5, 7, 1.3, 250, "1 vaso"], ["cat-bebida-de-almendras-sin-azucar-hacendado", "Bebida de almendras sin azúcar (Hacendado)", "Mercadona", 0.5, 0, 1.5, 250, "1 vaso"], ["cat-claras-de-huevo-pasteurizadas-hacendado", "Claras de huevo pasteurizadas (Hacendado)", "Mercadona", 11, 0.7, 0.2, 100, "100 ml"], ["cat-pechuga-de-pavo-90-lonchas-hacendado", "Pechuga de pavo 90% lonchas (Hacendado)", "Mercadona", 19, 1, 1.3, 50, "4 lonchas"], ["cat-jamon-cocido-extra-hacendado", "Jamón cocido extra (Hacendado)", "Mercadona", 20, 1, 3, 50, "4 lonchas"], ["cat-jamon-serrano-hacendado", "Jamón serrano (Hacendado)", "Mercadona", 31, 0.5, 13, 30, "3 lonchas"], ["cat-lomo-embuchado-hacendado", "Lomo embuchado (Hacendado)", "Mercadona", 38, 1, 9, 30, "6 lonchas"], ["cat-tiras-de-pechuga-de-pollo-hacendado", "Tiras de pechuga de pollo (Hacendado)", "Mercadona", 23, 0.6, 0.6, 100, "1 ración"], ["cat-hamburguesa-de-pollo-hacendado", "Hamburguesa de pollo (Hacendado)", "Mercadona", 18, 2, 7, 90, "1 hamburguesa"], ["cat-hamburguesa-vacuno-95-hacendado", "Hamburguesa vacuno 95% (Hacendado)", "Mercadona", 20, 1, 5, 125, "1 hamburguesa"], ["cat-burger-meat-mixta-hacendado", "Burger meat mixta (Hacendado)", "Mercadona", 15, 3, 17, 125, "1 hamburguesa"], ["cat-atun-al-natural-lata-hacendado", "Atún al natural lata (Hacendado)", "Mercadona", 24, 0, 1, 52, "1 lata escurrida"], ["cat-atun-en-aceite-de-oliva-hacendado", "Atún en aceite de oliva (Hacendado)", "Mercadona", 25, 0, 11, 52, "1 lata escurrida"], ["cat-salmon-ahumado-hacendado", "Salmón ahumado (Hacendado)", "Mercadona", 22, 0.5, 9, 50, "media tarrina"], ["cat-gulas-hacendado", "Gulas (Hacendado)", "Mercadona", 10, 4, 9, 100, "1 ración"], ["cat-langostinos-cocidos-hacendado", "Langostinos cocidos (Hacendado)", "Mercadona", 20, 0, 1.5, 100, "1 ración"], ["cat-surimi-palitos-hacendado", "Surimi palitos (Hacendado)", "Mercadona", 7, 15, 1, 50, "4 palitos"], ["cat-pan-de-molde-100-integral-hacendado", "Pan de molde 100% integral (Hacendado)", "Mercadona", 11, 37, 4.5, 30, "1 rebanada"], ["cat-pan-de-centeno-82-hacendado", "Pan de centeno 82% (Hacendado)", "Mercadona", 5.5, 41, 1.3, 55, "1 rebanada"], ["cat-pan-de-semillas-hacendado", "Pan de semillas (Hacendado)", "Mercadona", 11, 43, 8, 50, "1 rebanada"], ["cat-tortitas-de-arroz-hacendado", "Tortitas de arroz (Hacendado)", "Mercadona", 7.5, 80, 1.7, 8, "1 tortita"], ["cat-tortitas-de-maiz-hacendado", "Tortitas de maíz (Hacendado)", "Mercadona", 8, 79, 2.5, 8, "1 tortita"], ["cat-tortitas-de-legumbres-hacendado", "Tortitas de legumbres (Hacendado)", "Mercadona", 25, 55, 3.1, 8, "1 tortita"], ["cat-picos-integrales-hacendado", "Picos integrales (Hacendado)", "Mercadona", 13, 66, 7, 30, "1 puñado"], ["cat-wrap-integral-hacendado", "Wrap integral (Hacendado)", "Mercadona", 9, 48, 7, 60, "1 wrap"], ["cat-copos-de-avena-hacendado", "Copos de avena (Hacendado)", "Mercadona", 13, 58, 7, 40, "1 ración"], ["cat-harina-de-avena-hacendado", "Harina de avena (Hacendado)", "Mercadona", 13, 58, 7, 40, "1 ración"], ["cat-muesli-0-crunchy-hacendado", "Muesli 0% crunchy (Hacendado)", "Mercadona", 9, 52, 12, 40, "1 ración"], ["cat-cereales-copos-de-maiz-hacendado", "Cereales copos de maíz (Hacendado)", "Mercadona", 7, 84, 1, 30, "1 bol"], ["cat-arroz-vaporizado-hacendado", "Arroz vaporizado (Hacendado)", "Mercadona", 7, 79, 0.6, 80, "1 ración en crudo"], ["cat-vasito-de-arroz-integral-hacendado", "Vasito de arroz integral (Hacendado)", "Mercadona", 3, 30, 1.5, 125, "1 vasito"], ["cat-vasito-de-quinoa-hacendado", "Vasito de quinoa (Hacendado)", "Mercadona", 4.5, 21, 3, 125, "1 vasito"], ["cat-pasta-de-lentejas-rojas-hacendado", "Pasta de lentejas rojas (Hacendado)", "Mercadona", 25, 50, 2.5, 80, "1 ración en crudo"], ["cat-noquis-de-patata-hacendado", "Ñoquis de patata (Hacendado)", "Mercadona", 4.5, 37, 0.4, 200, "1 ración"], ["cat-garbanzos-cocidos-bote-hacendado", "Garbanzos cocidos bote (Hacendado)", "Mercadona", 7, 15, 2.5, 200, "1 bote escurrido"], ["cat-lentejas-cocidas-bote-hacendado", "Lentejas cocidas bote (Hacendado)", "Mercadona", 8, 12, 0.6, 200, "1 bote escurrido"], ["cat-alubias-blancas-cocidas-hacendado", "Alubias blancas cocidas (Hacendado)", "Mercadona", 7, 12, 0.5, 200, "1 bote escurrido"], ["cat-edamame-congelado-hacendado", "Edamame congelado (Hacendado)", "Mercadona", 11, 8, 5, 100, "1 ración"], ["cat-tofu-firme-hacendado", "Tofu firme (Hacendado)", "Mercadona", 15, 2, 8, 100, "1 ración"], ["cat-soja-texturizada-hacendado", "Soja texturizada (Hacendado)", "Mercadona", 50, 30, 1, 40, "1 ración en seco"], ["cat-hummus-clasico-hacendado", "Hummus clásico (Hacendado)", "Mercadona", 7, 11, 17, 50, "2 cucharadas"], ["cat-guacamole-hacendado", "Guacamole (Hacendado)", "Mercadona", 1.9, 3.8, 13.7, 50, "2 cucharadas"], ["cat-crema-de-cacahuete-100-hacendado", "Crema de cacahuete 100% (Hacendado)", "Mercadona", 30, 12, 47, 15, "1 cucharada"], ["cat-crema-de-almendras-hacendado", "Crema de almendras (Hacendado)", "Mercadona", 22, 7, 55, 15, "1 cucharada"], ["cat-frutos-secos-naturales-hacendado", "Frutos secos naturales (Hacendado)", "Mercadona", 22, 19, 48, 25, "1 puñado"], ["cat-chocolate-negro-85-hacendado", "Chocolate negro 85% (Hacendado)", "Mercadona", 11, 19, 46, 20, "2 onzas"], ["cat-cacao-puro-desgrasado-hacendado", "Cacao puro desgrasado (Hacendado)", "Mercadona", 25, 16, 16, 10, "1 cucharada"], ["cat-mermelada-0-hacendado", "Mermelada 0% (Hacendado)", "Mercadona", 0.6, 11.5, 0, 20, "1 cucharada"], ["cat-sirope-sin-azucar-hacendado", "Sirope sin azúcar (Hacendado)", "Mercadona", 0, 2, 0, 15, "1 chorrito"], ["cat-tomate-frito-hacendado", "Tomate frito (Hacendado)", "Mercadona", 1.5, 9.5, 3.5, 60, "3 cucharadas"], ["cat-salsa-de-tomate-y-albahaca-hacendado", "Salsa de tomate y albahaca (Hacendado)", "Mercadona", 1.8, 5.2, 0.1, 60, "3 cucharadas"], ["cat-tomate-para-untar-hacendado", "Tomate para untar (Hacendado)", "Mercadona", 0.9, 3.7, 4.8, 30, "1 cucharada"], ["cat-salsa-barbacoa-hacendado", "Salsa barbacoa (Hacendado)", "Mercadona", 1, 40, 0.5, 15, "1 cucharada"], ["cat-crema-de-verduras-hacendado", "Crema de verduras (Hacendado)", "Mercadona", 0.8, 4.5, 0.8, 250, "1 plato"], ["cat-crema-de-calabaza-hacendado", "Crema de calabaza (Hacendado)", "Mercadona", 0.9, 4.2, 2.8, 250, "1 plato"], ["cat-gazpacho-hacendado", "Gazpacho (Hacendado)", "Mercadona", 0.8, 3.5, 2.5, 250, "1 vaso"], ["cat-parrillada-de-verduras-congelada-hacenda", "Parrillada de verduras congelada (Hacendado)", "Mercadona", 2.2, 10, 0, 200, "1 ración"], ["cat-frutos-rojos-congelados-hacendado", "Frutos rojos congelados (Hacendado)", "Mercadona", 1, 9, 0.3, 100, "1 ración"], ["cat-mango-congelado-hacendado", "Mango congelado (Hacendado)", "Mercadona", 0.8, 15, 0.4, 100, "1 ración"], ["cat-pizza-proteica-hacendado", "Pizza proteica (Hacendado)", "Mercadona", 15, 25, 7, 150, "media pizza"], ["cat-tortilla-de-patatas-con-cebolla-hacendad", "Tortilla de patatas con cebolla (Hacendado)", "Mercadona", 6, 12, 10, 150, "1 ración"], ["cat-proteina-whey-chocolate-hacendado", "Proteína whey chocolate (Hacendado)", "Mercadona", 73, 8, 6, 30, "1 cacito"], ["cat-barrita-proteica-hacendado", "Barrita proteica (Hacendado)", "Mercadona", 30, 35, 12, 40, "1 barrita"], ["cat-agua-de-coco-hacendado", "Agua de coco (Hacendado)", "Mercadona", 0, 5, 0, 330, "1 brick"], ["cat-bebida-isotonica-hacendado", "Bebida isotónica (Hacendado)", "Mercadona", 0, 6, 0, 500, "1 botella"], ["cat-kefir-natural-hacendado", "Kéfir natural (Hacendado)", "Mercadona", 3.4, 4.5, 3, 125, "1 vaso"], ["cat-arroz-con-leche-hacendado", "Arroz con leche (Hacendado)", "Mercadona", 3, 18, 3, 125, "1 tarrina"], ["cat-natillas-hacendado", "Natillas (Hacendado)", "Mercadona", 3, 17, 3, 125, "1 tarrina"], ["cat-helado-proteico-hacendado", "Helado proteico (Hacendado)", "Mercadona", 7, 18, 3, 100, "1 tarrina pequeña"], ["cat-skyr-natural-milbona", "Skyr natural (Milbona)", "Lidl", 11, 4, 0.2, 150, "1 yogur"], ["cat-high-protein-pudding-milbona", "High Protein pudding (Milbona)", "Lidl", 10, 8, 1.5, 200, "1 tarrina"], ["cat-high-protein-yogur-milbona", "High Protein yogur (Milbona)", "Lidl", 10, 4.5, 0.2, 200, "1 tarrina"], ["cat-high-protein-bebida-milbona", "High Protein bebida (Milbona)", "Lidl", 8, 5, 0.5, 250, "1 botella"], ["cat-queso-fresco-batido-0-milbona", "Queso fresco batido 0% (Milbona)", "Lidl", 8, 4, 0.2, 250, "1 tarrina"], ["cat-queso-cottage-milbona", "Queso cottage (Milbona)", "Lidl", 12, 3, 4, 200, "1 tarrina"], ["cat-mozzarella-light-milbona", "Mozzarella light (Milbona)", "Lidl", 18, 1, 9, 125, "1 bola"], ["cat-pechuga-de-pavo-lonchas-dulano", "Pechuga de pavo lonchas (Dulano)", "Lidl", 20, 1, 1.5, 50, "4 lonchas"], ["cat-jamon-cocido-dulano", "Jamón cocido (Dulano)", "Lidl", 19, 1, 3, 50, "4 lonchas"], ["cat-pechuga-de-pollo-fileteada-lidl", "Pechuga de pollo fileteada (Lidl)", "Lidl", 23, 0, 1.5, 150, "1 filete"], ["cat-atun-al-natural-nixe", "Atún al natural (Nixe)", "Lidl", 24, 0, 1, 52, "1 lata escurrida"], ["cat-salmon-ahumado-lidl", "Salmón ahumado (Lidl)", "Lidl", 22, 0.5, 9, 50, "media tarrina"], ["cat-tortitas-de-maiz-snack-day", "Tortitas de maíz (Snack Day)", "Lidl", 8, 79, 2.5, 8, "1 tortita"], ["cat-copos-de-avena-crownfield", "Copos de avena (Crownfield)", "Lidl", 13, 59, 7, 40, "1 ración"], ["cat-granola-crownfield", "Granola (Crownfield)", "Lidl", 9, 63, 15, 40, "1 ración"], ["cat-pan-de-molde-integral-lidl", "Pan de molde integral (Lidl)", "Lidl", 10, 40, 4, 30, "1 rebanada"], ["cat-pan-de-centeno-lidl", "Pan de centeno (Lidl)", "Lidl", 6, 40, 1.5, 50, "1 rebanada"], ["cat-wraps-de-trigo-lidl", "Wraps de trigo (Lidl)", "Lidl", 8, 50, 6, 60, "1 wrap"], ["cat-crema-de-cacahuete-alesto", "Crema de cacahuete (Alesto)", "Lidl", 26, 14, 50, 15, "1 cucharada"], ["cat-almendras-naturales-alesto", "Almendras naturales (Alesto)", "Lidl", 21, 9, 52, 25, "1 puñado"], ["cat-mix-frutos-secos-alesto", "Mix frutos secos (Alesto)", "Lidl", 20, 15, 50, 25, "1 puñado"], ["cat-chocolate-negro-85-fin-carre", "Chocolate negro 85% (Fin Carré)", "Lidl", 10, 20, 48, 20, "2 onzas"], ["cat-proteina-whey-lidl", "Proteína whey (Lidl)", "Lidl", 75, 7, 5, 30, "1 cacito"], ["cat-barrita-proteica-lidl", "Barrita proteica (Lidl)", "Lidl", 30, 33, 12, 45, "1 barrita"], ["cat-pizza-proteica-lidl", "Pizza proteica (Lidl)", "Lidl", 16, 24, 7, 150, "media pizza"], ["cat-hummus-chef-select", "Hummus (Chef Select)", "Lidl", 7, 12, 17, 50, "2 cucharadas"], ["cat-garbanzos-cocidos-lidl", "Garbanzos cocidos (Lidl)", "Lidl", 7, 15, 2.5, 200, "1 bote escurrido"], ["cat-arroz-basmati-golden-sun", "Arroz basmati (Golden Sun)", "Lidl", 8, 77, 0.8, 80, "1 ración en crudo"], ["cat-pasta-integral-combino", "Pasta integral (Combino)", "Lidl", 13, 64, 2.5, 80, "1 ración en crudo"], ["cat-tomate-frito-lidl", "Tomate frito (Lidl)", "Lidl", 1.5, 10, 3.5, 60, "3 cucharadas"], ["cat-yogur-proteico-natural-carrefour", "Yogur proteico natural (Carrefour)", "Carrefour", 10, 4, 0.2, 120, "1 yogur"], ["cat-skyr-carrefour", "Skyr (Carrefour)", "Carrefour", 11, 4, 0.2, 150, "1 yogur"], ["cat-queso-fresco-batido-0-carrefour", "Queso fresco batido 0% (Carrefour)", "Carrefour", 8, 4, 0.2, 250, "1 tarrina"], ["cat-pechuga-de-pavo-finas-lonchas-carrefour", "Pechuga de pavo finas lonchas (Carrefour)", "Carrefour", 19, 1.5, 1.5, 50, "4 lonchas"], ["cat-atun-claro-al-natural-carrefour", "Atún claro al natural (Carrefour)", "Carrefour", 24, 0, 1, 52, "1 lata escurrida"], ["cat-copos-de-avena-integral-carrefour", "Copos de avena integral (Carrefour)", "Carrefour", 13, 59, 7, 40, "1 ración"], ["cat-tortitas-de-arroz-integral-carrefour", "Tortitas de arroz integral (Carrefour)", "Carrefour", 8, 79, 2.8, 8, "1 tortita"], ["cat-pan-de-molde-integral-sin-corteza-carref", "Pan de molde integral sin corteza (Carrefour)", "Carrefour", 9, 42, 4, 30, "1 rebanada"], ["cat-crema-de-cacahuete-carrefour-bio", "Crema de cacahuete (Carrefour Bio)", "Carrefour", 25, 14, 50, 15, "1 cucharada"], ["cat-proteina-whey-carrefour", "Proteína whey (Carrefour)", "Carrefour", 72, 8, 6, 30, "1 cacito"], ["cat-bebida-de-soja-carrefour", "Bebida de soja (Carrefour)", "Carrefour", 3.3, 2.5, 1.9, 250, "1 vaso"], ["cat-hummus-carrefour", "Hummus (Carrefour)", "Carrefour", 7, 12, 18, 50, "2 cucharadas"], ["cat-garbanzos-cocidos-carrefour", "Garbanzos cocidos (Carrefour)", "Carrefour", 7, 15, 2.5, 200, "1 bote escurrido"], ["cat-gazpacho-carrefour", "Gazpacho (Carrefour)", "Carrefour", 0.8, 3.5, 2.5, 250, "1 vaso"], ["cat-yogur-proteinas-natural-dia", "Yogur proteínas natural (Dia)", "Dia", 10, 4, 0.3, 120, "1 yogur"], ["cat-queso-fresco-batido-0-dia", "Queso fresco batido 0% (Dia)", "Dia", 8, 4, 0.2, 250, "1 tarrina"], ["cat-pechuga-de-pavo-lonchas-dia", "Pechuga de pavo lonchas (Dia)", "Dia", 19, 1.5, 1.5, 50, "4 lonchas"], ["cat-atun-al-natural-dia", "Atún al natural (Dia)", "Dia", 24, 0, 1, 52, "1 lata escurrida"], ["cat-copos-de-avena-dia", "Copos de avena (Dia)", "Dia", 13, 59, 7, 40, "1 ración"], ["cat-tortitas-de-maiz-dia", "Tortitas de maíz (Dia)", "Dia", 8, 79, 2.5, 8, "1 tortita"], ["cat-pan-de-molde-integral-dia", "Pan de molde integral (Dia)", "Dia", 10, 41, 4, 30, "1 rebanada"], ["cat-crema-de-cacahuete-dia", "Crema de cacahuete (Dia)", "Dia", 26, 14, 50, 15, "1 cucharada"], ["cat-yogur-alto-en-proteinas-auchan", "Yogur alto en proteínas (Auchan)", "Alcampo", 10, 4, 0.3, 120, "1 yogur"], ["cat-queso-fresco-batido-desnatado-auchan", "Queso fresco batido desnatado (Auchan)", "Alcampo", 8, 4, 0.2, 250, "1 tarrina"], ["cat-copos-de-avena-auchan", "Copos de avena (Auchan)", "Alcampo", 13, 59, 7, 40, "1 ración"], ["cat-atun-al-natural-auchan", "Atún al natural (Auchan)", "Alcampo", 24, 0, 1, 52, "1 lata escurrida"], ["cat-pan-de-molde-integral-auchan", "Pan de molde integral (Auchan)", "Alcampo", 10, 41, 4, 30, "1 rebanada"], ["cat-tortitas-de-arroz-auchan", "Tortitas de arroz (Auchan)", "Alcampo", 7.5, 80, 2, 8, "1 tortita"], ["cat-pizza-margarita", "Pizza margarita", "Genérico", 11, 33, 10, 300, "media pizza"], ["cat-hamburguesa-con-pan-fast-food", "Hamburguesa con pan (fast food)", "Genérico", 13, 25, 12, 220, "1 hamburguesa"], ["cat-patatas-fritas", "Patatas fritas", "Genérico", 3.4, 35, 15, 110, "1 ración mediana"], ["cat-kebab-de-pollo-pan-pita", "Kebab de pollo (pan pita)", "Genérico", 12, 20, 10, 350, "1 kebab"], ["cat-sushi-maki-nigiri", "Sushi (maki/nigiri)", "Genérico", 6, 28, 3, 30, "1 pieza"], ["cat-croquetas", "Croquetas", "Genérico", 6, 25, 13, 30, "1 croqueta"], ["cat-tortilla-de-patatas", "Tortilla de patatas", "Genérico", 6, 12, 11, 150, "1 pincho"], ["cat-paella", "Paella", "Genérico", 9, 20, 6, 300, "1 plato"], ["cat-ensalada-cesar", "Ensalada César", "Genérico", 9, 6, 12, 250, "1 plato"], ["cat-bocadillo-de-jamon", "Bocadillo de jamón", "Genérico", 13, 38, 8, 180, "1 bocadillo"], ["cat-donut", "Donut", "Genérico", 5, 49, 23, 55, "1 donut"], ["cat-croissant", "Croissant", "Genérico", 8, 45, 21, 60, "1 croissant"], ["cat-galletas-maria", "Galletas María", "Genérico", 7, 76, 10, 6, "1 galleta"], ["cat-helado-de-vainilla", "Helado de vainilla", "Genérico", 3.5, 24, 11, 100, "2 bolas"], ["cat-patatas-chips", "Patatas chips", "Genérico", 6, 50, 33, 30, "1 bolsa pequeña"], ["cat-palomitas-de-maiz", "Palomitas de maíz", "Genérico", 9, 58, 22, 30, "1 bol"]].map(([id, n, sup, p, c, f, pg, pl]) => ({ id, n, sup, p, c, f, pg, pl }));
+
+// ---------- Diario de comida (estilo MyFitnessPal) ----------
+// Busca en el catálogo de supermercado, en tus alimentos y en tus recetas; crea los tuyos a mano.
+// Lo propio se guarda en el perfil (myFoods / myRecipes). FOOD_API lo pone la app.
+let FOOD_API = null;
+const FL_MEALS = [["desayuno", "Desayuno"], ["comida", "Comida"], ["merienda", "Merienda"], ["cena", "Cena"], ["picoteo", "Picoteo"]];
+const FL_SUPS = ["Mercadona", "Lidl", "Carrefour", "Dia", "Alcampo", "Genérico"];
+const flKcal = (x) => Math.round(x.p * 4 + x.c * 4 + x.f * 9);
+const flNum = (v) => { const n = Number(String(v ?? "").replace(",", ".")); return Number.isFinite(n) ? n : 0; };
+const flNorm = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+const flMealNow = () => { const h = new Date().getHours(); return h < 11 ? "desayuno" : h < 16 ? "comida" : h < 20 ? "merienda" : "cena"; };
+// Todo lo buscable con el mismo formato: macros por 100 g y una porción
+function flEntries() {
+  const mine = Object.entries(FOOD_API?.foods() || {}).map(([id, f]) => ({ key: `mf:${id}`, id, kind: "mine", n: f.n, sup: f.brand || "Mío", p: flNum(f.p), c: flNum(f.c), f: flNum(f.f), pg: flNum(f.pg) || 100, pl: f.pl || (f.pg ? "1 ración" : "100 g") }));
+  const recs = Object.entries(FOOD_API?.recipes() || {}).map(([id, r]) => {
+    const G = (r.items || []).reduce((a, it) => a + flNum(it.g), 0) || 1;
+    const t = (r.items || []).reduce((a, it) => ({ p: a.p + flNum(it.p) * flNum(it.g) / 100, c: a.c + flNum(it.c) * flNum(it.g) / 100, f: a.f + flNum(it.f) * flNum(it.g) / 100 }), { p: 0, c: 0, f: 0 });
+    const serv = Math.max(1, flNum(r.serv) || 1);
+    return { key: `mr:${id}`, id, kind: "recipe", n: r.n, sup: "Mi receta", p: t.p / G * 100, c: t.c / G * 100, f: t.f / G * 100, pg: Math.round(G / serv), pl: "1 ración" };
+  });
+  const cat = CATALOG.map((x) => ({ key: x.id, kind: "cat", ...x }));
+  return { mine, recs, cat };
+}
+
+function FoodForm({ initial, onSave, onDelete, onClose }) {
+  const [f, setF] = useState(() => initial || { n: "", brand: "", p: "", c: "", f: "", pg: "", pl: "" });
+  const [err, setErr] = useState("");
+  const set = (k, v) => setF((x) => ({ ...x, [k]: v }));
+  const kcal = flKcal({ p: flNum(f.p), c: flNum(f.c), f: flNum(f.f) });
+  const save = () => {
+    if (!f.n.trim()) return setErr("Ponle un nombre.");
+    if (!(flNum(f.p) + flNum(f.c) + flNum(f.f) > 0)) return setErr("Pon al menos un macro (mira la etiqueta: valores por 100 g).");
+    onSave({ ...f, n: f.n.trim(), p: flNum(f.p), c: flNum(f.c), f: flNum(f.f), pg: flNum(f.pg) || 0, pl: f.pl.trim() });
+  };
+  return createPortal(
+    <div className="modal" style={{ zIndex: 70 }} onClick={onClose}>
+      <div className="box fl-box" onClick={(e) => e.stopPropagation()}>
+        <h1 style={{ fontSize: 20 }}>{onDelete ? "Editar alimento" : "Crear alimento"}</h1>
+        <div className="field"><label>Nombre</label><input className="in" autoFocus value={f.n} placeholder="Ej.: Yogur griego proteico" onChange={(e) => set("n", e.target.value)} /></div>
+        <div className="field"><label>Marca o súper (opcional)</label><input className="in" value={f.brand} placeholder="Ej.: Hacendado" onChange={(e) => set("brand", e.target.value)} /></div>
+        <label className="fl-lbl">Por 100 g (lo pone la etiqueta)</label>
+        <div className="fl-mac">
+          {[["p", "Proteína"], ["c", "Hidratos"], ["f", "Grasas"]].map(([k, l]) => <label key={k}>{l}<input className="in" inputMode="decimal" value={f[k]} placeholder="0" onChange={(e) => set(k, e.target.value)} /></label>)}
+          <div><span>Kcal</span><b>{kcal}</b></div>
+        </div>
+        <label className="fl-lbl">Porción (opcional)</label>
+        <div className="fl-por">
+          <input className="in" inputMode="decimal" value={f.pg} placeholder="Gramos" onChange={(e) => set("pg", e.target.value)} />
+          <input className="in" value={f.pl} placeholder="Ej.: 1 yogur" onChange={(e) => set("pl", e.target.value)} />
+        </div>
+        {err && <div className="err">{err}</div>}
+        <button className="btn ac" onClick={save}>{onDelete ? "Guardar cambios" : "Crear alimento"}</button>
+        {onDelete && <button className="btn ghost" onClick={onDelete}>Borrar alimento</button>}
+        <button className="link" style={{ display: "block", margin: "10px auto 0" }} onClick={onClose}>Cancelar</button>
+      </div>
+    </div>,
+    document.querySelector(".arc") || document.body
+  );
+}
+
+function RecipeForm({ initial, onSave, onDelete, onClose }) {
+  const [r, setR] = useState(() => initial || { n: "", serv: 1, items: [], notes: "" });
+  const [q, setQ] = useState("");
+  const [err, setErr] = useState("");
+  const { mine, cat } = flEntries();
+  const pool = [...mine, ...cat];
+  const found = q.trim().length > 1 ? pool.filter((x) => flNorm(`${x.n} ${x.sup}`).includes(flNorm(q))).slice(0, 12) : [];
+  const G = r.items.reduce((a, it) => a + flNum(it.g), 0);
+  const t = r.items.reduce((a, it) => ({ p: a.p + flNum(it.p) * flNum(it.g) / 100, c: a.c + flNum(it.c) * flNum(it.g) / 100, f: a.f + flNum(it.f) * flNum(it.g) / 100 }), { p: 0, c: 0, f: 0 });
+  const serv = Math.max(1, flNum(r.serv) || 1);
+  const per = { p: t.p / serv, c: t.c / serv, f: t.f / serv };
+  const add = (x) => { setR((o) => ({ ...o, items: [...o.items, { n: x.n, sup: x.sup, g: x.pg || 100, p: +x.p.toFixed(2), c: +x.c.toFixed(2), f: +x.f.toFixed(2) }] })); setQ(""); };
+  const save = () => {
+    if (!r.n.trim()) return setErr("Ponle un nombre.");
+    if (!r.items.length) return setErr("Añade al menos un ingrediente.");
+    onSave({ ...r, n: r.n.trim(), serv });
+  };
+  return createPortal(
+    <div className="modal" style={{ zIndex: 70 }} onClick={onClose}>
+      <div className="box fl-box" onClick={(e) => e.stopPropagation()}>
+        <h1 style={{ fontSize: 20 }}>{onDelete ? "Editar receta" : "Crear receta"}</h1>
+        <div className="field"><label>Nombre</label><input className="in" value={r.n} placeholder="Ej.: Bowl de pollo de los lunes" onChange={(e) => setR({ ...r, n: e.target.value })} /></div>
+        <div className="field"><label>¿Para cuántas raciones?</label>
+          <div className="fl-serv"><button onClick={() => setR({ ...r, serv: Math.max(1, serv - 1) })}>−</button><b>{serv}</b><button onClick={() => setR({ ...r, serv: serv + 1 })}>+</button></div>
+        </div>
+        <label className="fl-lbl">Ingredientes</label>
+        {r.items.map((it, i) => (
+          <div className="fl-ing" key={i}>
+            <span>{it.n}<small>{it.sup}</small></span>
+            <input className="in" inputMode="decimal" value={it.g} aria-label="Gramos" onChange={(e) => setR({ ...r, items: r.items.map((x, j) => (j === i ? { ...x, g: e.target.value } : x)) })} /><em>g</em>
+            <button className="xdel" aria-label="Quitar" onClick={() => setR({ ...r, items: r.items.filter((_, j) => j !== i) })}>✕</button>
+          </div>
+        ))}
+        <input className="in" placeholder="Buscar ingrediente: pollo, arroz, Hacendado…" value={q} onChange={(e) => setQ(e.target.value)} style={{ marginTop: 8 }} />
+        {found.map((x) => <button key={x.key} className="fl-row sm" onClick={() => add(x)}><span>{x.n}<small>{x.sup}</small></span><em>+ Añadir</em></button>)}
+        {q.trim().length > 1 && found.length === 0 && <p className="hint">No está. Créalo como alimento y luego lo añades aquí.</p>}
+        {r.items.length > 0 && <div className="fl-tot"><b>Por ración: {flKcal(per)} kcal</b><span>P {Math.round(per.p)} · H {Math.round(per.c)} · G {Math.round(per.f)} · {Math.round(G / serv)} g</span></div>}
+        <div className="field"><label>Cómo se hace (opcional)</label><textarea className="in" rows={3} value={r.notes || ""} onChange={(e) => setR({ ...r, notes: e.target.value })} /></div>
+        {err && <div className="err">{err}</div>}
+        <button className="btn ac" onClick={save}>{onDelete ? "Guardar cambios" : "Crear receta"}</button>
+        {onDelete && <button className="btn ghost" onClick={onDelete}>Borrar receta</button>}
+        <button className="link" style={{ display: "block", margin: "10px auto 0" }} onClick={onClose}>Cancelar</button>
+      </div>
+    </div>,
+    document.querySelector(".arc") || document.body
+  );
+}
+
+function FoodSearch({ onLog, onClose }) {
+  const [q, setQ] = useState("");
+  const [tab, setTab] = useState("todo");
+  const [sel, setSel] = useState(null);
+  const [form, setForm] = useState(null); // {type:"food"|"recipe", id?}
+  const [, force] = useState(0);
+  const { mine, recs, cat } = flEntries();
+  const all = tab === "mine" ? mine : tab === "recipes" ? recs : FL_SUPS.includes(tab) ? cat.filter((x) => x.sup === tab) : [...recs, ...mine, ...cat];
+  const list = (q.trim() ? all.filter((x) => flNorm(`${x.n} ${x.sup}`).includes(flNorm(q))) : all).slice(0, 80);
+  const tabs = [["todo", "Todo"], ["mine", "Mis alimentos"], ["recipes", "Mis recetas"], ...FL_SUPS.map((x) => [x, x])];
+  const saveFood = (f) => { FOOD_API.saveFood(f, form.id); setForm(null); force((n) => n + 1); };
+  const saveRec = (r) => { FOOD_API.saveRecipe(r, form.id); setForm(null); force((n) => n + 1); };
+  return createPortal(
+    <div className="modal" style={{ zIndex: 60 }} onClick={onClose}>
+      <div className="box fl-box" onClick={(e) => e.stopPropagation()}>
+        {!sel ? (
+          <>
+            <h1 style={{ fontSize: 20 }}>Añadir comida</h1>
+            <input className="in" autoFocus placeholder="Buscar: yogur proteico, Hacendado, pan…" value={q} onChange={(e) => setQ(e.target.value)} />
+            <div className="chips fl-tabs">{tabs.map(([v, l]) => <button key={v} className={`chip ${tab === v ? "on" : ""}`} onClick={() => setTab(v)}>{l}</button>)}</div>
+            <div className="fl-new">
+              <button onClick={() => setForm({ type: "food" })}><Ic n="plus" size={16} /> Crear alimento</button>
+              <button onClick={() => setForm({ type: "recipe" })}><Ic n="plus" size={16} /> Crear receta</button>
+            </div>
+            <div className="fl-list">
+              {list.map((x) => {
+                const k = flKcal({ p: x.p * x.pg / 100, c: x.c * x.pg / 100, f: x.f * x.pg / 100 });
+                return (
+                  <div key={x.key} className="fl-row">
+                    <button className="fl-row-main" onClick={() => setSel(x)}><span>{x.n}<small>{x.sup} · {x.pl}{x.pl !== `${x.pg} g` ? ` (${x.pg} g)` : ""}</small></span><em>{k} kcal</em></button>
+                    {(x.kind === "mine" || x.kind === "recipe") && <button className="fl-edit" onClick={() => setForm({ type: x.kind === "mine" ? "food" : "recipe", id: x.id })}>Editar</button>}
+                  </div>
+                );
+              })}
+              {list.length === 0 && <div className="empty">{tab === "mine" ? "Aún no has creado alimentos. Crea los que uses siempre con su etiqueta." : tab === "recipes" ? "Aún no tienes recetas. Crea las tuyas y apúntalas por raciones." : "No está. Créalo con \"Crear alimento\" mirando la etiqueta."}</div>}
+            </div>
+            <p className="hint">Valores aproximados por 100 g. Si tu envase dice otra cosa, créalo como alimento tuyo con sus datos.</p>
+            <button className="btn" onClick={onClose}>Cerrar</button>
+          </>
+        ) : <FoodAmount x={sel} onBack={() => setSel(null)} onAdd={(entry) => { onLog(entry); onClose(); }} />}
+        {form?.type === "food" && <FoodForm initial={form.id ? FOOD_API.foods()[form.id] : null} onClose={() => setForm(null)} onSave={saveFood} onDelete={form.id ? () => { FOOD_API.removeFood(form.id); setForm(null); force((n) => n + 1); } : null} />}
+        {form?.type === "recipe" && <RecipeForm initial={form.id ? FOOD_API.recipes()[form.id] : null} onClose={() => setForm(null)} onSave={saveRec} onDelete={form.id ? () => { FOOD_API.removeRecipe(form.id); setForm(null); force((n) => n + 1); } : null} />}
+      </div>
+    </div>,
+    document.querySelector(".arc") || document.body
+  );
+}
+
+function FoodAmount({ x, onBack, onAdd }) {
+  const [mode, setMode] = useState(x.pg && x.pg !== 100 ? "por" : "g");
+  const [qty, setQty] = useState(x.pg && x.pg !== 100 ? "1" : "100");
+  const [meal, setMeal] = useState(flMealNow());
+  const g = mode === "por" ? flNum(qty) * x.pg : flNum(qty);
+  const t = { p: x.p * g / 100, c: x.c * g / 100, f: x.f * g / 100 };
+  return (
+    <>
+      <button className="link" onClick={onBack}>← Volver</button>
+      <h1 style={{ fontSize: 20, marginTop: 8 }}>{x.n}</h1>
+      <p className="sub" style={{ marginTop: -4 }}>{x.sup}</p>
+      <div className="seg">
+        <button className={mode === "por" ? "on" : ""} onClick={() => { setMode("por"); setQty("1"); }}>{x.kind === "recipe" ? "Raciones" : `Porción (${x.pl})`}</button>
+        <button className={mode === "g" ? "on" : ""} onClick={() => { setMode("g"); setQty(String(Math.round(x.pg || 100))); }}>Gramos</button>
+      </div>
+      <div className="fl-qty">
+        <button onClick={() => setQty(String(Math.max(0, flNum(qty) - (mode === "por" ? 0.5 : 10))))}>−</button>
+        <input className="in" inputMode="decimal" value={qty} onChange={(e) => setQty(e.target.value)} aria-label="Cantidad" />
+        <button onClick={() => setQty(String(flNum(qty) + (mode === "por" ? 0.5 : 10)))}>+</button>
+      </div>
+      <div className="fl-big"><b>{flKcal(t)}</b><span>kcal · {Math.round(g)} g</span></div>
+      <div className="fl-kp"><div><b>{Math.round(t.p)} g</b><span>Proteína</span></div><div><b>{Math.round(t.c)} g</b><span>Hidratos</span></div><div><b>{Math.round(t.f)} g</b><span>Grasas</span></div></div>
+      <label className="fl-lbl">¿En qué comida?</label>
+      <div className="chips">{FL_MEALS.map(([v, l]) => <button key={v} className={`chip ${meal === v ? "on" : ""}`} onClick={() => setMeal(v)}>{l}</button>)}</div>
+      <button className="btn ac" style={{ marginTop: 14 }} disabled={!(g > 0)} onClick={() => onAdd({ name: x.n, meal, g: Math.round(g), k: { p: x.p, c: x.c, f: x.f } })}>Añadir a mi día</button>
+    </>
+  );
+}
+
+function FoodLog({ eaten, setEaten, totOf }) {
+  const [open, setOpen] = useState(false);
+  const list = Object.entries(eaten).filter(([k]) => k.startsWith("extra:"));
+  const log = (e) => {
+    const items = [{ food: e.name, g: e.g, k: e.k }];
+    setEaten({ ...eaten, [`extra:${Date.now()}`]: { name: e.name, meal: e.meal, items, tot: totOf(items) } });
+  };
+  const tot = list.reduce((a, [, e]) => a + (e.tot?.kcal || 0), 0);
+  return (
+    <div className="extras">
+      <div className="mslot">Diario de comida {list.length > 0 && <span>· {Math.round(tot)} kcal añadidas</span>}</div>
+      <p className="hint" style={{ margin: "4px 0 10px" }}>Apunta lo que comas fuera del plan: productos del súper, tus recetas o lo que te inventes. Busca, elige la cantidad y listo.</p>
+      {FL_MEALS.map(([m, l]) => {
+        const rows = list.filter(([, e]) => (e.meal || "picoteo") === m);
+        if (!rows.length) return null;
+        return (
+          <div key={m} className="fl-meal">
+            <small>{l}</small>
+            {rows.map(([k, e]) => (
+              <div className="food" key={k}><span>{e.name} · {Math.round(e.items[0].g)} g</span><em>{Math.round(e.tot.kcal)} kcal <button className="xdel" aria-label={`Quitar ${e.name}`} onClick={() => { const n = { ...eaten }; delete n[k]; setEaten(n); }}>✕</button></em></div>
+            ))}
+          </div>
+        );
+      })}
+      {FOOD_API ? <button className="btn ac" style={{ marginTop: 10 }} onClick={() => setOpen(true)}>+ Añadir comida</button> : <p className="hint">Inicia sesión para guardar tus alimentos.</p>}
+      {open && <FoodSearch onClose={() => setOpen(false)} onLog={log} />}
+    </div>
+  );
+}
+
 function Extras({ eaten, setEaten, totOf }) {
   const [food, setFood] = useState("");
   const [g, setG] = useState("");
@@ -5080,7 +5336,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
       })())}
       </div>
       </>}
-      <Extras eaten={eaten} setEaten={setEaten} totOf={totOf} />
+      <FoodLog eaten={eaten} setEaten={setEaten} totOf={totOf} />
       <div className="note">{cd ? "Tu plan del día" : "Total del día"}: {Math.round(day.kcal)} kcal, {Math.round(day.p)} g de proteína, {Math.round(day.c)} g de hidratos y {Math.round(day.f)} g de grasas. Pesos en crudo salvo patata, legumbres y cremas, que van ya cocinadas.</div>
 
       <h2>Suplementación</h2>
@@ -8283,6 +8539,14 @@ function ArcApp({ user }) {
 
   // Ejercicios propios: se suman a la lista en cada render (así las rutinas y el registro los encuentran)
   registerCustomEx(state.profile?.customEx);
+  FOOD_API = state.onboarded ? {
+    foods: () => state.profile?.myFoods || {},
+    recipes: () => state.profile?.myRecipes || {},
+    saveFood: (f, id) => setProfile({ myFoods: { ...(state.profile?.myFoods || {}), [id || `f${Date.now().toString(36)}`]: f } }),
+    removeFood: (id) => { const { [id]: _, ...rest } = state.profile?.myFoods || {}; setProfile({ myFoods: rest }); },
+    saveRecipe: (r, id) => setProfile({ myRecipes: { ...(state.profile?.myRecipes || {}), [id || `r${Date.now().toString(36)}`]: r } }),
+    removeRecipe: (id) => { const { [id]: _, ...rest } = state.profile?.myRecipes || {}; setProfile({ myRecipes: rest }); },
+  } : null;
   CUSTOM_EX_API = state.onboarded ? {
     get: (id) => state.profile?.customEx?.[id] || null,
     save: (ex, id) => { const key = id || `U-${Date.now().toString(36)}`; registerCustomEx({ [key]: ex }); setProfile({ customEx: { ...(state.profile?.customEx || {}), [key]: ex } }); return key; },
