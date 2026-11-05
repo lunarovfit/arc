@@ -4792,9 +4792,20 @@ function BreadPick({ value, onPick }) {
     </div>
   );
 }
-function ShopPicks({ items, pre }) {
+// Cada producto solo se sugiere en las recetas donde pega (no parrillada en un revuelto ni fiambre de pollo en un plato a la plancha)
+const PICK_FIT = {
+  "parrillada": { only: /plancha|horno|asad|t[aá]per|pollo con arroz|emperador|merluza|cerdo|ternera con|salteado|wok|curry|udon/i, not: /ensalada|revuelto|tortilla|tostada|wrap|taco|burrito|hamburguesa|pizza|poke|onigiri|nachos|huevos|bowl|desmechado/i },
+  "pimiento": { only: /revuelto|tortilla|huevos|pizza|lasa[ñn]a|burrito|taco|nachos|ternera|curry|salteado|wok|fajita|arroz con|udon/i },
+  "pollo-92": { only: /tostada|bocadillo|s[aá]ndwich|molde|pan |wrap/i },
+  "tiras-pollo": { not: /plancha|horno|asad|al curry|empanad/i },
+  "salmon-lata": { not: /horno|plancha|papillote|asad/i },
+  "arroz-verduras": { only: /pollo con arroz|arroz con|salteado|wok|curry|tres delicias/i },
+  "pavo-92": { not: /plancha|alb[oó]ndiga|horno|hamburguesa|picad/i },
+};
+const pickFits = (img, name) => { const r = PICK_FIT[img]; if (!r || !name) return true; return (!r.only || r.only.test(name)) && (!r.not || !r.not.test(name)); };
+function ShopPicks({ items, pre, name }) {
   const seen = new Set();
-  const picks = [...items.flatMap((it) => SHOP_PICKS[it.food] || []), ...(pre ? [["agua-coco", "Agua de coco", "Para antes o durante el entreno · 50 kcal el vaso"]] : [])].filter(([img]) => !seen.has(img) && seen.add(img));
+  const picks = [...items.flatMap((it) => (SHOP_PICKS[it.food] || []).filter(([img]) => pickFits(img, name))), ...(pre ? [["agua-coco", "Agua de coco", "Para antes o durante el entreno · 50 kcal el vaso"]] : [])].filter(([img]) => !seen.has(img) && seen.add(img));
   if (!picks.length) return null;
   return (
     <div className="picks">
@@ -5446,7 +5457,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
               {!eaten[m.id] && editing === m.id && (() => { const t2 = totOf(draftOf(m)); return <p className="hint" style={{ margin: "6px 0 0" }}>Con estas cantidades: {r0(t2.kcal)} kcal · P {r0(t2.p)} · H {r0(t2.c)} · G {r0(t2.f)}. Cuando lo tengas, toca «Me la he comido».</p>; })()}
               {eaten[m.id] && <p className="hint" style={{ margin: "6px 0 0" }}>Has comido {r0(eaten[m.id].tot.kcal)} kcal · P {r0(eaten[m.id].tot.p)} · H {r0(eaten[m.id].tot.c)} · G {r0(eaten[m.id].tot.f)}</p>}
               {!eaten[m.id] && m.recipe.items.some(([f]) => BREAD_IDS.has(f)) && <BreadPick value={m.items.find((it) => BREAD_IDS.has(it.food))?.food} onPick={setBread} />}
-              <ShopPicks items={eaten[m.id]?.items || m.items} pre={m.id === "pre"} />
+              <ShopPicks items={eaten[m.id]?.items || m.items} pre={m.id === "pre"} name={m.recipe.name} />
               <details className="mprep">
                 <summary>Cómo se prepara</summary>
                 {m.recipe.steps ? <ol className="steps">{m.recipe.steps.map((st) => <li key={st}>{st}</li>)}</ol> : <p className="hint">{m.recipe.how}</p>}
@@ -7541,6 +7552,41 @@ function CoachInvite({ inv, onAnswer }) {
   );
 }
 
+// Primera pantalla al registrarse: ¿vas a entrenar o eres entrenador/a?
+function RoleChoice({ onTrain, onCoach }) {
+  const [step, setStep] = useState("pick");
+  const [name, setName] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  if (step === "coach") return (
+    <div className="rc">
+      <Logo height={40} />
+      <h1>Tu panel de entrenador/a</h1>
+      <p className="sub">Empiezas gratis con 1 cliente. Cuando quieras llevar a más, eliges un plan.</p>
+      <div className="field"><label>Tu nombre como entrenador/a</label><input className="in" value={name} autoFocus placeholder="Ej.: Marta Fit" onChange={(e) => setName(e.target.value)} /></div>
+      <p className="hint">Es lo que verán tus clientes en la invitación.</p>
+      {err && <div className="err">{err}</div>}
+      <button className="btn ac" disabled={busy || !name.trim()} onClick={async () => { setBusy(true); setErr(""); try { await onCoach(name.trim()); } catch { setErr("No se ha podido activar. Inténtalo otra vez."); setBusy(false); } }}>{busy ? "Activando…" : "Empezar"}</button>
+      <button className="btn ghost" disabled={busy} onClick={() => setStep("pick")}>Volver</button>
+    </div>
+  );
+  return (
+    <div className="rc">
+      <Logo height={40} />
+      <h1>¿Cómo vas a usar ARC?</h1>
+      <button className="rc-op" onClick={onTrain}>
+        <Ic n="dumbbell" size={24} />
+        <span><b>Voy a entrenar</b><small>Tu rutina, tus comidas y tu nivel. Primero, unas preguntas rápidas para hacértelo a medida.</small></span>
+      </button>
+      <button className="rc-op" onClick={() => setStep("coach")}>
+        <Ic n="calendar" size={24} />
+        <span><b>Soy entrenador/a</b><small>Lleva a tus clientes desde ARC: rutinas, dietas, revisiones y su progreso. Gratis con 1 cliente.</small></span>
+      </button>
+      <p className="hint">¿Te ha invitado tu entrenador/a? Entra con el mismo correo que le diste y te saldrá su invitación.</p>
+    </div>
+  );
+}
+
 let IS_ADMIN = false; // la administradora de ARC (Luna)
 function Settings({ onTour, onClients, onPaywallPreview, videos, onFinishPreview, sub, email, isCoach, isAdmin, canBecomeCoach, onBecomeCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
   const [confirm, setConfirm] = useState(null); // "data" | "account"
@@ -8166,6 +8212,14 @@ const CHECKIN_CSS = `
 .ck2-share.no{color:var(--dm);background:#000}
 .webgate{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:40px 6px}
 .webgate .btn{width:100%;text-decoration:none}
+.webgate .bc{text-align:left;width:100%}
+.rc{display:flex;flex-direction:column;gap:12px;padding:36px 2px 20px}
+.rc h1{font-size:26px;margin:14px 0 4px}
+.rc-op{display:flex;gap:14px;align-items:flex-start;text-align:left;width:100%;padding:18px 16px;border-radius:18px;border:1px solid var(--ln);background:var(--sf);color:var(--tx);font:inherit;cursor:pointer}
+.rc-op:active{border-color:var(--ac)}
+.rc-op svg{flex:none;color:var(--ac);margin-top:2px}
+.rc-op b{display:block;font-size:17px;margin-bottom:4px}
+.rc-op small{display:block;font-size:13.5px;color:var(--dm);line-height:1.45}
 `;
 
 /* ============================ ASESORADAS (COACH) ============================ */
@@ -8709,6 +8763,7 @@ function ArcApp({ user }) {
   const [toast, setToast] = useState("");
   const [coachLog, setCoachLog] = useState(null); // aviso: la coach ha apuntado tu entreno
   const [invites, setInvites] = useState([]);
+  const [willTrain, setWillTrain] = useState(false); // ha elegido "Voy a entrenar" en la primera pantalla
   const [coachView, setCoachView] = useState(true);
   const [stepsAvail, setStepsAvail] = useState(false);
   const [stepsBusy, setStepsBusy] = useState(false);
@@ -8918,6 +8973,14 @@ function ArcApp({ user }) {
     setScreen(null); setTab("inicio");
     try { await db.updateProfile(user.id, { onboarded: true, data: profileData(profile), start_date: startDate }); } catch (e) { fail(); }
   };
+  const startAsCoach = async (name) => {
+    await db.becomeCoach(name);
+    if (!state.onboarded) {
+      const startDate = dkey();
+      await db.updateProfile(user.id, { onboarded: true, data: profileData({ ...DEFAULT_PROFILE, mode: "simple", toured: true }), start_date: startDate });
+    }
+    await load(); setScreen(null); setTab("inicio");
+  };
   const setHabit = (k, v) => setState((s) => {
     const day = dkey();
     const h = { ...(s.habits[day] || {}), [k]: v };
@@ -9005,9 +9068,12 @@ function ArcApp({ user }) {
         <p className="sub">La versión web es solo para quien hace asesoría con Luna. Descarga ARC en tu móvil para entrenar, ver tus comidas y subir de nivel.</p>
         <a className="btn ac" href="https://apps.apple.com/app/arc-workout/id6823134477" target="_blank" rel="noopener noreferrer">Descargar en el App Store</a>
         <p className="hint">Si haces asesoría conmigo, entra con el mismo correo que me diste. Si no te reconoce, escríbeme por WhatsApp.</p>
+        <BecomeCoach onDone={startAsCoach} />
         <button className="btn ghost" onClick={() => supabase.auth.signOut()}>Cerrar sesión</button>
       </div>
     );
+  } else if (!state.onboarded && !isCoach && !state.hasCoach && !willTrain && invites.length === 0) {
+    body = <RoleChoice onTrain={() => setWillTrain(true)} onCoach={startAsCoach} />;
   } else if (showTour) {
     body = <Tour media={media} profile={state.profile} ev={ev} heroImg={mediaOr(media, levelKey(state.profile.branch, state.profile.mode, ev.current)) || AVATAR[state.profile.branch]} perms={tourPerms} onFinish={() => { const again = state.profile?.retour; setProfile({ toured: true, retour: false }); setTab("inicio"); if (!hasPremium && !again) setPaywall(true); }} />;
   } else if (showQuestionnaire) {
@@ -9019,7 +9085,7 @@ function ArcApp({ user }) {
   } else if (screen === "denuncias" && isAdmin) {
     body = <Reports onClose={() => setScreen("ajustes")} />;
   } else if (screen === "ajustes") {
-    body = <Settings onTour={() => { setProfile({ toured: false, retour: true }); setScreen(null); }} onClients={() => { setClientsBack("ajustes"); setScreen("asesoradas"); }} isAdmin={isAdmin} canBecomeCoach={!isCoach && !state.hasCoach} onBecomeCoach={async (name) => { await db.becomeCoach(name); await load(); setScreen(null); setTab("inicio"); }} onPaywallPreview={() => setPaywall(true)} videos={{ on: !state.profile?.hideVideos, set: (on) => setProfile({ hideVideos: !on }) }} onFinishPreview={() => setDone({ dur: 3120, sets: 18, volume: 8450, xp: RULES.XP_PER_SESSION, prs: 2 })} sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
+    body = <Settings onTour={() => { setProfile({ toured: false, retour: true }); setScreen(null); }} onClients={() => { setClientsBack("ajustes"); setScreen("asesoradas"); }} isAdmin={isAdmin} canBecomeCoach={!isCoach && !state.hasCoach} onBecomeCoach={startAsCoach} onPaywallPreview={() => setPaywall(true)} videos={{ on: !state.profile?.hideVideos, set: (on) => setProfile({ hideVideos: !on }) }} onFinishPreview={() => setDone({ dur: 3120, sets: 18, volume: 8450, xp: RULES.XP_PER_SESSION, prs: 2 })} sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
       reminders={state.profile?.reminders} setReminders={(r) => setProfile({ reminders: r })}
       onEdit={() => setScreen("editar")}
       onContent={() => setScreen("contenido")}
