@@ -1997,6 +1997,10 @@ select.in{appearance:none}
 .cx-new b{display:block;font-size:14px}.cx-new small{display:block;font-size:12px;color:var(--dm)}
 .cx-tag{font-style:normal;font-size:10px;font-weight:800;color:#000;background:var(--ac);border-radius:999px;padding:2px 7px;margin-left:6px;vertical-align:2px}
 .cx{max-height:90vh;overflow-y:auto}
+.cx-up{display:flex;align-items:center;gap:10px;padding:12px;border:1px dashed var(--ln);border-radius:14px;cursor:pointer}
+.cx-up span{font-size:14px;font-weight:700}.cx-up small{display:block;font-size:12px;font-weight:400;color:var(--dm)}
+.cx-vid{display:flex;align-items:center;gap:12px}
+.cx-vid img,.cx-vid video{width:96px;height:120px;object-fit:cover;border-radius:12px;background:#000}
 .cx-types{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .cx-types button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px;border:1px solid var(--ln);border-radius:12px;background:var(--sf2);color:var(--tx);font:inherit;text-align:left;cursor:pointer}
 .cx-types button.on{border-color:var(--ac);background:rgba(212,139,146,.14)}
@@ -3412,11 +3416,13 @@ function activeRoutine(profile) {
 // Se guardan en su perfil (profile.customEx) y se suman a la lista de ejercicios mientras usa la app
 const CX_EQUIP = ["Barra", "Mancuernas", "Máquina", "Polea", "Multipower", "Peso corporal", "Kettlebell", "Banda elástica", "Disco", "Otro"];
 const CX_TYPES = [["", "Peso y repeticiones", "Kg × reps"], ["reps", "Solo repeticiones", "Peso corporal"], ["s", "Tiempo", "Segundos"], ["min", "Cardio", "Minutos"]];
-let CUSTOM_EX_API = null; // { save(ex), remove(id) } lo pone la app
+let CUSTOM_EX_API = null; // { save(ex), remove(id), upload(file) } lo pone la app
+const CUSTOM_MEDIA = {}; // vídeos de los ejercicios propios (se suman a media)
 function registerCustomEx(map) {
   Object.entries(map || {}).forEach(([id, e]) => {
     if (!e || !e.n) return;
     EXERCISES[id] = { id, group: e.group || "Otros", n: e.n, muscle: [e.group, ...(e.other || [])].filter(Boolean).join(", "), equip: e.equip || "", simple: e.notes || "", tip: "", unit: e.unit || undefined, custom: true };
+    if (e.video) CUSTOM_MEDIA[`ex:${id}`] = e.video; else delete CUSTOM_MEDIA[`ex:${id}`];
   });
 }
 function CustomExForm({ initial, onSave, onDelete, onClose }) {
@@ -3424,11 +3430,19 @@ function CustomExForm({ initial, onSave, onDelete, onClose }) {
   const groups = GROUPS.filter((g) => g !== "Cardio" && g !== "Movilidad");
   const [f, setF] = useState(() => initial || { n: "", group: "", other: [], equip: "", unit: "", notes: "" });
   const [err, setErr] = useState("");
+  const [file, setFile] = useState(null);
+  const [busy, setBusy] = useState(false);
   const set = (k, v) => setF((x) => ({ ...x, [k]: v }));
-  const save = () => {
+  const save = async () => {
     if (!f.n.trim()) return setErr("Ponle un nombre.");
     if (!f.group) return setErr("Elige el músculo principal.");
-    onSave({ ...f, n: f.n.trim().charAt(0).toUpperCase() + f.n.trim().slice(1), other: (f.other || []).filter((g) => g !== f.group) });
+    let video = f.video || "";
+    if (file) {
+      if (file.size > 80 * 1024 * 1024) return setErr("El vídeo pesa demasiado (máximo 80 MB). Recórtalo a unos segundos.");
+      setBusy(true); setErr("");
+      try { video = await CUSTOM_EX_API.upload(file); } catch { setBusy(false); return setErr("No se ha podido subir el vídeo. Revisa la conexión."); }
+    }
+    onSave({ ...f, video, n: f.n.trim().charAt(0).toUpperCase() + f.n.trim().slice(1), other: (f.other || []).filter((g) => g !== f.group) });
   };
   return createPortal(
     <div className="modal" style={{ zIndex: 60 }} onClick={onClose}>
@@ -3447,9 +3461,19 @@ function CustomExForm({ initial, onSave, onDelete, onClose }) {
         <div className="field"><label>Otros músculos (opcional)</label>
           <div className="chips">{groups.filter((g) => g !== f.group).map((g) => { const on = (f.other || []).includes(g); return <button key={g} className={`chip ${on ? "on" : ""}`} onClick={() => set("other", on ? f.other.filter((x) => x !== g) : [...(f.other || []), g])}>{g}</button>; })}</div>
         </div>
+        <div className="field"><label>Vídeo o foto de cómo se hace (opcional)</label>
+          {(file || f.video) ? (
+            <div className="cx-vid">
+              {file ? (file.type.startsWith("image/") ? <img src={URL.createObjectURL(file)} alt="" /> : <video src={URL.createObjectURL(file)} muted autoPlay loop playsInline />) : (isImage(f.video) ? <img src={f.video} alt="" /> : <video src={f.video} muted autoPlay loop playsInline />)}
+              <button className="link" onClick={() => { setFile(null); set("video", ""); }}>Quitar</button>
+            </div>
+          ) : (
+            <label className="cx-up"><input type="file" accept="video/*,image/*" hidden onChange={(e) => setFile(e.target.files?.[0] || null)} /><Ic n="plus" size={18} /><span>Subir vídeo o foto<small>Unos segundos haciéndolo: así lo recuerdas mientras entrenas</small></span></label>
+          )}
+        </div>
         <div className="field"><label>Notas de técnica (opcional)</label><textarea className="in" rows={3} value={f.notes} placeholder="Cómo lo haces, ajustes de la máquina…" onChange={(e) => set("notes", e.target.value)} /></div>
         {err && <div className="err">{err}</div>}
-        <button className="btn ac" onClick={save}>{editing ? "Guardar cambios" : "Crear ejercicio"}</button>
+        <button className="btn ac" disabled={busy} onClick={save}>{busy ? "Subiendo vídeo…" : editing ? "Guardar cambios" : "Crear ejercicio"}</button>
         {onDelete && <button className="btn ghost" onClick={onDelete}>Borrar ejercicio</button>}
         <button className="link" style={{ display: "block", margin: "10px auto 0" }} onClick={onClose}>Cancelar</button>
       </div>
@@ -8705,7 +8729,9 @@ function ArcApp({ user }) {
     get: (id) => state.profile?.customEx?.[id] || null,
     save: (ex, id) => { const key = id || `U-${Date.now().toString(36)}`; registerCustomEx({ [key]: ex }); setProfile({ customEx: { ...(state.profile?.customEx || {}), [key]: ex } }); return key; },
     remove: (id) => { const { [id]: _, ...rest } = state.profile?.customEx || {}; setProfile({ customEx: rest }); },
+    upload: async (file) => { const ext = (file.name.split(".").pop() || (file.type.startsWith("image/") ? "jpg" : "mp4")).toLowerCase(); return db.uploadFile(`propios/${user.id}/${Date.now()}.${ext}`, file, file.type); },
   } : null;
+  const mediaX = { ...media, ...CUSTOM_MEDIA }; // con los vídeos de sus ejercicios propios
   const routine = useMemo(() => activeRoutine({ ...state.profile, coachRoutine: state.coachRoutine }), [state.profile?.days, state.profile?.branch, state.profile?.routineMode, state.profile?.customRoutine, state.profile?.charProgram, state.profile?.program, state.profile?.customEx, state.coachRoutine]);
   const adh = useMemo(() => (state.profile ? adherenceInfo(state.habits, state.profile.startDate) : null), [state.habits, state.profile]);
   const stats = useMemo(() => {
@@ -8934,14 +8960,14 @@ function ArcApp({ user }) {
       onDeleteAccount={() => db.deleteAccount()}
       onClose={() => setScreen(null)} />;
   } else if (inTracker) {
-    body = <Tracker active={state.active} sessions={state.sessions} setActive={setActive} onFinish={finish} onCancel={() => setActive(null)} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} onRest={native.scheduleRest} onRestCancel={native.cancelRest} hideVideos={!!state.profile?.hideVideos} />;
+    body = <Tracker active={state.active} sessions={state.sessions} setActive={setActive} onFinish={finish} onCancel={() => setActive(null)} media={mediaX} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} onRest={native.scheduleRest} onRestCancel={native.cancelRest} hideVideos={!!state.profile?.hideVideos} />;
   } else if (["entrenos", "nutricion", "ranking"].includes(tab) && !hasPremium) {
     body = <Locked tab={tab} onOpen={() => setPaywall(true)} />;
   } else if (tab === "inicio") {
     body = <><Home state={state} stats={stats} ev={ev} quote={quote} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} testimonials={testimonials} showCoaching={!state.hasCoach || isCoach} onRemoveTestimonial={(id) => db.removeTestimonial(id).then(() => setTestimonials((l) => l.filter((x) => x.id !== id))).catch(() => {})} />
       {isCoach && <CoachHome onClient={(id) => { setOpenClient(id); setClientsBack("inicio"); setScreen("asesoradas"); }} onAll={() => { setOpenClient(null); setClientsBack("inicio"); setScreen("asesoradas"); }} onContent={() => setScreen("contenido")} onReports={() => setScreen("denuncias")} />}</>;
   } else if (tab === "entrenos") {
-    body = <Workouts onCardio={logCardio} state={state} routine={routine} onStart={(d) => setActive(newSession(d, state.sessions))} setDays={(d) => setProfile({ days: d })} setProfile={setProfile} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
+    body = <Workouts onCardio={logCardio} state={state} routine={routine} onStart={(d) => setActive(newSession(d, state.sessions))} setDays={(d) => setProfile({ days: d })} setProfile={setProfile} media={mediaX} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
   } else if (tab === "ranking") {
     body = <Social social={socialApi} api={rankApi} media={media} blocked={state.profile?.blocked || []}
       me={{ nickname: state.nickname, shareFeed: state.shareFeed !== false, showKg: state.showKg !== false, goal: state.profile?.days || 3, avatar: state.avatar, branch: state.profile?.branch, mode: state.profile?.mode, level: ev?.current || 0,
