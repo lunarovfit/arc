@@ -7502,7 +7502,47 @@ function Reminders({ value, onChange }) {
   );
 }
 
-function Settings({ onTour, onClients, onPaywallPreview, videos, onFinishPreview, sub, email, isCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
+function BecomeCoach({ onDone }) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  return (
+    <div className="bc">
+      <small>Para entrenadores</small>
+      <b>Lleva a tus clientes con ARC</b>
+      <p>Rutinas y dietas a medida dentro de la app, revisiones semanales, sus entrenos y hábitos en tu panel, y su progreso en tiempo real. Empieza gratis con 1 cliente.</p>
+      {!open ? <button className="btn ac" onClick={() => setOpen(true)}>Soy entrenador/a</button> : (
+        <>
+          <div className="field"><label>Tu nombre como entrenador/a</label><input className="in" value={name} placeholder="Ej.: Marta Fit" onChange={(e) => setName(e.target.value)} /></div>
+          {err && <div className="err">{err}</div>}
+          <button className="btn ac" disabled={busy || !name.trim()} onClick={async () => { setBusy(true); setErr(""); try { await onDone(name.trim()); } catch { setErr("No se ha podido activar. Inténtalo otra vez."); setBusy(false); } }}>{busy ? "Activando…" : "Activar mi panel gratis"}</button>
+          <p className="hint">Tus clientes tendrán que aceptar tu invitación desde su app antes de que veas sus datos.</p>
+        </>
+      )}
+    </div>
+  );
+}
+
+// Invitación de un entrenador/a: la persona decide si le deja ver sus datos
+function CoachInvite({ inv, onAnswer }) {
+  const [busy, setBusy] = useState(false);
+  const answer = async (ok) => { setBusy(true); try { await onAnswer(inv.id, ok); } finally { setBusy(false); } };
+  return (
+    <div className="cln">
+      <div className="cln-box">
+        <small>Invitación</small>
+        <b>{inv.coach_name} quiere ser tu entrenador/a en ARC</b>
+        <p>Si aceptas, podrá ver tus entrenos, hábitos y revisiones, y ponerte tu rutina y tu dieta. Puedes dejarlo cuando quieras.</p>
+        <button className="btn ac" disabled={busy} onClick={() => answer(true)}>Aceptar</button>
+        <button className="btn ghost" disabled={busy} onClick={() => answer(false)}>Ahora no</button>
+      </div>
+    </div>
+  );
+}
+
+let IS_ADMIN = false; // la administradora de ARC (Luna)
+function Settings({ onTour, onClients, onPaywallPreview, videos, onFinishPreview, sub, email, isCoach, isAdmin, canBecomeCoach, onBecomeCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
   const [confirm, setConfirm] = useState(null); // "data" | "account"
   const [legal, setLegal] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -7514,7 +7554,15 @@ function Settings({ onTour, onClients, onPaywallPreview, videos, onFinishPreview
       <p className="sub">{email}</p>
       <button className="btn" onClick={onEdit}>Editar mis datos y preferencias</button>
       {onTour && <button className="btn ghost" onClick={onTour}>Ver cómo funciona ARC</button>}
-      {isCoach && (
+      {canBecomeCoach && <BecomeCoach onDone={onBecomeCoach} />}
+      {isCoach && !isAdmin && (
+        <>
+          <h2>Tu panel de entrenador/a</h2>
+          <p className="sub">Añade a tus clientes con su correo: cuando acepten, verás sus entrenos, hábitos y revisiones, y les podrás poner rutina y dieta.</p>
+          <button className="btn ac" onClick={onClients}>Mis asesorad@s</button>
+        </>
+      )}
+      {isAdmin && (
         <>
           <h2>Modo coach</h2>
           <p className="sub">Sube imágenes de cada personaje y vídeos de cada ejercicio. Solo lo ve tu cuenta.</p>
@@ -7924,7 +7972,7 @@ function CheckinList({ items, coach = false, clientName = "" }) {
                       <div key={k} className="ck2-qa">
                         <small>{q}</small>
                         <p>{ans[k]}</p>
-                        {coach && canShare && CK_STORY[k] && (added[`${c.id}:${k}`]
+                        {coach && IS_ADMIN && canShare && CK_STORY[k] && (added[`${c.id}:${k}`]
                           ? <span className="ck2-added">✓ En opiniones</span>
                           : <button className="ck2-story" aria-label="Añadir a opiniones" title="Añadir a las opiniones de Coaching con Luna" onClick={() => addOpinion(c, k)}>☆</button>)}
                       </div>
@@ -8030,6 +8078,11 @@ const CHECKIN_CSS = `
 .ch-hd>span{font-size:22px;font-weight:800;width:44px;height:44px;border-radius:14px;background:var(--ac);color:#000;display:flex;align-items:center;justify-content:center}
 .ch-acts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 8px}
 .ch-acts button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border:1px solid var(--ln);border-radius:14px;background:var(--sf2);color:var(--tx);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.ch-plan{display:grid;gap:8px;margin:12px 0 8px}
+.ch-plan span{font-size:13px;color:var(--dm)}
+.bc{margin:18px 0 6px;border:1px solid rgba(212,139,146,.45);border-radius:18px;padding:16px;background:linear-gradient(160deg,rgba(212,139,146,.14),var(--sf) 60%)}
+.bc small{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ac)}
+.bc b{display:block;font-size:19px;margin:4px 0 6px}.bc p{font-size:14px;color:var(--dm);margin:0 0 10px;line-height:1.45}
 .ch-row{width:100%;border-radius:0!important;display:flex;align-items:center;gap:12px;padding:11px 0;border:0;border-bottom:1px solid var(--ln);background:none;color:var(--tx);font:inherit;text-align:left;cursor:pointer}
 .ch-row>span{flex:1;min-width:0;text-align:left;display:flex;flex-direction:column;align-items:flex-start}.ch-row b{display:block;font-size:15px}.ch-row small{display:block;font-size:12.5px;color:var(--dm)}
 .ch-row em{font-style:normal;font-weight:800;font-size:15px;text-align:right}.ch-row em small{font-size:10.5px;font-weight:400}
@@ -8491,7 +8544,9 @@ function ClientDetail({ client, onBack, onSaved, onRemoved }) {
 }
 
 // Panel de entrenadora en Inicio: tus asesorad@s de un vistazo y accesos directos
-function CoachHome({ onClient, onAll, onContent, onReports }) {
+function CoachHome({ isAdmin, onClient, onAll, onContent, onReports }) {
+  const [plan, setPlan] = useState(null);
+  useEffect(() => { if (!isAdmin) db.myCoachPlan().then(setPlan).catch(() => {}); }, []);
   const [list, setList] = useState(null);
   const [sums, setSums] = useState({});
   useEffect(() => { db.listClients().then(setList).catch(() => setList([])); }, []);
@@ -8503,14 +8558,21 @@ function CoachHome({ onClient, onAll, onContent, onReports }) {
   return (
     <div className="ch">
       <div className="ch-hd">
-        <div><small>Panel de entrenadora</small><b>Tus asesorad@s</b></div>
+        <div><small>{isAdmin ? "Panel de entrenadora" : "Panel de entrenador/a"}</small><b>Tus asesorad@s</b></div>
         <span>{uniq.length}</span>
       </div>
-      <div className="ch-acts">
-        <button onClick={onAll}><Ic n="calendar" size={20} /><span>Asesorad@s</span></button>
-        <button onClick={onContent}><Ic n="pencil" size={20} /><span>Contenido</span></button>
-        <button onClick={onReports}><Ic n="ban" size={20} /><span>Denuncias</span></button>
-      </div>
+      {isAdmin ? (
+        <div className="ch-acts">
+          <button onClick={onAll}><Ic n="calendar" size={20} /><span>Asesorad@s</span></button>
+          <button onClick={onContent}><Ic n="pencil" size={20} /><span>Contenido</span></button>
+          <button onClick={onReports}><Ic n="ban" size={20} /><span>Denuncias</span></button>
+        </div>
+      ) : (
+        <div className="ch-plan">
+          <span>{plan ? `Plan ${({ free: "gratis", starter: "Starter", pro: "Pro", elite: "Élite" })[plan.plan] || plan.plan} · ${plan.used}/${plan.limit} clientes` : "Tu plan"}</span>
+          <button className="btn ac" onClick={onAll}>Añadir o ver asesorad@s</button>
+        </div>
+      )}
       {list === null && <p className="hint">Cargando…</p>}
       {list?.length === 0 && <p className="hint">Aún no tienes asesorad@s. Añádelos desde "Asesorad@s".</p>}
       {uniq.map((c) => {
@@ -8520,7 +8582,7 @@ function CoachHome({ onClient, onAll, onContent, onReports }) {
         return (
           <button key={c.id} className="ch-row" onClick={() => onClient(c.id)}>
             <i className={`ch-dot${days === null ? "" : days <= 2 ? " ok" : days <= 5 ? " mid" : " bad"}`}>{(c.name || c.email)[0].toUpperCase()}</i>
-            <span><b>{c.name || c.email}</b><small>{!c.client_id ? "Aún no se ha registrado" : s ? ago(last) : "Cargando…"}</small></span>
+            <span><b>{c.name || c.email}</b><small>{!c.client_id ? "Aún no se ha registrado" : c.accepted === false ? "Pendiente de que acepte" : s ? ago(last) : "Cargando…"}</small></span>
             {wk !== null && <em>{wk}/{s.plan}<small>semana</small></em>}
           </button>
         );
@@ -8551,7 +8613,7 @@ function Clients({ onClose, initialId = null, backLabel = "Ajustes" }) {
     setBusy(true); setErr("");
     const profile = { branch: pf.branch, ...Object.fromEntries(["age", "height", "weight"].filter((k) => Number(String(pf[k]).replace(",", ".")) > 0).map((k) => [k, Number(String(pf[k]).replace(",", "."))])) };
     try { const row = await db.addClient(name.trim() || null, email.trim(), profile); setList((l) => [...(l || []), row]); setName(""); setEmail(""); setPf({ branch: "female", age: "", height: "", weight: "" }); }
-    catch (e) { setErr(/duplicate|unique/i.test(e.message || "") ? "Ya tienes a esa persona en tu lista." : "No se ha podido añadir. Inténtalo otra vez."); }
+    catch (e) { const lim = /limite:(\d+)/.exec(e.message || ""); setErr(lim ? `Tu plan permite ${lim[1]} ${lim[1] === "1" ? "asesorad@" : "asesorad@s"}. Mejora tu plan para añadir más.` : /duplicate|unique/i.test(e.message || "") ? "Ya tienes a esa persona en tu lista." : "No se ha podido añadir. Inténtalo otra vez."); }
     finally { setBusy(false); }
   };
 
@@ -8585,7 +8647,7 @@ function Clients({ onClose, initialId = null, backLabel = "Ajustes" }) {
             <div className="cl-av">{(c.name || c.email)[0].toUpperCase()}</div>
             <div className="cl-main">
               <b>{c.name || c.email}</b>
-              <small>{!c.client_id ? "Esperando a que se registre" : s ? (s.last ? `Último entreno: ${fmtDate(s.last.date)}` : "Sin entrenos todavía") : "Cargando…"}{c.routine?.length ? " · con tu rutina" : ""}</small>
+              <small>{!c.client_id ? "Esperando a que se registre" : c.accepted === false ? "Esperando a que acepte tu invitación" : s ? (s.last ? `Último entreno: ${fmtDate(s.last.date)}` : "Sin entrenos todavía") : "Cargando…"}{c.routine?.length ? " · con tu rutina" : ""}</small>
             </div>
             {s && <div className="cl-pct"><b style={{ color: s.trainPct >= 75 ? "var(--okl)" : s.trainPct >= 40 ? "var(--wu)" : "#FCA5A5" }}>{s.trainPct}%</b><small>cumple</small></div>}
           </button>
@@ -8646,6 +8708,7 @@ function ArcApp({ user }) {
   const [clientsBack, setClientsBack] = useState("ajustes");
   const [toast, setToast] = useState("");
   const [coachLog, setCoachLog] = useState(null); // aviso: la coach ha apuntado tu entreno
+  const [invites, setInvites] = useState([]);
   const [coachView, setCoachView] = useState(true);
   const [stepsAvail, setStepsAvail] = useState(false);
   const [stepsBusy, setStepsBusy] = useState(false);
@@ -8681,6 +8744,8 @@ function ArcApp({ user }) {
   const later = (key, fn, ms = 800) => { clearTimeout(timers.current[key]); timers.current[key] = setTimeout(() => fn().catch(fail), ms); };
 
   const isCoach = state.role === "coach" || state.role === "admin";
+  const isAdmin = state.role === "admin";
+  IS_ADMIN = isAdmin;
   // Sin clave de RevenueCat o fuera del iPhone no se bloquea nada
   const hasPremium = isCoach || state.hasCoach || !purchases.enabled || premium === true; // las asesoradas lo tienen gratis
   useEffect(() => {
@@ -8688,7 +8753,7 @@ function ArcApp({ user }) {
     purchases.init(user.id).then(setPremium).catch(() => setPremium(false));
     purchases.onChange(setPremium).catch(() => {});
   }, [loaded]);
-  const coach = isCoach && coachView;
+  const coach = isAdmin && coachView;
 
   const setMedia = async (key, value) => {
     setMediaState((m) => { const n = { ...m }; if (value) n[key] = value; else delete n[key]; return n; });
@@ -8779,6 +8844,10 @@ function ArcApp({ user }) {
       setState((s) => ({ ...s, ...("share_feed" in patch ? { shareFeed: patch.share_feed } : {}), ...("feed_show_kg" in patch ? { showKg: patch.feed_show_kg } : {}) }));
     },
   };
+
+  // Invitaciones de entrenadores pendientes de aceptar
+  useEffect(() => { if (loaded) db.coachInvites().then((l) => setInvites(l || [])).catch(() => {}); }, [loaded]);
+  const answerInvite = async (id, ok) => { await db.respondInvite(id, ok); setInvites((l) => l.filter((x) => x.id !== id)); if (ok) await load(); };
 
   // Si la coach te ha apuntado un entreno, al abrir la app sale su aviso con el mensaje
   useEffect(() => {
@@ -8943,14 +9012,14 @@ function ArcApp({ user }) {
     body = <Tour media={media} profile={state.profile} ev={ev} heroImg={mediaOr(media, levelKey(state.profile.branch, state.profile.mode, ev.current)) || AVATAR[state.profile.branch]} perms={tourPerms} onFinish={() => { const again = state.profile?.retour; setProfile({ toured: true, retour: false }); setTab("inicio"); if (!hasPremium && !again) setPaywall(true); }} />;
   } else if (showQuestionnaire) {
     body = <Questionnaire initial={state.profile || DEFAULT_PROFILE} editing={state.onboarded} onSave={saveProfile} onCancel={() => setScreen("ajustes")} />;
-  } else if (screen === "contenido" && isCoach) {
+  } else if (screen === "contenido" && isAdmin) {
     body = <ContentEditor content={content} onSave={onSaveItem} onDelete={onDeleteItem} onClose={() => setScreen("ajustes")} media={media} setMedia={setMedia} uploadMedia={uploadMedia} />;
   } else if (screen === "asesoradas" && isCoach) {
     body = <Clients initialId={openClient} backLabel={clientsBack === "inicio" ? "Inicio" : "Ajustes"} onClose={() => { setOpenClient(null); setScreen(clientsBack === "inicio" ? null : "ajustes"); }} />;
-  } else if (screen === "denuncias" && isCoach) {
+  } else if (screen === "denuncias" && isAdmin) {
     body = <Reports onClose={() => setScreen("ajustes")} />;
   } else if (screen === "ajustes") {
-    body = <Settings onTour={() => { setProfile({ toured: false, retour: true }); setScreen(null); }} onClients={() => { setClientsBack("ajustes"); setScreen("asesoradas"); }} onPaywallPreview={() => setPaywall(true)} videos={{ on: !state.profile?.hideVideos, set: (on) => setProfile({ hideVideos: !on }) }} onFinishPreview={() => setDone({ dur: 3120, sets: 18, volume: 8450, xp: RULES.XP_PER_SESSION, prs: 2 })} sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
+    body = <Settings onTour={() => { setProfile({ toured: false, retour: true }); setScreen(null); }} onClients={() => { setClientsBack("ajustes"); setScreen("asesoradas"); }} isAdmin={isAdmin} canBecomeCoach={!isCoach && !state.hasCoach} onBecomeCoach={async (name) => { await db.becomeCoach(name); await load(); setScreen(null); setTab("inicio"); }} onPaywallPreview={() => setPaywall(true)} videos={{ on: !state.profile?.hideVideos, set: (on) => setProfile({ hideVideos: !on }) }} onFinishPreview={() => setDone({ dur: 3120, sets: 18, volume: 8450, xp: RULES.XP_PER_SESSION, prs: 2 })} sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
       reminders={state.profile?.reminders} setReminders={(r) => setProfile({ reminders: r })}
       onEdit={() => setScreen("editar")}
       onContent={() => setScreen("contenido")}
@@ -8964,8 +9033,8 @@ function ArcApp({ user }) {
   } else if (["entrenos", "nutricion", "ranking"].includes(tab) && !hasPremium) {
     body = <Locked tab={tab} onOpen={() => setPaywall(true)} />;
   } else if (tab === "inicio") {
-    body = <><Home state={state} stats={stats} ev={ev} quote={quote} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} testimonials={testimonials} showCoaching={!state.hasCoach || isCoach} onRemoveTestimonial={(id) => db.removeTestimonial(id).then(() => setTestimonials((l) => l.filter((x) => x.id !== id))).catch(() => {})} />
-      {isCoach && <CoachHome onClient={(id) => { setOpenClient(id); setClientsBack("inicio"); setScreen("asesoradas"); }} onAll={() => { setOpenClient(null); setClientsBack("inicio"); setScreen("asesoradas"); }} onContent={() => setScreen("contenido")} onReports={() => setScreen("denuncias")} />}</>;
+    body = <><Home state={state} stats={stats} ev={ev} quote={quote} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} testimonials={testimonials} showCoaching={isAdmin || (!state.hasCoach && !isCoach)} onRemoveTestimonial={(id) => db.removeTestimonial(id).then(() => setTestimonials((l) => l.filter((x) => x.id !== id))).catch(() => {})} />
+      {isCoach && <CoachHome isAdmin={isAdmin} onClient={(id) => { setOpenClient(id); setClientsBack("inicio"); setScreen("asesoradas"); }} onAll={() => { setOpenClient(null); setClientsBack("inicio"); setScreen("asesoradas"); }} onContent={() => setScreen("contenido")} onReports={() => setScreen("denuncias")} />}</>;
   } else if (tab === "entrenos") {
     body = <Workouts onCardio={logCardio} state={state} routine={routine} onStart={(d) => setActive(newSession(d, state.sessions))} setDays={(d) => setProfile({ days: d })} setProfile={setProfile} media={mediaX} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
   } else if (tab === "ranking") {
@@ -8990,6 +9059,7 @@ function ArcApp({ user }) {
       <style>{CSS + EXTRA_CSS + LEGAL_CSS + PAYWALL_CSS + CLIENTS_CSS + CHECKIN_CSS}</style>
       {paywall && <Paywall media={media} coach={coach} uploadMedia={uploadMedia} setMedia={setMedia} onClose={() => setPaywall(false)} onPremium={() => { setPremium(true); setPaywall(false); setToast("¡Ya tienes ARC completo!"); }} />}
       {toast && <div className="toast" role="status">{toast}</div>}
+      {invites.length > 0 && !coachLog && <CoachInvite inv={invites[0]} onAnswer={answerInvite} />}
       {coachLog && (
         <div className="cln" onClick={closeCoachLog}>
           <div className="cln-box" onClick={(e) => e.stopPropagation()}>

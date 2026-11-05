@@ -157,6 +157,12 @@ export async function coachSaveSession(id, row) {
 }
 export const coachDeleteSession = (id) => supabase.from("workout_sessions").delete().eq("id", id).then(must);
 
+// ---------- Varios entrenadores ----------
+export const becomeCoach = (name) => supabase.rpc("become_coach", { name }).then(must);
+export const coachInvites = () => supabase.rpc("my_coach_invites").then(must);
+export const respondInvite = (inv, ok) => supabase.rpc("respond_coach_invite", { inv, ok }).then(must);
+export const myCoachPlan = () => supabase.rpc("my_coach_plan").then(must);
+
 // ---------- Opiniones (Coaching con Luna) ----------
 export const listTestimonials = () => supabase.from("testimonials").select("*").eq("active", true).order("created_at", { ascending: false }).then(must);
 export const addTestimonial = (row) => supabase.from("testimonials").insert(row).select().single().then(must);
