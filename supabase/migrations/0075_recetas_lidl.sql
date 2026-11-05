@@ -1,0 +1,9 @@
+-- ARC · Recetas con productos del Lidl (smash burger y gnocchi cremosos)
+insert into public.content_recipes (id, slot, mode, name, items, how, steps, plate, tupper, active, sort) values
+  ('rl23', 'cena', 'sanji', 'Smash burger 99% vacuno', $arc$[["panHamburguesa", "c"], ["picadaVacuno", "p"], ["mozzarella", 20], ["pepinillos", 25], ["ketchupZero", 20], ["espinacas", 30]]$arc$::jsonb,
+   'Burger aplastada a la plancha con carne 99% vacuno, mozzarella fundida, pepinillos, ketchup zero y espinacas baby.',
+   $arc$["Haz bolas con la carne picada (sal y pimienta) y aplástalas fuerte con una espátula sobre la sartén muy caliente, sin aceite. 2 minutos por lado.", "Al darles la vuelta, pon la mozzarella rallada encima y tapa 1 minuto para que se funda.", "Tuesta el pan. Monta: ketchup zero, espinacas, la carne con el queso y unas rodajas de pepinillo."]$arc$::jsonb, '', false, true, 122),
+  ('rl24', 'comida', 'sencilla', 'Gnocchi cremosos con espinacas y pollo', $arc$[["noquis", "c"], ["tirasPollo", "p"], ["espinacas", 80], ["quesoBatido", 100], ["mozzarella", 20]]$arc$::jsonb,
+   'Gnocchi dorados con tiras de pollo y espinacas en una salsa cremosa de queso batido, con mozzarella gratinada.',
+   $arc$["Dora los gnocchi 5 minutos en la sartén con unas gotas de aceite (o cuécelos 2 minutos en agua).", "Añade las tiras de pollo y las espinacas hasta que se reduzcan, 2 minutos.", "Fuera del fuego, mezcla con el queso batido, sal, pimienta y ajo en polvo para que quede cremoso.", "Mozzarella por encima y 3 minutos al horno o airfryer a 200 °C para gratinar."]$arc$::jsonb, '', true, true, 123)
+on conflict (id) do update set slot = excluded.slot, mode = excluded.mode, name = excluded.name, items = excluded.items, how = excluded.how, steps = excluded.steps, tupper = excluded.tupper, active = excluded.active;
