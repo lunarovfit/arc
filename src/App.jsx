@@ -2044,6 +2044,34 @@ select.in{appearance:none}
 .fl-kp div{background:var(--sf2);border-radius:12px;padding:10px;text-align:center}
 .fl-kp b{display:block;font-size:17px}.fl-kp span{font-size:11.5px;color:var(--dm)}
 .fl-meal{margin-top:8px}.fl-meal>small{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ac)}
+.hs{border:1px solid var(--ln);border-radius:20px;padding:14px;background:var(--sf);margin:6px 0 10px}
+.hs-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.hs-chips button{flex:none;border:1px solid var(--ln);background:none;color:var(--dm);border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.hs-chips button.on{background:#fff;color:#000;border-color:#fff}
+.hs-top{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:14px 0 10px}
+.hs-top small{display:block;font-size:12px;color:var(--dm)}
+.hs-top b{font-size:28px;font-weight:800;letter-spacing:-.01em}
+.hs-top em{font-style:normal;font-size:14px;font-weight:800;text-align:right;color:var(--dm)}
+.hs-top em.up{color:#6EE7B7}.hs-top em.down{color:#F87171}
+.hs-top em small{font-size:11px;font-weight:400;color:var(--dm)}
+.hs-bars{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;height:120px;align-items:end}
+.hs-bars button{height:100%;display:flex;align-items:flex-end;background:none;border:0;padding:0;cursor:pointer}
+.hs-bars i{width:100%;border-radius:6px 6px 3px 3px;background:rgba(212,139,146,.35);transform-origin:bottom;animation:hsUp .5s cubic-bezier(.2,.9,.3,1) both}
+.hs-bars button.me i{background:rgba(212,139,146,.6)}
+.hs-bars button.on i{background:var(--ac)}
+@keyframes hsUp{from{transform:scaleY(0)}to{transform:none}}
+.hs-x{display:flex;justify-content:space-between;font-size:11px;color:var(--dm);margin-top:6px}
+.hs-sep{height:1px;background:var(--ln);margin:14px 0}
+.hs-rh b{display:block;font-size:15px}.hs-rh small{font-size:12px;color:var(--dm)}
+.hs-rad{display:grid;grid-template-columns:1fr 110px;align-items:center;gap:6px}
+.hs-radar{width:100%;max-width:260px;overflow:visible}
+.hs-grid{fill:none;stroke:var(--ln);stroke-width:1}
+.hs-prev{fill:rgba(255,255,255,.06);stroke:rgba(255,255,255,.3);stroke-width:1;stroke-dasharray:3 3}
+.hs-cur{fill:rgba(212,139,146,.35);stroke:var(--ac);stroke-width:2;stroke-linejoin:round}
+.hs-lbl{fill:var(--dm);font-size:10.5px;font-weight:600}
+.hs-leg div{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--ln);font-size:13px}
+.hs-leg b{color:var(--ac)}
+.mw-fold{margin-top:6px}
 .prog-card{width:100%;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(212,139,146,.16),var(--sf));border:1px solid rgba(212,139,146,.4);border-radius:18px;padding:14px;margin:4px 0 10px;color:var(--tx);font:inherit;text-align:left;cursor:pointer}
 .prog-card.coach{background:linear-gradient(135deg,rgba(245,199,107,.15),var(--sf));border-color:rgba(245,199,107,.4);cursor:default}
 .prog-card>div{flex:1;min-width:0}
@@ -2636,7 +2664,8 @@ function HomeSimple({ state, stats, quote, ratioPoints, weightPoints }) {
         </div>
       </div>
       {last && <p className="hint">Último entreno: {new Date(last.date).toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "short" })}</p>}
-      <MuscleWeek sessions={state.sessions} routine={routine} />
+      <HevyStats sessions={state.sessions} />
+      <details className="fold mw-fold"><summary><span>Mapa de músculos</span><i aria-hidden="true">+</i></summary><MuscleWeek sessions={state.sessions} routine={routine} /></details>
       <h2>Tu progreso</h2>
       <div className="chart">
         <div className="hd"><span>Fuerza relativa</span><b>{stats.ratio.toFixed(2)}x</b></div>
@@ -3675,6 +3704,76 @@ function periodStats(sessions, from, to) {
     min: Math.round(ss.reduce((a, s) => a + (Number(s.dur) || 0), 0) / 60),
   };
 }
+// ---------- Progreso estilo Hevy: barras por semana y reparto muscular en radar ----------
+const HS_METRICS = [["kg", "Volumen", (v) => `${fmtKg(v)}`], ["min", "Duración", (v) => `${Math.floor(v / 60) ? `${Math.floor(v / 60)} h ` : ""}${v % 60} min`], ["sets", "Series", (v) => `${v}`], ["n", "Entrenos", (v) => `${v}`]];
+const HS_AXES = [["Pecho", ["Pecho"]], ["Espalda", ["Espalda"]], ["Hombro", ["Hombro"]], ["Brazos", ["Bíceps", "Tríceps"]], ["Pierna", ["Cuádriceps", "Femoral", "Gemelo"]], ["Glúteo", ["Glúteo y cadera"]], ["Core", ["Abdomen"]]];
+function hsSets(sessions, from, to) {
+  const out = Object.fromEntries(HS_AXES.map(([a]) => [a, 0]));
+  sessions.forEach((s) => {
+    const t = new Date(s.date); if (t < from || t >= to) return;
+    (s.exercises || []).forEach((e) => {
+      const g = EXERCISES[EX_REMAP[e.exId] || e.exId]?.group; const ax = HS_AXES.find(([, gs]) => gs.includes(g));
+      if (ax) out[ax[0]] += (e.sets || []).filter((x) => x.done !== false && x.type !== "W").length;
+    });
+  });
+  return out;
+}
+function Radar({ cur, prev }) {
+  const axes = HS_AXES.map(([a]) => a), N = axes.length, R = 92, C = 120;
+  const max = Math.max(4, ...axes.map((a) => Math.max(cur[a], prev[a])));
+  const pt = (i, v) => { const ang = -Math.PI / 2 + (i * 2 * Math.PI) / N, r = (v / max) * R; return [C + r * Math.cos(ang), C + r * Math.sin(ang)]; };
+  const poly = (vals) => axes.map((a, i) => pt(i, vals[a]).join(",")).join(" ");
+  return (
+    <svg viewBox="0 0 240 240" className="hs-radar" role="img" aria-label="Reparto de series por músculo">
+      {[0.25, 0.5, 0.75, 1].map((k) => <polygon key={k} points={axes.map((_, i) => pt(i, max * k).join(",")).join(" ")} className="hs-grid" />)}
+      {axes.map((_, i) => { const [x, y] = pt(i, max); return <line key={i} x1={C} y1={C} x2={x} y2={y} className="hs-grid" />; })}
+      <polygon points={poly(prev)} className="hs-prev" />
+      <polygon points={poly(cur)} className="hs-cur" />
+      {axes.map((a, i) => { const [x, y] = pt(i, max * 1.2); return <text key={a} x={x} y={y} textAnchor="middle" dominantBaseline="middle" className="hs-lbl">{a}</text>; })}
+    </svg>
+  );
+}
+function HevyStats({ sessions }) {
+  const [m, setM] = useState("kg");
+  const [sel, setSel] = useState(11);
+  const weeks = Array.from({ length: 12 }, (_, i) => { const ws = weekStart(); const a = new Date(ws); a.setDate(ws.getDate() - 7 * (11 - i)); const b = new Date(a); b.setDate(a.getDate() + 7); return { a, ...periodStats(sessions, a, b) }; });
+  const [, label, fmt] = HS_METRICS.find(([k]) => k === m);
+  const vals = weeks.map((w) => w[m] || 0), max = Math.max(1, ...vals);
+  const w = weeks[sel];
+  // Esta semana se compara con la anterior a la misma altura (si no, siempre saldría en rojo)
+  const prevV = sel === 11 ? (() => { const ws = weekStart(), a = new Date(ws); a.setDate(ws.getDate() - 7); return periodStats(sessions, a, new Date(a.getTime() + (Date.now() - ws)))[m]; })() : weeks[sel - 1]?.[m];
+  const d = prevV ? Math.round(((w[m] - prevV) / prevV) * 100) : null;
+  const now = new Date(), d30 = new Date(now.getTime() - 30 * 864e5), d60 = new Date(now.getTime() - 60 * 864e5);
+  const cur = hsSets(sessions, d30, new Date(now.getTime() + 1)), prev = hsSets(sessions, d60, d30);
+  const top = HS_AXES.map(([a]) => [a, cur[a]]).sort((x, y) => y[1] - x[1]);
+  const total = top.reduce((s, [, v]) => s + v, 0);
+  return (
+    <div className="hs">
+      <div className="hs-chips">{HS_METRICS.map(([k, l]) => <button key={k} className={m === k ? "on" : ""} onClick={() => setM(k)}>{l}</button>)}</div>
+      <div className="hs-top">
+        <div><small>{sel === 11 ? "Esta semana" : `Semana del ${w.a.getDate()}/${w.a.getMonth() + 1}`}</small><b>{fmt(w[m] || 0)}</b></div>
+        {d !== null && <em className={d > 0 ? "up" : d < 0 ? "down" : ""}>{d > 0 ? "▲" : d < 0 ? "▼" : "="} {Math.abs(d)}% <small>{sel === 11 ? "vs la semana pasada a estas alturas" : "vs la semana anterior"}</small></em>}
+      </div>
+      <div className="hs-bars">
+        {weeks.map((wk, i) => (
+          <button key={i} className={`${i === sel ? "on" : ""}${i === 11 ? " me" : ""}`} onClick={() => setSel(i)} aria-label={`${label} semana ${wk.a.getDate()}/${wk.a.getMonth() + 1}`}>
+            <i style={{ height: `${Math.max(3, (vals[i] / max) * 100)}%`, animationDelay: `${i * 0.03}s` }} />
+          </button>
+        ))}
+      </div>
+      <div className="hs-x"><span>{weeks[0].a.toLocaleDateString("es-ES", { day: "numeric", month: "short" })}</span><span>Hoy</span></div>
+      <div className="hs-sep" />
+      <div className="hs-rh"><b>Reparto muscular</b><small>Series de los últimos 30 días · la sombra son los 30 anteriores</small></div>
+      {total === 0 ? <p className="hint">Cuando registres entrenos verás aquí qué músculos trabajas más.</p> : (
+        <div className="hs-rad">
+          <Radar cur={cur} prev={prev} />
+          <div className="hs-leg">{top.filter(([, v]) => v > 0).slice(0, 4).map(([a, v]) => <div key={a}><span>{a}</span><b>{Math.round((v / total) * 100)}%</b></div>)}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function TrainSummary({ sessions }) {
   const [per, setPer] = useState("semana");
   const now = new Date();
@@ -4499,11 +4598,11 @@ function Workouts({ state, routine, onStart, setDays, setProfile, media, coach, 
         </div>
       ))}
       <p className="hint">{coach ? "Modo coach: toca cualquier ejercicio para subir su vídeo o pegar el enlace." : "Toca un ejercicio para ver cómo se hace y su truquito."}</p>
-      {!(mode === "custom" && editing) && <><h2>Tus músculos</h2>
-      <MuscleWeek sessions={state.sessions} routine={routine} />
+      {!(mode === "custom" && editing) && <><h2>Tu progreso</h2>
+      <HevyStats sessions={state.sessions} />
+      <details className="fold mw-fold"><summary><span>Mapa de músculos</span><i aria-hidden="true">+</i></summary><MuscleWeek sessions={state.sessions} routine={routine} /></details>
       <details className="fold"><summary><span>Análisis de tu rutina</span><i aria-hidden="true">+</i></summary><RoutineAnalysis routine={routine} /></details>
-      <h2>Tu resumen</h2>
-      <TrainSummary sessions={state.sessions} />
+      <details className="fold"><summary><span>Semana y mes frente al anterior</span><i aria-hidden="true">+</i></summary><TrainSummary sessions={state.sessions} /></details>
       <h2>Progreso por ejercicio</h2>
       <ExerciseProgress sessions={state.sessions} /></>}
       <h2>Mis ejercicios</h2>
