@@ -770,6 +770,8 @@ let RECIPES = [
   {"id": "rl22", "slot": "cena", "mode": "sencilla", "name": "Tortilla de patatas sin freír", "items": [["patataTroceada", "c"], ["claras", "p"], ["huevo", 120], ["cebolla", 60], ["aove", "f"]], "how": "Tortilla jugosa con la patata troceada congelada de Mercadona hecha en la freidora de aire (sin freír), 2 huevos enteros y claras para subir la proteína.", "steps": ["Echa la patata troceada directamente congelada en la freidora de aire con unas gotas de AOVE y sal: 8 minutos a 180 °C, remueve y otros 8 minutos. Sin freidora: cuécela 3 minutos en agua y escúrrela bien.", "Mientras, pocha la cebolla en la sartén antiadherente a fuego bajo con el resto del AOVE y una pizca de sal, hasta que esté blandita.", "Bate los 2 huevos con las claras y sal. Mezcla con la patata y la cebolla y déjalo reposar 5 minutos para que la patata se empape.", "Cuaja en una sartén pequeña antiadherente a fuego medio-bajo 4-5 minutos, dale la vuelta con un plato y 2-3 minutos más. Si te gusta jugosa, menos tiempo."], "plate": "", "tupper": true, "active": true},
   {"id": "rl23", "slot": "cena", "mode": "sanji", "name": "Smash burger 99% vacuno", "items": [["panHamburguesa", "c"], ["picadaVacuno", "p"], ["mozzarella", 20], ["pepinillos", 25], ["ketchupZero", 20], ["espinacas", 30]], "how": "Burger aplastada a la plancha con carne 99% vacuno, mozzarella fundida, pepinillos, ketchup zero y espinacas baby.", "steps": ["Haz bolas con la carne picada (sal y pimienta) y aplástalas fuerte con una espátula sobre la sartén muy caliente, sin aceite. 2 minutos por lado.", "Al darles la vuelta, pon la mozzarella rallada encima y tapa 1 minuto para que se funda.", "Tuesta el pan. Monta: ketchup zero, espinacas, la carne con el queso y unas rodajas de pepinillo."], "plate": "", "tupper": false, "active": true},
   {"id": "rl24", "slot": "comida", "mode": "sencilla", "name": "Gnocchi cremosos con espinacas y pollo", "items": [["noquis", "c"], ["tirasPollo", "p"], ["espinacas", 80], ["quesoBatido", 100], ["mozzarella", 20]], "how": "Gnocchi dorados con tiras de pollo y espinacas en una salsa cremosa de queso batido, con mozzarella gratinada.", "steps": ["Dora los gnocchi 5 minutos en la sartén con unas gotas de aceite (o cuécelos 2 minutos en agua).", "Añade las tiras de pollo y las espinacas hasta que se reduzcan, 2 minutos.", "Fuera del fuego, mezcla con el queso batido, sal, pimienta y ajo en polvo para que quede cremoso.", "Mozzarella por encima y 3 minutos al horno o airfryer a 200 °C para gratinar."], "plate": "", "tupper": true, "active": true},
+  {"id": "rl25", "slot": "comida", "mode": "sencilla", "name": "Bowl de hamburguesa", "items": [["arroz", "c"], ["picadaVacuno", "p"], ["espinacas", 40], ["pepinillos", 25], ["verduras", 60], ["mozzarella", 20]], "how": "Arroz, carne picada 99% vacuno a la sartén, espinacas baby, pepinillos, tomates cherry y mozzarella rallada, con especias por encima. Todo el sabor de una burger en un plato.", "steps": ["Cuece el arroz (o usa uno de vasito para ir más rápido).", "Haz la carne picada en la sartén bien caliente, sin aceite, con sal y pimienta hasta que se dore.", "Monta el plato por zonas: arroz, carne, espinacas, una fila de pepinillos en rodajas y los tomates cherry partidos por la mitad.", "Mozzarella rallada por encima y termina con tu mezcla de especias favorita."], "plate": "Colócalo todo por filas, con los pepinillos y los cherrys en el centro: queda como una hamburguesa abierta.", "tupper": true, "active": true},
+  {"id": "rl26", "slot": "desayuno", "mode": "sencilla", "name": "Porridge proteico post-gym", "items": [["avena", "c"], ["proteina", "p"], ["platano", 60], ["arandanos", 50], ["yogurProt", 50]], "how": "Avena con agua caliente y proteína en polvo, con plátano, arándanos y una cucharada de yogur. Lo que Luna se hace siempre después del gym.", "steps": ["Pon la avena en un táper o bol y cúbrela con agua recién hervida. Deja 1-2 minutos.", "Añade la proteína en polvo y remueve hasta que quede cremoso (si se espesa mucho, un chorrito más de agua).", "Encima: arándanos (valen congelados), el plátano en rodajas y una cucharada de yogur. Si quieres, unas semillas de lino."], "plate": "En táper de cristal cuadrado, cada topping en su esquina: arándanos, plátano en fila y el yogur arriba.", "tupper": true, "active": true},
 ];
 
 const SLOT_NAMES = { pre: "Pre-entreno", desayuno: "Desayuno", mediaManana: "Media mañana", comida: "Comida", merienda: "Merienda", cena: "Cena" };
@@ -789,8 +791,11 @@ let FOOD_TAGS = {
 };
 const EXCLUDE_OPTS = [["pescado", "Pescado"], ["lacteos", "Lácteos"], ["huevo", "Huevo"], ["cerdo", "Cerdo"], ["gluten", "Gluten"]];
 // Fotos de platos que vienen dentro de la app (la coach puede cambiarlas desde Editar contenido)
-const REC_IMG = new Set(["r001", "r008", "r013", "r029", "rl01", "rl02", "rl03", "rl04", "rl05", "rl06", "rl07", "rl08", "rl09", "rl10", "rl11", "rl12", "rl13", "rl14", "rl15", "rl16", "rl17", "rl18", "rl19"]);
+const REC_IMG = new Set(["r001", "r008", "r013", "r029", "rl01", "rl02", "rl03", "rl04", "rl05", "rl06", "rl07", "rl08", "rl09", "rl10", "rl11", "rl12", "rl13", "rl14", "rl15", "rl16", "rl17", "rl18", "rl19", "rl25", "rl26"]);
 const recImg = (media, id) => media[`rec:${id}`] || (REC_IMG.has(id) ? `/recetas/${id}.jpg` : null);
+// Recetas con vídeo: sale en bucle en vez de la foto (la foto queda de portada)
+const REC_VID = new Set(["rl25", "rl26"]);
+const recVid = (media, id) => media[`recvid:${id}`] || (REC_VID.has(id) ? `/recetas/${id}.mp4` : null);
 let TUPPER = new Set(["Pollo con arroz y verduras", "Pasta boloñesa ligera", "Poke de salmón", "Ñoquis con atún y tomate", "Bol de yogur con muesli y kiwi", "Ensalada de legumbres con atún", "Wrap de pollo para llevar", "Arroz con ternera al curry", "Emperador con batata asada", "Batido de proteína y plátano", "Yogur proteico con plátano y frutos secos", "Tortitas de arroz con jamón", "Tortilla de patata fit", "Porridge proteico de cacao", "Tortitas con pavo y aguacate", "Overnight oats de tarta de queso", "Onigiris de atún", "Lasaña boloñesa fit", "Cheesecake en vaso", "Tacos de pollo con guacamole", "Bowl de salmón, lentejas y ñoquis", "Ensalada de pollo, garbanzos y rúcula", "Fusilli de lentejas con pollo", "Táper de cerdo con batata asada", "Pollo desmechado con salsa de yogur"]);
 // Iconos de los modos de cocina (línea fina, mismo estilo que el resto de la app)
 function CookIcon({ mode, size = 26 }) {
@@ -1361,7 +1366,8 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .mcard{border-radius:20px;overflow:hidden;background:var(--sf);border:1px solid var(--ln)}
 .mhead{display:flex;gap:14px;align-items:center;padding:14px 16px 12px}
 .mthumb{flex:none;width:74px;height:74px;border-radius:16px;display:grid;place-items:center;color:var(--ac);background:radial-gradient(100% 100% at 80% 0%,rgba(212,139,146,.3),transparent 70%),var(--sf2);border:1px solid var(--ln);overflow:hidden}
-.mthumb.ph img{width:100%;height:100%;object-fit:cover}
+.mthumb.ph img,.mthumb.ph video{width:100%;height:100%;object-fit:cover}
+.rvid{width:100%;max-height:520px;aspect-ratio:9/16;object-fit:cover;border-radius:14px;display:block;margin:4px 0 12px;background:#000;border:1px solid var(--ln)}
 .mhead-t{min-width:0;flex:1}
 .mslot{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ac);font-weight:800}
 .mslot span{color:var(--dm);letter-spacing:.02em;text-transform:none;font-weight:600}
@@ -5581,7 +5587,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
     if (!opts.length) opts = all;
     opts = byTaste(opts, profile);
     if (profile.eatOut) opts = [...opts].sort((a, b) => TUPPER.has(b.name) - TUPPER.has(a.name));
-    opts = [...opts].sort((a, b) => !!recImg(media, b.id) - !!recImg(media, a.id)); // primero las que tienen foto
+    opts = [...opts].sort((a, b) => !!(recImg(media, b.id) || recVid(media, b.id)) - !!(recImg(media, a.id) || recVid(media, a.id))); // primero las que tienen foto
     if (!opts.length) return { id, empty: true };
     const k = `${id}-${mode}`;
     const recipe = opts[Math.min(pick[k] || 0, opts.length - 1)];
@@ -5650,12 +5656,12 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
       {meals.map((m) => m.empty ? (
         <div className="mcard" key={m.id}><div className="mbody"><div className="mslot">{SLOT_NAMES[m.id]}</div><p className="hint">Con lo que has quitado no hay recetas para esta comida todavía.</p></div></div>
       ) : (() => {
-        const img = recImg(media, m.recipe.id), idx = m.opts.indexOf(m.recipe), n = m.opts.length;
+        const img = recImg(media, m.recipe.id), vid = recVid(media, m.recipe.id), idx = m.opts.indexOf(m.recipe), n = m.opts.length;
         const go = (d) => setPick({ ...pick, [m.k]: (idx + d + n) % n });
         return (
           <div className={`mcard${eaten[m.id] ? " done" : ""}`} key={m.id}>
             <div className="mhead">
-              <div className={`mthumb ${img ? "ph" : ""}`}>{img ? <img src={img} alt="" loading="lazy" /> : <CookIcon mode={m.recipe.mode === "sanji" ? "sanji" : "sencilla"} size={30} />}</div>
+              <div className={`mthumb ${img || vid ? "ph" : ""}`}>{vid ? <video src={vid} poster={img || undefined} autoPlay loop muted playsInline preload="metadata" /> : img ? <img src={img} alt="" loading="lazy" /> : <CookIcon mode={m.recipe.mode === "sanji" ? "sanji" : "sencilla"} size={30} />}</div>
               <div className="mhead-t">
                 <div className="mslot">{SLOT_NAMES[m.id]} <span>· {Math.round(m.tot.kcal)} kcal</span></div>
                 <div className="mname">{m.recipe.name}</div>
@@ -5685,6 +5691,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
               <ShopPicks items={eaten[m.id]?.items || m.items} pre={m.id === "pre"} name={m.recipe.name} />
               <details className="mprep">
                 <summary>Cómo se prepara</summary>
+                {vid && <video className="rvid" src={vid} poster={img || undefined} autoPlay loop muted playsInline controls preload="metadata" />}
                 {m.recipe.steps ? <ol className="steps">{m.recipe.steps.map((st) => <li key={st}>{st}</li>)}</ol> : <p className="hint">{m.recipe.how}</p>}
                 {m.recipe.plate && <p className="plate">{m.recipe.plate}</p>}
                 {m.recipe.mode !== "sanji" && m.items.some((it) => it.food === "verduras") && <p className="plate">Truco: usa una bolsa de verduras congeladas. Hazlas al principio de la semana, guárdalas en tápers y así montas el plato en un momento.</p>}
@@ -6026,7 +6033,14 @@ function EditForm({ table, row, isNew, content, onSave, onDelete, onCancel, medi
           {media[`rec:${r.id}`] && <button className="chip" onClick={() => setMedia(`rec:${r.id}`, null)}>Quitar</button>}
         </div>
       </Field>}
-      {table === "recipes" && isNew && <p className="hint">Guarda la receta y vuelve a abrirla para subir la foto.</p>}
+      {table === "recipes" && !isNew && <Field label="Vídeo de la receta" hint="Si tiene vídeo, sale en bucle en vez de la foto y entero en «Cómo se prepara». La foto queda de portada.">
+        {recVid(media, r.id) ? <MediaView src={recVid(media, r.id)} /> : <div className="hint">Aún no tiene vídeo.</div>}
+        <div className="chips" style={{ marginTop: 8 }}>
+          <MediaPicker label={media[`recvid:${r.id}`] ? "Cambiar vídeo" : "Subir vídeo"} accept="video/*" onPick={(f) => uploadMedia(`recvid:${r.id}`, f)} onError={setErr} />
+          {media[`recvid:${r.id}`] && <button className="chip" onClick={() => setMedia(`recvid:${r.id}`, null)}>Quitar</button>}
+        </div>
+      </Field>}
+      {table === "recipes" && isNew && <p className="hint">Guarda la receta y vuelve a abrirla para subir la foto o el vídeo.</p>}
       {table === "foods" && <>
         <Field label="Nombre">{txt("name", "Yogur griego natural")}</Field>
         <p className="hint" style={{ marginTop: -6 }}>Valores por 100 g</p>
