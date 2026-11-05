@@ -1408,14 +1408,13 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .picks{margin-top:12px;padding:10px;border-radius:14px;background:var(--sf2);border:1px solid var(--ln)}
 .picks-t{font-size:12px;color:var(--dm);display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .mtag{background:#1E8E5A;color:#fff;font-weight:800;font-size:10.5px;letter-spacing:.04em;padding:2px 7px;border-radius:6px}
-.picks-row{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none}
-.pick{flex:none;width:120px;display:flex;flex-direction:column;gap:2px}
-.pick img{width:120px;height:120px;object-fit:cover;border-radius:10px}
-.pick b{font-size:12px;line-height:1.25;margin-top:4px}
-.pick small{font-size:10.5px;color:var(--dm);line-height:1.3}
-.pick.bread{background:none;border:0;padding:0;text-align:left;color:inherit;font:inherit;cursor:pointer;justify-content:flex-start}
-.pick.bread img,.pick.bread .pimg{outline:2px solid transparent;outline-offset:-2px;transition:outline-color .15s}
-.pick.bread.on img,.pick.bread.on .pimg{outline-color:var(--ac)}
+.picks-row{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 20px) / 3);gap:10px;overflow-x:auto;scrollbar-width:none;align-items:stretch}
+.pick{box-sizing:border-box;min-width:0;display:flex;flex-direction:column;gap:3px;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:6px 6px 9px}
+.pick img,.pick .pimg{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:8px}
+.pick b{font-size:12px;line-height:1.25;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em}
+.pick small{font-size:10.5px;color:var(--dm);line-height:1.3;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pick.bread{text-align:left;color:inherit;font:inherit;cursor:pointer;justify-content:flex-start;transition:border-color .15s}
+.pick.bread.on{border-color:var(--ac)}
 .pick.bread.on b{color:var(--ac)}
 .ttabs-wrap{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;margin-top:6px}
 .ttabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
@@ -1431,7 +1430,7 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .want-opt span{font-size:12.5px;color:var(--dm);line-height:1.4}
 .want-opt.on{border-color:var(--ac)}
 .want-opt.on b{color:var(--ac)}
-.pimg{box-sizing:border-box;flex:none;width:120px;height:120px;border-radius:10px;background:var(--sf);border:1px solid var(--ln);display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;font-size:12px;font-weight:600;color:var(--dm)}
+.pimg{box-sizing:border-box;flex:none;width:100%;aspect-ratio:1/1;border-radius:10px;background:var(--sf);border:1px solid var(--ln);display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;font-size:12px;font-weight:600;color:var(--dm)}
 .hist{display:flex;justify-content:space-between;font-size:14px;padding:10px 0;border-bottom:1px solid var(--ln)}
 .hist span:last-child{color:var(--dm)}
 .tk-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -7542,8 +7541,10 @@ function CoachInvite({ inv, onAnswer }) {
   return (
     <div className="cln">
       <div className="cln-box">
+        {inv.coach_photo ? <img src={inv.coach_photo} alt="" /> : <span className="cpf-ini big">{(inv.coach_name || "?")[0].toUpperCase()}</span>}
         <small>Invitación</small>
         <b>{inv.coach_name} quiere ser tu entrenador/a en ARC</b>
+        {inv.coach_bio && <p className="cpf-bio">{inv.coach_bio}</p>}
         <p>Si aceptas, podrá ver tus entrenos, hábitos y revisiones, y ponerte tu rutina y tu dieta. Puedes dejarlo cuando quieras.</p>
         <button className="btn ac" disabled={busy} onClick={() => answer(true)}>Aceptar</button>
         <button className="btn ghost" disabled={busy} onClick={() => answer(false)}>Ahora no</button>
@@ -7587,8 +7588,112 @@ function RoleChoice({ onTrain, onCoach }) {
   );
 }
 
+// Perfil de entrenador/a: lo que personaliza y lo que ven sus clientes
+let COACH = null; // el entrenador/a del cliente (con lo que ha personalizado)
+let MY_COACH = {}; // tu propio perfil, si eres entrenador/a
+const LUNA_COACH = { name: "Luna", photo: "/luna/luna-coach.jpg", ig: "lunarovx" };
+const coachName = () => COACH?.name || "tu entrenador/a";
+const COACH_COLORS = [["#D48B92", "Rosa ARC"], ["#F28B6B", "Coral"], ["#F5B454", "Ámbar"], ["#8FD19E", "Verde"], ["#5EC8C8", "Turquesa"], ["#7FB3E8", "Azul"], ["#B79CF2", "Lila"], ["#E8E8E8", "Blanco"]];
+const waLink = (n) => `https://wa.me/${String(n).replace(/[^\d]/g, "").replace(/^(?=[67]\d{8}$)/, "34")}`;
+const igLink = (h) => `https://instagram.com/${String(h).replace(/^@/, "").trim()}`;
+
+function CoachContact({ info }) {
+  if (!info?.wa && !info?.ig && !info?.email) return null;
+  return (
+    <div className="cpf-ct">
+      {info.wa && <a className="btn ac" href={waLink(info.wa)} target="_blank" rel="noopener noreferrer">WhatsApp</a>}
+      {info.ig && <a className="btn ghost" href={igLink(info.ig)} target="_blank" rel="noopener noreferrer">Instagram</a>}
+      {info.email && <a className="btn ghost" href={`mailto:${info.email}`}>Correo</a>}
+    </div>
+  );
+}
+
+// Tarjeta "Tu entrenador/a" en el Inicio del cliente
+function MyCoachCard({ info, preview = false }) {
+  const [open, setOpen] = useState(preview);
+  if (!info) return null;
+  return (
+    <div className="cpf">
+      <button className="cpf-hd" onClick={() => !preview && setOpen(!open)}>
+        {info.photo ? <img src={info.photo} alt="" /> : <span className="cpf-ini">{(info.name || "?")[0].toUpperCase()}</span>}
+        <span><small>Tu entrenador/a</small><b>{info.name || "Tu nombre"}</b>{info.specialty && <em>{info.specialty}</em>}</span>
+        {!preview && <i aria-hidden="true">{open ? "−" : "+"}</i>}
+      </button>
+      {open && <>
+        {info.welcome && <p className="cpf-wel">{info.welcome}</p>}
+        {info.bio && <p className="cpf-bio">{info.bio}</p>}
+        <CoachContact info={info} />
+      </>}
+    </div>
+  );
+}
+
+// Editor del perfil de entrenador/a: todo lo que ven sus clientes
+function CoachProfileEdit({ initial, upload, onSave, onClose }) {
+  const [f, setF] = useState({ name: "", photo: "", specialty: "", bio: "", welcome: "", wa: "", ig: "", email: "", color: "", defMode: "clasico", ckMsg: "", ...initial, logMsgs: (initial?.logMsgs || []).join("\n"), ckQs: (initial?.ckQs || []).join("\n") });
+  const [busy, setBusy] = useState(false);
+  const [up, setUp] = useState(false);
+  const [msg, setMsg] = useState("");
+  const ref = useRef(null);
+  const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+  const lines = (t) => t.split("\n").map((x) => x.trim()).filter(Boolean).slice(0, 20);
+  const out = { ...f, name: f.name.trim().slice(0, 40), logMsgs: lines(f.logMsgs), ckQs: lines(f.ckQs) };
+  const save = async () => { setBusy(true); setMsg(""); try { await onSave(out); setMsg("Guardado. Tus clientes ya lo ven así."); } catch { setMsg("No se ha podido guardar. Inténtalo otra vez."); } finally { setBusy(false); } };
+  const pickPhoto = async (file) => { if (!file) return; setUp(true); try { const url = await upload(file); setF((x) => ({ ...x, photo: url })); } catch { setMsg("No se ha podido subir la foto."); } finally { setUp(false); } };
+  return (
+    <div style={{ "--ac": f.color || undefined }}>
+      <button className="link" onClick={onClose}>‹ Ajustes</button>
+      <h1>Tu perfil de entrenador/a</h1>
+      <p className="sub">Todo lo que pongas aquí es lo que ven tus clientes en su app.</p>
+
+      <h2>Así te ven</h2>
+      <MyCoachCard info={out} preview />
+
+      <h2>Foto y nombre</h2>
+      <div className="cpf-ph">
+        {f.photo ? <img src={f.photo} alt="" /> : <span className="cpf-ini">{(f.name || "?")[0].toUpperCase()}</span>}
+        <div>
+          <button className="btn ghost" disabled={up} onClick={() => ref.current?.click()}>{up ? "Subiendo…" : f.photo ? "Cambiar foto" : "Subir foto"}</button>
+          {f.photo && <button className="link" onClick={() => setF({ ...f, photo: "" })}>Quitar foto</button>}
+        </div>
+        <input ref={ref} type="file" accept="image/*" hidden onChange={(e) => { pickPhoto(e.target.files?.[0]); e.target.value = ""; }} />
+      </div>
+      <div className="field"><label>Nombre</label><input className="in" value={f.name} maxLength={40} onChange={set("name")} placeholder="Ej.: Marta Fit" /></div>
+      <div className="field"><label>Especialidad</label><input className="in" value={f.specialty} maxLength={60} onChange={set("specialty")} placeholder="Ej.: Fuerza y recomposición" /></div>
+      <div className="field"><label>Sobre ti</label><textarea className="in" rows={3} maxLength={300} value={f.bio} onChange={set("bio")} placeholder="Cómo trabajas, tu experiencia, lo que quieras contar." /></div>
+
+      <h2>Contacto</h2>
+      <p className="hint" style={{ marginTop: -4 }}>Salen como botones en la app de tus clientes. Deja vacío lo que no quieras mostrar.</p>
+      <div className="field"><label>WhatsApp</label><input className="in" inputMode="tel" value={f.wa} onChange={set("wa")} placeholder="600 000 000" /></div>
+      <div className="field"><label>Instagram</label><input className="in" value={f.ig} onChange={set("ig")} placeholder="@tuusuario" autoCapitalize="none" /></div>
+      <div className="field"><label>Correo</label><input className="in" type="email" value={f.email} onChange={set("email")} placeholder="tu@correo.com" autoCapitalize="none" /></div>
+
+      <h2>Color de la app</h2>
+      <p className="hint" style={{ marginTop: -4 }}>Tus clientes ven la app con tu color.</p>
+      <div className="cpf-cols">{COACH_COLORS.map(([c, n]) => <button key={c} className={(f.color || "#D48B92") === c ? "on" : ""} style={{ background: c }} aria-label={n} title={n} onClick={() => setF({ ...f, color: c === "#D48B92" ? "" : c })} />)}</div>
+
+      <h2>Mensajes</h2>
+      <div className="field"><label>Bienvenida</label><textarea className="in" rows={2} maxLength={300} value={f.welcome} onChange={set("welcome")} placeholder="Ej.: ¡Bienvenid@! Aquí tienes tu rutina y tu dieta. Cualquier duda, escríbeme." /></div>
+      <div className="field"><label>Frases cuando apuntas un entreno suyo</label><textarea className="in" rows={4} value={f.logMsgs} onChange={set("logMsgs")} placeholder={"Una por línea. Sale una al azar.\nEj.: Brutal hoy, sigue así."} /><p className="hint">Si lo dejas vacío, usamos las de ARC.</p></div>
+      <div className="field"><label>Mensaje al enviar la revisión</label><input className="in" value={f.ckMsg} maxLength={200} onChange={set("ckMsg")} placeholder="Ej.: Recibida. Te contesto antes del lunes." /></div>
+
+      <h2>Revisión semanal</h2>
+      <div className="field"><label>Tus preguntas</label><textarea className="in" rows={5} value={f.ckQs} onChange={set("ckQs")} placeholder={"Una por línea.\nEj.: ¿Cómo has dormido?\n¿Has cumplido la dieta?"} /><p className="hint">Si escribes tus preguntas, sustituyen a las de ARC. Las medidas, fotos y pasos se mantienen.</p></div>
+
+      <h2>Clientes nuevos</h2>
+      <div className="field"><label>Estilo de la app por defecto</label>
+        <div className="seg">{[["clasico", "Clásico"], ["otaku", "Anime"]].map(([k, l]) => <button key={k} className={f.defMode === k ? "on" : ""} onClick={() => setF({ ...f, defMode: k })}>{l}</button>)}</div>
+        <p className="hint">Puedes cambiarlo luego para cada cliente.</p>
+      </div>
+
+      {msg && <div className="note">{msg}</div>}
+      <button className="btn ac" disabled={busy || !out.name} onClick={save}>{busy ? "Guardando…" : "Guardar"}</button>
+    </div>
+  );
+}
+
 let IS_ADMIN = false; // la administradora de ARC (Luna)
-function Settings({ onTour, onClients, onPaywallPreview, videos, onFinishPreview, sub, email, isCoach, isAdmin, canBecomeCoach, onBecomeCoach, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
+function Settings({ onTour, onClients, onPaywallPreview, videos, onFinishPreview, sub, email, isCoach, isAdmin, canBecomeCoach, onBecomeCoach, onCoachProfile, coachView, setCoachView, onEdit, onContent, onReports, reminders, setReminders, onSignOut, onResetData, onDeleteAccount, onClose }) {
   const [confirm, setConfirm] = useState(null); // "data" | "account"
   const [legal, setLegal] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -7606,11 +7711,13 @@ function Settings({ onTour, onClients, onPaywallPreview, videos, onFinishPreview
           <h2>Tu panel de entrenador/a</h2>
           <p className="sub">Añade a tus clientes con su correo: cuando acepten, verás sus entrenos, hábitos y revisiones, y les podrás poner rutina y dieta.</p>
           <button className="btn ac" onClick={onClients}>Mis asesorad@s</button>
+          <button className="btn ghost" onClick={onCoachProfile}>Tu perfil de entrenador/a</button>
         </>
       )}
       {isAdmin && (
         <>
           <h2>Modo coach</h2>
+          <button className="btn ghost" onClick={onCoachProfile}>Tu perfil de entrenadora (lo que ven tus asesorad@s)</button>
           <p className="sub">Sube imágenes de cada personaje y vídeos de cada ejercicio. Solo lo ve tu cuenta.</p>
           <div className="seg">
             <button className={!coachView ? "on" : ""} onClick={() => setCoachView(false)}>Ver como clienta</button>
@@ -7797,6 +7904,7 @@ function fromDb({ profile, sessions, habits, coach }) {
     avatar: profile.avatar_url || null, avatarPending: profile.avatar_pending || null, profilePublic: profile.profile_public !== false, shareFeed: profile.share_feed !== false, showKg: profile.feed_show_kg !== false,
     coachRoutine: coach?.routine || null,
     coachDiet: coach?.diet || null,
+    coachInfo: profile.coach_info || {},
   };
 }
 
@@ -8026,6 +8134,10 @@ function CheckinList({ items, coach = false, clientName = "" }) {
                   </div>
                 );
               })}
+              {Object.keys(ans).some((k) => k.startsWith("q:") && ans[k]) && <div className="ck2-sec">
+                <div className="ck2-st">Preguntas</div>
+                {Object.keys(ans).filter((k) => k.startsWith("q:") && ans[k]).map((k) => <div key={k} className="ck2-qa"><small>{k.slice(2)}</small><p>{ans[k]}</p></div>)}
+              </div>}
               {c.share && <div className={`ck2-share ${c.share === "Mejor no" ? "no" : ""}`}>{c.share === "Mejor no" ? "Prefiere que no compartas sus respuestas" : `Puedes compartir sus respuestas · ${c.share.toLowerCase()}`}</div>}
               {c.feeling && <p className="ck-txt">{c.feeling}</p>}
             </div>}
@@ -8071,14 +8183,14 @@ function CheckinCard({ userId, habits = {}, startDate }) {
     try {
       const row = await db.addCheckin(userId, { measures: m, answers: a, share, steps, files: files.map((x) => x.blob) });
       setItems((x) => [row, ...(x || [])]); setM({}); setA({}); setShare(""); setFiles([]);
-      setMsg("Revisión enviada. Tu entrenadora ya la puede ver. Si tienes más dudas o cualquier cosa, escríbele por WhatsApp.");
+      setMsg(COACH?.ckMsg || `Revisión enviada. ${COACH?.name || "Tu entrenador/a"} ya la puede ver.${COACH?.wa ? " Si tienes más dudas, escríbele por WhatsApp." : ""}`);
     } catch { setMsg("No se ha podido enviar. Revisa tu conexión e inténtalo otra vez."); }
     finally { setBusy(false); }
   };
   return (
     <div className="ckcard">
       <div className="ck-hd"><b>Revisión semanal</b><button className="link" onClick={() => setOpen(!open)}>{open ? "Cerrar" : doneThisWeek ? "Ver" : "Hacer revisión"}</button></div>
-      {!open && <p className="hint" style={{ margin: "6px 0 0" }}>{doneThisWeek ? "Ya has enviado la revisión de esta semana." : photosDue ? "Esta semana tocan también las fotos del mes." : "Medidas, cómo te ha ido y tus preguntas. Solo lo ve tu entrenadora."}</p>}
+      {!open && <p className="hint" style={{ margin: "6px 0 0" }}>{doneThisWeek ? "Ya has enviado la revisión de esta semana." : photosDue ? "Esta semana tocan también las fotos del mes." : `Medidas, cómo te ha ido y tus preguntas. Solo lo ve ${COACH?.name || "tu entrenador/a"}.`}</p>}
       {open && (
         <>
           <h2 style={{ marginTop: 14 }}>1. Medidas <small className="ck-opt">(cm, opcional)</small></h2>
@@ -8096,17 +8208,17 @@ function CheckinCard({ userId, habits = {}, startDate }) {
           <h2>3. Pasos</h2>
           <p className="hint" style={{ margin: 0 }}>{steps ? <>Tu media de los últimos 7 días: <b>{steps.toLocaleString("es-ES")} pasos</b>. Se manda sola con la revisión.</> : "Apunta tus pasos en Hábitos (o conecta Salud) y se mandan solos con la revisión."}</p>
 
-          {CK_SECTIONS.map(([title, qs], si) => (
+          {(COACH?.ckQs?.length ? [["Preguntas", COACH.ckQs.map((q) => [`q:${q}`, q])]] : CK_SECTIONS).map(([title, qs], si) => (
             <div key={title}>
               <h2>{si + 4}. {title}</h2>
               {qs.map(([k, q]) => <div key={k} className="field"><label>{q}</label><textarea className="in" rows={2} value={a[k] || ""} onChange={(e) => setA({ ...a, [k]: e.target.value })} /></div>)}
             </div>
           ))}
-          <div className="field"><label>¿Me dejas compartir alguna de tus respuestas en mis stories?</label>
+          {(!COACH || COACH.admin) && <div className="field"><label>¿Me dejas compartir alguna de tus respuestas en mis stories?</label>
             <div className="chips">{CK_SHARE.map((x) => <button key={x} className={`chip ${share === x ? "on" : ""}`} onClick={() => setShare(share === x ? "" : x)}>{x}</button>)}</div>
-          </div>
+          </div>}
           <button className="btn ac" disabled={busy || (!filled && !files.length)} onClick={send}>{busy ? "Enviando…" : "Enviar revisión"}</button>
-          <p className="ck-wa">Si tienes más dudas o cualquier cosa que comentarme, escríbeme por WhatsApp.</p>
+          {COACH?.wa ? <p className="ck-wa">¿Más dudas? <a href={waLink(COACH.wa)} target="_blank" rel="noopener noreferrer">Escribe a {COACH.name} por WhatsApp</a>.</p> : !COACH || COACH.admin ? <p className="ck-wa">Si tienes más dudas o cualquier cosa que comentarme, escríbeme por WhatsApp.</p> : null}
           {msg && <div className="note">{msg}</div>}
           <h2>Tus revisiones</h2>
           {items === null ? <p className="hint">Cargando…</p> : <CheckinList items={items} />}
@@ -8213,6 +8325,24 @@ const CHECKIN_CSS = `
 .webgate{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:40px 6px}
 .webgate .btn{width:100%;text-decoration:none}
 .webgate .bc{text-align:left;width:100%}
+.cpf{border:1px solid var(--ln);background:var(--sf);border-radius:18px;padding:12px 14px;margin:0 0 14px}
+.cpf-hd{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;padding:0;color:var(--tx);font:inherit;text-align:left;cursor:pointer}
+.cpf-hd img,.cpf-ini{flex:none;width:48px;height:48px;border-radius:50%;object-fit:cover}
+.cpf-ini{display:flex;align-items:center;justify-content:center;background:var(--sf2);border:1px solid var(--ac);color:var(--ac);font-weight:800;font-size:20px}
+.cpf-ini.big{width:72px;height:72px;font-size:28px;margin:0 auto 6px}
+.cpf-hd span{flex:1;min-width:0}.cpf-hd small{display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ac)}
+.cpf-hd b{display:block;font-size:17px}.cpf-hd em{display:block;font-style:normal;font-size:13px;color:var(--dm)}
+.cpf-hd i{font-style:normal;font-size:22px;color:var(--dm);width:22px;text-align:center}
+.cpf-wel{margin:12px 0 0;font-size:14.5px;line-height:1.45}
+.cpf-bio{margin:8px 0 0;font-size:13.5px;color:var(--dm);line-height:1.45}
+.cpf-ct{display:flex;gap:8px;margin-top:12px}.cpf-ct .btn{flex:1;text-decoration:none;text-align:center;padding:10px 6px;font-size:14px;margin:0}
+.cpf-ph{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.cpf-ph img,.cpf-ph .cpf-ini{width:76px;height:76px;border-radius:50%;object-fit:cover;font-size:28px}
+.cpf-ph div{display:flex;flex-direction:column;align-items:flex-start;gap:6px}.cpf-ph .btn{width:auto;margin:0;padding:10px 16px}
+.cpf-cols{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.cpf-cols button{width:34px;height:34px;padding:0;border-radius:50%;border:2px solid transparent;outline:2px solid transparent;cursor:pointer}
+.cpf-cols button.on{outline-color:var(--tx);outline-offset:2px}
+.cln-box img{object-fit:cover}
 .rc{display:flex;flex-direction:column;gap:12px;padding:36px 2px 20px}
 .rc h1{font-size:26px;margin:14px 0 4px}
 .rc-op{display:flex;gap:14px;align-items:flex-start;text-align:left;width:100%;padding:18px 16px;border-radius:18px;border:1px solid var(--ln);background:var(--sf);color:var(--tx);font:inherit;cursor:pointer}
@@ -8666,7 +8796,7 @@ function Clients({ onClose, initialId = null, backLabel = "Ajustes" }) {
     if (!/^\S+@\S+\.\S+$/.test(email.trim())) { setErr("Escribe un correo válido."); return; }
     setBusy(true); setErr("");
     const profile = { branch: pf.branch, ...Object.fromEntries(["age", "height", "weight"].filter((k) => Number(String(pf[k]).replace(",", ".")) > 0).map((k) => [k, Number(String(pf[k]).replace(",", "."))])) };
-    try { const row = await db.addClient(name.trim() || null, email.trim(), profile); setList((l) => [...(l || []), row]); setName(""); setEmail(""); setPf({ branch: "female", age: "", height: "", weight: "" }); }
+    try { const row = await db.addClient(name.trim() || null, email.trim(), profile, MY_COACH.defMode === "otaku" ? "otaku" : "clasico"); setList((l) => [...(l || []), row]); setName(""); setEmail(""); setPf({ branch: "female", age: "", height: "", weight: "" }); }
     catch (e) { const lim = /limite:(\d+)/.exec(e.message || ""); setErr(lim ? `Tu plan permite ${lim[1]} ${lim[1] === "1" ? "asesorad@" : "asesorad@s"}. Mejora tu plan para añadir más.` : /duplicate|unique/i.test(e.message || "") ? "Ya tienes a esa persona en tu lista." : "No se ha podido añadir. Inténtalo otra vez."); }
     finally { setBusy(false); }
   };
@@ -8763,6 +8893,7 @@ function ArcApp({ user }) {
   const [toast, setToast] = useState("");
   const [coachLog, setCoachLog] = useState(null); // aviso: la coach ha apuntado tu entreno
   const [invites, setInvites] = useState([]);
+  const [myCoach, setMyCoach] = useState(null); // tu entrenador/a (si tienes)
   const [willTrain, setWillTrain] = useState(false); // ha elegido "Voy a entrenar" en la primera pantalla
   const [coachView, setCoachView] = useState(true);
   const [stepsAvail, setStepsAvail] = useState(false);
@@ -8801,6 +8932,9 @@ function ArcApp({ user }) {
   const isCoach = state.role === "coach" || state.role === "admin";
   const isAdmin = state.role === "admin";
   IS_ADMIN = isAdmin;
+  COACH = myCoach;
+  const accent = /^#[0-9a-f]{6}$/i.test((isCoach ? state.coachInfo?.color : myCoach?.color) || "") ? (isCoach ? state.coachInfo.color : myCoach.color) : null;
+  MY_COACH = state.coachInfo || {};
   // Sin clave de RevenueCat o fuera del iPhone no se bloquea nada
   const hasPremium = isCoach || state.hasCoach || !purchases.enabled || premium === true; // las asesoradas lo tienen gratis
   useEffect(() => {
@@ -8899,6 +9033,9 @@ function ArcApp({ user }) {
       setState((s) => ({ ...s, ...("share_feed" in patch ? { shareFeed: patch.share_feed } : {}), ...("feed_show_kg" in patch ? { showKg: patch.feed_show_kg } : {}) }));
     },
   };
+
+  // Tu entrenador/a: nombre, foto, contacto, color… lo que haya personalizado
+  useEffect(() => { if (loaded && state.hasCoach) db.myCoach().then((c) => setMyCoach(c ? (c.admin ? { ...LUNA_COACH, ...Object.fromEntries(Object.entries(c).filter(([, v]) => v !== "" && v != null)) } : c) : null)).catch(() => {}); }, [loaded, state.hasCoach]);
 
   // Invitaciones de entrenadores pendientes de aceptar
   useEffect(() => { if (loaded) db.coachInvites().then((l) => setInvites(l || [])).catch(() => {}); }, [loaded]);
@@ -9084,8 +9221,10 @@ function ArcApp({ user }) {
     body = <Clients initialId={openClient} backLabel={clientsBack === "inicio" ? "Inicio" : "Ajustes"} onClose={() => { setOpenClient(null); setScreen(clientsBack === "inicio" ? null : "ajustes"); }} />;
   } else if (screen === "denuncias" && isAdmin) {
     body = <Reports onClose={() => setScreen("ajustes")} />;
+  } else if (screen === "perfil-coach" && isCoach) {
+    body = <CoachProfileEdit initial={isAdmin ? { ...LUNA_COACH, ...state.coachInfo } : state.coachInfo} upload={(file) => db.uploadFile(`propios/${user.id}/coach-${Date.now()}.${(file.name.split(".").pop() || "jpg").toLowerCase()}`, file, file.type)} onSave={async (info) => { await db.saveCoachInfo(user.id, info); setState((s) => ({ ...s, coachInfo: info })); }} onClose={() => setScreen("ajustes")} />;
   } else if (screen === "ajustes") {
-    body = <Settings onTour={() => { setProfile({ toured: false, retour: true }); setScreen(null); }} onClients={() => { setClientsBack("ajustes"); setScreen("asesoradas"); }} isAdmin={isAdmin} canBecomeCoach={!isCoach && !state.hasCoach} onBecomeCoach={startAsCoach} onPaywallPreview={() => setPaywall(true)} videos={{ on: !state.profile?.hideVideos, set: (on) => setProfile({ hideVideos: !on }) }} onFinishPreview={() => setDone({ dur: 3120, sets: 18, volume: 8450, xp: RULES.XP_PER_SESSION, prs: 2 })} sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
+    body = <Settings onTour={() => { setProfile({ toured: false, retour: true }); setScreen(null); }} onClients={() => { setClientsBack("ajustes"); setScreen("asesoradas"); }} isAdmin={isAdmin} canBecomeCoach={!isCoach && !state.hasCoach} onBecomeCoach={startAsCoach} onCoachProfile={() => setScreen("perfil-coach")} onPaywallPreview={() => setPaywall(true)} videos={{ on: !state.profile?.hideVideos, set: (on) => setProfile({ hideVideos: !on }) }} onFinishPreview={() => setDone({ dur: 3120, sets: 18, volume: 8450, xp: RULES.XP_PER_SESSION, prs: 2 })} sub={purchases.enabled && !isCoach ? { premium: premium === true, open: () => setPaywall(true), busy: restoring, msg: restoreMsg, restore: async () => { setRestoring(true); setRestoreMsg(""); try { const ok = await purchases.restore(); setPremium(ok); setRestoreMsg(ok ? "Compra restaurada. Ya tienes ARC completo." : "No hay ninguna compra activa en tu cuenta de Apple."); } catch { setRestoreMsg("No se ha podido restaurar. Inténtalo más tarde."); } finally { setRestoring(false); } } } : null} email={user.email} isCoach={isCoach} coachView={coachView} setCoachView={setCoachView}
       reminders={state.profile?.reminders} setReminders={(r) => setProfile({ reminders: r })}
       onEdit={() => setScreen("editar")}
       onContent={() => setScreen("contenido")}
@@ -9099,7 +9238,7 @@ function ArcApp({ user }) {
   } else if (["entrenos", "nutricion", "ranking"].includes(tab) && !hasPremium) {
     body = <Locked tab={tab} onOpen={() => setPaywall(true)} />;
   } else if (tab === "inicio") {
-    body = <><Home state={state} stats={stats} ev={ev} quote={quote} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} testimonials={testimonials} showCoaching={isAdmin || (!state.hasCoach && !isCoach)} onRemoveTestimonial={(id) => db.removeTestimonial(id).then(() => setTestimonials((l) => l.filter((x) => x.id !== id))).catch(() => {})} />
+    body = <>{state.hasCoach && !isCoach && myCoach && <MyCoachCard info={myCoach} />}<Home state={state} stats={stats} ev={ev} quote={quote} media={media} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} testimonials={testimonials} showCoaching={isAdmin || (!state.hasCoach && !isCoach)} onRemoveTestimonial={(id) => db.removeTestimonial(id).then(() => setTestimonials((l) => l.filter((x) => x.id !== id))).catch(() => {})} />
       {isCoach && <CoachHome isAdmin={isAdmin} onClient={(id) => { setOpenClient(id); setClientsBack("inicio"); setScreen("asesoradas"); }} onAll={() => { setOpenClient(null); setClientsBack("inicio"); setScreen("asesoradas"); }} onContent={() => setScreen("contenido")} onReports={() => setScreen("denuncias")} />}</>;
   } else if (tab === "entrenos") {
     body = <Workouts onCardio={logCardio} state={state} routine={routine} onStart={(d) => setActive(newSession(d, state.sessions))} setDays={(d) => setProfile({ days: d })} setProfile={setProfile} media={mediaX} coach={coach} setMedia={setMedia} uploadMedia={uploadMedia} />;
@@ -9124,14 +9263,15 @@ function ArcApp({ user }) {
     <div className="arc">
       <style>{CSS + EXTRA_CSS + LEGAL_CSS + PAYWALL_CSS + CLIENTS_CSS + CHECKIN_CSS}</style>
       {paywall && <Paywall media={media} coach={coach} uploadMedia={uploadMedia} setMedia={setMedia} onClose={() => setPaywall(false)} onPremium={() => { setPremium(true); setPaywall(false); setToast("¡Ya tienes ARC completo!"); }} />}
+      {accent && <style>{`.arc{--ac:${accent}}`}</style>}
       {toast && <div className="toast" role="status">{toast}</div>}
       {invites.length > 0 && !coachLog && <CoachInvite inv={invites[0]} onAnswer={answerInvite} />}
       {coachLog && (
         <div className="cln" onClick={closeCoachLog}>
           <div className="cln-box" onClick={(e) => e.stopPropagation()}>
-            <img src="/luna/luna-coach.jpg" alt="" />
-            <small>Tu coach</small>
-            <b>{(coachLog.nickname && !/luna/i.test(coachLog.nickname) ? coachLog.nickname : "Luna")} ha registrado tu entreno{coachLog.day_name ? ` de ${coachLog.day_name}` : ""}</b>
+            {myCoach?.photo ? <img src={myCoach.photo} alt="" /> : <span className="cpf-ini big">{(myCoach?.name || coachLog.nickname || "?")[0].toUpperCase()}</span>}
+            <small>Tu entrenador/a</small>
+            <b>{myCoach?.name || coachLog.nickname || "Tu entrenador/a"} ha registrado tu entreno{coachLog.day_name ? ` de ${coachLog.day_name}` : ""}</b>
             {coachLog.body && <p>{coachLog.body}</p>}
             <button className="btn ac" onClick={closeCoachLog}>Gracias</button>
           </div>

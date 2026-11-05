@@ -130,8 +130,8 @@ export const social = {
 
 // ---------- Asesoradas (solo coach) ----------
 export const listClients = () => supabase.from("coach_clients").select("*").order("created_at", { ascending: true }).then(must);
-export async function addClient(name, email, profile) {
-  let res = await supabase.from("coach_clients").insert({ name, email, mode: "clasico", ...(profile ? { profile } : {}) }).select().single();
+export async function addClient(name, email, profile, mode = "clasico") {
+  let res = await supabase.from("coach_clients").insert({ name, email, mode, ...(profile ? { profile } : {}) }).select().single();
   if (res.error && /profile|mode/.test(res.error.message || "")) res = await supabase.from("coach_clients").insert({ name, email }).select().single();
   return must(res);
 }
@@ -162,6 +162,8 @@ export const becomeCoach = (name) => supabase.rpc("become_coach", { name }).then
 export const coachInvites = () => supabase.rpc("my_coach_invites").then(must);
 export const respondInvite = (inv, ok) => supabase.rpc("respond_coach_invite", { inv, ok }).then(must);
 export const myCoachPlan = () => supabase.rpc("my_coach_plan").then(must);
+export const myCoach = () => supabase.rpc("my_coach").then(must);
+export const saveCoachInfo = (uid, info) => supabase.from("profiles").update({ coach_info: info }).eq("id", uid).then(must);
 
 // ---------- Opiniones (Coaching con Luna) ----------
 export const listTestimonials = () => supabase.from("testimonials").select("*").eq("active", true).order("created_at", { ascending: false }).then(must);
