@@ -463,6 +463,7 @@ const IC = {
   glass: "M6 3h12l-1.5 17a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1zM6.5 9h11",
   cup: "M17 8h1a3 3 0 0 1 0 6h-1M3 8h14v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5zM7 2v2M11 2v2",
   dumbbell: "M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11",
+  cart: "M3 4h2.2l2.3 11h10.8l2.2-8H6.3M9.5 19.5h.01M17 19.5h.01",
   moon: "M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z",
   plus: "M12 5v14M5 12h14",
   heart: "M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z",
@@ -1411,6 +1412,31 @@ h2{font-size:15px;font-weight:700;margin:28px 0 12px}
 .picks{margin-top:12px;padding:10px;border-radius:14px;background:var(--sf2);border:1px solid var(--ln)}
 .picks-t{font-size:12px;color:var(--dm);display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .mtag{background:#1E8E5A;color:#fff;font-weight:800;font-size:10.5px;letter-spacing:.04em;padding:2px 7px;border-radius:6px}
+.swc{display:flex;align-items:center;gap:12px;width:100%;margin:14px 0 4px;padding:14px;border-radius:16px;border:1px solid var(--ln);background:var(--sf);color:var(--tx);font:inherit;text-align:left;cursor:pointer}
+.swc-ic{flex:none;width:42px;height:42px;border-radius:12px;background:var(--sf2);display:flex;align-items:center;justify-content:center}
+.swc>span:not(.swc-ic){flex:1;min-width:0}.swc b{display:block;font-size:15.5px}.swc small{display:block;font-size:12.5px;color:var(--dm);margin-top:2px;line-height:1.35}.swc em{font-style:normal;color:var(--dm);font-size:22px}
+.sw-add{display:block;width:100%;margin:10px 0 0;padding:10px;border-radius:12px;border:1px dashed var(--ln);background:none;color:var(--ac);font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+.sw-box h1{font-size:22px;margin:0}.sw-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sw-fill{display:grid;gap:8px;padding:12px;border-radius:14px;background:var(--bg);border:1px solid var(--ln)}.sw-fill>span{font-size:13.5px;color:var(--dm)}.sw-fill .seg{margin:0}.sw-fill .btn{margin:0}
+.sw-ent>div{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--ln)}.sw-ent span{flex:1;font-size:14px}
+.sw-n{display:flex;align-items:center;gap:8px}.sw-n button{width:30px;height:30px;border-radius:50%;border:1px solid var(--ln);background:var(--sf2);color:var(--tx);font-size:16px;cursor:pointer}.sw-n b{min-width:26px;text-align:center;font-size:14px}
+.sw-ai{margin-bottom:12px}.sw-at{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);margin:8px 0 4px}
+.sw-ai label{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--ln);cursor:pointer}.sw-ai input{width:20px;height:20px;accent-color:var(--ac);flex:none}
+.sw-ai span{flex:1;font-size:14px}.sw-ai em{font-style:normal;font-size:13px;color:var(--dm);text-align:right}
+.sw-ai label.on span,.sw-ai label.on em{text-decoration:line-through;opacity:.45}
+.sw-act{display:grid;gap:8px;margin-top:14px}.sw-act .btn{margin:0}
+.cb-row{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 12px) / 2.15);gap:12px;overflow-x:auto;scrollbar-width:none;margin-bottom:6px}
+.cb{display:flex;flex-direction:column;gap:3px;text-align:left;padding:8px 8px 11px;border-radius:14px;border:1px solid var(--ln);background:var(--sf);color:var(--tx);font:inherit;cursor:pointer;min-width:0}
+.cb img,.cb-ph{width:100%;aspect-ratio:4/3;border-radius:10px;object-fit:cover}
+.cb-ph{display:flex;flex-direction:column;justify-content:center;gap:4px;padding:10px;background:var(--sf2);box-sizing:border-box}
+.cb-ph i{font-style:normal;font-size:11px;line-height:1.2;color:var(--dm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cb-ph i::before{content:"+ ";color:var(--ac);font-weight:800}.cb-ph i:first-child::before{content:""}
+.cb small{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);margin-top:6px}
+.cb b{font-size:14px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em}.cb em{font-style:normal;font-size:12px;color:var(--dm)}
+.cb-box h1{font-size:22px;margin:2px 0 4px}.cb-img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:14px;margin-bottom:10px}
+.cb-when{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ac)}.cb-mac{font-size:13.5px;color:var(--dm);margin:0 0 12px}
+.cb-prods>div{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--ln)}.cb-prods i{font-style:normal;width:24px;height:24px;flex:none;border-radius:50%;background:var(--sf2);color:var(--ac);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.cb-prods span{flex:1;font-size:14px}.cb-prods em{font-style:normal;font-size:13px;color:var(--dm)}
+.cb-how{font-size:14px;line-height:1.5;margin:12px 0 6px}.cb-steps{margin:8px 0 0;padding-left:18px;font-size:13.5px;line-height:1.5;color:var(--dm)}.cb-steps li{margin-bottom:6px}
 .picks-row{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 20px) / 3);gap:10px;overflow-x:auto;scrollbar-width:none;align-items:stretch}
 .pick{box-sizing:border-box;min-width:0;display:flex;flex-direction:column;gap:3px;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:6px 6px 9px}
 .pick img,.pick .pimg{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:8px}
@@ -5297,7 +5323,7 @@ function dietTargets(meals) {
   return { p: Math.round(x.p), c: Math.round(x.c), f: Math.round(x.f), kcal: Math.round(x.p * 4 + x.c * 4 + x.f * 9) };
 }
 const dietLog = (it) => ({ food: it.n, g: it.g, k: it.g ? { p: (it.p * 100) / it.g, c: (it.c * 100) / it.g, f: (it.f * 100) / it.g } : { p: 0, c: 0, f: 0 } });
-function CoachDiet({ meals, tips = [], eaten, setEaten, totOf }) {
+function CoachDiet({ meals, tips = [], eaten, setEaten, totOf, onShop, shopAdded = {} }) {
   const [pick, setPick] = useState({});
   const [editing, setEditing] = useState(null);
   const [draft, setDraft] = useState({});
@@ -5336,6 +5362,7 @@ function CoachDiet({ meals, tips = [], eaten, setEaten, totOf }) {
                 </div>
                 {done && <p className="hint" style={{ margin: "6px 0 0" }}>Has comido {r0(done.tot.kcal)} kcal · P {r0(done.tot.p)} · H {r0(done.tot.c)} · G {r0(done.tot.f)}</p>}
                 {o.note && <details className="mprep"><summary>Cómo se prepara</summary><p className="hint">{o.note}</p></details>}
+                {onShop && !done && <button className="sw-add" onClick={() => onShop({ id: `coach:${mi}:${oi}`, name: `${m.name} · ${o.name}`, items: items.map((it) => ({ food: it.food, g: Number(it.g) || 0 })) })}>{shopAdded[`coach:${mi}:${oi}`] ? `✓ En la compra (×${shopAdded[`coach:${mi}:${oi}`]}) · añadir otra vez` : "+ A la compra de la semana"}</button>}
               </div>
             </div>
           );
@@ -5346,7 +5373,147 @@ function CoachDiet({ meals, tips = [], eaten, setEaten, totOf }) {
   );
 }
 
-function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => {}, coachDiet = null }) {
+// ---------- Combos del súper: 3-5 productos y tienes la comida hecha ----------
+const COMBOS = [
+  { id: "tortilla", name: "Tortilla de patatas sin freír", when: "Cena", recipe: "rl22", items: [["patataTroceada", 250], ["huevo", 120], ["claras", 150], ["cebolla", 60], ["aove", 5]], how: "Patata congelada 16 min en la freidora de aire, cebolla pochada, huevos y claras, y a cuajar." },
+  { id: "salteado", name: "Salteado de pollo en 10 minutos", when: "Comida", items: [["arroz", 70], ["tirasPollo", 150], ["pimientoCongelado", 120], ["aove", 5]], how: "Arroz hervido y, en la sartén, tiras de pollo y pimiento congelado con pimentón y soja. Todo junto." },
+  { id: "wrap", name: "Wrap de pollo en 3 minutos", when: "Comida", items: [["tortillaIntegral", 60], ["tirasPollo", 120], ["guacamole", 40], ["verduras", 60]], how: "Calienta la tortilla, pon el guacamole, las tiras de pollo y lechuga con tomate. Enrolla y listo." },
+  { id: "noquis", name: "Ñoquis gratinados con atún", when: "Comida", items: [["noquis", 250], ["salsaTomate", 80], ["atun", 112], ["mozzarella", 20]], how: "Ñoquis 2 min en la sartén, salsa de tomate y atún, mozzarella por encima y 3 min al horno o airfryer." },
+  { id: "pizza", name: "Pizza proteica en 10 minutos", when: "Cena", items: [["basePizza", 130], ["tomateFrito", 50], ["pavo", 80], ["mozzarella", 40]], how: "Base, tomate, pavo en tiras y mozzarella. 8-10 min a 200 °C." },
+  { id: "burger", name: "Burger con parrillada", when: "Cena", items: [["hambTernera", 125], ["panHamburguesa", 75], ["parrilladaVerduras", 200]], how: "Hamburguesa a la plancha, pan tostado y la parrillada al micro o a la sartén de acompañamiento." },
+  { id: "lomo", name: "Lomo con patatas de airfryer", when: "Comida", items: [["lomoCerdo", 150], ["patataTroceada", 200], ["guisantes", 80], ["aove", 5]], how: "Patata congelada 16 min en la freidora de aire, lomo a la plancha y guisantes salteados." },
+  { id: "bowl", name: "Bowl de garbanzos y atún", when: "Comida", items: [["legumbres", 200], ["atun", 112], ["verduras", 100], ["aove", 10]], how: "Garbanzos de bote enjuagados, atún, tomate, pepino y cebolla. AOVE, sal y limón. Para táper." },
+  { id: "crema", name: "Crema de lentejas con huevo", when: "Cena", items: [["cremaLentejas", 300], ["huevo", 60], ["panIntegral", 40]], how: "Calienta la crema, añade un huevo cocido picado y acompaña con pan tostado." },
+  { id: "salmon", name: "Tostadas de salmón", when: "Desayuno", items: [["panCenteno", 110], ["quesoBatido", 60], ["salmonAhumado", 50]], how: "Pan de centeno tostado, queso batido con eneldo o pimienta y el salmón ahumado por encima." },
+  { id: "yogur", name: "Yogur con avena y plátano", when: "Desayuno", items: [["yogurProt", 240], ["avena", 40], ["platano", 120], ["cacao", 5]], how: "Dos yogures +proteínas, avena, plátano en rodajas y una cucharadita de cacao." },
+  { id: "postre", name: "Queso batido con frutos rojos", when: "Merienda", items: [["quesoBatido", 250], ["frutosRojos", 100], ["cremaCacahuete", 15]], how: "Frutos rojos congelados 30 s al micro para que suelten jugo, sobre el queso batido, y la crema de cacahuete." },
+];
+const comboTot = (c) => c.items.reduce((a, [f, g]) => { const x = FOODS[f]; if (!x) return a; const p = (x.p * g) / 100, cc = (x.c * g) / 100, ff = (x.f * g) / 100; return { p: a.p + p, c: a.c + cc, f: a.f + ff, kcal: a.kcal + p * 4 + cc * 4 + ff * 9 }; }, { p: 0, c: 0, f: 0, kcal: 0 });
+
+// ---------- Lista de la compra semanal ----------
+const AISLES = [
+  ["carne", "Carne y pescado", ["pavo", "jamon", "pollo", "tirasPollo", "hambPollo", "terneraPicada", "merluza", "salmon", "salmonAhumado", "lomoAtun", "emperador", "lomoCerdo", "hambTernera"], /pollo|pavo|ternera|cerdo|lomo|merluza|salm[oó]n|at[uú]n fresco|pescado|gambas|jam[oó]n|carne|hamburguesa|dorada|lubina|bacalao/i],
+  ["lacteos", "Huevos y lácteos", ["huevo", "claras", "yogurProt", "quesoBatido", "quesoBurgos", "quesoCrema", "mozzarella", "lecheSemi", "cottage", "lecheAlmendras"], /huevo|clara|yogur|queso|leche|skyr|k[eé]fir|mozzarella|cottage/i],
+  ["fruta", "Fruta y verdura", ["platano", "uvas", "kiwi", "fresas", "manzana", "pera", "naranja", "mango", "melocoton", "sandia", "melon", "frambuesas", "aguacate", "zanahoria", "verduras", "cebolla", "pina", "batata"], /pl[aá]tano|manzana|pera|naranja|kiwi|fresa|uva|mango|mel[oó]n|sand[ií]a|aguacate|tomate|lechuga|cebolla|pimiento|calabac|br[oó]coli|zanahoria|espinaca|verdura|batata|pepino|champi/i],
+  ["congelados", "Congelados", ["patataTroceada", "parrilladaVerduras", "pimientoCongelado", "guisantes", "frutosRojos", "arandanos"], /congelad/i],
+  ["pan", "Pan y tortillas", ["panIntegral", "panCristal", "panHamburguesa", "maxiTortilla", "basePizza", "panSemillas", "panCenteno", "panIntegralHorno", "panMasaMadre", "tortillaIntegral", "tortillaMaiz"], /pan |^pan|tortilla de|wrap|base de pizza/i],
+];
+const aisleOf = (food) => { const a = AISLES.find(([, , ids]) => ids.includes(food)) || (FOODS[food] ? null : AISLES.find(([, , , re]) => re.test(food))); return a ? a[0] : "despensa"; };
+const AISLE_NAMES = { ...Object.fromEntries(AISLES.map(([k, n]) => [k, n])), despensa: "Despensa" };
+const AISLE_ORDER = ["fruta", "carne", "lacteos", "pan", "congelados", "despensa"];
+const shopAmount = (food, g) => {
+  if (food === "huevo") { const n = Math.ceil(g / 60); return `${n} huevo${n > 1 ? "s" : ""}`; }
+  const u = FRUIT_UNITS[food]; if (u) { const n = Math.ceil(g / u[0]); return `${n} ${n > 1 ? u[2] : u[1]} (${Math.round(g)} g)`; }
+  const b = BREADS.find(([id]) => id === food); if (b && b[4]) { const n = Math.ceil(g / b[4]); return `${n} ${b[5]}${n > 1 ? "s" : ""}`; }
+  const r = g < 100 ? Math.ceil(g / 5) * 5 : Math.ceil(g / 10) * 10;
+  return r >= 1000 ? `${String(Math.round(r / 100) / 10).replace(".", ",")} kg` : `${r} g`;
+};
+const shopListOf = (list) => {
+  const tot = {};
+  for (const e of list || []) for (const it of e.items) tot[it.food] = (tot[it.food] || 0) + it.g * (e.n || 1);
+  return Object.entries(tot).filter(([, g]) => g > 0).map(([food, g]) => ({ food, g, name: FOODS[food]?.n || food, aisle: aisleOf(food) }));
+};
+
+function ShopWeek({ shop, setShop, onFill, onClose }) {
+  const [days, setDays] = useState(5);
+  const [copied, setCopied] = useState(false);
+  const list = shop?.list || [], checked = shop?.checked || {};
+  const rows = shopListOf(list);
+  const save = (patch) => setShop({ list, checked, ...patch });
+  const setN = (i, n) => save({ list: n <= 0 ? list.filter((_, j) => j !== i) : list.map((e, j) => (j === i ? { ...e, n } : e)) });
+  const text = AISLE_ORDER.map((a) => { const r = rows.filter((x) => x.aisle === a); return r.length ? `${AISLE_NAMES[a]}\n${r.map((x) => `- ${x.name}: ${shopAmount(x.food, x.g)}`).join("\n")}` : ""; }).filter(Boolean).join("\n\n");
+  const copy = async () => { try { if (navigator.share) await navigator.share({ title: "Compra de la semana", text }); else { await navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1800); } } catch { /* cancelado */ } };
+  return createPortal(
+    <div className="modal" style={{ zIndex: 60 }} onClick={onClose}>
+      <div className="box sw-box" onClick={(e) => e.stopPropagation()}>
+        <div className="sw-hd"><h1>Compra de la semana</h1><button className="link" onClick={onClose}>Cerrar</button></div>
+        {onFill && <div className="sw-fill">
+          <span>Añadir mi plan de hoy para</span>
+          <div className="seg">{[3, 5, 7].map((d) => <button key={d} className={days === d ? "on" : ""} onClick={() => setDays(d)}>{d} días</button>)}</div>
+          <button className="btn ac" onClick={() => onFill(days)}>Añadir</button>
+        </div>}
+        <h2>Lo que vas a comer</h2>
+        {!list.length ? <p className="hint">Aún no has añadido nada. Toca «+ A la compra» en tus comidas o en los combos, o añade tu plan de hoy.</p> : (
+          <div className="sw-ent">{list.map((e, i) => (
+            <div key={e.id + i}><span>{e.name}</span>
+              <div className="sw-n"><button aria-label="Una vez menos" onClick={() => setN(i, (e.n || 1) - 1)}>−</button><b>×{e.n || 1}</b><button aria-label="Una vez más" onClick={() => setN(i, (e.n || 1) + 1)}>+</button></div>
+            </div>
+          ))}</div>
+        )}
+        {rows.length > 0 && <>
+          <h2>Tu lista <small className="ck-opt">({rows.length} productos)</small></h2>
+          {AISLE_ORDER.map((a) => { const r = rows.filter((x) => x.aisle === a); if (!r.length) return null; return (
+            <div className="sw-ai" key={a}><div className="sw-at">{AISLE_NAMES[a]}</div>
+              {r.map((x) => <label key={x.food} className={checked[x.food] ? "on" : ""}><input type="checkbox" checked={!!checked[x.food]} onChange={() => save({ checked: { ...checked, [x.food]: !checked[x.food] } })} /><span>{x.name}</span><em>{shopAmount(x.food, x.g)}</em></label>)}
+            </div>
+          ); })}
+          <div className="sw-act">
+            <button className="btn ac" onClick={copy}>{copied ? "Copiada ✓" : "Compartir o copiar lista"}</button>
+            <button className="btn ghost" onClick={() => save({ list: [], checked: {} })}>Vaciar y empezar otra semana</button>
+          </div>
+        </>}
+      </div>
+    </div>,
+    document.querySelector(".arc") || document.body
+  );
+}
+
+function ComboSheet({ c, media, admin, uploadMedia, onAdd, onClose }) {
+  const [err, setErr] = useState("");
+  const [added, setAdded] = useState(false);
+  const t = comboTot(c), img = media[`combo:${c.id}`], rec = c.recipe && RECIPES.find((r) => r.id === c.recipe);
+  return createPortal(
+    <div className="modal" style={{ zIndex: 60 }} onClick={onClose}>
+      <div className="box cb-box" onClick={(e) => e.stopPropagation()}>
+        {img && <img className="cb-img" src={img} alt="" />}
+        <small className="cb-when">{c.when}</small>
+        <h1>{c.name}</h1>
+        <p className="cb-mac">{Math.round(t.kcal)} kcal · P {Math.round(t.p)} · H {Math.round(t.c)} · G {Math.round(t.f)}</p>
+        <div className="cb-prods">{c.items.map(([f, g], i) => <div key={f}><i>{i + 1}</i><span>{FOODS[f]?.n || f}</span><em>{shopAmount(f, g)}</em></div>)}</div>
+        <p className="cb-how">{c.how}</p>
+        {rec?.steps?.length > 0 && <details className="mprep"><summary>Receta paso a paso</summary><ol className="cb-steps">{rec.steps.map((s) => <li key={s}>{s}</li>)}</ol></details>}
+        <p className="hint">Cantidades para una ración. En «Tus comidas» se ajustan a tus macros.</p>
+        <button className="btn ac" onClick={() => { onAdd(); setAdded(true); }}>{added ? "Añadido a la compra ✓" : "+ A la compra de la semana"}</button>
+        {admin && <div style={{ marginTop: 10 }}><MediaPicker label={img ? "Cambiar foto" : "Subir foto del combo"} accept="image/*" onPick={(f) => uploadMedia(`combo:${c.id}`, f)} onError={setErr} />{err && <div className="err">{err}</div>}</div>}
+      </div>
+    </div>,
+    document.querySelector(".arc") || document.body
+  );
+}
+
+function Combos({ media, admin, uploadMedia, onAdd }) {
+  const [open, setOpen] = useState(null);
+  const list = [...COMBOS].sort((a, b) => !!media[`combo:${b.id}`] - !!media[`combo:${a.id}`]);
+  return (
+    <>
+      <h2>Combos del súper</h2>
+      <p className="hint" style={{ marginTop: -6 }}>Pocos productos de Mercadona y tienes la comida hecha, sin pensar.</p>
+      <div className="cb-row">{list.map((c) => { const t = comboTot(c), img = media[`combo:${c.id}`]; return (
+        <button key={c.id} className="cb" onClick={() => setOpen(c)}>
+          {img ? <img src={img} alt="" /> : <span className="cb-ph">{c.items.slice(0, 4).map(([f]) => <i key={f}>{(FOODS[f]?.n || f).replace(/\s*\(.*\)/, "")}</i>)}</span>}
+          <small>{c.when}</small><b>{c.name}</b><em>{Math.round(t.kcal)} kcal · {Math.round(t.p)} g prot.</em>
+        </button>
+      ); })}</div>
+      {open && <ComboSheet c={open} media={media} admin={admin} uploadMedia={uploadMedia} onAdd={() => onAdd({ id: `combo:${open.id}`, name: open.name, items: open.items.map(([food, g]) => ({ food, g })) })} onClose={() => setOpen(null)} />}
+    </>
+  );
+}
+
+function ShopCard({ shop, onOpen }) {
+  const list = shop?.list || [], rows = shopListOf(list), done = rows.filter((x) => shop?.checked?.[x.food]).length;
+  return (
+    <button className="swc" onClick={onOpen}>
+      <span className="swc-ic"><Ic n="cart" size={22} /></span>
+      <span><b>Compra de la semana</b><small>{list.length ? `${list.reduce((a, e) => a + (e.n || 1), 0)} comidas · ${rows.length} productos${done ? ` · ${done} en el carro` : ""}` : "Organiza lo que vas a comer y te hago la lista por pasillos"}</small></span>
+      <em>›</em>
+    </button>
+  );
+}
+
+function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => {}, coachDiet = null, shop = null, setShop = () => {}, admin = false, uploadMedia = null }) {
+  const [showShop, setShowShop] = useState(false);
+  const [shopAdded, setShopAdded] = useState({});
+  const addShop = (e, times = 1) => { const list = shop?.list || []; const i = list.findIndex((x) => x.id === e.id); const next = i >= 0 ? list.map((x, j) => (j === i ? { ...x, items: e.items, n: (x.n || 1) + times } : x)) : [...list, { ...e, n: times }]; setShop({ checked: {}, ...shop, list: next }); setShopAdded((a) => ({ ...a, [e.id]: (next.find((x) => x.id === e.id) || {}).n })); };
   const [editing, setEditing] = useState(null);
   const [draft, setDraft] = useState({}); // cantidades cambiadas antes de apuntar la comida
   const [rest, setRest] = useState(false);
@@ -5419,7 +5586,16 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
       </div>
 
       <NutriGuide weight={Number(profile?.weight) || 60} />
-      {cd ? <CoachDiet meals={cdMeals} tips={cd.tips} eaten={eaten} setEaten={setEaten} totOf={totOf} /> : <>
+      <ShopCard shop={shop} onOpen={() => setShowShop(true)} />
+      {showShop && <ShopWeek shop={shop} setShop={setShop} onClose={() => setShowShop(false)} onFill={(days) => {
+        const add = cd ? cdMeals.map((m, mi) => ({ id: `coach:${mi}:0`, name: `${m.name} · ${m.options[0].name}`, items: m.options[0].items.map(dietLog).map((it) => ({ food: it.food, g: Number(it.g) || 0 })) }))
+          : meals.filter((m) => !m.empty).map((m) => ({ id: dkey(m), name: m.recipe.name, items: draftOf(m) }));
+        let list = shop?.list || [];
+        for (const e of add) { const i = list.findIndex((x) => x.id === e.id); list = i >= 0 ? list.map((x, j) => (j === i ? { ...x, n: (x.n || 1) + days } : x)) : [...list, { ...e, n: days }]; }
+        setShop({ checked: {}, ...shop, list });
+      }} />}
+      {cd ? <CoachDiet meals={cdMeals} tips={cd.tips} eaten={eaten} setEaten={setEaten} totOf={totOf} onShop={addShop} shopAdded={shopAdded} /> : <>
+      <Combos media={media} admin={admin} uploadMedia={uploadMedia} onAdd={(e) => addShop(e)} />
       <h2>Tus comidas</h2>
       <div className="seg">{COOK_OPTS.map(([v, l]) => <button key={v} className={mode === v ? "on" : ""} onClick={() => setCook(v)}>{l}</button>)}</div>
       {profile.eatOut && <p className="hint" style={{ marginTop: 0 }}>Primero te salen las que aguantan bien en táper.</p>}
@@ -5459,6 +5635,7 @@ function Nutrition({ profile, setCook, media = {}, eaten = {}, setEaten = () => 
               {!eaten[m.id] && editing === m.id && (() => { const t2 = totOf(draftOf(m)); return <p className="hint" style={{ margin: "6px 0 0" }}>Con estas cantidades: {r0(t2.kcal)} kcal · P {r0(t2.p)} · H {r0(t2.c)} · G {r0(t2.f)}. Cuando lo tengas, toca «Me la he comido».</p>; })()}
               {eaten[m.id] && <p className="hint" style={{ margin: "6px 0 0" }}>Has comido {r0(eaten[m.id].tot.kcal)} kcal · P {r0(eaten[m.id].tot.p)} · H {r0(eaten[m.id].tot.c)} · G {r0(eaten[m.id].tot.f)}</p>}
               {!eaten[m.id] && m.recipe.items.some(([f]) => BREAD_IDS.has(f)) && <BreadPick value={m.items.find((it) => BREAD_IDS.has(it.food))?.food} onPick={setBread} />}
+              {!eaten[m.id] && <button className="sw-add" onClick={() => addShop({ id: dkey(m), name: m.recipe.name, items: draftOf(m) })}>{shopAdded[dkey(m)] ? `✓ En la compra (×${shopAdded[dkey(m)]}) · añadir otra vez` : "+ A la compra de la semana"}</button>}
               <ShopPicks items={eaten[m.id]?.items || m.items} pre={m.id === "pre"} name={m.recipe.name} />
               <details className="mprep">
                 <summary>Cómo se prepara</summary>
@@ -9251,7 +9428,7 @@ function ArcApp({ user }) {
         weekDays: new Set(state.sessions.filter((s) => new Date(s.date) >= weekStart()).map((s) => new Date(s.date).toDateString())).size }}
       rankingEl={<Ranking embedded me={{ optIn: !!state.rankOptIn, nickname: state.nickname, avatar: state.avatar, pending: state.avatarPending, isPublic: state.profilePublic !== false }} state={{ ...state, savedLevel: ev?.current ?? state.savedLevel }} api={rankApi} media={media} coach={coach} setMedia={setMedia} blocked={state.profile?.blocked || []} onBlock={(n) => setProfile({ blocked: [...new Set([...(state.profile?.blocked || []), n])] })} onUnblockAll={() => setProfile({ blocked: [] })} />} />;
   } else if (tab === "nutricion") {
-    body = <Nutrition coachDiet={state.coachDiet} profile={state.profile} setCook={(c) => setProfile({ cook: c })} media={media} eaten={(state.habits[dkey()] || {}).food || {}} setEaten={(v) => setHabit("food", v)} />;
+    body = <Nutrition coachDiet={state.coachDiet} profile={state.profile} setCook={(c) => setProfile({ cook: c })} media={media} shop={state.profile?.shop || null} setShop={(v) => setProfile({ shop: v })} admin={coach} uploadMedia={uploadMedia} eaten={(state.habits[dkey()] || {}).food || {}} setEaten={(v) => setHabit("food", v)} />;
   } else {
     body = <>{<Habits state={state} setHabit={setHabit} adh={adh} steps={native.isNative ? {
       available: native.platform === "android" || stepsAvail,
