@@ -4770,7 +4770,7 @@ const PICK_STORE = {}; // img -> súper (si no está, Mercadona)
 const PICK_NOTE = {}; // img -> apunte de Luna
 const PICK_NOIMG = new Set(); // aún sin foto
 const SHOP_PICKS = {
-  mozzarella: [["mozzarella-lidl", "Mozzarella rallada Milbona", "309 kcal · 23 g prot./100 g"], ["mozzarella-mercadona", "Mozzarella rallada (Hacendado)", "Igual de buena"]],
+  mozzarella: [["mozzarella-lidl", "Mozzarella rallada Milbona", "309 kcal · 23 g prot./100 g"], ["mozzarella-mercadona", "Mozzarella Pizza-Roma Hacendado", "Leche, sal, fermentos y almidón"]],
   noquis: [["gnocchi-lidl", "Gnocchi Chef Select", "152 kcal/100 g · 2 min"]],
   terneraPicada: [["picada-vacuno-lidl", "Picada 99% vacuno", "19 g prot. · 14 g grasa/100 g"]],
   picadaVacuno: [["picada-vacuno-lidl", "Picada 99% vacuno", "19 g prot. · 14 g grasa/100 g"]],
@@ -4807,7 +4807,7 @@ Object.assign(PICK_NOTE, {
   "pepinillos-lidl": "Son agridulces (llevan azúcar), pero en unas rodajas para la burger son casi nada.",
   "gnocchi-lidl": "2 minutos en agua o 5 en la sartén. Si los doras en la airfryer quedan crujientes por fuera.",
 });
-PICK_NOIMG.add("mozzarella-mercadona");
+
 // Panes: en cada receta con pan eliges cuál usas y se recalculan las cantidades
 const BREADS = [
   ["panIntegral", "Pan integral", null, "Cualquier integral de verdad", 0, ""],
