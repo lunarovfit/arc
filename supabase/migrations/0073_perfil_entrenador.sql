@@ -72,3 +72,4 @@ begin
 end $$;
 
 grant execute on function public.become_coach(text), public.my_coach_invites(), public.my_coach() to authenticated;
+grant update (coach_info) on public.profiles to authenticated;
