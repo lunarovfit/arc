@@ -126,6 +126,7 @@ begin
   update public.profiles set role = 'coach', data = coalesce(data, '{}'::jsonb) || jsonb_build_object('coachName', left(trim(name), 40))
   where id = auth.uid() and role = 'client';
 end $$;
+drop function if exists public.my_coach_invites();
 create or replace function public.my_coach_invites()
 returns table (id uuid, coach_name text)
 language sql stable security definer set search_path = public as $$

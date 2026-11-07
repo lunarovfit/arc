@@ -8003,7 +8003,7 @@ function RoleChoice({ onTrain, onCoach }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   if (step === "coach") return (
-    <div className="rc">
+    <div className="rcx">
       <Logo height={40} />
       <h1>Tu panel de entrenador/a</h1>
       <p className="sub">Empiezas gratis con 1 cliente. Cuando quieras llevar a más, eliges un plan.</p>
@@ -8015,14 +8015,14 @@ function RoleChoice({ onTrain, onCoach }) {
     </div>
   );
   return (
-    <div className="rc">
+    <div className="rcx">
       <Logo height={40} />
       <h1>¿Cómo vas a usar ARC?</h1>
-      <button className="rc-op" onClick={onTrain}>
+      <button className="rcx-op" onClick={onTrain}>
         <Ic n="dumbbell" size={24} />
         <span><b>Voy a entrenar</b><small>Tu rutina, tus comidas y tu nivel. Primero, unas preguntas rápidas para hacértelo a medida.</small></span>
       </button>
-      <button className="rc-op" onClick={() => setStep("coach")}>
+      <button className="rcx-op" onClick={() => setStep("coach")}>
         <Ic n="calendar" size={24} />
         <span><b>Soy entrenador/a</b><small>Lleva a tus clientes desde ARC: rutinas, dietas, revisiones y su progreso. Gratis con 1 cliente.</small></span>
       </button>
@@ -8786,13 +8786,15 @@ const CHECKIN_CSS = `
 .cpf-cols button{width:34px;height:34px;padding:0;border-radius:50%;border:2px solid transparent;outline:2px solid transparent;cursor:pointer}
 .cpf-cols button.on{outline-color:var(--tx);outline-offset:2px}
 .cln-box img{object-fit:cover}
-.rc{display:flex;flex-direction:column;gap:12px;padding:36px 2px 20px}
-.rc h1{font-size:26px;margin:14px 0 4px}
-.rc-op{display:flex;gap:14px;align-items:flex-start;text-align:left;width:100%;padding:18px 16px;border-radius:18px;border:1px solid var(--ln);background:var(--sf);color:var(--tx);font:inherit;cursor:pointer}
-.rc-op:active{border-color:var(--ac)}
-.rc-op svg{flex:none;color:var(--ac);margin-top:2px}
-.rc-op b{display:block;font-size:17px;margin-bottom:4px}
-.rc-op small{display:block;font-size:13.5px;color:var(--dm);line-height:1.45}
+.rcx{display:flex;flex-direction:column;justify-content:center;gap:12px;min-height:calc(100vh - 140px);padding:24px 2px 24px}
+.rcx h1{font-size:26px;line-height:1.15;margin:16px 0 6px}
+.rcx .sub{margin:0 0 6px}
+.rcx-op{display:flex;gap:14px;align-items:center;text-align:left;width:100%;padding:16px;border-radius:18px;border:1px solid var(--ln);background:var(--sf);color:var(--tx);font:inherit;cursor:pointer}
+.rcx-op:active{border-color:var(--ac)}
+.rcx-op svg{flex:none;color:var(--ac)}
+.rcx-op b{display:block;font-size:16.5px;margin-bottom:3px}
+.rcx-op small{display:block;font-size:13.5px;color:var(--dm);line-height:1.4}
+.rcx .hint{text-align:center;margin-top:6px}
 `;
 
 /* ============================ ASESORADAS (COACH) ============================ */
