@@ -1809,6 +1809,21 @@ select.in{appearance:none}
 .lvup-name{position:relative;font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
 .lvup-line{position:relative;font-size:15px;line-height:1.5;color:var(--dm);max-width:320px;margin:10px 0 0}
 .lvup-btn{position:relative;margin-top:auto;max-width:380px}
+.lvup-btn2{position:relative;max-width:380px;margin-top:10px}
+.rv{overflow-y:auto}.rv-intro{margin:auto 0;text-align:center}.rv-intro small{display:block;color:var(--dm);font-size:15px;margin-bottom:10px;animation:rise .5s ease-out both}
+.rv-intro h1{font-size:34px;font-weight:800;letter-spacing:-.02em;animation:rise .6s ease-out .2s both}
+.rv-dots i{font-style:normal;display:inline-block;animation:dotb 1s ease-in-out infinite}.rv-dots i:nth-child(2){animation-delay:.15s}.rv-dots i:nth-child(3){animation-delay:.3s}
+@keyframes dotb{0%,100%{opacity:.2;transform:none}50%{opacity:1;transform:translateY(-6px)}}
+.rv-series{position:relative;color:var(--dm);font-size:14px;margin-top:4px;animation:rise .5s ease-out 1.05s both}
+.rv-next{position:relative;max-width:340px;width:100%;margin:16px 0 18px;padding:12px 14px;border-radius:14px;background:var(--sf);border:1px solid var(--ln);text-align:left;font-size:13.5px;line-height:1.45;animation:rise .5s ease-out 1.2s both}
+.rv-next ul{margin:6px 0 0;padding-left:18px;color:var(--dm)}.rv-next p{margin:4px 0 0;color:var(--dm)}
+.lc-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:12px 0 4px;padding:11px;border-radius:14px;border:1px solid var(--ln);background:var(--sf);color:var(--tx);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.lc-btn svg{width:16px;height:16px}
+.wk-card{display:flex;align-items:center;gap:12px;width:100%;margin:10px 0 4px;padding:14px;border-radius:16px;border:1px solid var(--ac);background:var(--sf);color:var(--tx);font:inherit;text-align:left;cursor:pointer}
+.wk-card>span:not(.swc-ic){flex:1;min-width:0}.wk-card b{display:block;font-size:15.5px}.wk-card small{display:block;font-size:12.5px;color:var(--dm);margin-top:2px}.wk-card em{font-style:normal;color:var(--dm);font-size:22px}
+.lc-box h1{font-size:20px;margin:0}.lc-prev{display:flex;align-items:center;justify-content:center;min-height:200px;margin:4px 0 14px}
+.lc-prev img{width:100%;max-width:280px;aspect-ratio:9/16;border-radius:16px;border:1px solid var(--ln);object-fit:cover}.lc-load{color:var(--dm);font-size:14px}
+.lc-box .btn{margin-top:8px}
 @media (prefers-reduced-motion:no-preference){
 .fill{transition:stroke-dashoffset .9s ease;animation:fillIn 1.2s cubic-bezier(.2,.8,.2,1) both}
 @keyframes fillIn{from{stroke-dashoffset:var(--len)}}
@@ -1831,6 +1846,7 @@ select.in{appearance:none}
 .lvup-name{animation:rise .5s ease-out 1s both}
 .lvup-line{animation:rise .5s ease-out 1.15s both}
 .lvup-btn{animation:rise .5s ease-out 1.3s both}
+.lvup-btn2{animation:rise .5s ease-out 1.4s both}
 @keyframes fadeIn{from{opacity:0}}
 @keyframes pulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.12);opacity:1}}
 @keyframes reveal{from{transform:scale(.5);opacity:0;filter:blur(12px) brightness(3)}to{transform:none;opacity:1;filter:none}}
@@ -2768,6 +2784,9 @@ function CoachingCard({ testimonials = [], coach = false, onRemove }) {
 
 function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia, testimonials, showCoaching = true, onRemoveTestimonial }) {
   const [shareSteps, setShareSteps] = useState(false);
+  const [shareLevel, setShareLevel] = useState(false);
+  const [weekCard, setWeekCard] = useState(false);
+  useEffect(() => { const h = () => setWeekCard(true); window.addEventListener("arc-week", h); return () => window.removeEventListener("arc-week", h); }, []);
   const [dayStory, setDayStory] = useState(false);
   useEffect(() => { const h = () => setDayStory(true); window.addEventListener("arc-story", h); return () => window.removeEventListener("arc-story", h); }, []);
   const branch = state.profile.branch;
@@ -2812,6 +2831,13 @@ function Home({ state, stats, ev, quote, media, coach, setMedia, uploadMedia, te
           ) : <div className="hero-next"><span>Arco completado</span></div>}
         </div>
       </div>
+      <button className="lc-btn" onClick={() => setShareLevel(true)}><ShareIcon /> Compartir mi nivel</button>
+      {shareLevel && <CardShare make={() => drawLevelCard(levelCardData(state, stats, ev, media))} fileName="arc-mi-nivel.png" onClose={() => setShareLevel(false)} />}
+      {[0, 1].includes(new Date().getDay()) && <button className="wk-card" onClick={() => setWeekCard(true)}>
+        <span className="swc-ic"><Ic n="calendar" size={22} /></span>
+        <span><b>Tu semana en ARC está lista</b><small>{new Date().getDay() === 0 ? "Sesiones, adherencia y racha de esta semana" : "Tu resumen semanal"} · para compartir</small></span><em>›</em>
+      </button>}
+      {weekCard && <WeekShare state={state} stats={stats} ev={ev} media={media} onClose={() => setWeekCard(false)} />}
       {stats.provisional && <div className="gauge"><div className="prov">Nivel provisional: la adherencia empieza a contar en tu día {RULES.ADHERENCE_MIN_DAYS}.</div></div>}
 
       <div className="kpis">
@@ -7496,8 +7522,180 @@ function countPRs(prevSessions, exercises) {
   }).length;
 }
 
-function LevelUp({ data, onClose }) {
+/* ============================ TARJETAS DE NIVEL Y SEMANA (9:16 para historias) ============================ */
+
+let REVIEW_IMPL = async () => {}; // la app instalada pide la reseña nativa (App Store / Google Play)
+const fmtX = (v) => `${(Math.round(v * 100) / 100).toFixed(2).replace(".", ",")}x`;
+
+// Qué le falta para el siguiente nivel, en palabras (misma lógica que los niveles de la app)
+function levelGaps(branch, mode, stats, ev, bw) {
+  if (!ev?.next) return [];
+  const out = [];
+  if (stats.ratio < ev.next.ratio) {
+    const kg = Math.ceil(((ev.next.ratio - stats.ratio) * (bw || 0)) / 2.5) * 2.5;
+    out.push(`${fmtX(ev.next.ratio - stats.ratio)} más de fuerza relativa${kg > 0 ? ` (unos ${String(kg).replace(".", ",")} kg más entre ${branch === "male" ? "sentadilla, press banca y peso muerto" : "sentadilla y peso muerto"})` : ""}`);
+  }
+  if (stats.months < ev.next.months) { const m = ev.next.months - stats.months; out.push(`${m} ${m === 1 ? "mes" : "meses"} más entrenando sin parar`); }
+  if (!stats.provisional && stats.adherence < ev.next.adherence) out.push(`subir tu adherencia al ${ev.next.adherence}%`);
+  return out;
+}
+
+// Semana actual: sesiones hechas frente a las que tocan, racha de semanas cumplidas
+function weekSummary(state) {
+  const goal = state.profile.days || 3, ws = weekStart();
+  const inWeek = (d, s) => { const t = new Date(d); return t >= s && t < new Date(s.getTime() + 7 * 864e5); };
+  const done = state.sessions.filter((s) => inWeek(s.date, ws)).length;
+  let streak = done >= goal ? 1 : 0;
+  for (let k = 1; k < 104; k++) {
+    const s = new Date(ws.getTime() - k * 7 * 864e5);
+    if (state.sessions.filter((x) => inWeek(x.date, s)).length >= goal) streak++; else break;
+  }
+  const end = new Date(ws.getTime() + 6 * 864e5);
+  const f = (d) => d.toLocaleDateString("es-ES", { day: "numeric", month: "short" }).replace(".", "");
+  return { done, goal, streak, range: `${f(ws)} – ${f(end)}` };
+}
+
+function wrapLines(x, text, maxW, max = 2) {
+  const words = String(text).split(" "), lines = [""];
+  for (const w of words) { const t = lines[lines.length - 1] ? `${lines[lines.length - 1]} ${w}` : w; if (x.measureText(t).width <= maxW || !lines[lines.length - 1]) lines[lines.length - 1] = t; else lines.push(w); }
+  const out = lines.slice(0, max); if (lines.length > max) out[max - 1] = out[max - 1].replace(/\s*\S*$/, "") + "…";
+  return out;
+}
+
+// kind "level": tarjeta de nivel · kind "week": resumen semanal. Todo el texto va sobre fondo sólido.
+async function drawLevelCard({ kind = "level", img, name, series, idx, total, ratio, adherence, provisional, week, progress, nextName, clasico }) {
+  const W = 1080, H = 1920, PINK = "#D48B92", BG = "#070708", PANEL = "#141416", DIM = "rgba(255,255,255,.62)";
+  try { await document.fonts?.load(`800 90px ${SHARE_FONT}`); } catch (e) { /* fuente del sistema */ }
+  const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
+  x.fillStyle = BG; x.fillRect(0, 0, W, H);
+  const M = 80;
+  let y = 120;
+  // cabecera
+  x.fillStyle = PINK; x.font = `800 30px ${SHARE_FONT}`;
+  spaced(x, kind === "week" ? "TU SEMANA EN ARC" : clasico ? `NIVEL ${idx + 1} DE ${total}` : `PERSONAJE ${idx + 1} DE ${total}`, M, y, 5);
+  if (kind === "week") { x.fillStyle = DIM; x.font = `600 30px ${SHARE_FONT}`; x.textAlign = "right"; x.fillText(week.range, W - M, y); x.textAlign = "left"; }
+  y += 40;
+  // personaje en su marco (sin nada encima)
+  const ih = kind === "week" ? 700 : 960, iw = W - M * 2;
+  x.save(); x.beginPath(); x.roundRect(M, y, iw, ih, 36); x.clip(); x.fillStyle = PANEL; x.fillRect(M, y, iw, ih);
+  const pic = await loadImg(img);
+  if (pic) { const r = Math.max(iw / pic.width, ih / pic.height), w = pic.width * r, h = pic.height * r; x.drawImage(pic, M + (iw - w) / 2, y + (ih - h) * 0.3, w, h); }
+  x.restore();
+  x.strokeStyle = "rgba(255,255,255,.12)"; x.lineWidth = 2; x.beginPath(); x.roundRect(M, y, iw, ih, 36); x.stroke();
+  y += ih + 90;
+  // nombre
+  x.fillStyle = "#fff"; x.font = `800 ${kind === "week" ? 76 : 92}px ${SHARE_FONT}`;
+  for (const ln of wrapLines(x, name, W - M * 2, 2)) { x.fillText(ln, M, y); y += kind === "week" ? 84 : 100; }
+  y -= kind === "week" ? 34 : 44;
+  if (series) { x.fillStyle = DIM; x.font = `600 36px ${SHARE_FONT}`; x.fillText(series, M, y); }
+  y += 60;
+  // datos en cajas sólidas
+  const box = (bx, by, bw, bh, label, value, sub) => {
+    x.fillStyle = PANEL; x.beginPath(); x.roundRect(bx, by, bw, bh, 28); x.fill();
+    x.fillStyle = PINK; x.fillRect(bx, by + 28, 6, bh - 56);
+    x.fillStyle = DIM; x.font = `700 26px ${SHARE_FONT}`; spaced(x, label.toUpperCase(), bx + 36, by + 54, 3);
+    x.fillStyle = "#fff"; x.font = `800 72px ${SHARE_FONT}`; x.fillText(value, bx + 36, by + 136);
+    if (sub) { const vw = x.measureText(value).width; x.fillStyle = DIM; x.font = `600 32px ${SHARE_FONT}`; x.fillText(sub, bx + 36 + vw + 10, by + 136); }
+  };
+  const gap = 24, bw2 = (W - M * 2 - gap) / 2, bh = 170;
+  if (kind === "week") {
+    box(M, y, bw2, bh, "Sesiones", String(week.done), `/ ${week.goal}`);
+    box(M + bw2 + gap, y, bw2, bh, "Adherencia", provisional ? "—" : `${adherence}%`);
+    y += bh + gap;
+    box(M, y, bw2, bh, "Racha", String(week.streak), week.streak === 1 ? "semana" : "semanas");
+    box(M + bw2 + gap, y, bw2, bh, "Fuerza relativa", fmtX(ratio));
+    y += bh + gap;
+    // progreso al siguiente nivel
+    x.fillStyle = PANEL; x.beginPath(); x.roundRect(M, y, W - M * 2, 150, 28); x.fill();
+    x.fillStyle = DIM; x.font = `700 26px ${SHARE_FONT}`; spaced(x, nextName ? `HACIA ${nextName.toUpperCase()}` : "ARCO COMPLETADO", M + 36, y + 52, 3);
+    const pw = W - M * 2 - 72 - 140;
+    x.fillStyle = "rgba(255,255,255,.12)"; x.beginPath(); x.roundRect(M + 36, y + 88, pw, 22, 11); x.fill();
+    x.fillStyle = PINK; x.beginPath(); x.roundRect(M + 36, y + 88, Math.max(22, pw * (nextName ? progress : 1)), 22, 11); x.fill();
+    x.fillStyle = "#fff"; x.font = `800 48px ${SHARE_FONT}`; x.textAlign = "right"; x.fillText(`${Math.round((nextName ? progress : 1) * 100)}%`, W - M - 36, y + 114); x.textAlign = "left";
+  } else {
+    box(M, y, bw2, bh, "Fuerza relativa", fmtX(ratio));
+    box(M + bw2 + gap, y, bw2, bh, "Adherencia", provisional ? "—" : `${adherence}%`);
+    y += bh + 70; x.fillStyle = DIM; x.font = `600 32px ${SHARE_FONT}`;
+    for (const ln of wrapLines(x, "Aquí el nivel se gana con fuerza real, constancia y hábitos.", W - M * 2, 2)) { x.fillText(ln, M, y); y += 44; }
+  }
+  // marca abajo
+  const logo = await loadImg("/logo-mark.png");
+  x.font = `800 34px ${SHARE_FONT}`; x.textBaseline = "middle";
+  const label = "ARC by Lunarov", tw = x.measureText(label).width, lw = logo ? 56 : 0, lh = logo ? (logo.height * lw) / logo.width : 0;
+  const total2 = lw + (logo ? 18 : 0) + tw, fy = H - 96;
+  let fx = (W - total2) / 2;
+  if (logo) { x.drawImage(logo, fx, fy - lh / 2, lw, lh); fx += lw + 18; }
+  x.fillStyle = "#fff"; x.fillText(label, fx, fy + 2); x.textBaseline = "alphabetic";
+  return c.toDataURL("image/png");
+}
+
+const saveImage = (dataUrl, name) => { if (typeof SAVE_IMPL === "function") return SAVE_IMPL(dataUrl, name); const a = document.createElement("a"); a.href = dataUrl; a.download = name; a.click(); };
+let SAVE_IMPL = null; // en la app instalada guarda con la hoja nativa (opción "Guardar imagen")
+
+// Vista previa de la tarjeta con Compartir y Guardar imagen
+function CardShare({ make, fileName, title = "Comparte tu nivel", onClose }) {
+  const [url, setUrl] = useState(null);
+  const [err, setErr] = useState("");
+  useEffect(() => { let on = true; make().then((u) => on && setUrl(u)).catch(() => on && setErr("No se ha podido crear la imagen.")); return () => { on = false; }; }, []);
+  return createPortal(
+    <div className="modal" style={{ zIndex: 80 }} onClick={onClose}>
+      <div className="box lc-box" onClick={(e) => e.stopPropagation()}>
+        <div className="sw-hd"><h1>{title}</h1><button className="link" onClick={onClose}>Cerrar</button></div>
+        <div className="lc-prev">{url ? <img src={url} alt="Vista previa de la tarjeta" /> : err ? <p className="err">{err}</p> : <span className="lc-load">Creando tu tarjeta…</span>}</div>
+        <button className="btn ac" disabled={!url} onClick={() => SHARE_IMPL(url, fileName).catch(() => {})}>Compartir</button>
+        <button className="btn ghost" disabled={!url} onClick={() => Promise.resolve(saveImage(url, fileName)).catch(() => {})}>Guardar imagen</button>
+      </div>
+    </div>,
+    document.querySelector(".arc") || document.body
+  );
+}
+
+// Datos de la tarjeta de nivel de la persona (o de un nivel concreto, al subir)
+function levelCardData(state, stats, ev, media, idx = ev.current) {
+  const branch = state.profile.branch, mode = state.profile.mode || "otaku", L = levelsOf(branch, mode), lv = L[idx];
+  return { kind: "level", img: mediaOr(media, levelKey(branch, mode, idx)) || AVATAR[branch], name: lv.name, series: mode === "clasico" ? "" : lv.series, idx, total: L.length, ratio: stats.ratio, adherence: stats.adherence, provisional: stats.provisional, clasico: mode === "clasico" };
+}
+
+// Revelación de personaje al terminar el registro
+function CharacterReveal({ state, stats, ev, media, onClose }) {
+  const [phase, setPhase] = useState(0);
+  const [share, setShare] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setPhase(1), 1900); return () => clearTimeout(t); }, []);
+  const branch = state.profile.branch, mode = state.profile.mode || "otaku", L = levelsOf(branch, mode), lv = L[ev.current];
+  const img = mediaOr(media, levelKey(branch, mode, ev.current)) || AVATAR[branch];
+  const gaps = levelGaps(branch, mode, stats, ev, currentWeight(state));
+  return (
+    <div className="lvup rv" role="dialog" aria-label="Tu personaje">
+      {phase === 0 ? (
+        <div className="rv-intro"><small>Con tus marcas y tu peso…</small><h1>{mode === "clasico" ? "Tu nivel es" : "Tu personaje es"}<span className="rv-dots"><i>.</i><i>.</i><i>.</i></span></h1></div>
+      ) : <>
+        <div className="lvup-tag">{mode === "clasico" ? "Nivel" : "Personaje"} {ev.current + 1} de {L.length}</div>
+        <div className="lvup-stage">
+          {SPARKS.map((s, i) => <span key={i} className="lvup-spark" style={{ "--x": `${s.x}px`, "--y": `${s.y}px`, animationDelay: `${s.d}s` }}><Star size={s.s} color={i % 2 ? "#fff" : "#D48B92"} /></span>)}
+          <div className="lvup-img"><img src={img} alt="" /></div>
+        </div>
+        <div className="lvup-name">{lv.name}</div>
+        {mode !== "clasico" && <div className="rv-series">{lv.series}</div>}
+        <p className="lvup-line">{lv.line}</p>
+        {ev.next && <div className="rv-next"><b>Para llegar a {ev.next.name} te falta:</b>{gaps.length ? <ul>{gaps.map((g) => <li key={g}>{g}</li>)}</ul> : <p>Sigue entrenando: estás a punto.</p>}</div>}
+        <button className="btn ac lvup-btn" onClick={() => setShare(true)}>Compartir</button>
+        <button className="btn ghost lvup-btn2" onClick={onClose}>Empezar</button>
+        {share && <CardShare make={() => drawLevelCard(levelCardData(state, stats, ev, media))} fileName="arc-mi-personaje.png" title="Comparte tu personaje" onClose={() => setShare(false)} />}
+      </>}
+    </div>
+  );
+}
+
+// Resumen semanal (domingo): botón en Inicio y aviso del domingo por la tarde
+function WeekShare({ state, stats, ev, media, onClose }) {
+  const branch = state.profile.branch, mode = state.profile.mode || "otaku", L = levelsOf(branch, mode);
+  const make = () => drawLevelCard({ ...levelCardData(state, stats, ev, media), kind: "week", week: weekSummary(state), progress: ev.progress, nextName: ev.next?.name, series: mode === "clasico" ? `Nivel ${ev.current + 1} de ${L.length}` : L[ev.current].series });
+  return <CardShare make={make} fileName="arc-mi-semana.png" title="Tu semana en ARC" onClose={onClose} />;
+}
+
+function LevelUp({ data, stats, onClose }) {
   const { from, to, line, img, idx, total, gymrat } = data;
+  const [share, setShare] = useState(false);
   return (
     <div className="lvup" role="dialog" aria-label={`Has subido a ${to}`}>
       <div className="lvup-glow" />
@@ -7512,7 +7710,9 @@ function LevelUp({ data, onClose }) {
       <h1 className="lvup-title">{gymrat ? "Tu rata ha evolucionado" : data.clasico ? "Has subido de nivel" : "Personaje desbloqueado"}</h1>
       <div className="lvup-name">{to}</div>
       <p className="lvup-line">{line}</p>
-      <button className="btn ac lvup-btn" onClick={onClose}>Seguir entrenando</button>
+      {stats && <button className="btn ac lvup-btn" onClick={() => setShare(true)}>Compartir mi nivel</button>}
+      <button className={stats ? "btn ghost lvup-btn2" : "btn ac lvup-btn"} onClick={onClose}>Seguir</button>
+      {share && <CardShare make={() => drawLevelCard({ kind: "level", img, name: to, series: data.clasico ? "" : data.series, idx, total, ratio: stats.ratio, adherence: stats.adherence, provisional: stats.provisional, clasico: data.clasico })} fileName="arc-mi-nivel.png" onClose={() => setShare(false)} />}
     </div>
   );
 }
@@ -7528,14 +7728,15 @@ function useLevelUp(profile, ev, media, setProfile) {
     if (ev.current > seen) {
       const L = levelsOf(profile.branch, profile.mode);
       setData({
-        from: L[seen]?.name, to: L[ev.current].name, line: L[ev.current].line, idx: ev.current, total: L.length,
+        from: L[seen]?.name, to: L[ev.current].name, line: L[ev.current].line, series: L[ev.current].series, idx: ev.current, total: L.length, n: (profile.lvupCount || 0) + 1,
         gymrat: profile.mode === "gymrat", clasico: profile.mode === "clasico",
         img: mediaOr(media, levelKey(profile.branch, profile.mode, ev.current)) || AVATAR[profile.branch],
       });
-      setProfile({ seenLevel: ev.current });
+      setProfile({ seenLevel: ev.current, lvupCount: (profile.lvupCount || 0) + 1 });
     } else if (ev.current < seen) setProfile({ seenLevel: ev.current });
   }, [ev?.current, profile?.mode, profile?.branch]);
-  return [data, () => setData(null)];
+  // la reseña de la tienda solo se pide al cerrar la 1.ª y la 3.ª subida de nivel
+  return [data, () => { const n = data?.n; setData(null); if (n === 1 || n === 3) setTimeout(() => Promise.resolve(REVIEW_IMPL()).catch(() => {}), 600); }];
 }
 
 /* ============================ BIENVENIDA (solo la primera vez) ============================ */
@@ -7696,6 +7897,8 @@ function Tour({ profile, ev, heroImg, perms, onFinish, media = {} }) {
 /* ============================ AJUSTES ============================ */
 
 SHARE_IMPL = nativeShare; // compartir con la hoja nativa del móvil
+REVIEW_IMPL = native.requestReview; // reseña nativa de la tienda
+if (native.isNative) SAVE_IMPL = nativeShare; // en el móvil, la hoja nativa tiene "Guardar imagen"
 
 
 const WEEK = [[2, "L"], [3, "M"], [4, "X"], [5, "J"], [6, "V"], [7, "S"], [1, "D"]];
@@ -9126,7 +9329,7 @@ function ArcApp({ user }) {
   const [loaded, setLoaded] = useState(false);
   const [loadErr, setLoadErr] = useState("");
   const [tab, setTab] = useState("inicio");
-  useEffect(() => native.onReminderOpen((o) => { if (o === "story") { setTab("inicio"); setTimeout(() => window.dispatchEvent(new Event("arc-story")), 400); } }), []);
+  useEffect(() => native.onReminderOpen((o) => { if (o === "story" || o === "week") { setTab("inicio"); setTimeout(() => window.dispatchEvent(new Event(o === "week" ? "arc-week" : "arc-story")), 400); } }), []);
   const [screen, setScreen] = useState(null);
   const [openClient, setOpenClient] = useState(null);
   const [clientsBack, setClientsBack] = useState("ajustes");
@@ -9134,7 +9337,8 @@ function ArcApp({ user }) {
   const [coachLog, setCoachLog] = useState(null); // aviso: la coach ha apuntado tu entreno
   const [invites, setInvites] = useState([]);
   const [myCoach, setMyCoach] = useState(null); // tu entrenador/a (si tienes)
-  const [willTrain, setWillTrain] = useState(false); // ha elegido "Voy a entrenar" en la primera pantalla
+  const [willTrain, setWillTrain] = useState(false);
+  const [reveal, setReveal] = useState(false); // "Tu personaje es…" al terminar el registro // ha elegido "Voy a entrenar" en la primera pantalla
   const [coachView, setCoachView] = useState(true);
   const [stepsAvail, setStepsAvail] = useState(false);
   const [stepsBusy, setStepsBusy] = useState(false);
@@ -9300,6 +9504,7 @@ function ArcApp({ user }) {
   const stepsLinked = !!state.profile?.stepsLinked && (native.platform !== "android" || stepsPerm === true);
   useEffect(() => {
     if (loaded && state.profile?.reminders) native.applyReminders(state.profile.reminders).catch(() => {});
+    if (loaded && state.onboarded && state.profile?.mode !== "simple") native.scheduleWeekly().catch(() => {});
   }, [loaded]);
   const syncSteps = async () => {
     setStepsBusy(true); setStepsErr("");
@@ -9346,6 +9551,7 @@ function ArcApp({ user }) {
   const saveProfile = async (q) => {
     const startDate = state.profile?.startDate || dkey();
     const profile = { ...state.profile, ...q, startDate };
+    if (!state.onboarded) setReveal(true);
     setState((s) => ({ ...s, onboarded: true, profile }));
     setScreen(null); setTab("inicio");
     try { await db.updateProfile(user.id, { onboarded: true, data: profileData(profile), start_date: startDate }); } catch (e) { fail(); }
@@ -9451,6 +9657,8 @@ function ArcApp({ user }) {
     );
   } else if (!state.onboarded && !isCoach && !state.hasCoach && !willTrain && invites.length === 0) {
     body = <RoleChoice onTrain={() => setWillTrain(true)} onCoach={startAsCoach} />;
+  } else if (reveal && ev && state.onboarded && state.profile?.mode !== "simple" && !screen) {
+    body = <CharacterReveal state={state} stats={stats} ev={ev} media={media} onClose={() => setReveal(false)} />;
   } else if (showTour) {
     body = <Tour media={media} profile={state.profile} ev={ev} heroImg={mediaOr(media, levelKey(state.profile.branch, state.profile.mode, ev.current)) || AVATAR[state.profile.branch]} perms={tourPerms} onFinish={() => { const again = state.profile?.retour; setProfile({ toured: true, retour: false }); setTab("inicio"); if (!hasPremium && !again) setPaywall(true); }} />;
   } else if (showQuestionnaire) {
@@ -9518,7 +9726,7 @@ function ArcApp({ user }) {
         </div>
       )}
       {done && <FinishScreen data={done} onClose={() => setDone(null)} />}
-      {levelUp && <LevelUp data={levelUp} onClose={closeLevelUp} />}
+      {levelUp && <LevelUp data={levelUp} stats={stats} onClose={closeLevelUp} />}
       {splash && <Splash onDone={() => setSplash(false)} />}
       <div className="phone">
         {!inTracker && (

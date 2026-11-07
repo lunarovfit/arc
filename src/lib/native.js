@@ -3,6 +3,7 @@
 import { Capacitor } from "@capacitor/core";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { Health } from "capacitor-health";
+import { InAppReview } from "@capacitor-community/in-app-review";
 
 export const isNative = Capacitor.isNativePlatform();
 export const platform = Capacitor.getPlatform(); // "ios" | "android" | "web"
@@ -125,4 +126,25 @@ export function onReminderOpen(cb) {
   if (!isNative) return () => {};
   const h = LocalNotifications.addListener("localNotificationActionPerformed", (e) => { const o = e?.notification?.extra?.open; if (o) cb(o); });
   return () => { h.then?.((x) => x.remove()); };
+}
+
+/* ---------------- RESEÑA Y RESUMEN SEMANAL ---------------- */
+
+// Hoja nativa de reseña (App Store / Google Play). El sistema decide si la enseña.
+export async function requestReview() {
+  if (!isNative) return;
+  try { await InAppReview.requestReview(); } catch { /* nada */ }
+}
+
+const WEEKLY_ID = 500;
+// Domingo por la tarde: "Tu semana en ARC está lista" (solo si ya hay permiso de avisos)
+export async function scheduleWeekly() {
+  if (!isNative || !(await notificationsAllowed(false))) return;
+  try {
+    await LocalNotifications.cancel({ notifications: [{ id: WEEKLY_ID }] });
+    await LocalNotifications.schedule({ notifications: [{
+      id: WEEKLY_ID, title: "Tu semana en ARC está lista", body: "Sesiones, adherencia y racha: mira tu resumen y compártelo.", extra: { open: "week" },
+      schedule: { on: { weekday: 1, hour: 18, minute: 30 }, allowWhileIdle: true },
+    }] });
+  } catch { /* sin permiso */ }
 }
